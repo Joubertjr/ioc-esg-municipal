@@ -1,16 +1,22 @@
 # Estado do Projeto — IOC ESG Municipal
-Atualizado: 2026-03-31 — Agentes IBGE + SICONFI concluídos
+Atualizado: 2026-03-31 — ODS Score Service consolidado
 
-## Status: 🟢 2 COLETORES OPERACIONAIS
+## Status: 🟢 SCORE SERVICE OPERACIONAL
 
 ## Concluído
 - Setup completo (docs, types, Prisma, Docker, seeds, CI/CD)
 - **Agente IBGE:** 6 indicadores → ODS 1, 8, 10, 11 (12 testes)
 - **Agente SICONFI:** FPM + despesas por função → ODS 3, 4, 11, 16, 17 (14 testes)
-- Infraestrutura compartilhada: cache Redis, HTTP retry, logger Winston, validação Zod
-- 26 testes unitários passando, zero erros TypeScript
+- **ODS Score Service:** orquestra IBGE+SICONFI, score global ponderado (8 testes)
+- Rotas: GET /api/ods/:ibgeCode + POST /api/ods/compare
+- Infraestrutura: cache Redis, HTTP retry, logger Winston, validação Zod
+- 34 testes unitários passando, zero erros TypeScript
 
-## Cobertura ODS atual
+## Resultados ao vivo
+- Joinville (4205407): globalScore=73 (verde), 8/17 ODS com dados
+- Florianópolis (4204202): globalScore=70 (verde), 8/17 ODS com dados
+
+## Cobertura ODS atual (8/17)
 | ODS | Nome | Fonte | Indicador |
 |-----|------|-------|-----------|
 | 1 | Pobreza | IBGE | % baixa renda |
@@ -32,19 +38,20 @@ Atualizado: 2026-03-31 — Agentes IBGE + SICONFI concluídos
 - SICONFI: coluna "PREVISÃO ATUALIZADA" inclui ano no nome (ex: "2024")
 - SICONFI: dados do ano corrente incompletos até março seguinte
 - Redis cache retém dados com schema antigo — limpar ao mudar campos
+- vi.mock timing: usar vi.hoisted() para mocks que precisam existir antes do import do módulo
 
 ## Próximo passo imediato
 1. /new-agent datasus (indicadores de saúde — ODS 3 complementar)
 2. /new-agent inep (IDEB — ODS 4 complementar)
-3. /new-ods 1 (calculator completo para ODS 1 — Pobreza)
-4. Dashboard frontend com scores ODS
+3. Dashboard frontend com scores ODS
+4. Simulador de investimentos FPM
 
 ## Stack
 - Backend: Node.js 18 + TypeScript strict + Express + Prisma + PostgreSQL + Redis
 - Frontend: React 18 + Vite + Tailwind + Shadcn/ui (scaffolding)
-- Testes: Vitest (26 unit) + Playwright (0 e2e)
+- Testes: Vitest (34 unit) + Playwright (0 e2e)
 - Infra: Docker Compose + GitHub Actions
 
 ## Git
-- Branch: main (feature/agent-ibge + feature/agent-siconfi merged)
-- 7 commits no main
+- Branch: main (feature/agent-ibge + feature/agent-siconfi + feature/ods-score-service merged)
+- 9 commits no main
