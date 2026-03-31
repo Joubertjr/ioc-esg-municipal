@@ -1,6 +1,7 @@
 import express, { type Express } from "express";
 import cors from "cors";
 import dotenv from "dotenv";
+import agentsRouter from "./routes/agents.js";
 
 dotenv.config();
 
@@ -18,6 +19,8 @@ app.get("/health", (_req, res) => {
     uptime: process.uptime(),
   });
 });
+
+app.use("/api/agents", agentsRouter);
 
 app.listen(PORT, () => {
   console.log(`IOC ESG Municipal API running on port ${PORT}`);
