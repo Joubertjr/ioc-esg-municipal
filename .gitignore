@@ -9,8 +9,7 @@ dist/
 build/
 .cache/
 
-# Prisma
-prisma/migrations/**/*.sql
+# Prisma (migrations SQL devem ser versionadas — não ignorar)
 
 # TypeScript
 *.tsbuildinfo
@@ -19,6 +18,9 @@ prisma/migrations/**/*.sql
 coverage/
 playwright-report/
 test-results/
+
+# Symlinks de hooks em subdiretórios
+frontend/.claude
 
 # Logs e backups internos
 .claude/logs/

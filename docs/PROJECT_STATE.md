@@ -1,26 +1,41 @@
 # Estado do Projeto — IOC ESG Municipal
-Atualizado: 31/03/2026 — Sessão de inicialização
+Atualizado: 2026-03-31 — Setup inicial concluído
 
-## Status: 🟡 SETUP INICIAL
+## Status: 🟢 SETUP CONCLUÍDO
 
 ## Concluído
 - Documentação completa de especificação (docs/especificacao/)
 - CLAUDE.md com stack, domínio, APIs, convenções e gotchas
-- 14 agentes especializados configurados
-- 12 skills customizadas incluindo /new-agent e /new-ods
-- 6 hooks automáticos (segurança, formatação, backup)
+- 14 agentes especializados + 12 skills + 6 hooks configurados
 - GitHub Actions CI/CD + automação 24/7
-- package.json e docker-compose.yml prontos
+- Estrutura de diretórios completa (backend, frontend, shared, tests, scripts)
+- TypeScript strict configurado (tsconfig.json, zero erros)
+- Prisma schema: Municipality, OdsIndicator, Simulation, User
+- Docker Compose: PostgreSQL 15 + Redis 7 + Adminer
+- package.json raiz (pnpm) + frontend (Vite + React + Tailwind)
+- 295 municípios de SC importados do IBGE (dados reais)
+- 17 ODS com definições, cores e pesos
+- 7 APIs governamentais configuradas (URLs, TTL, rate limits)
+- Types do domínio: Municipality, OdsIndicator, Simulation
+- Backend: Express com /health endpoint
+- Frontend: React + Vite + Tailwind scaffolding
+- ADR-001: Stack tecnológica documentada
+- Dependências instaladas (pnpm install + prisma generate)
 
 ## Aguardando
-- Execução de /setup para criar estrutura de diretórios e Prisma schema
-- Aprovação do plano de arquitetura
+- Docker rodando para pnpm docker:up
+- Migrations: pnpm db:migrate
+- Seed: pnpm db:seed (295 municípios)
+- Primeiro coletor: /new-agent ibge
 
 ## Próximo passo imediato
-Execute /setup no Claude Code e aguarde aprovação do plano.
-Após aprovação: pnpm docker:up → pnpm db:migrate → pnpm db:seed → /new-agent ibge
+1. pnpm docker:up (PostgreSQL + Redis + Adminer)
+2. pnpm db:migrate (criar tabelas)
+3. pnpm db:seed (popular 295 municípios)
+4. pnpm dev (verificar backend:3000 + frontend:5173)
+5. /new-agent ibge (primeiro coletor — população, renda, desemprego)
 
-## Stack definida
+## Stack
 - Backend: Node.js 18 + TypeScript strict + Express + Prisma + PostgreSQL + Redis + Bull
 - Frontend: React 18 + TypeScript + Vite + Tailwind + Shadcn/ui + Recharts
 - Testes: Vitest + Playwright
