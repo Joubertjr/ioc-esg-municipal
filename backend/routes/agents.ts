@@ -1,37 +1,47 @@
 import { Router, type Request, type Response, type Router as RouterType } from "express";
-import { IbgeCollector, mapToOdsIndicators } from "../agents/ibge/index.js";
+import { IbgeCollector, mapToOdsIndicators as mapIbgeOds } from "../agents/ibge/index.js";
+import { SiconfiCollector, mapToOdsIndicators as mapSiconfiOds } from "../agents/siconfi/index.js";
 import { logger } from "../utils/logger.js";
 
 const router: RouterType = Router();
 const ibgeCollector = new IbgeCollector();
+const siconfiCollector = new SiconfiCollector();
 
-/**
- * GET /api/agents/ibge/:ibgeCode
- * Retorna indicadores IBGE + mapeamento ODS para um município.
- */
+// ─── Validação compartilhada ────────────────────────────────────────────────
+
+function validateIbgeCode(ibgeCode: string | undefined): string | null {
+  if (!ibgeCode || !/^\d{7}$/.test(ibgeCode)) return null;
+  return ibgeCode;
+}
+
+function validateBatchBody(body: unknown): string[] | null {
+  const { ibgeCodes } = body as { ibgeCodes?: string[] };
+  if (!Array.isArray(ibgeCodes) || ibgeCodes.length === 0) return null;
+  if (ibgeCodes.length > 50) return null;
+  return ibgeCodes;
+}
+
+// ─── IBGE Routes ────────────────────────────────────────────────────────────
+
 router.get("/ibge/:ibgeCode", async (req: Request, res: Response) => {
-  const { ibgeCode } = req.params;
-
-  if (!ibgeCode || !/^\d{7}$/.test(ibgeCode)) {
+  const ibgeCode = validateIbgeCode(req.params["ibgeCode"]);
+  if (!ibgeCode) {
     res.status(400).json({ error: "ibgeCode deve ter 7 dígitos numéricos" });
     return;
   }
 
   try {
     const data = await ibgeCollector.collect(ibgeCode);
-
     if (!data) {
-      res.status(404).json({ error: `Dados não encontrados para ${ibgeCode}` });
+      res.status(404).json({ error: `Dados IBGE não encontrados para ${ibgeCode}` });
       return;
     }
-
-    const odsIndicators = mapToOdsIndicators(data);
-
     res.json({
       municipality: ibgeCode,
+      source: "ibge",
       referenceYear: data.referenceYear,
       indicators: data.indicators,
-      ods: odsIndicators,
+      ods: mapIbgeOds(data),
     });
   } catch (error) {
     logger.error("Error in IBGE agent route", {
@@ -42,46 +52,86 @@ router.get("/ibge/:ibgeCode", async (req: Request, res: Response) => {
   }
 });
 
-/**
- * POST /api/agents/ibge/batch
- * Body: { ibgeCodes: string[] }
- * Retorna dados para múltiplos municípios.
- */
 router.post("/ibge/batch", async (req: Request, res: Response) => {
-  const { ibgeCodes } = req.body as { ibgeCodes?: string[] };
-
-  if (!Array.isArray(ibgeCodes) || ibgeCodes.length === 0) {
-    res.status(400).json({ error: "ibgeCodes deve ser array não vazio" });
-    return;
-  }
-
-  if (ibgeCodes.length > 50) {
-    res.status(400).json({ error: "Máximo 50 municípios por batch" });
+  const ibgeCodes = validateBatchBody(req.body);
+  if (!ibgeCodes) {
+    res.status(400).json({ error: "ibgeCodes deve ser array não vazio (máx 50)" });
     return;
   }
 
   try {
     const results = await ibgeCollector.collectBatch(ibgeCodes);
     const response: Record<string, unknown> = {};
-
     for (const [code, data] of results) {
       response[code] = {
         referenceYear: data.referenceYear,
         indicators: data.indicators,
-        ods: mapToOdsIndicators(data),
+        ods: mapIbgeOds(data),
       };
     }
-
-    res.json({
-      total: ibgeCodes.length,
-      found: results.size,
-      data: response,
-    });
+    res.json({ total: ibgeCodes.length, found: results.size, data: response });
   } catch (error) {
     logger.error("Error in IBGE batch route", {
       error: error instanceof Error ? error.message : String(error),
     });
     res.status(500).json({ error: "Erro interno no batch IBGE" });
+  }
+});
+
+// ─── SICONFI Routes ─────────────────────────────────────────────────────────
+
+router.get("/siconfi/:ibgeCode", async (req: Request, res: Response) => {
+  const ibgeCode = validateIbgeCode(req.params["ibgeCode"]);
+  if (!ibgeCode) {
+    res.status(400).json({ error: "ibgeCode deve ter 7 dígitos numéricos" });
+    return;
+  }
+
+  try {
+    const data = await siconfiCollector.collect(ibgeCode);
+    if (!data) {
+      res.status(404).json({ error: `Dados SICONFI não encontrados para ${ibgeCode}` });
+      return;
+    }
+    res.json({
+      municipality: ibgeCode,
+      source: "siconfi",
+      referenceYear: data.referenceYear,
+      indicators: data.indicators,
+      ods: mapSiconfiOds(data),
+    });
+  } catch (error) {
+    logger.error("Error in SICONFI agent route", {
+      ibgeCode,
+      error: error instanceof Error ? error.message : String(error),
+    });
+    res.status(500).json({ error: "Erro interno ao coletar dados SICONFI" });
+  }
+});
+
+router.post("/siconfi/batch", async (req: Request, res: Response) => {
+  const ibgeCodes = validateBatchBody(req.body);
+  if (!ibgeCodes) {
+    res.status(400).json({ error: "ibgeCodes deve ser array não vazio (máx 50)" });
+    return;
+  }
+
+  try {
+    const results = await siconfiCollector.collectBatch(ibgeCodes);
+    const response: Record<string, unknown> = {};
+    for (const [code, data] of results) {
+      response[code] = {
+        referenceYear: data.referenceYear,
+        indicators: data.indicators,
+        ods: mapSiconfiOds(data),
+      };
+    }
+    res.json({ total: ibgeCodes.length, found: results.size, data: response });
+  } catch (error) {
+    logger.error("Error in SICONFI batch route", {
+      error: error instanceof Error ? error.message : String(error),
+    });
+    res.status(500).json({ error: "Erro interno no batch SICONFI" });
   }
 });
 
