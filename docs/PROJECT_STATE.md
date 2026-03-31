@@ -1,57 +1,52 @@
 # Estado do Projeto — IOC ESG Municipal
-Atualizado: 2026-03-31 — ODS Score Service consolidado
+Atualizado: 2026-03-31 — Dashboard ODS operacional
 
-## Status: 🟢 SCORE SERVICE OPERACIONAL
+## Status: 🟢 DASHBOARD + SCORE SERVICE + 2 COLETORES
 
-## Concluído
+## Concluido
 - Setup completo (docs, types, Prisma, Docker, seeds, CI/CD)
 - **Agente IBGE:** 6 indicadores → ODS 1, 8, 10, 11 (12 testes)
-- **Agente SICONFI:** FPM + despesas por função → ODS 3, 4, 11, 16, 17 (14 testes)
+- **Agente SICONFI:** FPM + despesas por funcao → ODS 3, 4, 11, 16, 17 (14 testes)
 - **ODS Score Service:** orquestra IBGE+SICONFI, score global ponderado (8 testes)
+- **Dashboard Frontend:** 10 componentes React com dados ao vivo
+  - GlobalScore: gauge SVG circular
+  - OdsCard grid: 17 cards com cores UN
+  - OdsDetailDrawer: painel lateral com indicadores
+  - OdsRadarChart: Recharts radar 17 eixos
+  - AppShell: header + combobox 295 municipios SC
+  - React Query + skeleton loaders
 - Rotas: GET /api/ods/:ibgeCode + POST /api/ods/compare
-- Infraestrutura: cache Redis, HTTP retry, logger Winston, validação Zod
-- 34 testes unitários passando, zero erros TypeScript
+- 34 testes unitarios passando, zero erros TypeScript
 
 ## Resultados ao vivo
-- Joinville (4205407): globalScore=73 (verde), 8/17 ODS com dados
-- Florianópolis (4204202): globalScore=70 (verde), 8/17 ODS com dados
+- Florianopolis (4205407): globalScore=73 (verde), 8/17 ODS
+- Joinville (4204202): globalScore=70 (verde), 8/17 ODS
+- Dashboard: http://localhost:5173 (com backend em :3000)
 
 ## Cobertura ODS atual (8/17)
 | ODS | Nome | Fonte | Indicador |
 |-----|------|-------|-----------|
 | 1 | Pobreza | IBGE | % baixa renda |
-| 3 | Saúde | SICONFI | % despesa saúde |
-| 4 | Educação | SICONFI | % despesa educação |
-| 8 | Trabalho | IBGE | Taxa ocupação + PIB per capita |
+| 3 | Saude | SICONFI | % despesa saude |
+| 4 | Educacao | SICONFI | % despesa educacao |
+| 8 | Trabalho | IBGE | Taxa ocupacao + PIB per capita |
 | 10 | Desigualdade | IBGE | % baixa renda (proxy) |
-| 11 | Cidades | IBGE+SICONFI | Equilíbrio fiscal + urbanismo |
-| 16 | Instituições | SICONFI | Equilíbrio fiscal detalhado |
-| 17 | Parcerias | SICONFI | Dependência FPM |
+| 11 | Cidades | IBGE+SICONFI | Equilibrio fiscal + urbanismo |
+| 16 | Instituicoes | SICONFI | Equilibrio fiscal detalhado |
+| 17 | Parcerias | SICONFI | Dependencia FPM |
 
-## Gotchas descobertos
-- IBGE 60048 = "% pop com renda ≤ 1/2 SM" (percentual, NÃO R$)
-- IBGE 60036 = "% pop ocupada" (NÃO taxa de desocupação)
-- IBGE usa localidade 6 dígitos, não 7
-- SICONFI: cod_ibge no RREO aceita 7 dígitos diretamente
-- SICONFI: RREO período 6 = último bimestre = acumulado anual
-- SICONFI: FPM usar "TOTAL (ÚLTIMOS 12 MESES)" do Anexo 03
-- SICONFI: coluna "PREVISÃO ATUALIZADA" inclui ano no nome (ex: "2024")
-- SICONFI: dados do ano corrente incompletos até março seguinte
-- Redis cache retém dados com schema antigo — limpar ao mudar campos
-- vi.mock timing: usar vi.hoisted() para mocks que precisam existir antes do import do módulo
-
-## Próximo passo imediato
-1. /new-agent datasus (indicadores de saúde — ODS 3 complementar)
-2. /new-agent inep (IDEB — ODS 4 complementar)
-3. Dashboard frontend com scores ODS
-4. Simulador de investimentos FPM
+## Proximo passo
+1. Mais coletores: DATASUS (saude), INEP (IDEB), SNIS (saneamento)
+2. Simulador de investimentos FPM
+3. Comparador entre municipios (UI)
+4. Auth + multi-tenancy
 
 ## Stack
 - Backend: Node.js 18 + TypeScript strict + Express + Prisma + PostgreSQL + Redis
-- Frontend: React 18 + Vite + Tailwind + Shadcn/ui (scaffolding)
+- Frontend: React 18 + Vite + Tailwind + Recharts + React Query
 - Testes: Vitest (34 unit) + Playwright (0 e2e)
 - Infra: Docker Compose + GitHub Actions
 
 ## Git
-- Branch: main (feature/agent-ibge + feature/agent-siconfi + feature/ods-score-service merged)
-- 9 commits no main
+- Branch: main (4 features merged)
+- 12 commits
