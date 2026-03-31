@@ -1,0 +1,39 @@
+# Ambiente
+.env
+.env.*
+!.env.example
+
+# Node
+node_modules/
+dist/
+build/
+.cache/
+
+# Prisma
+prisma/migrations/**/*.sql
+
+# TypeScript
+*.tsbuildinfo
+
+# Testes
+coverage/
+playwright-report/
+test-results/
+
+# Logs e backups internos
+.claude/logs/
+.claude/backups/
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# Docker
+postgres_data/
+redis_data/

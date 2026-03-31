@@ -1,0 +1,118 @@
+{
+  "model": "claude-opus-4-6",
+  "effort": "medium",
+  "autoCompact": true,
+  "autoMemoryEnabled": true,
+  "env": {
+    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1",
+    "CLAUDE_CODE_SUBAGENT_MODEL": "claude-sonnet-4-6",
+    "ENABLE_TOOL_SEARCH": "auto",
+    "CLAUDE_AUTOCOMPACT_PCT_OVERRIDE": "75"
+  },
+  "permissions": {
+    "allow": [
+      "Read", "Write", "Edit", "MultiEdit", "Glob", "Grep", "LS",
+      "WebSearch", "WebFetch", "Task",
+      "Bash(git *)",
+      "Bash(pnpm *)", "Bash(npx *)", "Bash(node *)", "Bash(ts-node *)", "Bash(tsc *)",
+      "Bash(vitest *)", "Bash(playwright *)",
+      "Bash(prettier *)", "Bash(eslint *)",
+      "Bash(docker *)", "Bash(docker-compose *)",
+      "Bash(prisma *)",
+      "Bash(python3 *)",
+      "Bash(ls *)", "Bash(cat *)", "Bash(mkdir *)", "Bash(cp *)", "Bash(mv *)",
+      "Bash(find *)", "Bash(grep *)", "Bash(echo *)", "Bash(touch *)",
+      "Bash(chmod +x *)", "Bash(which *)", "Bash(pwd)", "Bash(env)",
+      "Bash(wc *)", "Bash(head *)", "Bash(tail *)", "Bash(sort *)",
+      "Bash(curl -s https://servicodados.ibge.gov.br/*)",
+      "Bash(curl -s https://api.siconfi.tesouro.gov.br/*)",
+      "Bash(curl -s https://pncp.gov.br/*)"
+    ],
+    "deny": [
+      "Bash(rm -rf *)",
+      "Bash(sudo *)",
+      "Bash(git push --force*)",
+      "Bash(git reset --hard*)",
+      "Bash(git clean -f*)",
+      "Bash(curl * | bash)",
+      "Bash(wget * | bash)",
+      "Bash(chmod 777 *)",
+      "Read(**/.env)",
+      "Read(**/.env.production)",
+      "Read(**/*.pem)",
+      "Read(**/*_rsa)",
+      "Write(**/.env)",
+      "Write(**/.env.production)"
+    ]
+  },
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/session_start.sh",
+            "async": false
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 .claude/hooks/pre_bash_guard.py",
+            "timeout": 5
+          }
+        ]
+      },
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 .claude/hooks/pre_write_guard.py",
+            "timeout": 3
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/post_format.sh",
+            "async": false,
+            "timeout": 15
+          }
+        ]
+      }
+    ],
+    "PreCompact": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 .claude/hooks/pre_compact_save.py",
+            "timeout": 30
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/stop_activity_log.sh",
+            "async": true
+          }
+        ]
+      }
+    ]
+  }
+}

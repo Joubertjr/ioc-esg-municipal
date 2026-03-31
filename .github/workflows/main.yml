@@ -1,0 +1,229 @@
+name: IOC ESG Municipal — CI/CD + Automação
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+  issue_comment:
+    types: [created]
+  pull_request_review_comment:
+    types: [created]
+  issues:
+    types: [opened, labeled]
+  schedule:
+    - cron: '0 9 * * 1-5'   # Briefing diário 9h UTC (6h BRT)
+    - cron: '0 13 * * *'    # Verificação APIs gov 10h BRT
+    - cron: '0 10 * * 1'    # Security audit segunda 7h BRT
+  workflow_dispatch:
+    inputs:
+      prompt:
+        description: 'Prompt para Claude Code'
+        required: true
+        type: string
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # ── CI: TypeScript + Lint + Tests + Build ─────────────────────
+  ci:
+    if: github.event_name == 'push' || github.event_name == 'pull_request'
+    name: CI
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    services:
+      postgres:
+        image: postgres:15-alpine
+        env:
+          POSTGRES_USER: test
+          POSTGRES_PASSWORD: test
+          POSTGRES_DB: ioc_esg_test
+        options: >-
+          --health-cmd pg_isready --health-interval 10s
+          --health-timeout 5s --health-retries 5
+        ports: ["5432:5432"]
+      redis:
+        image: redis:7-alpine
+        options: >-
+          --health-cmd "redis-cli ping" --health-interval 10s
+          --health-timeout 5s --health-retries 5
+        ports: ["6379:6379"]
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v3
+        with: { version: 8 }
+      - uses: actions/setup-node@v4
+        with: { node-version: '20', cache: 'pnpm' }
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm tsc --noEmit
+      - run: pnpm lint
+      - run: pnpm test:unit
+      - name: Integration tests
+        env:
+          DATABASE_URL: postgresql://test:test@localhost:5432/ioc_esg_test
+          REDIS_URL: redis://localhost:6379
+        run: pnpm prisma migrate deploy && pnpm test:integration
+      - run: pnpm build
+
+  # ── Claude: PR review automático ─────────────────────────────
+  claude-pr-review:
+    if: github.event_name == 'pull_request' && github.event.action == 'opened'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      pull-requests: write
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+      - uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          prompt: |
+            Revise este PR do IOC ESG Municipal. Foque em:
+            1. TypeScript strict: sem `any`, tipos corretos nas interfaces ODS/Município
+            2. APIs gov: retry com backoff? cache Redis com TTL correto por fonte?
+            3. Código IBGE→SICONFI convertido corretamente (7→6 dígitos)?
+            4. Score ODS: normalização 0-100 correta? pesos documentados?
+            5. Segurança: credenciais hardcoded? dados pessoais em logs?
+            6. Testes: mocks corretos? cenários críticos cobertos?
+            Labels: 🔴 Bloqueador | 🟡 Importante | 🟢 Sugestão
+          allowed_tools: "Read,Grep,Glob,Bash(git diff *)"
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # ── Claude: responde @claude em comentários ───────────────────
+  claude-interactive:
+    if: |
+      (github.event_name == 'issue_comment' && contains(github.event.comment.body, '@claude')) ||
+      (github.event_name == 'pull_request_review_comment' && contains(github.event.comment.body, '@claude'))
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: write
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+      - uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # ── Scheduled: Briefing diário ───────────────────────────────
+  daily-briefing:
+    if: github.event_name == 'schedule' && github.event.schedule == '0 9 * * 1-5'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      issues: write
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+      - uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          prompt: |
+            Execute o morning briefing do IOC ESG Municipal:
+            1. git log --oneline --since="24 hours ago"
+            2. Liste PRs abertos e issues abertas por prioridade
+            3. Produza relatório: desenvolvido ontem, PRs aguardando review,
+               issues críticas, recomendação para hoje
+            Crie issue com título "📊 Daily Briefing — [data]" e label "briefing".
+          allowed_tools: "Read,Bash(git *),Bash(grep *)"
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # ── Scheduled: Verificação das APIs governamentais ────────────
+  api-health:
+    if: github.event_name == 'schedule' && github.event.schedule == '0 13 * * *'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      issues: write
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          prompt: |
+            Verifique as APIs governamentais do IOC ESG Municipal (timeout 10s cada):
+
+            1. IBGE: curl -s --max-time 10 "https://servicodados.ibge.gov.br/api/v1/localidades/municipios/4204202"
+            2. SICONFI: curl -s --max-time 10 "https://api.siconfi.tesouro.gov.br/v1/municipios/SC"
+            3. PNCP: curl -s --max-time 10 "https://pncp.gov.br/api/pncp/v1/orgaos"
+
+            Para cada: status HTTP, tempo de resposta, JSON válido retornado.
+            Se alguma INDISPONÍVEL: crie issue "🔴 API Indisponível: [nome] — [data]" com label "infrastructure".
+            Se todas OK: não crie issue (evite ruído).
+          allowed_tools: "Bash(curl *),Bash(echo *)"
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # ── Scheduled: Security audit semanal ────────────────────────
+  security-audit:
+    if: github.event_name == 'schedule' && github.event.schedule == '0 10 * * 1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+      issues: write
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v3
+        with: { version: 8 }
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm audit --json > audit.json 2>&1 || true
+      - uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          prompt: |
+            Auditoria de segurança semanal do IOC ESG Municipal:
+            1. Leia audit.json (resultado do pnpm audit)
+            2. Busque credenciais hardcoded: grep -r "password\|api_key\|secret" --include="*.ts" backend/ shared/ | grep -v "test\|mock\|example\|env"
+            3. Verifique .env commitados: git log --all --full-history -- "**/.env*"
+            4. Confirme que DATASUS retorna apenas dados agregados (não individuais)
+            Crie issue "🔐 Security Audit — [data]" com findings.
+            CVEs críticos: adicionar label "security" + "critical".
+          allowed_tools: "Read,Bash(grep *),Bash(git *),Bash(cat *)"
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # ── Manual: task customizada ─────────────────────────────────
+  claude-manual:
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: write
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+      - uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          prompt: ${{ github.event.inputs.prompt }}
+          allowed_tools: "Read,Write,Edit,Bash(git *),Bash(pnpm *),Bash(grep *),WebSearch"
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
