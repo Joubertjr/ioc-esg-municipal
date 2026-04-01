@@ -1,11 +1,13 @@
 import { Router, type Request, type Response, type Router as RouterType } from "express";
 import { IbgeCollector, mapToOdsIndicators as mapIbgeOds } from "../agents/ibge/index.js";
 import { SiconfiCollector, mapToOdsIndicators as mapSiconfiOds } from "../agents/siconfi/index.js";
+import { DatasusCollector, mapToOdsIndicators as mapDatasusOds } from "../agents/datasus/index.js";
 import { logger } from "../utils/logger.js";
 
 const router: RouterType = Router();
 const ibgeCollector = new IbgeCollector();
 const siconfiCollector = new SiconfiCollector();
+const datasusCollector = new DatasusCollector();
 
 // ─── Validação compartilhada ────────────────────────────────────────────────
 
@@ -132,6 +134,37 @@ router.post("/siconfi/batch", async (req: Request, res: Response) => {
       error: error instanceof Error ? error.message : String(error),
     });
     res.status(500).json({ error: "Erro interno no batch SICONFI" });
+  }
+});
+
+// ─── DATASUS Routes ────────────────────────────────────────────────────────
+
+router.get("/datasus/:ibgeCode", async (req: Request, res: Response) => {
+  const ibgeCode = validateIbgeCode(req.params["ibgeCode"]);
+  if (!ibgeCode) {
+    res.status(400).json({ error: "ibgeCode deve ter 7 dígitos numéricos" });
+    return;
+  }
+
+  try {
+    const data = await datasusCollector.collect(ibgeCode);
+    if (!data) {
+      res.status(404).json({ error: `Dados DATASUS não encontrados para ${ibgeCode}` });
+      return;
+    }
+    res.json({
+      municipality: ibgeCode,
+      source: "datasus",
+      referenceYear: data.referenceYear,
+      indicators: data.indicators,
+      ods: mapDatasusOds(data),
+    });
+  } catch (error) {
+    logger.error("Error in DATASUS agent route", {
+      ibgeCode,
+      error: error instanceof Error ? error.message : String(error),
+    });
+    res.status(500).json({ error: "Erro interno ao coletar dados DATASUS" });
   }
 });
 
