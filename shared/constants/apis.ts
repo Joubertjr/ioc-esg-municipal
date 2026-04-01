@@ -5,6 +5,8 @@ export interface ApiConfig {
   rateLimit: number; // max requests per second
   timeoutMs: number;
   retryCount: number;
+  /** Campo opcional — usado por APIs que expõem múltiplos workspaces (ex: GeoServer INPE) */
+  workspace?: string;
 }
 
 export const API_CONFIGS: Record<string, ApiConfig> = {
@@ -50,9 +52,12 @@ export const API_CONFIGS: Record<string, ApiConfig> = {
   },
   inpe: {
     name: "INPE",
-    baseUrl: "https://terrabrasilis.dpi.inpe.br/api/v1",
+    /** GeoServer WFS — a URL /api/v1 não existe (retorna 404) */
+    baseUrl: "https://terrabrasilis.dpi.inpe.br/geoserver",
+    /** Workspace PRODES Mata Atlântica (cobre 100% de SC) */
+    workspace: "prodes-mata-atlantica-nb",
     cacheTtlSeconds: 86_400, // 24h
-    rateLimit: 2,
+    rateLimit: 10,
     timeoutMs: 15_000,
     retryCount: 3,
   },

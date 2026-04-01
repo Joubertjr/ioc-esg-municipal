@@ -1,0 +1,49 @@
+# Dependências — reconstruídas no build
+node_modules/
+frontend/node_modules/
+
+# Build artifacts — gerados no multi-stage
+dist/
+build/
+frontend/dist/
+
+# Git e CI
+.git/
+.github/
+.gitignore
+
+# Ambientes — NUNCA entrar na imagem
+.env
+.env.*
+!.env.example
+
+# Desenvolvimento e IDE
+.vscode/
+.idea/
+*.swp
+.DS_Store
+Thumbs.db
+
+# Testes e relatórios
+tests/
+coverage/
+playwright-report/
+test-results/
+
+# Documentação e planos
+docs/
+*.md
+!README.md
+
+# Logs e dados locais
+*.log
+postgres_data/
+redis_data/
+
+# Claude Code
+.claude/
+CLAUDE.md
+PRIMEIRO_PROMPT.md
+
+# TypeScript source maps (gerados no build)
+*.tsbuildinfo

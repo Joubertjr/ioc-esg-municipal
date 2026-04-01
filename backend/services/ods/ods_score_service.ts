@@ -54,6 +54,7 @@ const siconfiCollector = new SiconfiCollector();
 const datasusCollector = new DatasusCollector();
 const inepCollector = new InepCollector();
 const snisCollector = new SnisCollector();
+const inpeCollector = new InpeCollector();
 
 /**
  * Serviço que orquestra todos os coletores e consolida scores ODS para um município.
@@ -70,16 +71,17 @@ export async function calculateMunicipalOds(ibgeCode: string): Promise<Municipal
   // DATASUS cai com frequência (timeout=30s x retries=3 = 93s no pior caso).
   // Budget de 10s por fonte garante resposta em ≤15s mesmo com DATASUS down.
   // INEP e SNIS são locais (JSON estático) — 1s é suficiente.
-  const [ibgeData, siconfiData, datasusData, inepData, snisData] = await Promise.all([
+  const [ibgeData, siconfiData, datasusData, inepData, snisData, inpeData] = await Promise.all([
     withTimeout(ibgeCollector.collect(ibgeCode), 10_000, "ibge"),
     withTimeout(siconfiCollector.collect(ibgeCode), 15_000, "siconfi"),
     withTimeout(datasusCollector.collect(ibgeCode), 10_000, "datasus"),
     withTimeout(inepCollector.collect(ibgeCode), 1_000, "inep"),
     withTimeout(snisCollector.collect(ibgeCode), 1_000, "snis"),
+    withTimeout(inpeCollector.collect(ibgeCode), 15_000, "inpe"),
   ]);
 
   // Se nenhuma fonte retornou dados, não há score
-  if (!ibgeData && !siconfiData && !datasusData && !inepData && !snisData) {
+  if (!ibgeData && !siconfiData && !datasusData && !inepData && !snisData && !inpeData) {
     logger.warn(`No data from any source for municipality ${ibgeCode}`);
     return null;
   }
@@ -91,6 +93,7 @@ export async function calculateMunicipalOds(ibgeCode: string): Promise<Municipal
   if (datasusData) allIndicators.push(...mapDatasusOds(datasusData));
   if (inepData) allIndicators.push(...mapInepOds(inepData));
   if (snisData) allIndicators.push(...mapSnisOds(snisData));
+  if (inpeData) allIndicators.push(...mapInpeOds(inpeData));
 
   // Determinar ano de referência mais recente
   const referenceYear = Math.max(
@@ -99,6 +102,7 @@ export async function calculateMunicipalOds(ibgeCode: string): Promise<Municipal
     datasusData?.referenceYear ?? 0,
     inepData?.referenceYear ?? 0,
     snisData?.referenceYear ?? 0,
+    inpeData?.referenceYear ?? 0,
   );
 
   // Agrupar indicadores por ODS number
