@@ -53,6 +53,11 @@ router.post("/compare", batchLimiter, async (req: Request, res: Response) => {
     return;
   }
 
+  if (ibgeCodes.some((c) => typeof c !== "string" || !/^\d{7}$/.test(c))) {
+    res.status(400).json({ error: "Todos os ibgeCodes devem ter 7 dígitos numéricos" });
+    return;
+  }
+
   try {
     const results = await Promise.all(
       ibgeCodes.map((code) => calculateMunicipalOds(code)),

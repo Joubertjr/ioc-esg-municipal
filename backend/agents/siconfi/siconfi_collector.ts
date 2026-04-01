@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { fetchWithRetry } from "../../utils/http-client.js";
-import { withCache, getRedisClient } from "../../utils/cache.js";
+import { withCache } from "../../utils/cache.js";
 import { logger } from "../../utils/logger.js";
 import { API_CONFIGS, ibgeToSiconfi } from "../../../shared/constants/apis.js";
 import {
@@ -59,9 +59,9 @@ export class SiconfiCollector {
 
   /**
    * Coleta dados em batch para múltiplos municípios.
-   * Rate limit: máx 2 req/s (throttle 500ms entre requests).
-   * Otimização: throttle ignorado quando dado já está no Redis (cache hit),
-   * pois não há chamada HTTP real — reduz batch de 295 municípios de ~2.5min para ~10s.
+   * Rate limit: máx 2 req/s (throttle 500ms entre cada request).
+   * Throttle incondicional — cache hit resolve rápido via withCache,
+   * mas throttle garante proteção contra flood se Redis estiver down.
    */
   async collectBatch(
     ibgeCodes: string[],
@@ -69,21 +69,12 @@ export class SiconfiCollector {
     const results = new Map<string, SiconfiMunicipalData>();
 
     for (const code of ibgeCodes) {
-      // Verificar cache antes de coletar para decidir se throttle é necessário
-      const cacheKey = `siconfi:rreo:${code}`;
-      const cached = await getRedisClient()
-        .then((r) => r.get(cacheKey))
-        .catch(() => null);
-
       const data = await this.collect(code);
       if (data) {
         results.set(code, data);
       }
 
-      // Throttle apenas em cache miss (requisição HTTP real foi feita)
-      if (cached === null) {
-        await new Promise((resolve) => setTimeout(resolve, 500));
-      }
+      await new Promise((resolve) => setTimeout(resolve, 500));
     }
 
     logger.info(

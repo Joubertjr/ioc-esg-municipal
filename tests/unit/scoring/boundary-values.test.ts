@@ -5,10 +5,11 @@
  * de cada mapper, passando dados com os valores exatos das fronteiras.
  *
  * Mappers cobertos:
- * - inep_ods_mapper   → scoreIdeb
- * - ibge_ods_mapper   → scorePctBaixaRenda, scoreEquilibrioFiscal
- * - siconfi_ods_mapper → scorePctSaude, scorePctEducacao, scoreDependenciaFpm, scoreEquilibrioFiscal
- * - snis_ods_mapper   → scoreAtendimentoAgua, scoreAtendimentoEsgoto, scorePerdaFaturamento
+ * - inep_ods_mapper    → scoreIdeb (anos iniciais + anos finais, null, intermediario)
+ * - ibge_ods_mapper    → scorePctBaixaRenda, scoreRazaoDependencia, scoreDensidadeDemografica
+ * - siconfi_ods_mapper → scorePctSaude, scorePctEducacao, scoreDependenciaFpm
+ * - snis_ods_mapper    → scoreAtendimentoAgua, scoreAtendimentoEsgoto,
+ *                        scoreEsgotoTratado, scorePerdaFaturamento
  */
 
 import { describe, it, expect, vi } from "vitest";
@@ -562,6 +563,159 @@ describe("scoreDependenciaFpm — fronteiras", () => {
   });
 });
 
+// ─── scoreIdeb anos finais (via inep_ods_mapper) ─────────────────────────────
+
+describe("scoreIdeb idebAnosFinais — fronteiras", () => {
+  it("ideb_anos_finais_0_deve_resultar_em_score_0", () => {
+    // Arrange: pior caso absoluto para anos finais
+    const data = makeInepData(null, 0);
+
+    // Act
+    const indicators = inepMapToOds(data);
+    const ind = indicators.find((i) => i.indicatorName === "ideb_anos_finais")!;
+
+    // Assert
+    expect(ind.score).toBe(0);
+    expect(ind.status).toBe("vermelho");
+  });
+
+  it("ideb_anos_finais_4_deve_resultar_em_score_50", () => {
+    // Arrange: fronteira inferior da faixa media
+    const data = makeInepData(null, 4.0);
+
+    // Act
+    const indicators = inepMapToOds(data);
+    const ind = indicators.find((i) => i.indicatorName === "ideb_anos_finais")!;
+
+    // Assert
+    expect(ind.score).toBe(50);
+    expect(ind.status).toBe("amarelo");
+  });
+
+  it("ideb_anos_finais_7_deve_resultar_em_score_100", () => {
+    // Arrange: fronteira de excelencia
+    const data = makeInepData(null, 7.0);
+
+    // Act
+    const indicators = inepMapToOds(data);
+    const ind = indicators.find((i) => i.indicatorName === "ideb_anos_finais")!;
+
+    // Assert
+    expect(ind.score).toBe(100);
+    expect(ind.status).toBe("verde");
+  });
+
+  it("ideb_anos_finais_10_deve_resultar_em_score_100_clamped", () => {
+    // Arrange: acima do maximo → clamped
+    const data = makeInepData(null, 10.0);
+
+    // Act
+    const indicators = inepMapToOds(data);
+    const ind = indicators.find((i) => i.indicatorName === "ideb_anos_finais")!;
+
+    // Assert
+    expect(ind.score).toBe(100);
+  });
+});
+
+// ─── scoreIdeb valores intermediarios (via inep_ods_mapper) ──────────────────
+
+describe("scoreIdeb — valores intermediarios", () => {
+  it("ideb_2_deve_resultar_em_score_25", () => {
+    // Arrange: nota 2.0 → faixa baixa (0-4): (2.0/4.0)*50 = 25
+    const data = makeInepData(2.0);
+
+    // Act
+    const indicators = inepMapToOds(data);
+    const ind = indicators.find((i) => i.indicatorName === "ideb_anos_iniciais")!;
+
+    // Assert
+    expect(ind.score).toBe(25);
+    expect(ind.status).toBe("vermelho");
+  });
+
+  it("ideb_5_5_deve_resultar_em_score_75", () => {
+    // Arrange: nota 5.5 → faixa media (4-7): 50 + ((5.5-4.0)/3.0)*50 = 75
+    const data = makeInepData(5.5);
+
+    // Act
+    const indicators = inepMapToOds(data);
+    const ind = indicators.find((i) => i.indicatorName === "ideb_anos_iniciais")!;
+
+    // Assert
+    expect(ind.score).toBe(75);
+    expect(ind.status).toBe("verde");
+  });
+});
+
+// ─── dados ausentes INEP (via inep_ods_mapper) ───────────────────────────────
+
+describe("inep_ods_mapper — dados ausentes", () => {
+  it("ambos_null_nao_retorna_indicadores", () => {
+    // Arrange: municipio sem dados IDEB (ex: < 5k hab, dados suprimidos)
+    const data = makeInepData(null, null);
+
+    // Act
+    const indicators = inepMapToOds(data);
+
+    // Assert: lista vazia sem crash
+    expect(indicators).toHaveLength(0);
+  });
+
+  it("apenas_anos_iniciais_null_retorna_somente_anos_finais", () => {
+    // Arrange: apenas anos finais disponivel
+    const data = makeInepData(null, 6.0);
+
+    // Act
+    const indicators = inepMapToOds(data);
+
+    // Assert: um unico indicador — anos finais
+    expect(indicators).toHaveLength(1);
+    expect(indicators[0]!.indicatorName).toBe("ideb_anos_finais");
+  });
+
+  it("apenas_anos_finais_null_retorna_somente_anos_iniciais", () => {
+    // Arrange: apenas anos iniciais disponivel
+    const data = makeInepData(5.0, null);
+
+    // Act
+    const indicators = inepMapToOds(data);
+
+    // Assert: um unico indicador — anos iniciais
+    expect(indicators).toHaveLength(1);
+    expect(indicators[0]!.indicatorName).toBe("ideb_anos_iniciais");
+  });
+
+  it("ambos_disponiveis_retorna_dois_indicadores_ODS4", () => {
+    // Arrange: municipio com ambos os dados
+    const data = makeInepData(5.0, 4.5);
+
+    // Act
+    const indicators = inepMapToOds(data);
+
+    // Assert: dois indicadores, ambos ODS 4
+    expect(indicators).toHaveLength(2);
+    expect(indicators.every((i) => i.odsNumber === 4)).toBe(true);
+    expect(indicators.find((i) => i.indicatorName === "ideb_anos_iniciais")).toBeDefined();
+    expect(indicators.find((i) => i.indicatorName === "ideb_anos_finais")).toBeDefined();
+  });
+
+  it("metadados_do_indicador_preenchidos_corretamente", () => {
+    // Arrange
+    const data = makeInepData(6.0);
+
+    // Act
+    const indicators = inepMapToOds(data);
+    const ind = indicators[0]!;
+
+    // Assert: campos de auditoria e rastreabilidade
+    expect(ind.municipalityId).toBe(IBGE_CODE);
+    expect(ind.source).toBe("inep");
+    expect(ind.referenceYear).toBe(2023);
+    expect(ind.dataAvailable).toBe(true);
+  });
+});
+
 // ─── scoreAtendimentoAgua (via snis_ods_mapper) ──────────────────────────────
 
 describe("scoreAtendimentoAgua — fronteiras", () => {
@@ -614,6 +768,31 @@ describe("scoreAtendimentoAgua — fronteiras", () => {
     // Assert: score < 50, status vermelho
     expect(ind.score).toBe(36);
     expect(ind.status).toBe("vermelho");
+  });
+
+  it("atendimento_agua_0pct_deve_resultar_em_score_0", () => {
+    // Arrange: pior caso absoluto — sem cobertura de agua
+    const data = makeSnisData({ atendimentoAgua: 0 });
+
+    // Act
+    const indicators = snisMapToOds(data);
+    const ind = indicators.find((i) => i.indicatorName === "snis_atendimento_agua")!;
+
+    // Assert: (0/70)*50 = 0
+    expect(ind.score).toBe(0);
+    expect(ind.status).toBe("vermelho");
+  });
+
+  it("atendimento_agua_null_nao_retorna_indicador", () => {
+    // Arrange: dado ausente (municipio sem coleta SNIS para agua)
+    const data = makeSnisData({ atendimentoAgua: null });
+
+    // Act
+    const indicators = snisMapToOds(data);
+    const ind = indicators.find((i) => i.indicatorName === "snis_atendimento_agua");
+
+    // Assert: ausencia gracosa sem crash
+    expect(ind).toBeUndefined();
   });
 });
 
@@ -669,6 +848,31 @@ describe("scoreAtendimentoEsgoto — fronteiras", () => {
     // Assert
     expect(ind.score).toBe(25);
     expect(ind.status).toBe("vermelho");
+  });
+
+  it("atendimento_esgoto_0pct_deve_resultar_em_score_0", () => {
+    // Arrange: pior caso absoluto — sem coleta de esgoto
+    const data = makeSnisData({ atendimentoEsgoto: 0 });
+
+    // Act
+    const indicators = snisMapToOds(data);
+    const ind = indicators.find((i) => i.indicatorName === "snis_atendimento_esgoto")!;
+
+    // Assert: (0/50)*50 = 0
+    expect(ind.score).toBe(0);
+    expect(ind.status).toBe("vermelho");
+  });
+
+  it("atendimento_esgoto_null_nao_retorna_indicador", () => {
+    // Arrange: dado ausente (municipio sem coleta SNIS para esgoto)
+    const data = makeSnisData({ atendimentoEsgoto: null });
+
+    // Act
+    const indicators = snisMapToOds(data);
+    const ind = indicators.find((i) => i.indicatorName === "snis_atendimento_esgoto");
+
+    // Assert: ausencia gracosa sem crash
+    expect(ind).toBeUndefined();
   });
 });
 
@@ -737,5 +941,188 @@ describe("scorePerdaFaturamento — fronteiras", () => {
     // Assert
     expect(ind.score).toBe(0);
     expect(ind.status).toBe("vermelho");
+  });
+
+  it("perda_null_nao_retorna_indicador", () => {
+    // Arrange: dado ausente (municipio sem coleta SNIS para perdas)
+    const data = makeSnisData({ perdaFaturamento: null });
+
+    // Act
+    const indicators = snisMapToOds(data);
+    const ind = indicators.find((i) => i.indicatorName === "snis_perda_faturamento");
+
+    // Assert: ausencia gracosa sem crash
+    expect(ind).toBeUndefined();
+  });
+});
+
+// ─── scoreEsgotoTratado (via snis_ods_mapper) — indicador ausente dos testes ──
+
+describe("scoreEsgotoTratado — fronteiras", () => {
+  it("esgoto_tratado_0pct_deve_resultar_em_score_0", () => {
+    // Arrange: pior caso — nenhum esgoto coletado e tratado
+    const data = makeSnisData({ esgotoTratado: 0 });
+
+    // Act
+    const indicators = snisMapToOds(data);
+    const ind = indicators.find((i) => i.indicatorName === "snis_esgoto_tratado")!;
+
+    // Assert: (0/50)*50 = 0
+    expect(ind.score).toBe(0);
+    expect(ind.status).toBe("vermelho");
+  });
+
+  it("esgoto_tratado_25pct_deve_resultar_em_score_25", () => {
+    // Arrange: 25% → faixa ruim (abaixo de 50%): (25/50)*50 = 25
+    const data = makeSnisData({ esgotoTratado: 25 });
+
+    // Act
+    const indicators = snisMapToOds(data);
+    const ind = indicators.find((i) => i.indicatorName === "snis_esgoto_tratado")!;
+
+    // Assert
+    expect(ind.score).toBe(25);
+    expect(ind.status).toBe("vermelho");
+  });
+
+  it("esgoto_tratado_50pct_deve_resultar_em_score_50", () => {
+    // Arrange: 50% → fronteira inferior da faixa regular: 50 + ((50-50)/40)*50 = 50
+    const data = makeSnisData({ esgotoTratado: 50 });
+
+    // Act
+    const indicators = snisMapToOds(data);
+    const ind = indicators.find((i) => i.indicatorName === "snis_esgoto_tratado")!;
+
+    // Assert
+    expect(ind.score).toBe(50);
+    expect(ind.status).toBe("amarelo");
+  });
+
+  it("esgoto_tratado_70pct_deve_resultar_em_score_75", () => {
+    // Arrange: 70% → faixa regular: 50 + ((70-50)/40)*50 = 75
+    const data = makeSnisData({ esgotoTratado: 70 });
+
+    // Act
+    const indicators = snisMapToOds(data);
+    const ind = indicators.find((i) => i.indicatorName === "snis_esgoto_tratado")!;
+
+    // Assert
+    expect(ind.score).toBe(75);
+    expect(ind.status).toBe("verde");
+  });
+
+  it("esgoto_tratado_90pct_deve_resultar_em_score_100", () => {
+    // Arrange: 90% → fronteira de excelencia
+    const data = makeSnisData({ esgotoTratado: 90 });
+
+    // Act
+    const indicators = snisMapToOds(data);
+    const ind = indicators.find((i) => i.indicatorName === "snis_esgoto_tratado")!;
+
+    // Assert
+    expect(ind.score).toBe(100);
+    expect(ind.status).toBe("verde");
+  });
+
+  it("esgoto_tratado_100pct_deve_resultar_em_score_100_clamped", () => {
+    // Arrange: tratamento total → clamped em 100
+    const data = makeSnisData({ esgotoTratado: 100 });
+
+    // Act
+    const indicators = snisMapToOds(data);
+    const ind = indicators.find((i) => i.indicatorName === "snis_esgoto_tratado")!;
+
+    // Assert
+    expect(ind.score).toBe(100);
+  });
+
+  it("esgoto_tratado_null_nao_retorna_indicador", () => {
+    // Arrange: dado ausente — municipio sem tratamento informado no SNIS
+    const data = makeSnisData({ esgotoTratado: null });
+
+    // Act
+    const indicators = snisMapToOds(data);
+    const ind = indicators.find((i) => i.indicatorName === "snis_esgoto_tratado");
+
+    // Assert: ausencia gracosa sem crash
+    expect(ind).toBeUndefined();
+  });
+});
+
+// ─── snis_ods_mapper — integridade e metadados ───────────────────────────────
+
+describe("snis_ods_mapper — integridade e metadados", () => {
+  it("todos_os_4_indicadores_presentes_retorna_lista_com_4_elementos", () => {
+    // Arrange: municipio com todos os dados SNIS disponiveis
+    const data = makeSnisData({
+      atendimentoAgua: 85,
+      atendimentoEsgoto: 60,
+      esgotoTratado: 75,
+      perdaFaturamento: 20,
+    });
+
+    // Act
+    const indicators = snisMapToOds(data);
+
+    // Assert: quatro indicadores, todos ODS 6
+    expect(indicators).toHaveLength(4);
+    expect(indicators.every((i) => i.odsNumber === 6)).toBe(true);
+  });
+
+  it("todos_null_retorna_lista_vazia", () => {
+    // Arrange: municipio sem nenhum dado SNIS (ex: < 5k hab, sem concessionaria)
+    const data = makeSnisData({
+      atendimentoAgua: null,
+      atendimentoEsgoto: null,
+      esgotoTratado: null,
+      perdaFaturamento: null,
+    });
+
+    // Act
+    const indicators = snisMapToOds(data);
+
+    // Assert: lista vazia sem crash
+    expect(indicators).toHaveLength(0);
+  });
+
+  it("metadados_do_indicador_preenchidos_corretamente", () => {
+    // Arrange
+    const data = makeSnisData({ atendimentoAgua: 80 });
+
+    // Act
+    const indicators = snisMapToOds(data);
+    const ind = indicators[0]!;
+
+    // Assert: campos de auditoria e rastreabilidade
+    expect(ind.municipalityId).toBe(IBGE_CODE);
+    expect(ind.source).toBe("snis");
+    expect(ind.referenceYear).toBe(2023);
+    expect(ind.dataAvailable).toBe(true);
+  });
+
+  it("indicador_intermediario_agua_82pct_deve_resultar_em_score_correto", () => {
+    // Arrange: 82% → faixa regular (70-95%): 50 + ((82-70)/25)*50 = 50 + 24 = 74
+    const data = makeSnisData({ atendimentoAgua: 82 });
+
+    // Act
+    const indicators = snisMapToOds(data);
+    const ind = indicators.find((i) => i.indicatorName === "snis_atendimento_agua")!;
+
+    // Assert
+    expect(ind.score).toBe(74);
+    expect(ind.status).toBe("verde");
+  });
+
+  it("indicador_intermediario_esgoto_70pct_deve_resultar_em_score_correto", () => {
+    // Arrange: 70% → faixa regular (50-90%): 50 + ((70-50)/40)*50 = 50 + 25 = 75
+    const data = makeSnisData({ atendimentoEsgoto: 70 });
+
+    // Act
+    const indicators = snisMapToOds(data);
+    const ind = indicators.find((i) => i.indicatorName === "snis_atendimento_esgoto")!;
+
+    // Assert
+    expect(ind.score).toBe(75);
+    expect(ind.status).toBe("verde");
   });
 });

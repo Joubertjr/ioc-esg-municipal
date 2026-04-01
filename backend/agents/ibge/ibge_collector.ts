@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { fetchWithRetry } from "../../utils/http-client.js";
-import { withCache, getRedisClient } from "../../utils/cache.js";
+import { withCache } from "../../utils/cache.js";
 import { logger } from "../../utils/logger.js";
 import { API_CONFIGS, ibgeToSiconfi } from "../../../shared/constants/apis.js";
 import {
@@ -13,6 +13,9 @@ import {
 } from "../../../shared/types/agents/ibge.types.js";
 
 const config = API_CONFIGS["ibge"];
+
+/** Valida que ibgeCode tem exatamente 7 dígitos numéricos (defense in depth) */
+const IBGE_CODE_RE = /^\d{7}$/;
 
 /** IDs dos indicadores que queremos buscar, separados por pipe */
 const INDICATOR_IDS = [
@@ -54,6 +57,11 @@ export class IbgeCollector {
    * Retorna null se o município não for encontrado (não lança erro).
    */
   async collect(ibgeCode: string): Promise<IbgeMunicipalData | null> {
+    if (!IBGE_CODE_RE.test(ibgeCode)) {
+      logger.warn(`IBGE: ibgeCode inválido: ${ibgeCode}`);
+      return null;
+    }
+
     const cacheKey = `ibge:indicators:${ibgeCode}`;
 
     try {
@@ -62,7 +70,7 @@ export class IbgeCollector {
         const pamUrl =
           `${this.baseUrlV3}/agregados/${this.PAM_TABELA}/periodos/${this.PAM_PERIODO}` +
           `/variaveis/${this.PAM_VARIAVEL}?localidades=N6[${ibgeCode}]`;
-        const cемpreUrl =
+        const cempreUrl =
           `${this.baseUrlV3}/agregados/${this.CEMPRE_TABELA}/periodos/${this.CEMPRE_PERIODO}` +
           `/variaveis/${this.CEMPRE_VARIAVEL}?localidades=N6[${ibgeCode}]`;
 
@@ -82,7 +90,7 @@ export class IbgeCollector {
             );
             return null;
           }),
-          fetchWithRetry<unknown[]>(cемpreUrl, {
+          fetchWithRetry<unknown[]>(cempreUrl, {
             timeoutMs: this.timeout,
             maxRetries: config.retryCount,
           }).catch((err: unknown) => {
@@ -140,9 +148,10 @@ export class IbgeCollector {
 
   /**
    * Coleta dados em batch para múltiplos municípios.
-   * Rate limit: máx 2 req/s (throttle 500ms entre requests).
-   * Otimização: throttle ignorado quando dado já está no Redis (cache hit),
-   * pois não há chamada HTTP real — reduz batch de 295 municípios de ~2.5min para ~10s.
+   * Rate limit: máx 2 req/s (throttle 500ms entre cada request).
+   * Throttle aplicado incondicionalmente — cache hit resolve instantaneamente
+   * dentro do `collect()` via `withCache`, então o throttle não adiciona latência
+   * significativa em cache hits, mas garante proteção contra flood se Redis estiver down.
    */
   async collectBatch(
     ibgeCodes: string[],
@@ -150,21 +159,13 @@ export class IbgeCollector {
     const results = new Map<string, IbgeMunicipalData>();
 
     for (const code of ibgeCodes) {
-      // Verificar cache antes de coletar para decidir se throttle é necessário
-      const cacheKey = `ibge:indicators:${code}`;
-      const cached = await getRedisClient()
-        .then((r) => r.get(cacheKey))
-        .catch(() => null);
-
       const data = await this.collect(code);
       if (data) {
         results.set(code, data);
       }
 
-      // Throttle apenas em cache miss (requisição HTTP real foi feita)
-      if (cached === null) {
-        await new Promise((resolve) => setTimeout(resolve, 500));
-      }
+      // Throttle incondicional — protege contra flood se Redis estiver down
+      await new Promise((resolve) => setTimeout(resolve, 500));
     }
 
     logger.info(

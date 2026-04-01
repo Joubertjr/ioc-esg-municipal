@@ -19,6 +19,9 @@ const EPSG = "EPSG:4674";
 const WORKSPACE = config.workspace ?? "prodes-mata-atlantica-nb";
 const BASE_OWS = `${config.baseUrl}/${WORKSPACE}/ows`;
 
+/** Valida que ibgeCode tem exatamente 7 dígitos numéricos (defense in depth) */
+const IBGE_CODE_RE = /^\d{7}$/;
+
 export class InpeCollector {
   private readonly cacheTtl = config.cacheTtlSeconds;
   private readonly timeout = config.timeoutMs;
@@ -30,6 +33,11 @@ export class InpeCollector {
    * Retorna null se o município não for encontrado (não lança erro).
    */
   async collect(ibgeCode: string): Promise<InpeMunicipalData | null> {
+    if (!IBGE_CODE_RE.test(ibgeCode)) {
+      logger.warn(`INPE: ibgeCode inválido: ${ibgeCode}`);
+      return null;
+    }
+
     const cacheKey = `inpe:deforestation:${ibgeCode}`;
 
     try {
