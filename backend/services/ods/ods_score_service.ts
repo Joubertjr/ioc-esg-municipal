@@ -1,6 +1,8 @@
 import { IbgeCollector, mapToOdsIndicators as mapIbgeOds } from "../../agents/ibge/index.js";
 import { SiconfiCollector, mapToOdsIndicators as mapSiconfiOds } from "../../agents/siconfi/index.js";
 import { DatasusCollector, mapToOdsIndicators as mapDatasusOds } from "../../agents/datasus/index.js";
+import { InepCollector, mapToOdsIndicators as mapInepOds } from "../../agents/inep/index.js";
+import { SnisCollector, mapToOdsIndicators as mapSnisOds } from "../../agents/snis/index.js";
 import { ODS_DEFINITIONS, getOdsDefinition } from "../../../shared/constants/ods.js";
 import { getOdsStatus, type OdsIndicator, type OdsStatus } from "../../../shared/types/domain/ods.js";
 import { logger } from "../../utils/logger.js";
@@ -30,6 +32,8 @@ export interface MunicipalOdsReport {
 const ibgeCollector = new IbgeCollector();
 const siconfiCollector = new SiconfiCollector();
 const datasusCollector = new DatasusCollector();
+const inepCollector = new InepCollector();
+const snisCollector = new SnisCollector();
 
 /**
  * Serviço que orquestra todos os coletores e consolida scores ODS para um município.
@@ -43,14 +47,16 @@ const datasusCollector = new DatasusCollector();
  */
 export async function calculateMunicipalOds(ibgeCode: string): Promise<MunicipalOdsReport | null> {
   // Buscar dados de todas as fontes em paralelo
-  const [ibgeData, siconfiData, datasusData] = await Promise.all([
+  const [ibgeData, siconfiData, datasusData, inepData, snisData] = await Promise.all([
     ibgeCollector.collect(ibgeCode),
     siconfiCollector.collect(ibgeCode),
     datasusCollector.collect(ibgeCode),
+    inepCollector.collect(ibgeCode),
+    snisCollector.collect(ibgeCode),
   ]);
 
   // Se nenhuma fonte retornou dados, não há score
-  if (!ibgeData && !siconfiData && !datasusData) {
+  if (!ibgeData && !siconfiData && !datasusData && !inepData && !snisData) {
     logger.warn(`No data from any source for municipality ${ibgeCode}`);
     return null;
   }
@@ -60,12 +66,16 @@ export async function calculateMunicipalOds(ibgeCode: string): Promise<Municipal
   if (ibgeData) allIndicators.push(...mapIbgeOds(ibgeData));
   if (siconfiData) allIndicators.push(...mapSiconfiOds(siconfiData));
   if (datasusData) allIndicators.push(...mapDatasusOds(datasusData));
+  if (inepData) allIndicators.push(...mapInepOds(inepData));
+  if (snisData) allIndicators.push(...mapSnisOds(snisData));
 
   // Determinar ano de referência mais recente
   const referenceYear = Math.max(
     ibgeData?.referenceYear ?? 0,
     siconfiData?.referenceYear ?? 0,
     datasusData?.referenceYear ?? 0,
+    inepData?.referenceYear ?? 0,
+    snisData?.referenceYear ?? 0,
   );
 
   // Agrupar indicadores por ODS number

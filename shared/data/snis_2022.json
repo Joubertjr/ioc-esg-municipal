@@ -1,0 +1,1706 @@
+{
+  "4200051": {
+    "atendimentoAgua": 95.1,
+    "atendimentoEsgoto": 23.8,
+    "esgotoTratado": 66,
+    "perdaFaturamento": 29.6
+  },
+  "4200101": {
+    "atendimentoAgua": 94.2,
+    "atendimentoEsgoto": 14.7,
+    "esgotoTratado": 67.8,
+    "perdaFaturamento": 25
+  },
+  "4200200": {
+    "atendimentoAgua": 97.8,
+    "atendimentoEsgoto": 20.9,
+    "esgotoTratado": 63,
+    "perdaFaturamento": 15.8
+  },
+  "4200309": {
+    "atendimentoAgua": 96.4,
+    "atendimentoEsgoto": 18.2,
+    "esgotoTratado": 100,
+    "perdaFaturamento": 12.8
+  },
+  "4200408": {
+    "atendimentoAgua": 92.3,
+    "atendimentoEsgoto": 54.7,
+    "esgotoTratado": 80.6,
+    "perdaFaturamento": 22.5
+  },
+  "4200507": {
+    "atendimentoAgua": 95.3,
+    "atendimentoEsgoto": 52.2,
+    "esgotoTratado": 55.4,
+    "perdaFaturamento": 25.8
+  },
+  "4200556": {
+    "atendimentoAgua": 92.6,
+    "atendimentoEsgoto": 44.8,
+    "esgotoTratado": 59.7,
+    "perdaFaturamento": 15.4
+  },
+  "4200606": {
+    "atendimentoAgua": 96.7,
+    "atendimentoEsgoto": 26.6,
+    "esgotoTratado": 50.2,
+    "perdaFaturamento": 33.1
+  },
+  "4200705": {
+    "atendimentoAgua": 91.5,
+    "atendimentoEsgoto": 14.4,
+    "esgotoTratado": 62.8,
+    "perdaFaturamento": 18.7
+  },
+  "4200754": {
+    "atendimentoAgua": 89.9,
+    "atendimentoEsgoto": 28.2,
+    "esgotoTratado": 56.4,
+    "perdaFaturamento": 27.3
+  },
+  "4200804": {
+    "atendimentoAgua": 88.3,
+    "atendimentoEsgoto": 44.5,
+    "esgotoTratado": 78.8,
+    "perdaFaturamento": 8
+  },
+  "4200903": {
+    "atendimentoAgua": 82.6,
+    "atendimentoEsgoto": 25.8,
+    "esgotoTratado": 51.8,
+    "perdaFaturamento": 17.7
+  },
+  "4201000": {
+    "atendimentoAgua": 93.3,
+    "atendimentoEsgoto": 44.4,
+    "esgotoTratado": 98.3,
+    "perdaFaturamento": 23.8
+  },
+  "4201109": {
+    "atendimentoAgua": 99.8,
+    "atendimentoEsgoto": 56.2,
+    "esgotoTratado": 85.7,
+    "perdaFaturamento": 23.8
+  },
+  "4201208": {
+    "atendimentoAgua": 92,
+    "atendimentoEsgoto": 43.5,
+    "esgotoTratado": 90.3,
+    "perdaFaturamento": 37.4
+  },
+  "4201257": {
+    "atendimentoAgua": 88.6,
+    "atendimentoEsgoto": 35.1,
+    "esgotoTratado": 74.3,
+    "perdaFaturamento": 31.2
+  },
+  "4201307": {
+    "atendimentoAgua": 94.1,
+    "atendimentoEsgoto": 15.6,
+    "esgotoTratado": 79.8,
+    "perdaFaturamento": 39.9
+  },
+  "4201406": {
+    "atendimentoAgua": 93.4,
+    "atendimentoEsgoto": 43.9,
+    "esgotoTratado": 91.8,
+    "perdaFaturamento": 12.6
+  },
+  "4201604": {
+    "atendimentoAgua": 91.6,
+    "atendimentoEsgoto": 44.3,
+    "esgotoTratado": 57.6,
+    "perdaFaturamento": 13.1
+  },
+  "4201653": {
+    "atendimentoAgua": 92.5,
+    "atendimentoEsgoto": 40.6,
+    "esgotoTratado": 70.1,
+    "perdaFaturamento": 17.2
+  },
+  "4201703": {
+    "atendimentoAgua": 88.7,
+    "atendimentoEsgoto": 7.7,
+    "esgotoTratado": 98,
+    "perdaFaturamento": 12.4
+  },
+  "4201802": {
+    "atendimentoAgua": 84.2,
+    "atendimentoEsgoto": 57.4,
+    "esgotoTratado": 76.5,
+    "perdaFaturamento": 47
+  },
+  "4201901": {
+    "atendimentoAgua": 92.6,
+    "atendimentoEsgoto": 52.5,
+    "esgotoTratado": 73.3,
+    "perdaFaturamento": 24.3
+  },
+  "4201950": {
+    "atendimentoAgua": 97.3,
+    "atendimentoEsgoto": 42.5,
+    "esgotoTratado": 42.9,
+    "perdaFaturamento": 29.2
+  },
+  "4202008": {
+    "atendimentoAgua": 89.1,
+    "atendimentoEsgoto": 58.9,
+    "esgotoTratado": 39,
+    "perdaFaturamento": 30
+  },
+  "4202057": {
+    "atendimentoAgua": 92.6,
+    "atendimentoEsgoto": 33.2,
+    "esgotoTratado": 51.1,
+    "perdaFaturamento": 28.4
+  },
+  "4202073": {
+    "atendimentoAgua": 89.5,
+    "atendimentoEsgoto": 75.2,
+    "esgotoTratado": 100,
+    "perdaFaturamento": 31.7
+  },
+  "4202081": {
+    "atendimentoAgua": 99.7,
+    "atendimentoEsgoto": 34.6,
+    "esgotoTratado": 73.2,
+    "perdaFaturamento": 34.7
+  },
+  "4202099": {
+    "atendimentoAgua": 97.5,
+    "atendimentoEsgoto": 51.1,
+    "esgotoTratado": 71.1,
+    "perdaFaturamento": 31.3
+  },
+  "4202107": {
+    "atendimentoAgua": 93,
+    "atendimentoEsgoto": 52.7,
+    "esgotoTratado": 78.1,
+    "perdaFaturamento": 11.7
+  },
+  "4202131": {
+    "atendimentoAgua": 94.6,
+    "atendimentoEsgoto": 28.2,
+    "esgotoTratado": 80.6,
+    "perdaFaturamento": 41.7
+  },
+  "4202156": {
+    "atendimentoAgua": 88.9,
+    "atendimentoEsgoto": 60.1,
+    "esgotoTratado": 54.8,
+    "perdaFaturamento": 39.1
+  },
+  "4202206": {
+    "atendimentoAgua": 91.3,
+    "atendimentoEsgoto": 50.8,
+    "esgotoTratado": 84.9,
+    "perdaFaturamento": 14.9
+  },
+  "4202305": {
+    "atendimentoAgua": 88.8,
+    "atendimentoEsgoto": 54.2,
+    "esgotoTratado": 49.1,
+    "perdaFaturamento": 15.2
+  },
+  "4202404": {
+    "atendimentoAgua": 93.6,
+    "atendimentoEsgoto": 51.5,
+    "esgotoTratado": 70.2,
+    "perdaFaturamento": 21.2
+  },
+  "4202438": {
+    "atendimentoAgua": 97.2,
+    "atendimentoEsgoto": 59.1,
+    "esgotoTratado": 69.5,
+    "perdaFaturamento": 46.1
+  },
+  "4202453": {
+    "atendimentoAgua": 95.1,
+    "atendimentoEsgoto": 32.8,
+    "esgotoTratado": 70.6,
+    "perdaFaturamento": 33.1
+  },
+  "4202503": {
+    "atendimentoAgua": 92.7,
+    "atendimentoEsgoto": 53.6,
+    "esgotoTratado": 78.2,
+    "perdaFaturamento": 47.7
+  },
+  "4202537": {
+    "atendimentoAgua": 93.3,
+    "atendimentoEsgoto": 41.5,
+    "esgotoTratado": 83.8,
+    "perdaFaturamento": 34.4
+  },
+  "4202578": {
+    "atendimentoAgua": 95.1,
+    "atendimentoEsgoto": 47.3,
+    "esgotoTratado": 78.9,
+    "perdaFaturamento": 32.7
+  },
+  "4202602": {
+    "atendimentoAgua": 90.4,
+    "atendimentoEsgoto": 93.6,
+    "esgotoTratado": 81.6,
+    "perdaFaturamento": 17.6
+  },
+  "4202701": {
+    "atendimentoAgua": 93.3,
+    "atendimentoEsgoto": 55.1,
+    "esgotoTratado": 46.4,
+    "perdaFaturamento": 24.5
+  },
+  "4202800": {
+    "atendimentoAgua": 100,
+    "atendimentoEsgoto": 38.1,
+    "esgotoTratado": 83.3,
+    "perdaFaturamento": 25.4
+  },
+  "4202859": {
+    "atendimentoAgua": 90.2,
+    "atendimentoEsgoto": 36.3,
+    "esgotoTratado": 68.2,
+    "perdaFaturamento": 44.2
+  },
+  "4202875": {
+    "atendimentoAgua": 89.2,
+    "atendimentoEsgoto": 73.9,
+    "esgotoTratado": 62.4,
+    "perdaFaturamento": 29.3
+  },
+  "4202909": {
+    "atendimentoAgua": 98,
+    "atendimentoEsgoto": 54.5,
+    "esgotoTratado": 84.6,
+    "perdaFaturamento": 30.5
+  },
+  "4203006": {
+    "atendimentoAgua": 92.3,
+    "atendimentoEsgoto": 25.2,
+    "esgotoTratado": 55.8,
+    "perdaFaturamento": 26.6
+  },
+  "4203105": {
+    "atendimentoAgua": 89.7,
+    "atendimentoEsgoto": 73.3,
+    "esgotoTratado": 100,
+    "perdaFaturamento": 50.4
+  },
+  "4203154": {
+    "atendimentoAgua": 97.5,
+    "atendimentoEsgoto": 39.3,
+    "esgotoTratado": 63.3,
+    "perdaFaturamento": 29.5
+  },
+  "4203204": {
+    "atendimentoAgua": 85.2,
+    "atendimentoEsgoto": 30.3,
+    "esgotoTratado": 85.2,
+    "perdaFaturamento": 31.2
+  },
+  "4203253": {
+    "atendimentoAgua": 100,
+    "atendimentoEsgoto": 53.7,
+    "esgotoTratado": 84.2,
+    "perdaFaturamento": 27.6
+  },
+  "4203303": {
+    "atendimentoAgua": 91.8,
+    "atendimentoEsgoto": 37,
+    "esgotoTratado": 53,
+    "perdaFaturamento": 25.5
+  },
+  "4203402": {
+    "atendimentoAgua": 94.1,
+    "atendimentoEsgoto": 11.5,
+    "esgotoTratado": 48.5,
+    "perdaFaturamento": 40.6
+  },
+  "4203600": {
+    "atendimentoAgua": 91.3,
+    "atendimentoEsgoto": 2.7,
+    "esgotoTratado": 74.4,
+    "perdaFaturamento": 20.5
+  },
+  "4203709": {
+    "atendimentoAgua": 100,
+    "atendimentoEsgoto": 47.3,
+    "esgotoTratado": 71.2,
+    "perdaFaturamento": 20.2
+  },
+  "4203808": {
+    "atendimentoAgua": 88.6,
+    "atendimentoEsgoto": 23.4,
+    "esgotoTratado": 100,
+    "perdaFaturamento": 29.3
+  },
+  "4203907": {
+    "atendimentoAgua": 94.7,
+    "atendimentoEsgoto": 35.2,
+    "esgotoTratado": 65.9,
+    "perdaFaturamento": 40
+  },
+  "4203956": {
+    "atendimentoAgua": 90.5,
+    "atendimentoEsgoto": 27.4,
+    "esgotoTratado": 44.1,
+    "perdaFaturamento": 35.5
+  },
+  "4204004": {
+    "atendimentoAgua": 89.4,
+    "atendimentoEsgoto": 27.4,
+    "esgotoTratado": 83.2,
+    "perdaFaturamento": 34
+  },
+  "4204103": {
+    "atendimentoAgua": 95.4,
+    "atendimentoEsgoto": 13,
+    "esgotoTratado": 80.6,
+    "perdaFaturamento": 39.4
+  },
+  "4204152": {
+    "atendimentoAgua": 100,
+    "atendimentoEsgoto": 10,
+    "esgotoTratado": 64.1,
+    "perdaFaturamento": 14
+  },
+  "4204178": {
+    "atendimentoAgua": 93.1,
+    "atendimentoEsgoto": 40.8,
+    "esgotoTratado": 55.6,
+    "perdaFaturamento": 47
+  },
+  "4204194": {
+    "atendimentoAgua": 91.3,
+    "atendimentoEsgoto": 34.3,
+    "esgotoTratado": 71.2,
+    "perdaFaturamento": 15.5
+  },
+  "4204202": {
+    "atendimentoAgua": 95.6,
+    "atendimentoEsgoto": 48.1,
+    "esgotoTratado": 86.4,
+    "perdaFaturamento": 19.4
+  },
+  "4204251": {
+    "atendimentoAgua": 95.8,
+    "atendimentoEsgoto": 69.5,
+    "esgotoTratado": 50.9,
+    "perdaFaturamento": 40.2
+  },
+  "4204301": {
+    "atendimentoAgua": 95.1,
+    "atendimentoEsgoto": 75.9,
+    "esgotoTratado": 37.8,
+    "perdaFaturamento": 39.3
+  },
+  "4204400": {
+    "atendimentoAgua": 98.6,
+    "atendimentoEsgoto": 46.2,
+    "esgotoTratado": 93.4,
+    "perdaFaturamento": 35.6
+  },
+  "4204459": {
+    "atendimentoAgua": 81.5,
+    "atendimentoEsgoto": 46.8,
+    "esgotoTratado": 58.2,
+    "perdaFaturamento": 45.5
+  },
+  "4204509": {
+    "atendimentoAgua": 99.9,
+    "atendimentoEsgoto": 25.7,
+    "esgotoTratado": 94.1,
+    "perdaFaturamento": 33.8
+  },
+  "4204558": {
+    "atendimentoAgua": 90.6,
+    "atendimentoEsgoto": 22.3,
+    "esgotoTratado": 47.2,
+    "perdaFaturamento": 33.5
+  },
+  "4204608": {
+    "atendimentoAgua": 92.2,
+    "atendimentoEsgoto": 27.1,
+    "esgotoTratado": 66.2,
+    "perdaFaturamento": 24
+  },
+  "4204707": {
+    "atendimentoAgua": 90.4,
+    "atendimentoEsgoto": 41.7,
+    "esgotoTratado": 62.1,
+    "perdaFaturamento": 44.9
+  },
+  "4204756": {
+    "atendimentoAgua": 94,
+    "atendimentoEsgoto": 58.3,
+    "esgotoTratado": 100,
+    "perdaFaturamento": 44.1
+  },
+  "4204806": {
+    "atendimentoAgua": 94,
+    "atendimentoEsgoto": 57.5,
+    "esgotoTratado": 59.4,
+    "perdaFaturamento": 34.7
+  },
+  "4204905": {
+    "atendimentoAgua": 92.1,
+    "atendimentoEsgoto": 44.3,
+    "esgotoTratado": 30,
+    "perdaFaturamento": 35.2
+  },
+  "4205001": {
+    "atendimentoAgua": 100,
+    "atendimentoEsgoto": 26.1,
+    "esgotoTratado": 71,
+    "perdaFaturamento": 41.4
+  },
+  "4205100": {
+    "atendimentoAgua": 97.5,
+    "atendimentoEsgoto": 0,
+    "esgotoTratado": 46.6,
+    "perdaFaturamento": 18.9
+  },
+  "4205159": {
+    "atendimentoAgua": 99,
+    "atendimentoEsgoto": 75.2,
+    "esgotoTratado": 67.7,
+    "perdaFaturamento": 37.6
+  },
+  "4205175": {
+    "atendimentoAgua": 100,
+    "atendimentoEsgoto": 66.7,
+    "esgotoTratado": 46.4,
+    "perdaFaturamento": 24.7
+  },
+  "4205191": {
+    "atendimentoAgua": 94.2,
+    "atendimentoEsgoto": 37.5,
+    "esgotoTratado": 55.8,
+    "perdaFaturamento": 27.3
+  },
+  "4205209": {
+    "atendimentoAgua": 91.9,
+    "atendimentoEsgoto": 31.6,
+    "esgotoTratado": 89.2,
+    "perdaFaturamento": 11.5
+  },
+  "4205357": {
+    "atendimentoAgua": 100,
+    "atendimentoEsgoto": 19.8,
+    "esgotoTratado": 57,
+    "perdaFaturamento": 31.7
+  },
+  "4205407": {
+    "atendimentoAgua": 92.7,
+    "atendimentoEsgoto": 44.6,
+    "esgotoTratado": 83.8,
+    "perdaFaturamento": 33.9
+  },
+  "4205431": {
+    "atendimentoAgua": 98.5,
+    "atendimentoEsgoto": 36.3,
+    "esgotoTratado": 70,
+    "perdaFaturamento": 38.5
+  },
+  "4205456": {
+    "atendimentoAgua": 99.1,
+    "atendimentoEsgoto": 65.8,
+    "esgotoTratado": 89,
+    "perdaFaturamento": 29.3
+  },
+  "4205506": {
+    "atendimentoAgua": 91.2,
+    "atendimentoEsgoto": 0,
+    "esgotoTratado": 55.6,
+    "perdaFaturamento": 26.6
+  },
+  "4205555": {
+    "atendimentoAgua": 100,
+    "atendimentoEsgoto": 44.9,
+    "esgotoTratado": 92.8,
+    "perdaFaturamento": 41.4
+  },
+  "4205605": {
+    "atendimentoAgua": 93.7,
+    "atendimentoEsgoto": 37.3,
+    "esgotoTratado": 99.5,
+    "perdaFaturamento": 31
+  },
+  "4205704": {
+    "atendimentoAgua": 96.9,
+    "atendimentoEsgoto": 12,
+    "esgotoTratado": 79.9,
+    "perdaFaturamento": 33.6
+  },
+  "4205803": {
+    "atendimentoAgua": 100,
+    "atendimentoEsgoto": 19,
+    "esgotoTratado": 66.5,
+    "perdaFaturamento": 26.6
+  },
+  "4205902": {
+    "atendimentoAgua": 100,
+    "atendimentoEsgoto": 48.5,
+    "esgotoTratado": 83.1,
+    "perdaFaturamento": 40.1
+  },
+  "4206009": {
+    "atendimentoAgua": 85.6,
+    "atendimentoEsgoto": 47.7,
+    "esgotoTratado": 59.3,
+    "perdaFaturamento": 8.6
+  },
+  "4206108": {
+    "atendimentoAgua": 95.6,
+    "atendimentoEsgoto": 52.8,
+    "esgotoTratado": 66.7,
+    "perdaFaturamento": 31.1
+  },
+  "4206207": {
+    "atendimentoAgua": 96.4,
+    "atendimentoEsgoto": 63,
+    "esgotoTratado": 58.1,
+    "perdaFaturamento": 29.2
+  },
+  "4206306": {
+    "atendimentoAgua": 95.3,
+    "atendimentoEsgoto": 27.2,
+    "esgotoTratado": 54.6,
+    "perdaFaturamento": 28.4
+  },
+  "4206405": {
+    "atendimentoAgua": 95.4,
+    "atendimentoEsgoto": 49.8,
+    "esgotoTratado": 39.3,
+    "perdaFaturamento": 47.2
+  },
+  "4206504": {
+    "atendimentoAgua": 99.8,
+    "atendimentoEsgoto": 44.4,
+    "esgotoTratado": 76.4,
+    "perdaFaturamento": 40.3
+  },
+  "4206603": {
+    "atendimentoAgua": 96.1,
+    "atendimentoEsgoto": 58.3,
+    "esgotoTratado": 100,
+    "perdaFaturamento": 35.6
+  },
+  "4206652": {
+    "atendimentoAgua": 97.1,
+    "atendimentoEsgoto": 50,
+    "esgotoTratado": 57,
+    "perdaFaturamento": 28.9
+  },
+  "4206702": {
+    "atendimentoAgua": 99.8,
+    "atendimentoEsgoto": 20,
+    "esgotoTratado": 79.2,
+    "perdaFaturamento": 30.9
+  },
+  "4206751": {
+    "atendimentoAgua": 91.7,
+    "atendimentoEsgoto": 13.6,
+    "esgotoTratado": 61.4,
+    "perdaFaturamento": 40.9
+  },
+  "4206801": {
+    "atendimentoAgua": 100,
+    "atendimentoEsgoto": 0.3,
+    "esgotoTratado": 82.4,
+    "perdaFaturamento": 28.3
+  },
+  "4206900": {
+    "atendimentoAgua": 93.2,
+    "atendimentoEsgoto": 47.3,
+    "esgotoTratado": 42.5,
+    "perdaFaturamento": 30.8
+  },
+  "4207007": {
+    "atendimentoAgua": 100,
+    "atendimentoEsgoto": 29.1,
+    "esgotoTratado": 100,
+    "perdaFaturamento": 38.3
+  },
+  "4207106": {
+    "atendimentoAgua": 95.6,
+    "atendimentoEsgoto": 66.1,
+    "esgotoTratado": 89.3,
+    "perdaFaturamento": 41.5
+  },
+  "4207205": {
+    "atendimentoAgua": 97.4,
+    "atendimentoEsgoto": 71.3,
+    "esgotoTratado": 63.9,
+    "perdaFaturamento": 31.1
+  },
+  "4207304": {
+    "atendimentoAgua": 100,
+    "atendimentoEsgoto": 58.7,
+    "esgotoTratado": 38.4,
+    "perdaFaturamento": 24.5
+  },
+  "4207403": {
+    "atendimentoAgua": 100,
+    "atendimentoEsgoto": 4.4,
+    "esgotoTratado": 87.1,
+    "perdaFaturamento": 32.4
+  },
+  "4207502": {
+    "atendimentoAgua": 100,
+    "atendimentoEsgoto": 12.9,
+    "esgotoTratado": 80.3,
+    "perdaFaturamento": 19.3
+  },
+  "4207577": {
+    "atendimentoAgua": 94.3,
+    "atendimentoEsgoto": 36.5,
+    "esgotoTratado": 60,
+    "perdaFaturamento": 40.9
+  },
+  "4207601": {
+    "atendimentoAgua": 98.6,
+    "atendimentoEsgoto": 87.9,
+    "esgotoTratado": 47.4,
+    "perdaFaturamento": 36.3
+  },
+  "4207650": {
+    "atendimentoAgua": 92.8,
+    "atendimentoEsgoto": 68.8,
+    "esgotoTratado": 40.1,
+    "perdaFaturamento": 32.4
+  },
+  "4207684": {
+    "atendimentoAgua": 100,
+    "atendimentoEsgoto": 36.7,
+    "esgotoTratado": 65.4,
+    "perdaFaturamento": 22.3
+  },
+  "4207700": {
+    "atendimentoAgua": 100,
+    "atendimentoEsgoto": 39.4,
+    "esgotoTratado": 29.4,
+    "perdaFaturamento": 39.9
+  },
+  "4207759": {
+    "atendimentoAgua": 96.8,
+    "atendimentoEsgoto": 47.1,
+    "esgotoTratado": 55.8,
+    "perdaFaturamento": 27.7
+  },
+  "4207809": {
+    "atendimentoAgua": 88,
+    "atendimentoEsgoto": 55.9,
+    "esgotoTratado": 67.9,
+    "perdaFaturamento": 18.7
+  },
+  "4207858": {
+    "atendimentoAgua": 98.2,
+    "atendimentoEsgoto": 82.4,
+    "esgotoTratado": 100,
+    "perdaFaturamento": 38.8
+  },
+  "4208005": {
+    "atendimentoAgua": 100,
+    "atendimentoEsgoto": 30.2,
+    "esgotoTratado": 49,
+    "perdaFaturamento": 32
+  },
+  "4208104": {
+    "atendimentoAgua": 98.7,
+    "atendimentoEsgoto": 16.7,
+    "esgotoTratado": 50.8,
+    "perdaFaturamento": 35.2
+  },
+  "4208203": {
+    "atendimentoAgua": 94.1,
+    "atendimentoEsgoto": 44.1,
+    "esgotoTratado": 100,
+    "perdaFaturamento": 41.4
+  },
+  "4208302": {
+    "atendimentoAgua": 97.9,
+    "atendimentoEsgoto": 41.5,
+    "esgotoTratado": 100,
+    "perdaFaturamento": 42.2
+  },
+  "4208401": {
+    "atendimentoAgua": 100,
+    "atendimentoEsgoto": 61.2,
+    "esgotoTratado": 74.7,
+    "perdaFaturamento": 45.1
+  },
+  "4208450": {
+    "atendimentoAgua": 87.7,
+    "atendimentoEsgoto": 67.6,
+    "esgotoTratado": 66.2,
+    "perdaFaturamento": 46
+  },
+  "4208500": {
+    "atendimentoAgua": 94.1,
+    "atendimentoEsgoto": 14.4,
+    "esgotoTratado": 89,
+    "perdaFaturamento": 16.6
+  },
+  "4208609": {
+    "atendimentoAgua": 90.5,
+    "atendimentoEsgoto": 23.6,
+    "esgotoTratado": 89.4,
+    "perdaFaturamento": 32.2
+  },
+  "4208708": {
+    "atendimentoAgua": 95.3,
+    "atendimentoEsgoto": 16.8,
+    "esgotoTratado": 97.2,
+    "perdaFaturamento": 31.7
+  },
+  "4208807": {
+    "atendimentoAgua": 99.6,
+    "atendimentoEsgoto": 43.4,
+    "esgotoTratado": 100,
+    "perdaFaturamento": 31.8
+  },
+  "4208906": {
+    "atendimentoAgua": 95.6,
+    "atendimentoEsgoto": 28.3,
+    "esgotoTratado": 88.1,
+    "perdaFaturamento": 32.8
+  },
+  "4208955": {
+    "atendimentoAgua": 99,
+    "atendimentoEsgoto": 31.9,
+    "esgotoTratado": 82.4,
+    "perdaFaturamento": 35.9
+  },
+  "4209003": {
+    "atendimentoAgua": 88.8,
+    "atendimentoEsgoto": 60.2,
+    "esgotoTratado": 67.1,
+    "perdaFaturamento": 36.9
+  },
+  "4209102": {
+    "atendimentoAgua": 95,
+    "atendimentoEsgoto": 18.4,
+    "esgotoTratado": 69.1,
+    "perdaFaturamento": 35.1
+  },
+  "4209151": {
+    "atendimentoAgua": 90.5,
+    "atendimentoEsgoto": 19.7,
+    "esgotoTratado": 100,
+    "perdaFaturamento": 30.8
+  },
+  "4209177": {
+    "atendimentoAgua": 100,
+    "atendimentoEsgoto": 24.3,
+    "esgotoTratado": 55.6,
+    "perdaFaturamento": 27
+  },
+  "4209201": {
+    "atendimentoAgua": 95,
+    "atendimentoEsgoto": 49.6,
+    "esgotoTratado": 67,
+    "perdaFaturamento": 44.6
+  },
+  "4209300": {
+    "atendimentoAgua": 88.5,
+    "atendimentoEsgoto": 15,
+    "esgotoTratado": 97.3,
+    "perdaFaturamento": 28.8
+  },
+  "4209409": {
+    "atendimentoAgua": 84.6,
+    "atendimentoEsgoto": 29.7,
+    "esgotoTratado": 48.7,
+    "perdaFaturamento": 43.7
+  },
+  "4209458": {
+    "atendimentoAgua": 100,
+    "atendimentoEsgoto": 54.3,
+    "esgotoTratado": 63.7,
+    "perdaFaturamento": 58.6
+  },
+  "4209508": {
+    "atendimentoAgua": 99.9,
+    "atendimentoEsgoto": 14.8,
+    "esgotoTratado": 90.1,
+    "perdaFaturamento": 34.6
+  },
+  "4209607": {
+    "atendimentoAgua": 97.9,
+    "atendimentoEsgoto": 39.4,
+    "esgotoTratado": 58.1,
+    "perdaFaturamento": 31.5
+  },
+  "4209706": {
+    "atendimentoAgua": 98.1,
+    "atendimentoEsgoto": 11.2,
+    "esgotoTratado": 72.2,
+    "perdaFaturamento": 33.6
+  },
+  "4209805": {
+    "atendimentoAgua": 100,
+    "atendimentoEsgoto": 54.4,
+    "esgotoTratado": 52.1,
+    "perdaFaturamento": 16.8
+  },
+  "4209854": {
+    "atendimentoAgua": 95.1,
+    "atendimentoEsgoto": 58.4,
+    "esgotoTratado": 98.8,
+    "perdaFaturamento": 37.4
+  },
+  "4209904": {
+    "atendimentoAgua": 96.9,
+    "atendimentoEsgoto": 14.7,
+    "esgotoTratado": 49.8,
+    "perdaFaturamento": 39.7
+  },
+  "4210001": {
+    "atendimentoAgua": 93.4,
+    "atendimentoEsgoto": 48.7,
+    "esgotoTratado": 92.7,
+    "perdaFaturamento": 24.9
+  },
+  "4210035": {
+    "atendimentoAgua": 100,
+    "atendimentoEsgoto": 67.6,
+    "esgotoTratado": 76.2,
+    "perdaFaturamento": 30.7
+  },
+  "4210050": {
+    "atendimentoAgua": 92.7,
+    "atendimentoEsgoto": 42.8,
+    "esgotoTratado": 68.1,
+    "perdaFaturamento": 13.5
+  },
+  "4210100": {
+    "atendimentoAgua": 91.6,
+    "atendimentoEsgoto": 90.4,
+    "esgotoTratado": 68.4,
+    "perdaFaturamento": 32.4
+  },
+  "4210209": {
+    "atendimentoAgua": 97.9,
+    "atendimentoEsgoto": 52.9,
+    "esgotoTratado": 65.8,
+    "perdaFaturamento": 34.1
+  },
+  "4210308": {
+    "atendimentoAgua": 99.7,
+    "atendimentoEsgoto": 27.6,
+    "esgotoTratado": 87.2,
+    "perdaFaturamento": 16.2
+  },
+  "4210407": {
+    "atendimentoAgua": 97.7,
+    "atendimentoEsgoto": 42.2,
+    "esgotoTratado": 80.6,
+    "perdaFaturamento": 37.7
+  },
+  "4210506": {
+    "atendimentoAgua": 96.3,
+    "atendimentoEsgoto": 26.6,
+    "esgotoTratado": 41,
+    "perdaFaturamento": 38.4
+  },
+  "4210555": {
+    "atendimentoAgua": 95,
+    "atendimentoEsgoto": 25.8,
+    "esgotoTratado": 51.7,
+    "perdaFaturamento": 8
+  },
+  "4210605": {
+    "atendimentoAgua": 99,
+    "atendimentoEsgoto": 61.1,
+    "esgotoTratado": 81.9,
+    "perdaFaturamento": 46.5
+  },
+  "4210704": {
+    "atendimentoAgua": 96.8,
+    "atendimentoEsgoto": 95,
+    "esgotoTratado": 54.8,
+    "perdaFaturamento": 30.3
+  },
+  "4210803": {
+    "atendimentoAgua": 96.8,
+    "atendimentoEsgoto": 16.5,
+    "esgotoTratado": 60.9,
+    "perdaFaturamento": 27.9
+  },
+  "4210852": {
+    "atendimentoAgua": 82.8,
+    "atendimentoEsgoto": 38.9,
+    "esgotoTratado": 49.6,
+    "perdaFaturamento": 32.8
+  },
+  "4210902": {
+    "atendimentoAgua": 83.6,
+    "atendimentoEsgoto": 48.5,
+    "esgotoTratado": 65.1,
+    "perdaFaturamento": 36.4
+  },
+  "4211009": {
+    "atendimentoAgua": 96.5,
+    "atendimentoEsgoto": 40.1,
+    "esgotoTratado": 93.4,
+    "perdaFaturamento": 23
+  },
+  "4211058": {
+    "atendimentoAgua": 99.4,
+    "atendimentoEsgoto": 21.1,
+    "esgotoTratado": 69.1,
+    "perdaFaturamento": 16
+  },
+  "4211108": {
+    "atendimentoAgua": 99.4,
+    "atendimentoEsgoto": 2.2,
+    "esgotoTratado": 67.7,
+    "perdaFaturamento": 32.2
+  },
+  "4211207": {
+    "atendimentoAgua": 100,
+    "atendimentoEsgoto": 51.2,
+    "esgotoTratado": 85.1,
+    "perdaFaturamento": 40.7
+  },
+  "4211256": {
+    "atendimentoAgua": 88.6,
+    "atendimentoEsgoto": 40.7,
+    "esgotoTratado": 82.8,
+    "perdaFaturamento": 15.4
+  },
+  "4211306": {
+    "atendimentoAgua": 97,
+    "atendimentoEsgoto": 89.7,
+    "esgotoTratado": 62.4,
+    "perdaFaturamento": 30
+  },
+  "4211405": {
+    "atendimentoAgua": 95,
+    "atendimentoEsgoto": 0,
+    "esgotoTratado": 59,
+    "perdaFaturamento": 48.5
+  },
+  "4211454": {
+    "atendimentoAgua": 93.1,
+    "atendimentoEsgoto": 28.9,
+    "esgotoTratado": 100,
+    "perdaFaturamento": 12.2
+  },
+  "4211504": {
+    "atendimentoAgua": 97,
+    "atendimentoEsgoto": 32.2,
+    "esgotoTratado": 80.8,
+    "perdaFaturamento": 39.6
+  },
+  "4211603": {
+    "atendimentoAgua": 98.4,
+    "atendimentoEsgoto": 37.7,
+    "esgotoTratado": 86.7,
+    "perdaFaturamento": 43.9
+  },
+  "4211652": {
+    "atendimentoAgua": 89.7,
+    "atendimentoEsgoto": 35.8,
+    "esgotoTratado": 56.2,
+    "perdaFaturamento": 24.4
+  },
+  "4211702": {
+    "atendimentoAgua": 95.7,
+    "atendimentoEsgoto": 53.2,
+    "esgotoTratado": 73.4,
+    "perdaFaturamento": 23.9
+  },
+  "4211751": {
+    "atendimentoAgua": 86,
+    "atendimentoEsgoto": 21,
+    "esgotoTratado": 71.7,
+    "perdaFaturamento": 29
+  },
+  "4211801": {
+    "atendimentoAgua": 83.6,
+    "atendimentoEsgoto": 6.8,
+    "esgotoTratado": 49,
+    "perdaFaturamento": 23.6
+  },
+  "4211850": {
+    "atendimentoAgua": 93.9,
+    "atendimentoEsgoto": 56,
+    "esgotoTratado": 88.3,
+    "perdaFaturamento": 30.9
+  },
+  "4211876": {
+    "atendimentoAgua": 89.9,
+    "atendimentoEsgoto": 33.7,
+    "esgotoTratado": 61.9,
+    "perdaFaturamento": 34.9
+  },
+  "4211892": {
+    "atendimentoAgua": 94.9,
+    "atendimentoEsgoto": 23.2,
+    "esgotoTratado": 100,
+    "perdaFaturamento": 8
+  },
+  "4211900": {
+    "atendimentoAgua": 91.1,
+    "atendimentoEsgoto": 20.6,
+    "esgotoTratado": 64.8,
+    "perdaFaturamento": 39.8
+  },
+  "4212007": {
+    "atendimentoAgua": 99.7,
+    "atendimentoEsgoto": 46,
+    "esgotoTratado": 55.4,
+    "perdaFaturamento": 39.2
+  },
+  "4212056": {
+    "atendimentoAgua": 95.2,
+    "atendimentoEsgoto": 44,
+    "esgotoTratado": 48.5,
+    "perdaFaturamento": 28
+  },
+  "4212106": {
+    "atendimentoAgua": 100,
+    "atendimentoEsgoto": 35.9,
+    "esgotoTratado": 47.9,
+    "perdaFaturamento": 34
+  },
+  "4212205": {
+    "atendimentoAgua": 94.7,
+    "atendimentoEsgoto": 35.3,
+    "esgotoTratado": 76.1,
+    "perdaFaturamento": 23
+  },
+  "4212239": {
+    "atendimentoAgua": 94.2,
+    "atendimentoEsgoto": 46.7,
+    "esgotoTratado": 44.2,
+    "perdaFaturamento": 35.3
+  },
+  "4212254": {
+    "atendimentoAgua": 86.2,
+    "atendimentoEsgoto": 52.2,
+    "esgotoTratado": 71.3,
+    "perdaFaturamento": 34
+  },
+  "4212270": {
+    "atendimentoAgua": 88.7,
+    "atendimentoEsgoto": 27,
+    "esgotoTratado": 100,
+    "perdaFaturamento": 32.8
+  },
+  "4212304": {
+    "atendimentoAgua": 94.6,
+    "atendimentoEsgoto": 17.3,
+    "esgotoTratado": 79.1,
+    "perdaFaturamento": 52.9
+  },
+  "4212403": {
+    "atendimentoAgua": 92.2,
+    "atendimentoEsgoto": 73.5,
+    "esgotoTratado": 73.6,
+    "perdaFaturamento": 16.1
+  },
+  "4212502": {
+    "atendimentoAgua": 94.9,
+    "atendimentoEsgoto": 8.9,
+    "esgotoTratado": 78.5,
+    "perdaFaturamento": 23
+  },
+  "4212601": {
+    "atendimentoAgua": 88.8,
+    "atendimentoEsgoto": 22.7,
+    "esgotoTratado": 100,
+    "perdaFaturamento": 38.8
+  },
+  "4212650": {
+    "atendimentoAgua": 90.1,
+    "atendimentoEsgoto": 69.4,
+    "esgotoTratado": 44.8,
+    "perdaFaturamento": 20.3
+  },
+  "4212700": {
+    "atendimentoAgua": 87.9,
+    "atendimentoEsgoto": 14.8,
+    "esgotoTratado": 92.7,
+    "perdaFaturamento": 30.7
+  },
+  "4212809": {
+    "atendimentoAgua": 100,
+    "atendimentoEsgoto": 55.6,
+    "esgotoTratado": 82.9,
+    "perdaFaturamento": 15.4
+  },
+  "4212908": {
+    "atendimentoAgua": 97.2,
+    "atendimentoEsgoto": 61.4,
+    "esgotoTratado": 73.3,
+    "perdaFaturamento": 37.6
+  },
+  "4213005": {
+    "atendimentoAgua": 100,
+    "atendimentoEsgoto": 60.5,
+    "esgotoTratado": 58.1,
+    "perdaFaturamento": 17.7
+  },
+  "4213104": {
+    "atendimentoAgua": 91.9,
+    "atendimentoEsgoto": 29.3,
+    "esgotoTratado": 60.4,
+    "perdaFaturamento": 43
+  },
+  "4213153": {
+    "atendimentoAgua": 85.3,
+    "atendimentoEsgoto": 53,
+    "esgotoTratado": 100,
+    "perdaFaturamento": 14.5
+  },
+  "4213203": {
+    "atendimentoAgua": 85,
+    "atendimentoEsgoto": 17.8,
+    "esgotoTratado": 56.8,
+    "perdaFaturamento": 31
+  },
+  "4213302": {
+    "atendimentoAgua": 93.2,
+    "atendimentoEsgoto": 50,
+    "esgotoTratado": 51.9,
+    "perdaFaturamento": 22.2
+  },
+  "4213351": {
+    "atendimentoAgua": 94.9,
+    "atendimentoEsgoto": 52,
+    "esgotoTratado": 46.6,
+    "perdaFaturamento": 33.3
+  },
+  "4213401": {
+    "atendimentoAgua": 91.9,
+    "atendimentoEsgoto": 46.7,
+    "esgotoTratado": 75.6,
+    "perdaFaturamento": 44.3
+  },
+  "4213500": {
+    "atendimentoAgua": 100,
+    "atendimentoEsgoto": 42.6,
+    "esgotoTratado": 71.3,
+    "perdaFaturamento": 34.4
+  },
+  "4213609": {
+    "atendimentoAgua": 100,
+    "atendimentoEsgoto": 76.1,
+    "esgotoTratado": 88.3,
+    "perdaFaturamento": 23
+  },
+  "4213708": {
+    "atendimentoAgua": 100,
+    "atendimentoEsgoto": 20.9,
+    "esgotoTratado": 73.7,
+    "perdaFaturamento": 26.6
+  },
+  "4213807": {
+    "atendimentoAgua": 98.8,
+    "atendimentoEsgoto": 64.4,
+    "esgotoTratado": 92.6,
+    "perdaFaturamento": 33
+  },
+  "4213906": {
+    "atendimentoAgua": 100,
+    "atendimentoEsgoto": 41.5,
+    "esgotoTratado": 39.1,
+    "perdaFaturamento": 33.1
+  },
+  "4214003": {
+    "atendimentoAgua": 90.1,
+    "atendimentoEsgoto": 66.5,
+    "esgotoTratado": 64.4,
+    "perdaFaturamento": 45.4
+  },
+  "4214102": {
+    "atendimentoAgua": 87,
+    "atendimentoEsgoto": 32.7,
+    "esgotoTratado": 67.8,
+    "perdaFaturamento": 30.1
+  },
+  "4214151": {
+    "atendimentoAgua": 98.3,
+    "atendimentoEsgoto": 52.8,
+    "esgotoTratado": 81.3,
+    "perdaFaturamento": 15.6
+  },
+  "4214201": {
+    "atendimentoAgua": 92.3,
+    "atendimentoEsgoto": 8.7,
+    "esgotoTratado": 83.5,
+    "perdaFaturamento": 23.3
+  },
+  "4214300": {
+    "atendimentoAgua": 94,
+    "atendimentoEsgoto": 32.3,
+    "esgotoTratado": 79.2,
+    "perdaFaturamento": 28.3
+  },
+  "4214409": {
+    "atendimentoAgua": 97.9,
+    "atendimentoEsgoto": 25.7,
+    "esgotoTratado": 79.6,
+    "perdaFaturamento": 29.3
+  },
+  "4214508": {
+    "atendimentoAgua": 100,
+    "atendimentoEsgoto": 35.1,
+    "esgotoTratado": 86,
+    "perdaFaturamento": 23.3
+  },
+  "4214607": {
+    "atendimentoAgua": 100,
+    "atendimentoEsgoto": 58.6,
+    "esgotoTratado": 63.6,
+    "perdaFaturamento": 45.4
+  },
+  "4214706": {
+    "atendimentoAgua": 98.3,
+    "atendimentoEsgoto": 51.1,
+    "esgotoTratado": 100,
+    "perdaFaturamento": 36.5
+  },
+  "4214805": {
+    "atendimentoAgua": 94.9,
+    "atendimentoEsgoto": 8.4,
+    "esgotoTratado": 66,
+    "perdaFaturamento": 22.1
+  },
+  "4214904": {
+    "atendimentoAgua": 94.8,
+    "atendimentoEsgoto": 36.9,
+    "esgotoTratado": 62.3,
+    "perdaFaturamento": 24.3
+  },
+  "4215000": {
+    "atendimentoAgua": 100,
+    "atendimentoEsgoto": 22.8,
+    "esgotoTratado": 83.5,
+    "perdaFaturamento": 17.2
+  },
+  "4215059": {
+    "atendimentoAgua": 86.4,
+    "atendimentoEsgoto": 61.5,
+    "esgotoTratado": 80.5,
+    "perdaFaturamento": 38.8
+  },
+  "4215109": {
+    "atendimentoAgua": 89.7,
+    "atendimentoEsgoto": 49.6,
+    "esgotoTratado": 63,
+    "perdaFaturamento": 23
+  },
+  "4215208": {
+    "atendimentoAgua": 93.2,
+    "atendimentoEsgoto": 56.1,
+    "esgotoTratado": 79.8,
+    "perdaFaturamento": 50
+  },
+  "4215356": {
+    "atendimentoAgua": 98.4,
+    "atendimentoEsgoto": 74.6,
+    "esgotoTratado": 52,
+    "perdaFaturamento": 42.9
+  },
+  "4215406": {
+    "atendimentoAgua": 89.2,
+    "atendimentoEsgoto": 42.8,
+    "esgotoTratado": 100,
+    "perdaFaturamento": 28.8
+  },
+  "4215455": {
+    "atendimentoAgua": 94.4,
+    "atendimentoEsgoto": 43,
+    "esgotoTratado": 85.8,
+    "perdaFaturamento": 18.9
+  },
+  "4215505": {
+    "atendimentoAgua": 86.8,
+    "atendimentoEsgoto": 57.9,
+    "esgotoTratado": 81.7,
+    "perdaFaturamento": 31.9
+  },
+  "4215554": {
+    "atendimentoAgua": 94.8,
+    "atendimentoEsgoto": 20,
+    "esgotoTratado": 100,
+    "perdaFaturamento": 36.4
+  },
+  "4215604": {
+    "atendimentoAgua": 92.1,
+    "atendimentoEsgoto": 41.6,
+    "esgotoTratado": 47.3,
+    "perdaFaturamento": 31.2
+  },
+  "4215653": {
+    "atendimentoAgua": 98.5,
+    "atendimentoEsgoto": 20.5,
+    "esgotoTratado": 49.3,
+    "perdaFaturamento": 37.2
+  },
+  "4215687": {
+    "atendimentoAgua": 88.7,
+    "atendimentoEsgoto": 60,
+    "esgotoTratado": 64.6,
+    "perdaFaturamento": 35.2
+  },
+  "4215695": {
+    "atendimentoAgua": 93.3,
+    "atendimentoEsgoto": 57,
+    "esgotoTratado": 73,
+    "perdaFaturamento": 20.7
+  },
+  "4215703": {
+    "atendimentoAgua": 89.6,
+    "atendimentoEsgoto": 59.3,
+    "esgotoTratado": 91.3,
+    "perdaFaturamento": 38.8
+  },
+  "4215752": {
+    "atendimentoAgua": 100,
+    "atendimentoEsgoto": 15.2,
+    "esgotoTratado": 76.4,
+    "perdaFaturamento": 22.9
+  },
+  "4215802": {
+    "atendimentoAgua": 85.8,
+    "atendimentoEsgoto": 36.7,
+    "esgotoTratado": 100,
+    "perdaFaturamento": 26.4
+  },
+  "4215901": {
+    "atendimentoAgua": 100,
+    "atendimentoEsgoto": 20.9,
+    "esgotoTratado": 92.4,
+    "perdaFaturamento": 22.7
+  },
+  "4216008": {
+    "atendimentoAgua": 86.8,
+    "atendimentoEsgoto": 35.5,
+    "esgotoTratado": 73.6,
+    "perdaFaturamento": 38.4
+  },
+  "4216057": {
+    "atendimentoAgua": 92.1,
+    "atendimentoEsgoto": 30.5,
+    "esgotoTratado": 69,
+    "perdaFaturamento": 44.5
+  },
+  "4216107": {
+    "atendimentoAgua": 92.2,
+    "atendimentoEsgoto": 5.2,
+    "esgotoTratado": 100,
+    "perdaFaturamento": 46.4
+  },
+  "4216206": {
+    "atendimentoAgua": 88.6,
+    "atendimentoEsgoto": 21.7,
+    "esgotoTratado": 62.2,
+    "perdaFaturamento": 52.1
+  },
+  "4216255": {
+    "atendimentoAgua": 97.1,
+    "atendimentoEsgoto": 23.9,
+    "esgotoTratado": 49.4,
+    "perdaFaturamento": 24.4
+  },
+  "4216305": {
+    "atendimentoAgua": 92.3,
+    "atendimentoEsgoto": 79.5,
+    "esgotoTratado": 86,
+    "perdaFaturamento": 26.3
+  },
+  "4216354": {
+    "atendimentoAgua": 98.3,
+    "atendimentoEsgoto": 44.9,
+    "esgotoTratado": 59.2,
+    "perdaFaturamento": 37.2
+  },
+  "4216404": {
+    "atendimentoAgua": 90.5,
+    "atendimentoEsgoto": 19.9,
+    "esgotoTratado": 35.2,
+    "perdaFaturamento": 40.5
+  },
+  "4216503": {
+    "atendimentoAgua": 95.5,
+    "atendimentoEsgoto": 43,
+    "esgotoTratado": 55.7,
+    "perdaFaturamento": 22.6
+  },
+  "4216602": {
+    "atendimentoAgua": 92,
+    "atendimentoEsgoto": 25.1,
+    "esgotoTratado": 65.9,
+    "perdaFaturamento": 51.7
+  },
+  "4216701": {
+    "atendimentoAgua": 99.7,
+    "atendimentoEsgoto": 38.6,
+    "esgotoTratado": 81.5,
+    "perdaFaturamento": 29.8
+  },
+  "4216800": {
+    "atendimentoAgua": 100,
+    "atendimentoEsgoto": 55.7,
+    "esgotoTratado": 60,
+    "perdaFaturamento": 22.4
+  },
+  "4216909": {
+    "atendimentoAgua": 94.8,
+    "atendimentoEsgoto": 35.6,
+    "esgotoTratado": 61.3,
+    "perdaFaturamento": 21.2
+  },
+  "4217006": {
+    "atendimentoAgua": 92.5,
+    "atendimentoEsgoto": 60.4,
+    "esgotoTratado": 66.4,
+    "perdaFaturamento": 36.5
+  },
+  "4217105": {
+    "atendimentoAgua": 89.1,
+    "atendimentoEsgoto": 18,
+    "esgotoTratado": 94.5,
+    "perdaFaturamento": 40.2
+  },
+  "4217154": {
+    "atendimentoAgua": 98.7,
+    "atendimentoEsgoto": 30.4,
+    "esgotoTratado": 100,
+    "perdaFaturamento": 8
+  },
+  "4217204": {
+    "atendimentoAgua": 94.8,
+    "atendimentoEsgoto": 32.4,
+    "esgotoTratado": 68.5,
+    "perdaFaturamento": 23.7
+  },
+  "4217253": {
+    "atendimentoAgua": 100,
+    "atendimentoEsgoto": 23.2,
+    "esgotoTratado": 83.5,
+    "perdaFaturamento": 34.8
+  },
+  "4217402": {
+    "atendimentoAgua": 94.9,
+    "atendimentoEsgoto": 52.9,
+    "esgotoTratado": 80.7,
+    "perdaFaturamento": 24
+  },
+  "4217501": {
+    "atendimentoAgua": 94.7,
+    "atendimentoEsgoto": 25.8,
+    "esgotoTratado": 60.4,
+    "perdaFaturamento": 38.5
+  },
+  "4217550": {
+    "atendimentoAgua": 97.4,
+    "atendimentoEsgoto": 18.8,
+    "esgotoTratado": 100,
+    "perdaFaturamento": 29.6
+  },
+  "4217600": {
+    "atendimentoAgua": 99.7,
+    "atendimentoEsgoto": 21.6,
+    "esgotoTratado": 57,
+    "perdaFaturamento": 24.7
+  },
+  "4217709": {
+    "atendimentoAgua": 92.6,
+    "atendimentoEsgoto": 17.6,
+    "esgotoTratado": 52.3,
+    "perdaFaturamento": 16.9
+  },
+  "4217758": {
+    "atendimentoAgua": 87.2,
+    "atendimentoEsgoto": 6.7,
+    "esgotoTratado": 65,
+    "perdaFaturamento": 34.8
+  },
+  "4217808": {
+    "atendimentoAgua": 91,
+    "atendimentoEsgoto": 52.9,
+    "esgotoTratado": 97.1,
+    "perdaFaturamento": 37.2
+  },
+  "4217956": {
+    "atendimentoAgua": 100,
+    "atendimentoEsgoto": 24.4,
+    "esgotoTratado": 81.4,
+    "perdaFaturamento": 21.4
+  },
+  "4218004": {
+    "atendimentoAgua": 95.3,
+    "atendimentoEsgoto": 29.2,
+    "esgotoTratado": 75,
+    "perdaFaturamento": 33.8
+  },
+  "4218103": {
+    "atendimentoAgua": 97,
+    "atendimentoEsgoto": 50.4,
+    "esgotoTratado": 66.5,
+    "perdaFaturamento": 37.8
+  },
+  "4218202": {
+    "atendimentoAgua": 100,
+    "atendimentoEsgoto": 31.3,
+    "esgotoTratado": 48.6,
+    "perdaFaturamento": 24.5
+  },
+  "4218251": {
+    "atendimentoAgua": 95.7,
+    "atendimentoEsgoto": 32.4,
+    "esgotoTratado": 98.9,
+    "perdaFaturamento": 39.1
+  },
+  "4218301": {
+    "atendimentoAgua": 95.7,
+    "atendimentoEsgoto": 24.6,
+    "esgotoTratado": 77.9,
+    "perdaFaturamento": 28
+  },
+  "4218350": {
+    "atendimentoAgua": 96.3,
+    "atendimentoEsgoto": 57.3,
+    "esgotoTratado": 26.6,
+    "perdaFaturamento": 46.5
+  },
+  "4218400": {
+    "atendimentoAgua": 100,
+    "atendimentoEsgoto": 34.2,
+    "esgotoTratado": 92.5,
+    "perdaFaturamento": 30
+  },
+  "4218509": {
+    "atendimentoAgua": 94.3,
+    "atendimentoEsgoto": 9.1,
+    "esgotoTratado": 41.6,
+    "perdaFaturamento": 36.8
+  },
+  "4218608": {
+    "atendimentoAgua": 91.1,
+    "atendimentoEsgoto": 70.8,
+    "esgotoTratado": 71.2,
+    "perdaFaturamento": 49.5
+  },
+  "4218707": {
+    "atendimentoAgua": 88.6,
+    "atendimentoEsgoto": 32.8,
+    "esgotoTratado": 81.7,
+    "perdaFaturamento": 28.4
+  },
+  "4218756": {
+    "atendimentoAgua": 100,
+    "atendimentoEsgoto": 46.5,
+    "esgotoTratado": 58.8,
+    "perdaFaturamento": 39.4
+  },
+  "4218806": {
+    "atendimentoAgua": 93.3,
+    "atendimentoEsgoto": 17.4,
+    "esgotoTratado": 78.2,
+    "perdaFaturamento": 12.9
+  },
+  "4218855": {
+    "atendimentoAgua": 99.4,
+    "atendimentoEsgoto": 40.2,
+    "esgotoTratado": 63,
+    "perdaFaturamento": 18.4
+  },
+  "4218905": {
+    "atendimentoAgua": 88.9,
+    "atendimentoEsgoto": 52.5,
+    "esgotoTratado": 100,
+    "perdaFaturamento": 21.4
+  },
+  "4218954": {
+    "atendimentoAgua": 96.5,
+    "atendimentoEsgoto": 26.2,
+    "esgotoTratado": 76.9,
+    "perdaFaturamento": 39
+  },
+  "4219002": {
+    "atendimentoAgua": 99.3,
+    "atendimentoEsgoto": 45.5,
+    "esgotoTratado": 67.8,
+    "perdaFaturamento": 18.2
+  },
+  "4219101": {
+    "atendimentoAgua": 100,
+    "atendimentoEsgoto": 48.6,
+    "esgotoTratado": 63.1,
+    "perdaFaturamento": 32.7
+  },
+  "4219150": {
+    "atendimentoAgua": 92.9,
+    "atendimentoEsgoto": 49.2,
+    "esgotoTratado": 57.3,
+    "perdaFaturamento": 21.9
+  },
+  "4219176": {
+    "atendimentoAgua": 98.7,
+    "atendimentoEsgoto": 65.7,
+    "esgotoTratado": 65.5,
+    "perdaFaturamento": 24.7
+  },
+  "4219200": {
+    "atendimentoAgua": 98.4,
+    "atendimentoEsgoto": 23.6,
+    "esgotoTratado": 65.3,
+    "perdaFaturamento": 52.7
+  },
+  "4219309": {
+    "atendimentoAgua": 89.3,
+    "atendimentoEsgoto": 47.9,
+    "esgotoTratado": 65.6,
+    "perdaFaturamento": 40.9
+  },
+  "4219358": {
+    "atendimentoAgua": 87.1,
+    "atendimentoEsgoto": 39,
+    "esgotoTratado": 83.5,
+    "perdaFaturamento": 25.5
+  },
+  "4219408": {
+    "atendimentoAgua": 82.3,
+    "atendimentoEsgoto": 62.6,
+    "esgotoTratado": 58.3,
+    "perdaFaturamento": 25.1
+  },
+  "4219507": {
+    "atendimentoAgua": 90.7,
+    "atendimentoEsgoto": 34.8,
+    "esgotoTratado": 60.3,
+    "perdaFaturamento": 30.8
+  },
+  "4219606": {
+    "atendimentoAgua": 88.8,
+    "atendimentoEsgoto": 48.5,
+    "esgotoTratado": 34.2,
+    "perdaFaturamento": 32.6
+  },
+  "4219705": {
+    "atendimentoAgua": 94.8,
+    "atendimentoEsgoto": 44.9,
+    "esgotoTratado": 69.5,
+    "perdaFaturamento": 23.4
+  },
+  "4219853": {
+    "atendimentoAgua": 97.6,
+    "atendimentoEsgoto": 20,
+    "esgotoTratado": 78.1,
+    "perdaFaturamento": 16.7
+  },
+  "4220000": {
+    "atendimentoAgua": 98.2,
+    "atendimentoEsgoto": 33.2,
+    "esgotoTratado": 77.7,
+    "perdaFaturamento": 30.8
+  }
+}
