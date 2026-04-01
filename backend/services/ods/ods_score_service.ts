@@ -1,5 +1,6 @@
 import { IbgeCollector, mapToOdsIndicators as mapIbgeOds } from "../../agents/ibge/index.js";
 import { SiconfiCollector, mapToOdsIndicators as mapSiconfiOds } from "../../agents/siconfi/index.js";
+import { DatasusCollector, mapToOdsIndicators as mapDatasusOds } from "../../agents/datasus/index.js";
 import { ODS_DEFINITIONS, getOdsDefinition } from "../../../shared/constants/ods.js";
 import { getOdsStatus, type OdsIndicator, type OdsStatus } from "../../../shared/types/domain/ods.js";
 import { logger } from "../../utils/logger.js";
@@ -28,6 +29,7 @@ export interface MunicipalOdsReport {
 
 const ibgeCollector = new IbgeCollector();
 const siconfiCollector = new SiconfiCollector();
+const datasusCollector = new DatasusCollector();
 
 /**
  * Serviço que orquestra todos os coletores e consolida scores ODS para um município.
@@ -41,13 +43,14 @@ const siconfiCollector = new SiconfiCollector();
  */
 export async function calculateMunicipalOds(ibgeCode: string): Promise<MunicipalOdsReport | null> {
   // Buscar dados de todas as fontes em paralelo
-  const [ibgeData, siconfiData] = await Promise.all([
+  const [ibgeData, siconfiData, datasusData] = await Promise.all([
     ibgeCollector.collect(ibgeCode),
     siconfiCollector.collect(ibgeCode),
+    datasusCollector.collect(ibgeCode),
   ]);
 
   // Se nenhuma fonte retornou dados, não há score
-  if (!ibgeData && !siconfiData) {
+  if (!ibgeData && !siconfiData && !datasusData) {
     logger.warn(`No data from any source for municipality ${ibgeCode}`);
     return null;
   }
@@ -56,11 +59,13 @@ export async function calculateMunicipalOds(ibgeCode: string): Promise<Municipal
   const allIndicators: OdsIndicator[] = [];
   if (ibgeData) allIndicators.push(...mapIbgeOds(ibgeData));
   if (siconfiData) allIndicators.push(...mapSiconfiOds(siconfiData));
+  if (datasusData) allIndicators.push(...mapDatasusOds(datasusData));
 
   // Determinar ano de referência mais recente
   const referenceYear = Math.max(
     ibgeData?.referenceYear ?? 0,
     siconfiData?.referenceYear ?? 0,
+    datasusData?.referenceYear ?? 0,
   );
 
   // Agrupar indicadores por ODS number

@@ -26,8 +26,8 @@ export const API_CONFIGS: Record<string, ApiConfig> = {
   },
   datasus: {
     name: "DATASUS",
-    baseUrl: "https://datasus.saude.gov.br",
-    cacheTtlSeconds: 43_200, // 12h
+    baseUrl: "https://apidadosabertos.saude.gov.br",
+    cacheTtlSeconds: 43_200, // 12h — Previne Brasil atualiza quadrimestralmente
     rateLimit: 1,
     timeoutMs: 30_000,
     retryCount: 3,

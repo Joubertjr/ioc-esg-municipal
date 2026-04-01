@@ -1,8 +1,9 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 
-const { mockIbgeCollect, mockSiconfiCollect } = vi.hoisted(() => ({
+const { mockIbgeCollect, mockSiconfiCollect, mockDatasusCollect } = vi.hoisted(() => ({
   mockIbgeCollect: vi.fn(),
   mockSiconfiCollect: vi.fn(),
+  mockDatasusCollect: vi.fn(),
 }));
 
 vi.mock("../../../backend/agents/ibge/ibge_collector.js", () => ({
@@ -15,6 +16,13 @@ vi.mock("../../../backend/agents/ibge/ibge_collector.js", () => ({
 vi.mock("../../../backend/agents/siconfi/siconfi_collector.js", () => ({
   SiconfiCollector: vi.fn().mockImplementation(() => ({
     collect: mockSiconfiCollect,
+    collectBatch: vi.fn(),
+  })),
+}));
+
+vi.mock("../../../backend/agents/datasus/datasus_collector.js", () => ({
+  DatasusCollector: vi.fn().mockImplementation(() => ({
+    collect: mockDatasusCollect,
     collectBatch: vi.fn(),
   })),
 }));
@@ -76,6 +84,23 @@ const MOCK_SICONFI_DATA = {
   },
 };
 
+const MOCK_DATASUS_DATA = {
+  ibgeCode: "4204202",
+  siconfiCode: "420420",
+  referenceYear: 2025,
+  referenceDate: new Date("2025-04-30"),
+  dataAvailable: true,
+  indicators: {
+    prenatal: 72.5,
+    diabetes: 45.3,
+    hipertensao: 38.1,
+    crescimentoInfantil: 85.0,
+    cancerColoUterino: 28.7,
+    saudeBucal: 62.4,
+    mediaGeral: 55.33,
+  },
+};
+
 describe("ODS Score Service", () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -84,14 +109,16 @@ describe("ODS Score Service", () => {
   it("retorna null quando nenhuma fonte tem dados", async () => {
     mockIbgeCollect.mockResolvedValueOnce(null);
     mockSiconfiCollect.mockResolvedValueOnce(null);
+    mockDatasusCollect.mockResolvedValueOnce(null);
 
     const result = await calculateMunicipalOds("0000000");
     expect(result).toBeNull();
   });
 
-  it("consolida IBGE + SICONFI em relatório único", async () => {
+  it("consolida IBGE + SICONFI + DATASUS em relatório único", async () => {
     mockIbgeCollect.mockResolvedValueOnce(MOCK_IBGE_DATA);
     mockSiconfiCollect.mockResolvedValueOnce(MOCK_SICONFI_DATA);
+    mockDatasusCollect.mockResolvedValueOnce(MOCK_DATASUS_DATA);
 
     const result = await calculateMunicipalOds("4204202");
 
@@ -106,6 +133,7 @@ describe("ODS Score Service", () => {
   it("tem 17 ODS no relatório, mesmo sem dados para todos", async () => {
     mockIbgeCollect.mockResolvedValueOnce(MOCK_IBGE_DATA);
     mockSiconfiCollect.mockResolvedValueOnce(MOCK_SICONFI_DATA);
+    mockDatasusCollect.mockResolvedValueOnce(MOCK_DATASUS_DATA);
 
     const result = await calculateMunicipalOds("4204202");
     expect(result!.ods).toHaveLength(17);
@@ -124,18 +152,20 @@ describe("ODS Score Service", () => {
   it("calcula score global como média ponderada", async () => {
     mockIbgeCollect.mockResolvedValueOnce(MOCK_IBGE_DATA);
     mockSiconfiCollect.mockResolvedValueOnce(MOCK_SICONFI_DATA);
+    mockDatasusCollect.mockResolvedValueOnce(MOCK_DATASUS_DATA);
 
     const result = await calculateMunicipalOds("4204202");
 
-    // With data: ODS 1, 3, 4, 8, 10, 11, 16, 17
+    // With data: ODS 1, 3 (siconfi+datasus), 4, 8, 10, 11, 16, 17 = 8 ODS
     expect(result!.odsCount.withData).toBe(8);
     expect(result!.odsCount.total).toBe(17);
     expect(result!.globalStatus).not.toBeNull();
   });
 
-  it("funciona só com IBGE (sem SICONFI)", async () => {
+  it("funciona só com IBGE (sem SICONFI e DATASUS)", async () => {
     mockIbgeCollect.mockResolvedValueOnce(MOCK_IBGE_DATA);
     mockSiconfiCollect.mockResolvedValueOnce(null);
+    mockDatasusCollect.mockResolvedValueOnce(null);
 
     const result = await calculateMunicipalOds("4204202");
 
@@ -144,9 +174,10 @@ describe("ODS Score Service", () => {
     expect(result!.odsCount.withData).toBe(4);
   });
 
-  it("funciona só com SICONFI (sem IBGE)", async () => {
+  it("funciona só com SICONFI (sem IBGE e DATASUS)", async () => {
     mockIbgeCollect.mockResolvedValueOnce(null);
     mockSiconfiCollect.mockResolvedValueOnce(MOCK_SICONFI_DATA);
+    mockDatasusCollect.mockResolvedValueOnce(null);
 
     const result = await calculateMunicipalOds("4204202");
 
@@ -155,14 +186,42 @@ describe("ODS Score Service", () => {
     expect(result!.odsCount.withData).toBe(5);
   });
 
+  it("funciona só com DATASUS (sem IBGE e SICONFI)", async () => {
+    mockIbgeCollect.mockResolvedValueOnce(null);
+    mockSiconfiCollect.mockResolvedValueOnce(null);
+    mockDatasusCollect.mockResolvedValueOnce(MOCK_DATASUS_DATA);
+
+    const result = await calculateMunicipalOds("4204202");
+
+    expect(result).not.toBeNull();
+    // Only DATASUS ODS: 3
+    expect(result!.odsCount.withData).toBe(1);
+    const ods3 = result!.ods.find((o) => o.odsNumber === 3)!;
+    expect(ods3.sources).toContain("datasus");
+  });
+
+  it("ODS 3 combina indicadores SICONFI + DATASUS", async () => {
+    mockIbgeCollect.mockResolvedValueOnce(null);
+    mockSiconfiCollect.mockResolvedValueOnce(MOCK_SICONFI_DATA);
+    mockDatasusCollect.mockResolvedValueOnce(MOCK_DATASUS_DATA);
+
+    const result = await calculateMunicipalOds("4204202");
+
+    const ods3 = result!.ods.find((o) => o.odsNumber === 3)!;
+    expect(ods3.sources).toContain("siconfi");
+    expect(ods3.sources).toContain("datasus");
+    // SICONFI contributes 1 indicator, DATASUS contributes 6
+    expect(ods3.indicators.length).toBe(7);
+  });
+
   it("ODS 11 combina indicadores IBGE e SICONFI", async () => {
     mockIbgeCollect.mockResolvedValueOnce(MOCK_IBGE_DATA);
     mockSiconfiCollect.mockResolvedValueOnce(MOCK_SICONFI_DATA);
+    mockDatasusCollect.mockResolvedValueOnce(null);
 
     const result = await calculateMunicipalOds("4204202");
 
     const ods11 = result!.ods.find((o) => o.odsNumber === 11)!;
-    // ODS 11 has indicators from both IBGE (equilibrio fiscal) and SICONFI (urbanismo)
     expect(ods11.sources).toContain("ibge");
     expect(ods11.sources).toContain("siconfi");
     expect(ods11.indicators.length).toBe(2);
@@ -171,6 +230,7 @@ describe("ODS Score Service", () => {
   it("contagem verde/amarelo/vermelho está correta", async () => {
     mockIbgeCollect.mockResolvedValueOnce(MOCK_IBGE_DATA);
     mockSiconfiCollect.mockResolvedValueOnce(MOCK_SICONFI_DATA);
+    mockDatasusCollect.mockResolvedValueOnce(MOCK_DATASUS_DATA);
 
     const result = await calculateMunicipalOds("4204202");
 
