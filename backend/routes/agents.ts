@@ -2,12 +2,16 @@ import { Router, type Request, type Response, type Router as RouterType } from "
 import { IbgeCollector, mapToOdsIndicators as mapIbgeOds } from "../agents/ibge/index.js";
 import { SiconfiCollector, mapToOdsIndicators as mapSiconfiOds } from "../agents/siconfi/index.js";
 import { DatasusCollector, mapToOdsIndicators as mapDatasusOds } from "../agents/datasus/index.js";
+import { InepCollector, mapToOdsIndicators as mapInepOds } from "../agents/inep/index.js";
+import { SnisCollector, mapToOdsIndicators as mapSnisOds } from "../agents/snis/index.js";
 import { logger } from "../utils/logger.js";
 
 const router: RouterType = Router();
 const ibgeCollector = new IbgeCollector();
 const siconfiCollector = new SiconfiCollector();
 const datasusCollector = new DatasusCollector();
+const inepCollector = new InepCollector();
+const snisCollector = new SnisCollector();
 
 // ─── Validação compartilhada ────────────────────────────────────────────────
 
@@ -165,6 +169,68 @@ router.get("/datasus/:ibgeCode", async (req: Request, res: Response) => {
       error: error instanceof Error ? error.message : String(error),
     });
     res.status(500).json({ error: "Erro interno ao coletar dados DATASUS" });
+  }
+});
+
+// ─── INEP Routes ─────────────────────────────────────────────────────────────
+
+router.get("/inep/:ibgeCode", async (req: Request, res: Response) => {
+  const ibgeCode = validateIbgeCode(req.params["ibgeCode"]);
+  if (!ibgeCode) {
+    res.status(400).json({ error: "ibgeCode deve ter 7 dígitos numéricos" });
+    return;
+  }
+
+  try {
+    const data = await inepCollector.collect(ibgeCode);
+    if (!data) {
+      res.status(404).json({ error: `Dados INEP não encontrados para ${ibgeCode}` });
+      return;
+    }
+    res.json({
+      municipality: ibgeCode,
+      source: "inep",
+      referenceYear: data.referenceYear,
+      indicators: data.indicators,
+      ods: mapInepOds(data),
+    });
+  } catch (error) {
+    logger.error("Error in INEP agent route", {
+      ibgeCode,
+      error: error instanceof Error ? error.message : String(error),
+    });
+    res.status(500).json({ error: "Erro interno ao coletar dados INEP" });
+  }
+});
+
+// ─── SNIS Routes ─────────────────────────────────────────────────────────────
+
+router.get("/snis/:ibgeCode", async (req: Request, res: Response) => {
+  const ibgeCode = validateIbgeCode(req.params["ibgeCode"]);
+  if (!ibgeCode) {
+    res.status(400).json({ error: "ibgeCode deve ter 7 dígitos numéricos" });
+    return;
+  }
+
+  try {
+    const data = await snisCollector.collect(ibgeCode);
+    if (!data) {
+      res.status(404).json({ error: `Dados SNIS não encontrados para ${ibgeCode}` });
+      return;
+    }
+    res.json({
+      municipality: ibgeCode,
+      source: "snis",
+      referenceYear: data.referenceYear,
+      indicators: data.indicators,
+      ods: mapSnisOds(data),
+    });
+  } catch (error) {
+    logger.error("Error in SNIS agent route", {
+      ibgeCode,
+      error: error instanceof Error ? error.message : String(error),
+    });
+    res.status(500).json({ error: "Erro interno ao coletar dados SNIS" });
   }
 });
 
