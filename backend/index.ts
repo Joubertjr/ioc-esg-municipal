@@ -5,6 +5,7 @@ import dotenv from "dotenv";
 import agentsRouter from "./routes/agents.js";
 import odsRouter from "./routes/ods.js";
 import { generalLimiter } from "./middleware/rate-limit.js";
+import { logger } from "./utils/logger.js";
 
 dotenv.config();
 
@@ -34,7 +35,7 @@ app.use("/api/agents", agentsRouter);
 app.use("/api/ods", odsRouter);
 
 app.listen(PORT, () => {
-  console.log(`IOC ESG Municipal API running on port ${PORT}`);
+  logger.info(`IOC ESG Municipal API running on port ${PORT}`);
 });
 
 export default app;
