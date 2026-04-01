@@ -258,6 +258,7 @@ Nunca: `fix bug` `update` `changes` `wip`
 | Sonnet | `debugger` | Bug persistente |
 | Sonnet | `docs-writer` | README, documentação de API |
 | Haiku | `devops-engineer` | Docker, CI/CD, infra |
+| Opus | `project-monitor` | Monitoramento continuo, KPIs, coerencia, riscos |
 
 ### Slash commands
 | Comando | O que faz |
