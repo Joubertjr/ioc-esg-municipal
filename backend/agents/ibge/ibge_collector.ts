@@ -5,6 +5,7 @@ import { logger } from "../../utils/logger.js";
 import { API_CONFIGS, ibgeToSiconfi } from "../../../shared/constants/apis.js";
 import {
   IbgeIndicatorResponseSchema,
+  IbgePamResponseSchema,
   IBGE_INDICATORS,
   type IbgeMunicipalData,
   type IbgeIndicators,
@@ -21,15 +22,35 @@ const INDICATOR_IDS = [
   IBGE_INDICATORS.TAXA_OCUPACAO,
   IBGE_INDICATORS.RECEITAS_ORCAMENTARIAS,
   IBGE_INDICATORS.DESPESAS_ORCAMENTARIAS,
+  IBGE_INDICATORS.RAZAO_DEPENDENCIA,
+  IBGE_INDICATORS.AREA_TERRITORIAL,
 ].join("|");
 
 export class IbgeCollector {
   private readonly baseUrl = "https://servicodados.ibge.gov.br/api/v1";
+  private readonly baseUrlV3 = "https://servicodados.ibge.gov.br/api/v3";
   private readonly cacheTtl = config.cacheTtlSeconds;
   private readonly timeout = config.timeoutMs;
 
+  /** Tabela PAM — Produção Agrícola Municipal (variável 215 = valor da produção em R$ mil) */
+  private readonly PAM_TABELA = 5457;
+  private readonly PAM_VARIAVEL = 215;
+  /** Ano fixo de referência para PAM (último disponível consolidado) */
+  private readonly PAM_PERIODO = "2022";
+
+  /** Tabela CEMPRE — Empresas atuantes (variável 2283 = número de empresas) */
+  private readonly CEMPRE_TABELA = 9418;
+  private readonly CEMPRE_VARIAVEL = 2283;
+  /** Ano fixo de referência para CEMPRE (último disponível consolidado) */
+  private readonly CEMPRE_PERIODO = "2022";
+
   /**
    * Coleta indicadores IBGE para um município.
+   * Faz três chamadas em paralelo:
+   *   1. API v1 — pesquisas/indicadores (dados socioeconômicos)
+   *   2. API v3 — agregados/5457 PAM (produção agrícola, ODS 2)
+   *   3. API v3 — agregados/9418 CEMPRE (empresas atuantes, ODS 9)
+   * Chamadas 2 e 3 falham silenciosamente — não bloqueiam dados principais.
    * Retorna null se o município não for encontrado (não lança erro).
    */
   async collect(ibgeCode: string): Promise<IbgeMunicipalData | null> {
@@ -37,14 +58,43 @@ export class IbgeCollector {
 
     try {
       return await withCache(cacheKey, this.cacheTtl, async () => {
-        const url = `${this.baseUrl}/pesquisas/indicadores/${INDICATOR_IDS}/resultados/${ibgeCode}`;
+        const indicadoresUrl = `${this.baseUrl}/pesquisas/indicadores/${INDICATOR_IDS}/resultados/${ibgeCode}`;
+        const pamUrl =
+          `${this.baseUrlV3}/agregados/${this.PAM_TABELA}/periodos/${this.PAM_PERIODO}` +
+          `/variaveis/${this.PAM_VARIAVEL}?localidades=N6[${ibgeCode}]`;
+        const cемpreUrl =
+          `${this.baseUrlV3}/agregados/${this.CEMPRE_TABELA}/periodos/${this.CEMPRE_PERIODO}` +
+          `/variaveis/${this.CEMPRE_VARIAVEL}?localidades=N6[${ibgeCode}]`;
 
-        const rawData = await fetchWithRetry<unknown[]>(url, {
-          timeoutMs: this.timeout,
-          maxRetries: config.retryCount,
-        });
+        // Chamadas em paralelo — PAM e CEMPRE falham silenciosamente
+        const [rawData, rawPam, rawCempre] = await Promise.all([
+          fetchWithRetry<unknown[]>(indicadoresUrl, {
+            timeoutMs: this.timeout,
+            maxRetries: config.retryCount,
+          }),
+          fetchWithRetry<unknown[]>(pamUrl, {
+            timeoutMs: this.timeout,
+            maxRetries: config.retryCount,
+          }).catch((err: unknown) => {
+            logger.warn(
+              `PAM fetch failed for ${ibgeCode}, continuing without producaoAgricola`,
+              { error: err instanceof Error ? err.message : String(err) },
+            );
+            return null;
+          }),
+          fetchWithRetry<unknown[]>(cемpreUrl, {
+            timeoutMs: this.timeout,
+            maxRetries: config.retryCount,
+          }).catch((err: unknown) => {
+            logger.warn(
+              `CEMPRE fetch failed for ${ibgeCode}, continuing without empresasAtuantes`,
+              { error: err instanceof Error ? err.message : String(err) },
+            );
+            return null;
+          }),
+        ]);
 
-        // Validar com Zod
+        // Validar indicadores principais com Zod
         const validated = z.array(IbgeIndicatorResponseSchema).parse(rawData);
 
         const siconfiCode = ibgeToSiconfi(ibgeCode);
@@ -54,6 +104,20 @@ export class IbgeCollector {
           logger.warn(`No IBGE data found for municipality ${ibgeCode}`);
           return null;
         }
+
+        // Enriquecer com dados opcionais da API v3
+        indicators.producaoAgricolaMilReais = this.parseAgregadosValue(
+          rawPam,
+          ibgeCode,
+          this.PAM_PERIODO,
+          "PAM",
+        );
+        indicators.empresasAtuantes = this.parseAgregadosValue(
+          rawCempre,
+          ibgeCode,
+          this.CEMPRE_PERIODO,
+          "CEMPRE",
+        );
 
         const referenceYear = this.getMostRecentYear(validated, siconfiCode);
 
@@ -174,6 +238,16 @@ export class IbgeCollector {
       IBGE_INDICATORS.DESPESAS_ORCAMENTARIAS,
       loc,
     );
+    const razaoDependencia = this.getLatestValue(
+      data,
+      IBGE_INDICATORS.RAZAO_DEPENDENCIA,
+      loc,
+    );
+    const areaterritorial = this.getLatestValue(
+      data,
+      IBGE_INDICATORS.AREA_TERRITORIAL,
+      loc,
+    );
 
     // Se nenhum dado disponível, retorna null
     if (
@@ -191,7 +265,54 @@ export class IbgeCollector {
       taxaOcupacao,
       receitasOrcamentarias,
       despesasOrcamentarias,
+      razaoDependencia,
+      areaterritorial,
+      // Campos da API v3 — preenchidos após esta função no collect()
+      producaoAgricolaMilReais: null,
+      empresasAtuantes: null,
     };
+  }
+
+  /**
+   * Extrai valor numérico de uma resposta da API v3 de Agregados (PAM, CEMPRE etc.).
+   * Formato esperado: array de variáveis, cada uma com resultados contendo localidade + serie.
+   * Retorna null em caso de dado ausente, valor "-", ou parse inválido.
+   *
+   * @param rawData  resposta bruta da API (null = chamada falhou)
+   * @param ibgeCode código IBGE de 7 dígitos do município
+   * @param periodo  string do ano/período solicitado (ex: "2022")
+   * @param label    nome da fonte para logging
+   */
+  private parseAgregadosValue(
+    rawData: unknown[] | null,
+    ibgeCode: string,
+    periodo: string,
+    label: string,
+  ): number | null {
+    if (!rawData) return null;
+
+    try {
+      const validated = IbgePamResponseSchema.parse(rawData);
+      const variavel = validated[0];
+      if (!variavel) return null;
+
+      // API v3 retorna localidade com código de 7 dígitos (ibgeCode completo)
+      const resultado = variavel.resultados.find(
+        (r) => r.localidade.id === ibgeCode,
+      );
+      if (!resultado) return null;
+
+      const valor = resultado.serie[periodo];
+      if (!valor || valor === "-" || valor.trim() === "") return null;
+
+      const parsed = Number(valor);
+      return Number.isNaN(parsed) ? null : parsed;
+    } catch (err) {
+      logger.warn(`Failed to parse ${label} response for ${ibgeCode}`, {
+        error: err instanceof Error ? err.message : String(err),
+      });
+      return null;
+    }
   }
 
   /**

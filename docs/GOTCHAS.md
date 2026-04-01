@@ -222,7 +222,48 @@
 
 ## PNCP
 
-> (a preencher conforme encontrados)
+**Data:** 2026-04-01 | **Pesquisador:** data-collector agent
+
+### Gotcha 1: URLs distintas para API de consulta vs. manutenção
+
+- **Sintoma:** `GET /api/pncp/v1/orgaos/{cnpj}/contratos` retorna 401 Unauthorized
+- **Causa:** `/api/pncp` é a API de **manutenção** — requer Bearer JWT obtido via cadastro no portal. Não é pública.
+- **Solução:** Usar `/api/consulta/v1` para dados abertos sem autenticação. URL base correta: `https://pncp.gov.br/api/consulta/v1`
+- **Swagger público:** `https://pncp.gov.br/api/consulta/swagger-ui/index.html`
+
+### Gotcha 2: Endpoint de contratos requer CNPJ; endpoint de contratações aceita codigoMunicipioIbge
+
+- **Sintoma:** Tentativa de usar `/api/pncp/v1/orgaos/{cnpj}/contratos` exige mapeamento ibgeCode→CNPJ
+- **Causa:** Endpoint de contratos é organizado por CNPJ do órgão. Endpoint de **contratações** (`/contratacoes/publicacao`) aceita filtro por `codigoMunicipioIbge` (7 dígitos).
+- **Solução:** Para coletar dados por município sem CNPJ, usar o endpoint de publicação de contratações:
+  ```
+  GET /contratacoes/publicacao?codigoMunicipioIbge=4205407&dataInicial=20250101&dataFinal=20251231&pagina=1&tamanhoPagina=50
+  ```
+
+### Gotcha 3: Paginação máxima é 50 registros por página
+
+- **Sintoma:** `tamanhoPagina=500` retorna HTTP 400 Bad Request
+- **Causa:** A API limita o tamanho de página em 50. Parâmetros além do limite retornam erro sem mensagem descritiva.
+- **Solução:** Usar `tamanhoPagina=50` e paginar. Para municípios grandes (Florianópolis, Joinville), antecipar 20+ páginas por ano.
+- **Limite prático:** Para cálculo de indicadores, limitar a 10 páginas (500 registros) — suficiente para representatividade estatística.
+
+### Gotcha 4: Datas nos parâmetros usam formato YYYYMMDD sem separador
+
+- **Sintoma:** `dataInicial=2025-01-01` retorna 400 ou resultados vazios
+- **Causa:** O PNCP espera formato compacto: `20250101`, não ISO 8601 com hifens.
+- **Datas na resposta:** As datas dentro do JSON de resposta usam ISO 8601 com timezone: `"2025-01-15T14:30:00"`.
+
+### Gotcha 5: Municípios pequenos podem ter zero publicações
+
+- **Sintoma:** Resposta `{"data": [], "totalRegistros": 0}` para ibgeCodes válidos
+- **Causa:** Municípios com orçamento muito pequeno ou não cadastrados no PNCP não publicam contratações no portal.
+- **Solução:** Retornar `null` do coletor (não é erro — é ausência de dados). Score ODS 16 fica indisponível para esse município.
+
+### Gotcha 6: API instável — timeout e 503 ocasionais
+
+- **Sintoma:** Timeout em 15s ou 503 Service Unavailable
+- **Causa:** Servidor do PNCP sobrecarregado em horários de pico ou manutenção programada.
+- **Solução:** Timeout de 30s + retry 3x com backoff exponencial (obrigatório). Cache de 1h para evitar re-chamadas desnecessárias.
 
 ---
 

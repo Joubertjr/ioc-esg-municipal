@@ -5,10 +5,12 @@ import { getOdsStatus, type OdsIndicator } from "../../../shared/types/domain/od
  * Mapeia dados brutos do IBGE para indicadores ODS normalizados (score 0-100).
  *
  * ODS cobertos pelo IBGE:
- * - ODS 1 (Pobreza): % população com renda até 1/2 SM (invertido: menor = melhor)
- * - ODS 8 (Trabalho): taxa de ocupação + PIB per capita
- * - ODS 10 (Desigualdade): % baixa renda (invertido)
- * - ODS 11 (Cidades): receitas vs despesas (equilíbrio fiscal)
+ * - ODS 1  (Pobreza)     : % população com renda até 1/2 SM (invertido: menor = melhor)
+ * - ODS 2  (Fome Zero)   : valor da produção agrícola municipal em R$ mil (PAM tabela 5457)
+ * - ODS 8  (Trabalho)    : taxa de ocupação + PIB per capita
+ * - ODS 9  (Inovação)    : empresas atuantes por 10k habitantes (CEMPRE tabela 9418)
+ * - ODS 10 (Desigualdade): razão de dependência demográfica — (pop 0-14 + 65+)/pop 15-64 × 100
+ * - ODS 11 (Cidades)     : densidade demográfica (hab/km²) — faixa ideal 50-500
  */
 export function mapToOdsIndicators(data: IbgeMunicipalData): OdsIndicator[] {
   const indicators: OdsIndicator[] = [];
@@ -24,6 +26,24 @@ export function mapToOdsIndicators(data: IbgeMunicipalData): OdsIndicator[] {
       odsNumber: 1,
       indicatorName: "pct_baixa_renda",
       value: ind.pctBaixaRenda,
+      score,
+      status: getOdsStatus(score),
+      source: "ibge",
+      referenceYear,
+      referenceDate,
+      dataAvailable: true,
+    });
+  }
+
+  // ODS 2 — Fome Zero e Agricultura Sustentável (produção agrícola municipal)
+  if (ind.producaoAgricolaMilReais !== null) {
+    const score = scoreProducaoAgricola(ind.producaoAgricolaMilReais);
+    indicators.push({
+      id: "",
+      municipalityId: ibgeCode,
+      odsNumber: 2,
+      indicatorName: "producao_agricola",
+      value: ind.producaoAgricolaMilReais,
       score,
       status: getOdsStatus(score),
       source: "ibge",
@@ -69,15 +89,17 @@ export function mapToOdsIndicators(data: IbgeMunicipalData): OdsIndicator[] {
     });
   }
 
-  // ODS 10 — Redução das Desigualdades (proxy: % baixa renda invertido)
-  if (ind.pctBaixaRenda !== null) {
-    const score = scorePctBaixaRenda(ind.pctBaixaRenda);
+  // ODS 9 — Indústria, Inovação e Infraestrutura
+  // Indicador: empresas atuantes por 10k habitantes (CEMPRE tabela 9418, variável 2283)
+  if (ind.empresasAtuantes !== null && ind.populacao !== null && ind.populacao > 0) {
+    const empresasPor10k = (ind.empresasAtuantes / ind.populacao) * 10_000;
+    const score = scoreEmpresasPor10k(empresasPor10k);
     indicators.push({
       id: "",
       municipalityId: ibgeCode,
-      odsNumber: 10,
-      indicatorName: "pct_baixa_renda_desigualdade",
-      value: ind.pctBaixaRenda,
+      odsNumber: 9,
+      indicatorName: "empresas_por_10k_hab",
+      value: Math.round(empresasPor10k * 100) / 100,
       score,
       status: getOdsStatus(score),
       source: "ibge",
@@ -87,20 +109,37 @@ export function mapToOdsIndicators(data: IbgeMunicipalData): OdsIndicator[] {
     });
   }
 
-  // ODS 11 — Cidades Sustentáveis (equilíbrio fiscal: receitas/despesas)
-  if (
-    ind.receitasOrcamentarias !== null &&
-    ind.despesasOrcamentarias !== null &&
-    ind.despesasOrcamentarias > 0
-  ) {
-    const ratio = ind.receitasOrcamentarias / ind.despesasOrcamentarias;
-    const score = scoreEquilibrioFiscal(ratio);
+  // ODS 10 — Redução das Desigualdades
+  // Razão de dependência = (pop 0-14 + 65+) / pop 15-64 × 100.
+  // Menor = menor dependência demográfica = melhor.
+  // Indicador distinto de ODS 1: mede estrutura etária, não renda.
+  if (ind.razaoDependencia !== null) {
+    const score = scoreRazaoDependencia(ind.razaoDependencia);
+    indicators.push({
+      id: "",
+      municipalityId: ibgeCode,
+      odsNumber: 10,
+      indicatorName: "razao_dependencia",
+      value: ind.razaoDependencia,
+      score,
+      status: getOdsStatus(score),
+      source: "ibge",
+      referenceYear,
+      referenceDate,
+      dataAvailable: true,
+    });
+  }
+
+  // ODS 11 — Cidades Sustentáveis (densidade demográfica — faixa ideal 50-500 hab/km²)
+  if (ind.populacao !== null && ind.areaterritorial !== null && ind.areaterritorial > 0) {
+    const densidade = ind.populacao / ind.areaterritorial;
+    const score = scoreDensidadeDemografica(densidade);
     indicators.push({
       id: "",
       municipalityId: ibgeCode,
       odsNumber: 11,
-      indicatorName: "equilibrio_fiscal",
-      value: Math.round(ratio * 10000) / 10000,
+      indicatorName: "densidade_demografica",
+      value: Math.round(densidade * 100) / 100,
       score,
       status: getOdsStatus(score),
       source: "ibge",
@@ -124,6 +163,25 @@ function scorePctBaixaRenda(pct: number): number {
 }
 
 /**
+ * Valor da produção agrícola municipal (R$ mil) → score 0-100.
+ * Proxy para segurança alimentar e dinâmica rural (ODS 2).
+ *
+ * Escala:
+ * - >= R$ 500.000 mil  → 100 (produção robusta)
+ * - >= R$ 100.000 mil  →  70 (produção relevante)
+ * - >= R$  10.000 mil  →  40 (produção modesta)
+ * - <  R$  10.000 mil  →  20 (produção mínima / municípios não agrícolas)
+ *
+ * Nota: municípios sem atividade agrícola retornam null, não 20.
+ */
+function scoreProducaoAgricola(valorMilReais: number): number {
+  if (valorMilReais >= 500_000) return 100;
+  if (valorMilReais >= 100_000) return 70;
+  if (valorMilReais >= 10_000) return 40;
+  return 20;
+}
+
+/**
  * Taxa de ocupação → score 0-100 (maior = melhor).
  * Benchmarks SC: >= 60% = excelente (score 100), <= 30% = péssimo (score 0).
  */
@@ -141,14 +199,50 @@ function scorePibPerCapita(valor: number): number {
 }
 
 /**
- * Equilíbrio fiscal (receitas/despesas) → score 0-100.
- * Ratio 1.0 = 80 (equilibrado). > 1.1 = 100. < 0.7 = 0.
+ * Empresas atuantes por 10k habitantes → score 0-100.
+ * Fonte: IBGE CEMPRE tabela 9418, variável 2283.
+ *
+ * Pontos de ancoragem (benchmarks municípios SC):
+ * - >= 100 empresas/10k = 100 (alta atividade econômica)
+ * - >= 50 empresas/10k  =  70 (atividade moderada)
+ * - >= 20 empresas/10k  =  40 (atividade baixa)
+ * - <  20 empresas/10k  =  20 (atividade mínima)
+ *
+ * Interpolação linear entre cada faixa.
  */
-function scoreEquilibrioFiscal(ratio: number): number {
-  if (ratio >= 1.1) return 100;
-  if (ratio >= 1.0) return 80 + ((ratio - 1.0) / 0.1) * 20;
-  if (ratio >= 0.7) return ((ratio - 0.7) / 0.3) * 80;
-  return 0;
+export function scoreEmpresasPor10k(empresasPor10k: number): number {
+  if (empresasPor10k >= 100) return 100;
+  if (empresasPor10k >= 50)
+    return clampScore(70 + ((empresasPor10k - 50) / (100 - 50)) * 30);
+  if (empresasPor10k >= 20)
+    return clampScore(40 + ((empresasPor10k - 20) / (50 - 20)) * 30);
+  return 20;
+}
+
+/**
+ * Razão de dependência demográfica → score 0-100 (invertido: menor = melhor).
+ * Fórmula: (pop 0-14 + 65+) / pop 15-64 × 100.
+ * Benchmarks SC: <= 40% = excelente (score 100), >= 70% = péssimo (score 0).
+ * Interpolação linear entre 40% e 70%.
+ */
+function scoreRazaoDependencia(razao: number): number {
+  return clampScore(((70 - razao) / (70 - 40)) * 100);
+}
+
+/**
+ * Densidade demográfica (hab/km²) → score 0-100.
+ * Faixa ideal para municípios SC: 50-500 hab/km² → score 100.
+ * - Abaixo de 10 hab/km²: isolamento extremo → score fixo 50 (amarelo)
+ * - Acima de 2000 hab/km²: superlotação → score fixo 30 (vermelho)
+ * - Demais faixas: interpolação linear até a faixa ideal.
+ */
+function scoreDensidadeDemografica(densidade: number): number {
+  if (densidade >= 50 && densidade <= 500) return 100;
+  if (densidade > 2000) return 30;
+  if (densidade < 10) return 50;
+  if (densidade < 50) return clampScore(50 + ((densidade - 10) / (50 - 10)) * 50);
+  // densidade > 500 && <= 2000
+  return clampScore(100 - ((densidade - 500) / (2000 - 500)) * 70);
 }
 
 function clampScore(score: number): number {

@@ -74,6 +74,10 @@ function makeIbgeData(overrides: Partial<IbgeMunicipalData["indicators"]>): Ibge
       taxaOcupacao: null,
       receitasOrcamentarias: null,
       despesasOrcamentarias: null,
+      razaoDependencia: null,
+      areaterritorial: null,
+      producaoAgricolaMilReais: null,
+      empresasAtuantes: null,
       ...overrides,
     },
   };
@@ -218,58 +222,171 @@ describe("scorePctBaixaRenda — fronteiras", () => {
   });
 });
 
-// ─── scoreEquilibrioFiscal (via ibge_ods_mapper) ─────────────────────────────
+// ─── scoreRazaoDependencia (via ibge_ods_mapper — ODS 10) ────────────────────
 
-describe("scoreEquilibrioFiscal — fronteiras (IBGE)", () => {
-  // Receitas / Despesas = ratio para checar fronteira exata
-  // ratio = receitas / despesas → usamos valores que geram ratio exato
-
-  it("ratio_0_7_deve_resultar_em_score_0", () => {
-    // Arrange: ratio = 0.7 → fronteira inferior da faixa 0.7-1.0
-    const data = makeIbgeData({
-      receitasOrcamentarias: 70_000_000,
-      despesasOrcamentarias: 100_000_000,
-    });
+describe("scoreRazaoDependencia — fronteiras (ODS 10)", () => {
+  it("razao_40pct_deve_resultar_em_score_100", () => {
+    // Arrange: 40% = fronteira excelente (menor dependencia demografica)
+    const data = makeIbgeData({ razaoDependencia: 40 });
 
     // Act
     const indicators = ibgeMapToOds(data);
-    const ind = indicators.find((i) => i.indicatorName === "equilibrio_fiscal")!;
+    const ind = indicators.find((i) => i.indicatorName === "razao_dependencia")!;
 
-    // Assert: ratio exato 0.7 → score 0
+    // Assert
+    expect(ind.score).toBe(100);
+    expect(ind.status).toBe("verde");
+  });
+
+  it("razao_70pct_deve_resultar_em_score_0", () => {
+    // Arrange: 70% = fronteira pessima (alta dependencia demografica)
+    const data = makeIbgeData({ razaoDependencia: 70 });
+
+    // Act
+    const indicators = ibgeMapToOds(data);
+    const ind = indicators.find((i) => i.indicatorName === "razao_dependencia")!;
+
+    // Assert
     expect(ind.score).toBe(0);
     expect(ind.status).toBe("vermelho");
   });
 
-  it("ratio_1_0_deve_resultar_em_score_80", () => {
-    // Arrange: receitas = despesas → ratio 1.0
-    const data = makeIbgeData({
-      receitasOrcamentarias: 100_000_000,
-      despesasOrcamentarias: 100_000_000,
-    });
+  it("razao_55pct_deve_resultar_em_score_50", () => {
+    // Arrange: 55% = ponto medio entre 40% e 70% → score 50
+    const data = makeIbgeData({ razaoDependencia: 55 });
 
     // Act
     const indicators = ibgeMapToOds(data);
-    const ind = indicators.find((i) => i.indicatorName === "equilibrio_fiscal")!;
+    const ind = indicators.find((i) => i.indicatorName === "razao_dependencia")!;
 
-    // Assert: equilibrio exato → score 80
-    expect(ind.score).toBe(80);
+    // Assert: (70 - 55) / (70 - 40) * 100 = 50
+    expect(ind.score).toBe(50);
+    expect(ind.status).toBe("amarelo");
+  });
+
+  it("razao_acima_70pct_deve_resultar_em_score_0_clamped", () => {
+    // Arrange: 80% → acima do teto pessimo → clamped em 0
+    const data = makeIbgeData({ razaoDependencia: 80 });
+
+    // Act
+    const indicators = ibgeMapToOds(data);
+    const ind = indicators.find((i) => i.indicatorName === "razao_dependencia")!;
+
+    // Assert
+    expect(ind.score).toBe(0);
+    expect(ind.status).toBe("vermelho");
+  });
+
+  it("razao_abaixo_40pct_deve_resultar_em_score_100_clamped", () => {
+    // Arrange: 30% → abaixo do minimo excelente → clamped em 100
+    const data = makeIbgeData({ razaoDependencia: 30 });
+
+    // Act
+    const indicators = ibgeMapToOds(data);
+    const ind = indicators.find((i) => i.indicatorName === "razao_dependencia")!;
+
+    // Assert
+    expect(ind.score).toBe(100);
     expect(ind.status).toBe("verde");
   });
 
-  it("ratio_1_1_deve_resultar_em_score_100", () => {
-    // Arrange: receitas 10% acima das despesas → ratio 1.1
-    const data = makeIbgeData({
-      receitasOrcamentarias: 110_000_000,
-      despesasOrcamentarias: 100_000_000,
-    });
+  it("ODS_10_nao_duplica_ODS_1_indicadores_distintos", () => {
+    // Arrange: ambos os indicadores disponiveis
+    const data = makeIbgeData({ pctBaixaRenda: 40, razaoDependencia: 55 });
 
     // Act
     const indicators = ibgeMapToOds(data);
-    const ind = indicators.find((i) => i.indicatorName === "equilibrio_fiscal")!;
+    const ods1 = indicators.filter((i) => i.odsNumber === 1);
+    const ods10 = indicators.filter((i) => i.odsNumber === 10);
 
-    // Assert: fronteira superior → score maximo 100
+    // Assert: indicadores distintos — sem duplicacao de indicador entre ODS 1 e 10
+    expect(ods1).toHaveLength(1);
+    expect(ods10).toHaveLength(1);
+    expect(ods1[0]!.indicatorName).toBe("pct_baixa_renda");
+    expect(ods10[0]!.indicatorName).toBe("razao_dependencia");
+  });
+});
+
+// ─── scoreDensidadeDemografica (via ibge_ods_mapper — ODS 11) ────────────────
+
+describe("scoreDensidadeDemografica — fronteiras (ODS 11)", () => {
+  // densidade = populacao / areaterritorial
+
+  it("densidade_ideal_175_deve_resultar_em_score_100", () => {
+    // Arrange: 175 hab/km² → faixa ideal 50-500
+    const data = makeIbgeData({ populacao: 175_000, areaterritorial: 1_000 });
+
+    // Act
+    const indicators = ibgeMapToOds(data);
+    const ind = indicators.find((i) => i.indicatorName === "densidade_demografica")!;
+
+    // Assert
     expect(ind.score).toBe(100);
     expect(ind.status).toBe("verde");
+  });
+
+  it("densidade_50_deve_resultar_em_score_100_fronteira_inferior_ideal", () => {
+    // Arrange: 50 hab/km² → fronteira inferior da faixa ideal
+    const data = makeIbgeData({ populacao: 50_000, areaterritorial: 1_000 });
+
+    // Act
+    const indicators = ibgeMapToOds(data);
+    const ind = indicators.find((i) => i.indicatorName === "densidade_demografica")!;
+
+    // Assert
+    expect(ind.score).toBe(100);
+    expect(ind.status).toBe("verde");
+  });
+
+  it("densidade_500_deve_resultar_em_score_100_fronteira_superior_ideal", () => {
+    // Arrange: 500 hab/km² → fronteira superior da faixa ideal
+    const data = makeIbgeData({ populacao: 500_000, areaterritorial: 1_000 });
+
+    // Act
+    const indicators = ibgeMapToOds(data);
+    const ind = indicators.find((i) => i.indicatorName === "densidade_demografica")!;
+
+    // Assert
+    expect(ind.score).toBe(100);
+    expect(ind.status).toBe("verde");
+  });
+
+  it("densidade_acima_2000_deve_resultar_em_score_30_superlotacao", () => {
+    // Arrange: 3000 hab/km² → superlotacao
+    const data = makeIbgeData({ populacao: 3_000_000, areaterritorial: 1_000 });
+
+    // Act
+    const indicators = ibgeMapToOds(data);
+    const ind = indicators.find((i) => i.indicatorName === "densidade_demografica")!;
+
+    // Assert: score fixo 30 para superlotacao
+    expect(ind.score).toBe(30);
+    expect(ind.status).toBe("vermelho");
+  });
+
+  it("densidade_abaixo_10_deve_resultar_em_score_50_isolamento", () => {
+    // Arrange: 5 hab/km² → isolamento extremo
+    const data = makeIbgeData({ populacao: 5_000, areaterritorial: 1_000 });
+
+    // Act
+    const indicators = ibgeMapToOds(data);
+    const ind = indicators.find((i) => i.indicatorName === "densidade_demografica")!;
+
+    // Assert: score fixo 50 para isolamento extremo
+    expect(ind.score).toBe(50);
+    expect(ind.status).toBe("amarelo");
+  });
+
+  it("sem_area_territorial_nao_gera_indicador_ODS11", () => {
+    // Arrange: areaterritorial null → divisao impossivel, sem indicador
+    const data = makeIbgeData({ populacao: 50_000, areaterritorial: null });
+
+    // Act
+    const indicators = ibgeMapToOds(data);
+    const ind = indicators.find((i) => i.indicatorName === "densidade_demografica");
+
+    // Assert: ausencia gracosa sem crash
+    expect(ind).toBeUndefined();
   });
 });
 

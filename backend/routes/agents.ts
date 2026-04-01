@@ -5,6 +5,7 @@ import { DatasusCollector, mapToOdsIndicators as mapDatasusOds } from "../agents
 import { InepCollector, mapToOdsIndicators as mapInepOds } from "../agents/inep/index.js";
 import { SnisCollector, mapToOdsIndicators as mapSnisOds } from "../agents/snis/index.js";
 import { InpeCollector, mapToOdsIndicators as mapInpeOds } from "../agents/inpe/index.js";
+import { PncpCollector, mapToOdsIndicators as mapPncpOds } from "../agents/pncp/index.js";
 import { logger } from "../utils/logger.js";
 import { batchLimiter } from "../middleware/rate-limit.js";
 
@@ -15,6 +16,7 @@ const datasusCollector = new DatasusCollector();
 const inepCollector = new InepCollector();
 const snisCollector = new SnisCollector();
 const inpeCollector = new InpeCollector();
+const pncpCollector = new PncpCollector();
 
 // ─── Validação compartilhada ────────────────────────────────────────────────
 
@@ -269,6 +271,37 @@ router.get("/inpe/:ibgeCode", async (req: Request, res: Response) => {
       error: error instanceof Error ? error.message : String(error),
     });
     res.status(500).json({ error: "Erro interno ao coletar dados INPE" });
+  }
+});
+
+// ─── PNCP Routes ──────────────────────────────────────────────────────────────
+
+router.get("/pncp/:ibgeCode", async (req: Request, res: Response) => {
+  const ibgeCode = validateIbgeCode(req.params["ibgeCode"]);
+  if (!ibgeCode) {
+    res.status(400).json({ error: "ibgeCode deve ter 7 dígitos numéricos" });
+    return;
+  }
+
+  try {
+    const data = await pncpCollector.collect(ibgeCode);
+    if (!data) {
+      res.status(404).json({ error: `Dados PNCP não encontrados para ${ibgeCode}` });
+      return;
+    }
+    res.json({
+      municipality: ibgeCode,
+      source: "pncp",
+      referenceYear: data.referenceYear,
+      indicators: data.indicators,
+      ods: mapPncpOds(data),
+    });
+  } catch (error) {
+    logger.error("Error in PNCP agent route", {
+      ibgeCode,
+      error: error instanceof Error ? error.message : String(error),
+    });
+    res.status(500).json({ error: "Erro interno ao coletar dados PNCP" });
   }
 });
 

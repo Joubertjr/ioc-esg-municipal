@@ -4,6 +4,7 @@ import { DatasusCollector, mapToOdsIndicators as mapDatasusOds } from "../../age
 import { InepCollector, mapToOdsIndicators as mapInepOds } from "../../agents/inep/index.js";
 import { SnisCollector, mapToOdsIndicators as mapSnisOds } from "../../agents/snis/index.js";
 import { InpeCollector, mapToOdsIndicators as mapInpeOds } from "../../agents/inpe/index.js";
+import { PncpCollector, mapToOdsIndicators as mapPncpOds } from "../../agents/pncp/index.js";
 import { ODS_DEFINITIONS, getOdsDefinition } from "../../../shared/constants/ods.js";
 import { getOdsStatus, type OdsIndicator, type OdsStatus } from "../../../shared/types/domain/ods.js";
 import { logger } from "../../utils/logger.js";
@@ -55,6 +56,7 @@ const datasusCollector = new DatasusCollector();
 const inepCollector = new InepCollector();
 const snisCollector = new SnisCollector();
 const inpeCollector = new InpeCollector();
+const pncpCollector = new PncpCollector();
 
 /**
  * Serviço que orquestra todos os coletores e consolida scores ODS para um município.
@@ -71,17 +73,19 @@ export async function calculateMunicipalOds(ibgeCode: string): Promise<Municipal
   // DATASUS cai com frequência (timeout=30s x retries=3 = 93s no pior caso).
   // Budget de 10s por fonte garante resposta em ≤15s mesmo com DATASUS down.
   // INEP e SNIS são locais (JSON estático) — 1s é suficiente.
-  const [ibgeData, siconfiData, datasusData, inepData, snisData, inpeData] = await Promise.all([
-    withTimeout(ibgeCollector.collect(ibgeCode), 10_000, "ibge"),
-    withTimeout(siconfiCollector.collect(ibgeCode), 15_000, "siconfi"),
-    withTimeout(datasusCollector.collect(ibgeCode), 10_000, "datasus"),
-    withTimeout(inepCollector.collect(ibgeCode), 1_000, "inep"),
-    withTimeout(snisCollector.collect(ibgeCode), 1_000, "snis"),
-    withTimeout(inpeCollector.collect(ibgeCode), 15_000, "inpe"),
-  ]);
+  const [ibgeData, siconfiData, datasusData, inepData, snisData, inpeData, pncpData] =
+    await Promise.all([
+      withTimeout(ibgeCollector.collect(ibgeCode), 10_000, "ibge"),
+      withTimeout(siconfiCollector.collect(ibgeCode), 15_000, "siconfi"),
+      withTimeout(datasusCollector.collect(ibgeCode), 10_000, "datasus"),
+      withTimeout(inepCollector.collect(ibgeCode), 1_000, "inep"),
+      withTimeout(snisCollector.collect(ibgeCode), 1_000, "snis"),
+      withTimeout(inpeCollector.collect(ibgeCode), 15_000, "inpe"),
+      withTimeout(pncpCollector.collect(ibgeCode), 15_000, "pncp"),
+    ]);
 
   // Se nenhuma fonte retornou dados, não há score
-  if (!ibgeData && !siconfiData && !datasusData && !inepData && !snisData && !inpeData) {
+  if (!ibgeData && !siconfiData && !datasusData && !inepData && !snisData && !inpeData && !pncpData) {
     logger.warn(`No data from any source for municipality ${ibgeCode}`);
     return null;
   }
@@ -94,6 +98,7 @@ export async function calculateMunicipalOds(ibgeCode: string): Promise<Municipal
   if (inepData) allIndicators.push(...mapInepOds(inepData));
   if (snisData) allIndicators.push(...mapSnisOds(snisData));
   if (inpeData) allIndicators.push(...mapInpeOds(inpeData));
+  if (pncpData) allIndicators.push(...mapPncpOds(pncpData));
 
   // Determinar ano de referência mais recente
   const referenceYear = Math.max(
@@ -103,6 +108,7 @@ export async function calculateMunicipalOds(ibgeCode: string): Promise<Municipal
     inepData?.referenceYear ?? 0,
     snisData?.referenceYear ?? 0,
     inpeData?.referenceYear ?? 0,
+    pncpData?.referenceYear ?? 0,
   );
 
   // Agrupar indicadores por ODS number
