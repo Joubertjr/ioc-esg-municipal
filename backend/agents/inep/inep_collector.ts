@@ -9,7 +9,7 @@ import idebRawData from "../../../shared/data/ideb_2023.json";
 // Validação única na carga do módulo
 const parseResult = IdebDataFileSchema.safeParse(idebRawData);
 if (!parseResult.success) {
-  throw new Error(`ideb_2023.json validation failed: ${parseResult.error.message}`);
+  throw new Error(`ideb_2023.json validation failed: ${JSON.stringify(parseResult.error.errors)}`);
 }
 const IDEB_DATA = parseResult.data;
 
@@ -48,6 +48,7 @@ export class InepCollector {
       const data = await this.collect(code);
       if (data) results.set(code, data);
     }
+    logger.info(`INEP batch: ${results.size}/${ibgeCodes.length} municípios com dados`);
     return results;
   }
 }

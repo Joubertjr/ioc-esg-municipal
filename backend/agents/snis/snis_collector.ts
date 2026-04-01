@@ -9,7 +9,7 @@ import snisRawData from "../../../shared/data/snis_2022.json";
 // Validação única na carga do módulo
 const parseResult = SnisDataFileSchema.safeParse(snisRawData);
 if (!parseResult.success) {
-  throw new Error(`snis_2022.json validation failed: ${parseResult.error.message}`);
+  throw new Error(`snis_2022.json validation failed: ${JSON.stringify(parseResult.error.errors)}`);
 }
 const SNIS_DATA = parseResult.data;
 
@@ -51,6 +51,7 @@ export class SnisCollector {
       const data = await this.collect(code);
       if (data) results.set(code, data);
     }
+    logger.info(`SNIS batch: ${results.size}/${ibgeCodes.length} municípios com dados`);
     return results;
   }
 }

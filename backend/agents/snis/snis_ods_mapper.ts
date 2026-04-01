@@ -118,7 +118,8 @@ function scoreEsgotoTratado(pct: number): number {
 function scorePerdaFaturamento(pct: number): number {
   if (pct <= 15) return 100;
   if (pct <= 35) return 50 + ((35 - pct) / 20) * 50;
-  return ((60 - pct) / 25) * 50;
+  // > 35%: linear de 50 (pct=35) até 0 (pct=60+)
+  return Math.max(0, ((60 - pct) / 25) * 50);
 }
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────

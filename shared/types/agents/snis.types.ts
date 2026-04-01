@@ -3,10 +3,10 @@ import { z } from "zod";
 // ─── Schema do JSON estático (validado na carga) ─────────────────────────────
 
 export const SnisMunicipalEntrySchema = z.object({
-  atendimentoAgua: z.number().nonnegative().nullable(),       // IN023 (%)
-  atendimentoEsgoto: z.number().nonnegative().nullable(),     // IN056 (%)
-  esgotoTratado: z.number().nonnegative().nullable(),         // IN046 (%)
-  perdaFaturamento: z.number().nonnegative().nullable(),      // IN049 (%)
+  atendimentoAgua: z.number().min(0).max(100).nullable(),       // IN023 (%)
+  atendimentoEsgoto: z.number().min(0).max(100).nullable(),     // IN056 (%)
+  esgotoTratado: z.number().min(0).max(100).nullable(),         // IN046 (%)
+  perdaFaturamento: z.number().min(0).max(150).nullable(),      // IN049 (%) — pode exceder 100 em casos extremos
 });
 
 export const SnisDataFileSchema = z.record(z.string(), SnisMunicipalEntrySchema);
