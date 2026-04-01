@@ -63,10 +63,11 @@ export const API_CONFIGS: Record<string, ApiConfig> = {
   },
   pncp: {
     name: "PNCP",
-    baseUrl: "https://pncp.gov.br/api/pncp/v1",
+    /** API de consulta (dados abertos, sem auth). NÃO usar /api/pncp (manutenção, requer JWT) */
+    baseUrl: "https://pncp.gov.br/api/consulta/v1",
     cacheTtlSeconds: 3_600, // 1h
-    rateLimit: 2,
-    timeoutMs: 15_000,
+    rateLimit: 1,
+    timeoutMs: 30_000,
     retryCount: 3,
   },
 } as const;
