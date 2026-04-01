@@ -1,6 +1,7 @@
 import { Router, type Request, type Response, type Router as RouterType } from "express";
 import { calculateMunicipalOds } from "../services/ods/index.js";
 import { logger } from "../utils/logger.js";
+import { batchLimiter } from "../middleware/rate-limit.js";
 
 const router: RouterType = Router();
 
@@ -39,7 +40,7 @@ router.get("/:ibgeCode", async (req: Request, res: Response) => {
  * Body: { ibgeCodes: string[] }
  * Compara scores ODS entre múltiplos municípios (máx 10).
  */
-router.post("/compare", async (req: Request, res: Response) => {
+router.post("/compare", batchLimiter, async (req: Request, res: Response) => {
   const { ibgeCodes } = req.body as { ibgeCodes?: string[] };
 
   if (!Array.isArray(ibgeCodes) || ibgeCodes.length < 2) {

@@ -5,6 +5,7 @@ import { DatasusCollector, mapToOdsIndicators as mapDatasusOds } from "../agents
 import { InepCollector, mapToOdsIndicators as mapInepOds } from "../agents/inep/index.js";
 import { SnisCollector, mapToOdsIndicators as mapSnisOds } from "../agents/snis/index.js";
 import { logger } from "../utils/logger.js";
+import { batchLimiter } from "../middleware/rate-limit.js";
 
 const router: RouterType = Router();
 const ibgeCollector = new IbgeCollector();
@@ -21,10 +22,14 @@ function validateIbgeCode(ibgeCode: string | undefined): string | null {
 }
 
 function validateBatchBody(body: unknown): string[] | null {
-  const { ibgeCodes } = body as { ibgeCodes?: string[] };
+  const { ibgeCodes } = body as { ibgeCodes?: unknown[] };
   if (!Array.isArray(ibgeCodes) || ibgeCodes.length === 0) return null;
   if (ibgeCodes.length > 50) return null;
-  return ibgeCodes;
+  const valid = ibgeCodes.filter(
+    (code): code is string => typeof code === "string" && /^\d{7}$/.test(code),
+  );
+  if (valid.length === 0) return null;
+  return valid;
 }
 
 // ─── IBGE Routes ────────────────────────────────────────────────────────────
@@ -58,7 +63,7 @@ router.get("/ibge/:ibgeCode", async (req: Request, res: Response) => {
   }
 });
 
-router.post("/ibge/batch", async (req: Request, res: Response) => {
+router.post("/ibge/batch", batchLimiter, async (req: Request, res: Response) => {
   const ibgeCodes = validateBatchBody(req.body);
   if (!ibgeCodes) {
     res.status(400).json({ error: "ibgeCodes deve ser array não vazio (máx 50)" });
@@ -115,7 +120,7 @@ router.get("/siconfi/:ibgeCode", async (req: Request, res: Response) => {
   }
 });
 
-router.post("/siconfi/batch", async (req: Request, res: Response) => {
+router.post("/siconfi/batch", batchLimiter, async (req: Request, res: Response) => {
   const ibgeCodes = validateBatchBody(req.body);
   if (!ibgeCodes) {
     res.status(400).json({ error: "ibgeCodes deve ser array não vazio (máx 50)" });
