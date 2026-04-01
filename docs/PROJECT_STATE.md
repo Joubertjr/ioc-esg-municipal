@@ -1,7 +1,7 @@
 # Estado do Projeto — IOC ESG Municipal
-Atualizado: 2026-04-01 — INEP (IDEB) + SNIS (Saneamento) integrados
+Atualizado: 2026-04-01 18:00 — INPE (Florestal) integrado, 11/17 ODS
 
-## Status: DASHBOARD + SCORE SERVICE + 5 COLETORES — 9/17 ODS cobertos
+## Status: DASHBOARD + SCORE SERVICE + 6 COLETORES — 11/17 ODS cobertos
 
 ## Concluido
 - Setup completo (docs, types, Prisma, Docker, seeds, CI/CD)
@@ -9,66 +9,73 @@ Atualizado: 2026-04-01 — INEP (IDEB) + SNIS (Saneamento) integrados
 - **Agente SICONFI:** FPM + despesas por funcao → ODS 3, 4, 11, 16, 17 (14 testes)
 - **Agente DATASUS:** 6 indicadores Previne Brasil → ODS 3 (11 testes)
   - API DEMAS: apidadosabertos.saude.gov.br
-  - Indicadores: pre-natal, diabetes, hipertensao, crescimento infantil,
-    cancer colo uterino, saude bucal + media geral
   - Fallback quadrimestral: Q atual → Q anterior → ano anterior Q3
-  - Validacao Zod da resposta (wrapper sisab_indicador_desempenho)
 - **Agente INEP:** IDEB 2023 → ODS 4 (12 testes)
-  - 2 indicadores: IDEB anos iniciais + IDEB anos finais do ensino fundamental
-  - ODS 4 agora combina SICONFI + INEP (3 indicadores total: despesa educacao + 2 IDEB)
+  - 2 indicadores: IDEB anos iniciais + IDEB anos finais
 - **Agente SNIS:** Saneamento 2022 → ODS 6 (15 testes)
-  - 4 indicadores: indice atendimento agua, indice coleta esgoto,
-    indice tratamento esgoto, indice perda distribuicao
-  - Dados chegam com ~18 meses de atraso — ano de referencia sempre informado
-- **ODS Score Service:** orquestra IBGE+SICONFI+DATASUS+INEP+SNIS,
-  score global ponderado (13 testes)
-  - Promise.all em 5 coletores em paralelo
-- **Dashboard Frontend:** 10 componentes React com dados ao vivo
-  - GlobalScore: gauge SVG circular
-  - OdsCard grid: 17 cards com cores UN
-  - OdsDetailDrawer: painel lateral com indicadores
-  - OdsRadarChart: Recharts radar 17 eixos
-  - AppShell: header + combobox 295 municipios SC
-  - React Query + skeleton loaders
-- Rotas: GET /api/ods/:ibgeCode + POST /api/ods/compare
-  + GET /api/agents/{ibge,siconfi,datasus,inep,snis}/:ibgeCode
-  + POST /api/agents/{ibge,siconfi}/batch
-- 77 testes unitarios passando, zero erros TypeScript
+  - 4 indicadores: agua, esgoto, tratamento, perdas
+- **Agente INPE:** Desmatamento PRODES Mata Atlantica → ODS 13, 15 (testes em andamento)
+  - WFS GeoServer 2-step: bbox por geocodigo → serie historica desmatamento
+  - 4 indicadores: desmatamento anual, acumulado, tendencia, tendencia vida terrestre
+  - Cache 24h, timeout 15s, retry 3x
+- **ODS Score Service:** orquestra 6 coletores em paralelo com circuit breaker
+  - withTimeout: IBGE 10s, SICONFI 15s, DATASUS 10s, INEP 1s, SNIS 1s, INPE 15s
+- **Dashboard Frontend:** 10 componentes React
+- **Seguranca:** helmet, CORS restrito, rate limiting (60/min + 5/min batch)
+  - Validacao batch com regex /^\d{7}$/, body limit 10kb
+- **Performance:** circuit breaker por coletor, skip sleep em cache hit
+- **Testes:** 121 unitarios passando (boundary values, http-client, cache)
+- **Agente project-monitor:** analista continuo de KPIs e coerencia
+- **Dockerfile + .dockerignore** para deploy
 
-## Resultados ao vivo
-- Florianopolis (4205407): globalScore=74 (verde), 9/17 ODS
-  - ODS 3: score 81 (7 indicadores SICONFI+DATASUS combinados)
-  - ODS 4: score atualizado com SICONFI + IDEB anos iniciais + IDEB anos finais
-  - ODS 6: score calculado com 4 indicadores SNIS (ref. 2022)
-- Dashboard: http://localhost:5173 (com backend em :3000)
+## Cobertura ODS (11/17)
+| ODS | Nome | Fonte | Indicadores | Status |
+|-----|------|-------|-------------|--------|
+| 1 | Pobreza | IBGE | pct_baixa_renda | Ativo |
+| 2 | Fome Zero | — | — | Pendente (FNDE/SISVAN) |
+| 3 | Saude | SICONFI+DATASUS | despesa_saude + 6 Previne Brasil | Ativo |
+| 4 | Educacao | SICONFI+INEP | despesa_educacao + 2 IDEB | Ativo |
+| 5 | Igualdade Genero | — | — | Pendente (SSP-SC/TSE) |
+| 6 | Saneamento | SNIS | agua + esgoto + tratamento + perdas | Ativo |
+| 7 | Energia | — | — | Pendente (ANEEL/IBGE) |
+| 8 | Trabalho | IBGE | ocupacao + PIB per capita | Ativo |
+| 9 | Infraestrutura | — | — | Pendente (ANATEL/IBGE) |
+| 10 | Desigualdade | IBGE | pct_baixa_renda (proxy — precisa Gini) | Ativo* |
+| 11 | Cidades | IBGE+SICONFI | equilibrio_fiscal + urbanismo | Ativo* |
+| 12 | Consumo Resp. | — | — | Pendente (SNIS-RS) |
+| 13 | Acao Climatica | INPE | desmatamento_anual + tendencia | Ativo |
+| 14 | Vida na Agua | — | — | Pendente (ANA/MapBiomas) |
+| 15 | Vida Terrestre | INPE | desmatamento_acumulado + tendencia | Ativo |
+| 16 | Instituicoes | SICONFI | equilibrio_fiscal | Ativo* |
+| 17 | Parcerias | SICONFI | dependencia_FPM | Ativo |
 
-## Cobertura ODS atual (9/17)
-| ODS | Nome | Fonte | Indicadores |
-|-----|------|-------|-------------|
-| 1 | Pobreza | IBGE | % baixa renda |
-| 3 | Saude | SICONFI+DATASUS | % despesa saude + 6 Previne Brasil |
-| 4 | Educacao | SICONFI+INEP | % despesa educacao + IDEB iniciais + IDEB finais |
-| 6 | Saneamento | SNIS | Agua + esgoto + tratamento + perdas (ref. 2022) |
-| 8 | Trabalho | IBGE | Taxa ocupacao + PIB per capita |
-| 10 | Desigualdade | IBGE | % baixa renda (proxy) |
-| 11 | Cidades | IBGE+SICONFI | Equilibrio fiscal + urbanismo |
-| 16 | Instituicoes | SICONFI | Equilibrio fiscal detalhado |
-| 17 | Parcerias | SICONFI | Dependencia FPM |
+*ODS 10, 11, 16 precisam de indicadores proprios (duplicam ODS 1/proxies errados)
 
-## Proximos passos
-1. INPE (TerraBrasilis → ODS 13/15: florestas e desmatamento)
-2. PNCP (Licitacoes → ODS 16: transparencia em compras publicas)
-3. Simulador de investimentos FPM
-4. Comparador entre municipios (UI)
-5. Auth + multi-tenancy
-6. Schema Prisma para persistencia de scores historicos
+## Em Andamento (agentes background)
+- Testes INPE collector (test-inpe)
+- Testes rotas Express (test-routes)
+- PNCP collector (impl-pncp)
+- Analise de monitoramento (monitor-run-1)
+
+## Proximos Passos
+1. Commitar PNCP collector quando pronto
+2. Corrigir scoring ODS 10 (Gini), ODS 11 (indicadores proprios)
+3. Implementar ODS faltantes: 2, 5, 7, 9, 12, 14
+4. Simulador de investimentos FPM
+5. Auth JWT + multi-tenancy
+6. Prisma schema v2 (scores historicos)
+
+## Metricas
+- 121 testes passando, 0 erros TypeScript
+- 6 coletores ativos, 7o em implementacao (PNCP)
+- 15 agentes especializados + 1 project-monitor = 16 agentes
 
 ## Stack
 - Backend: Node.js 18 + TypeScript strict + Express + Prisma + PostgreSQL + Redis
 - Frontend: React 18 + Vite + Tailwind + Recharts + React Query
-- Testes: Vitest (77 unit) + Playwright (0 e2e)
+- Testes: Vitest (121 unit) + Playwright (0 e2e)
 - Infra: Docker Compose + GitHub Actions
 
 ## Git
-- Branch: main (7 features merged)
-- Ultimo merge: feature/agents-inep-snis
+- Branch: main (10 commits)
+- Ultimo commit: feat(agents) add project-monitor

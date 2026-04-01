@@ -140,7 +140,31 @@
 
 ## IBGE
 
-> (a preencher conforme encontrados)
+**Data:** 2026-04-01 | **Pesquisador:** data-collector agent
+
+### Gotcha 1: Tabela 4967 (energia eletrica Censo 2010) retornou timeout na API
+
+- **Sintoma:** `GET /api/v3/agregados/4967/periodos/2010/variaveis/all?localidades=N6[4204202]` — timeout 60s
+- **Causa:** Provavelmente tabela descontinuada ou servidor sobrecarregado para Censo 2010
+- **Solucao:** Usar tabela 6737 para energia eletrica; fallback para estatistica nacional (99,8%) se N6 nao disponivel
+
+### Gotcha 2: Tabela 6737 (energia eletrica Censo 2022) retorna ".." para municipios
+
+- **Sintoma:** A API retorna `".."` (dado nao disponivel) para nivel municipal em 2022
+- **Causa:** O IBGE ainda esta publicando resultados do Censo 2022 por etapas. Dados municipais de infraestrutura domiciliar ainda parcialmente indisponiveis via SIDRA API em 2026-04
+- **Solucao:** Monitorar publicacao no SIDRA. Fallback: usar % do estado ou usar Censo 2010 como baseline
+
+### Gotcha 3: Tabela 9514 retorna populacao total mas nao desagrega por sexo via API simples
+
+- **Sintoma:** Classificacao de sexo presente no schema mas `categoria: {"0": ""}` (vazia)
+- **Causa:** A classificacao de sexo requer parametro explicito: `&classificacao=2[4,5]` (4=Homens, 5=Mulheres)
+- **Solucao:** URL correta: `...variaveis/606?localidades=N6[4204202]&classificacao=2[4,5]`
+
+### Gotcha 4: CEMPRE tabela 9418 variavel 707 e pessoal ocupado, nao numero de empresas
+
+- **Sintoma:** Consulta a variavel 707 retornou "Pessoal ocupado total", nao empresas ativas
+- **Causa:** Confusao entre variaveis — 707 = pessoas, 2283 = empresas atuantes
+- **Solucao:** Usar variavel `2283` para numero de empresas e organizacoes atuantes
 
 ---
 
@@ -150,9 +174,37 @@
 
 ---
 
-## DATASUS
+## DATASUS / SISVAN
 
-> (a preencher conforme encontrados)
+**Data:** 2026-04-01 | **Pesquisador:** data-collector agent
+
+### Gotcha 1: opendatasus.saude.gov.br foi descontinuado — redireciona para dadosabertos.saude.gov.br
+
+- **Sintoma:** GET `https://opendatasus.saude.gov.br/dataset/sisvan-estado-nutricional` retorna 302 para `dadosabertos.saude.gov.br`
+- **Causa:** O DATASUS migrou o portal de dados abertos em 2025
+- **Solucao:** Usar `https://dadosabertos.saude.gov.br/dataset/sisvan-estado-nutricional` como URL canonical
+- **URLs de download mantidas:** O S3 `s3.sa-east-1.amazonaws.com/ckan.saude.gov.br/SISVAN/...` continua funcionando
+
+### Gotcha 2: API REST do SISVAN (`apidadosabertos.saude.gov.br`) retornou 503 durante pesquisa
+
+- **Sintoma:** GET `https://apidadosabertos.saude.gov.br/v1/` retorna 503 Service Unavailable
+- **Causa:** Servidor instavel / em manutencao
+- **Solucao:** Nao depender da API REST. Usar download anual do ZIP (S3) como fonte primaria
+
+### Gotcha 3: SISVAN nao tem granularidade municipal direto — e por individuo
+
+- **Sintoma:** Nao existe endpoint `/municipio/{id}/nutricao`
+- **Causa:** Os dados sao individualizados e anonimizados — registro por atendimento
+- **Solucao:** Baixar CSV anual completo (~500 MB), importar para PostgreSQL, agregar via SQL:
+  ```sql
+  SELECT co_municipio_ibge,
+         COUNT(*) FILTER (WHERE ds_imc IN ('Magreza acentuada', 'Magreza')) AS desnutridos,
+         COUNT(*) AS total
+  FROM sisvan_estado_nutricional
+  WHERE nu_fase_vida = '1' -- criancas
+  GROUP BY co_municipio_ibge
+  ```
+- **Atencao:** municipios com < 50 registros: retornar null por amostra insuficiente
 
 ---
 
@@ -171,3 +223,88 @@
 ## PNCP
 
 > (a preencher conforme encontrados)
+
+---
+
+## TSE Dados Abertos
+
+**Data:** 2026-04-01 | **Pesquisador:** data-collector agent
+
+### Gotcha 1: Leiame/dicionario de campos do TSE nao esta acessivel via URL direta
+
+- **Sintoma:** URL `https://cdn.tse.jus.br/estatistica/sead/odsele/consulta_cand/leiame.pdf` retornou 404
+- **Causa:** O leiame vem dentro do proprio ZIP do dataset — nao e publicado separadamente
+- **Solucao:** Baixar o ZIP, extrair o arquivo `leiame.pdf` que acompanha o CSV para documentacao dos campos
+
+### Gotcha 2: Encoding do CSV de candidatos pode ser latin-1
+
+- **Sintoma:** Acentuacao corrompida ao abrir com UTF-8
+- **Causa:** Arquivos historicos do TSE usam encoding ISO-8859-1 (latin-1) e separador `;`
+- **Solucao:** Usar `iconv -f latin-1 -t utf-8` ou `pandas.read_csv(encoding='latin-1', sep=';')` ao processar
+
+### Gotcha 3: Campo de municipio no TSE e SG_UE (codigo TSE), nao codigo IBGE
+
+- **Sintoma:** `SG_UE` tem formato diferente do codigo IBGE de 7 digitos
+- **Causa:** O TSE usa codigos proprios para zonas eleitorais
+- **Solucao:** Verificar se `CD_MUNICIPIO_IBGE` esta presente no CSV 2024. Se nao, usar tabela de-para disponivel no portal TSE. Alternativamente, cruzar por `NM_MUNICIPIO` + `SG_UF`
+
+### Gotcha 4: DS_SIT_TOT_TURNO tem multiplos valores para "eleito"
+
+- **Sintoma:** Filtrar so `ELEITO` perde vereadoras eleitas por quociente
+- **Causa:** O TSE registra diferentes tipos de eleicao: por votos, por quociente partidario, por media
+- **Solucao:** Usar IN list:
+  ```sql
+  WHERE DS_SIT_TOT_TURNO IN ('ELEITO', 'ELEITO POR QP', 'ELEITO POR MEDIA', 'ELEITO POR SUBLEGENDA')
+  ```
+
+---
+
+## ANEEL Dados Abertos
+
+**Data:** 2026-04-01 | **Pesquisador:** data-collector agent
+
+### Gotcha 1: Arquivo principal de GD tem 905 MB — nao baixar em toda requisicao
+
+- **Sintoma:** Download do CSV principal `empreendimento-geracao-distribuida.csv` demora 2-5 minutos
+- **Causa:** Contem todos os empreendimentos do Brasil desde o inicio da GD
+- **Solucao:** Usar exclusivamente o CSV de fotovoltaica (`empreendimento-gd-informacoes-tecnicas-fotovoltaica.csv`, ~50 MB). Agendar download mensal via worker Bull, salvar em PostgreSQL.
+
+### Gotcha 2: Campo "CodMunicipioIbge" pode ter 6 digitos (sem verificador)
+
+- **Sintoma:** Municipios do IBGE tem 7 digitos; campo ANEEL pode ter 6
+- **Causa:** Inconsistencia historica nos sistemas de origem dos dados ANEEL
+- **Solucao:** Verificar comprimento ao importar. Se 6 digitos, adicionar digito verificador usando algoritmo IBGE ou fazer join por nome do municipio + UF como fallback
+
+### Gotcha 3: Houve gap de dados entre set-nov/2025
+
+- **Sintoma:** Instalacoes registradas nesse periodo podem estar faltando
+- **Causa:** ANEEL fez migracao de sistemas em set/2025 — atualizacoes foram suspensas
+- **Solucao:** Dados anteriores a set/2025 e posteriores a nov/2025 sao confiaveis. Para o gap, usar dado mais recente anterior como aproximacao.
+
+---
+
+## ANATEL Dados Abertos
+
+**Data:** 2026-04-01 | **Pesquisador:** data-collector agent
+
+### Gotcha 1: Portal `informacoes.anatel.gov.br/paineis/` retorna 403
+
+- **Sintoma:** GET direto retorna 403 Forbidden
+- **Causa:** Painel exige browser com cookies/session
+- **Solucao:** Usar API CKAN do dados.gov.br para obter URL de download do CSV:
+  ```
+  GET https://dados.gov.br/api/3/action/package_show?id=acessos---banda-larga-fixa
+  ```
+
+### Gotcha 2: Portal dados.gov.br exige JavaScript — pagina vazia via HTTP simples
+
+- **Sintoma:** Fetch direto retorna apenas GTM scripts
+- **Causa:** SPA (Single Page Application) com renderizacao client-side
+- **Solucao:** Usar API REST do CKAN (acima) para navegar no catalogo sem JavaScript
+
+### Gotcha 3: Melhor alternativa para banda larga por municipio e Base dos Dados
+
+- **Dataset:** `basedosdados.br_anatel_banda_larga_fixa`
+- **Acesso:** BigQuery (gratuito com conta Google) ou Python `basedosdados` package
+- **Colunas:** `id_municipio` (7 dig), `ano`, `mes`, `produto`, `acessos`
+- **Vantagem:** Pre-tratado, sem necessidade de parsear CSV raw de 200 MB
