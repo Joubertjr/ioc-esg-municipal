@@ -3,9 +3,29 @@ import { SiconfiCollector, mapToOdsIndicators as mapSiconfiOds } from "../../age
 import { DatasusCollector, mapToOdsIndicators as mapDatasusOds } from "../../agents/datasus/index.js";
 import { InepCollector, mapToOdsIndicators as mapInepOds } from "../../agents/inep/index.js";
 import { SnisCollector, mapToOdsIndicators as mapSnisOds } from "../../agents/snis/index.js";
+import { InpeCollector, mapToOdsIndicators as mapInpeOds } from "../../agents/inpe/index.js";
 import { ODS_DEFINITIONS, getOdsDefinition } from "../../../shared/constants/ods.js";
 import { getOdsStatus, type OdsIndicator, type OdsStatus } from "../../../shared/types/domain/ods.js";
 import { logger } from "../../utils/logger.js";
+
+/**
+ * Envolve uma promise com timeout independente.
+ * Em caso de timeout ou erro, loga o aviso e retorna null em vez de rejeitar.
+ * Isso impede que um coletor lento (ex: DATASUS) bloqueie o Promise.all inteiro.
+ */
+async function withTimeout<T>(promise: Promise<T>, ms: number, label: string): Promise<T | null> {
+  try {
+    return await Promise.race([
+      promise,
+      new Promise<never>((_, reject) =>
+        setTimeout(() => reject(new Error(`${label} timeout after ${ms}ms`)), ms),
+      ),
+    ]);
+  } catch (err) {
+    logger.warn(`Collector ${label} failed: ${err instanceof Error ? err.message : String(err)}`);
+    return null;
+  }
+}
 
 export interface OdsSummary {
   odsNumber: number;
@@ -46,13 +66,16 @@ const snisCollector = new SnisCollector();
  * 5. Calcula score global (média ponderada dos ODS com dados)
  */
 export async function calculateMunicipalOds(ibgeCode: string): Promise<MunicipalOdsReport | null> {
-  // Buscar dados de todas as fontes em paralelo
+  // Buscar dados de todas as fontes em paralelo com budget de tempo por fonte.
+  // DATASUS cai com frequência (timeout=30s x retries=3 = 93s no pior caso).
+  // Budget de 10s por fonte garante resposta em ≤15s mesmo com DATASUS down.
+  // INEP e SNIS são locais (JSON estático) — 1s é suficiente.
   const [ibgeData, siconfiData, datasusData, inepData, snisData] = await Promise.all([
-    ibgeCollector.collect(ibgeCode),
-    siconfiCollector.collect(ibgeCode),
-    datasusCollector.collect(ibgeCode),
-    inepCollector.collect(ibgeCode),
-    snisCollector.collect(ibgeCode),
+    withTimeout(ibgeCollector.collect(ibgeCode), 10_000, "ibge"),
+    withTimeout(siconfiCollector.collect(ibgeCode), 15_000, "siconfi"),
+    withTimeout(datasusCollector.collect(ibgeCode), 10_000, "datasus"),
+    withTimeout(inepCollector.collect(ibgeCode), 1_000, "inep"),
+    withTimeout(snisCollector.collect(ibgeCode), 1_000, "snis"),
   ]);
 
   // Se nenhuma fonte retornou dados, não há score
