@@ -3,8 +3,10 @@ import cors from "cors";
 import helmet from "helmet";
 import dotenv from "dotenv";
 import agentsRouter from "./routes/agents.js";
+import municipalitiesRouter from "./routes/municipalities.js";
 import odsRouter from "./routes/ods.js";
 import authRouter from "./routes/auth.js";
+import simulatorRouter from "./routes/simulator.js";
 import { generalLimiter } from "./middleware/rate-limit.js";
 import { authenticateToken } from "./middleware/auth.js";
 import { globalErrorHandler, notFoundHandler } from "./middleware/error-handler.js";
@@ -43,7 +45,9 @@ app.use("/api/auth", authRouter);
 
 // Rotas protegidas — requerem JWT válido
 app.use("/api/agents", authenticateToken, agentsRouter);
+app.use("/api/municipalities", authenticateToken, municipalitiesRouter);
 app.use("/api/ods", authenticateToken, odsRouter);
+app.use("/api/simulator", authenticateToken, simulatorRouter);
 
 // ─── Error handlers (ordem importa: 404 antes do error handler global) ────────
 

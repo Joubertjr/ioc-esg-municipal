@@ -21,7 +21,7 @@
     "lint:fix": "eslint . --ext .ts,.tsx --fix",
     "format": "prettier --write \"**/*.{ts,tsx,json,md}\"",
     "db:migrate": "prisma migrate dev",
-    "db:seed": "tsx scripts/seed-municipalities.ts",
+    "db:seed": "npx tsx prisma/seed.ts",
     "db:studio": "prisma studio",
     "docker:up": "docker compose up -d postgres redis adminer",
     "docker:down": "docker compose down",
@@ -67,6 +67,9 @@
     "tsx": "^4.7.0",
     "typescript": "^5.3.3",
     "vitest": "^1.1.0"
+  },
+  "prisma": {
+    "seed": "npx tsx prisma/seed.ts"
   },
   "engines": {
     "node": ">=18.0.0"

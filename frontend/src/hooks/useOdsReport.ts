@@ -1,12 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
+import { apiGet } from "../lib/api";
 import type { MunicipalOdsReport } from "../types/api";
 
 async function fetchOdsReport(ibgeCode: string): Promise<MunicipalOdsReport> {
-  const res = await fetch(`/api/ods/${ibgeCode}`);
-  if (!res.ok) {
-    throw new Error(`Erro ao buscar dados ODS: HTTP ${res.status}`);
-  }
-  return res.json();
+  return apiGet<MunicipalOdsReport>(`/api/ods/${ibgeCode}`);
 }
 
 export function useOdsReport(ibgeCode: string) {

@@ -1,5 +1,7 @@
 import { useState, useRef, useEffect } from "react";
+import { NavLink, useNavigate } from "react-router-dom";
 import { SC_MUNICIPALITIES } from "../../../../shared/constants/municipalities-sc";
+import { removeToken } from "../../lib/api";
 
 interface AppShellProps {
   ibgeCode: string;
@@ -14,35 +16,70 @@ function getMunicipalityName(ibgeCode: string): string {
   );
 }
 
+const NAV_LINK_BASE =
+  "text-sm font-medium px-3 py-1.5 rounded-md transition-colors";
+const NAV_LINK_ACTIVE = "bg-blue-100 text-blue-700";
+const NAV_LINK_INACTIVE = "text-gray-600 hover:bg-gray-100 hover:text-gray-900";
+
+function navLinkClass({ isActive }: { isActive: boolean }): string {
+  return `${NAV_LINK_BASE} ${isActive ? NAV_LINK_ACTIVE : NAV_LINK_INACTIVE}`;
+}
+
 export function AppShell({
   ibgeCode,
   onSelect,
   referenceYear,
   children,
 }: AppShellProps) {
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    removeToken();
+    navigate("/login");
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       <header className="sticky top-0 z-30 bg-white border-b border-gray-200 shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 h-14 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <h1 className="text-lg font-bold text-gray-900">
+        <div className="max-w-7xl mx-auto px-4 h-14 flex items-center gap-4">
+          {/* Brand */}
+          <div className="flex items-center gap-2 shrink-0">
+            <span className="text-base font-bold text-gray-900">
               IOC ESG Municipal
-            </h1>
+            </span>
             <span className="px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-700">
               SC
             </span>
           </div>
 
-          <MunicipalityCombobox
-            ibgeCode={ibgeCode}
-            onSelect={onSelect}
-          />
+          {/* Nav links */}
+          <nav className="flex items-center gap-1 ml-2">
+            <NavLink to="/dashboard" className={navLinkClass}>
+              Painel ODS
+            </NavLink>
+            <NavLink to="/simulator" className={navLinkClass}>
+              Simulador
+            </NavLink>
+          </nav>
+
+          {/* Spacer */}
+          <div className="flex-1" />
+
+          <MunicipalityCombobox ibgeCode={ibgeCode} onSelect={onSelect} />
 
           {referenceYear && (
-            <span className="text-xs text-gray-500">
+            <span className="text-xs text-gray-500 shrink-0">
               Ref. {referenceYear}
             </span>
           )}
+
+          <button
+            type="button"
+            onClick={handleLogout}
+            className="shrink-0 text-sm text-gray-500 hover:text-gray-800 transition-colors"
+          >
+            Sair
+          </button>
         </div>
       </header>
 
