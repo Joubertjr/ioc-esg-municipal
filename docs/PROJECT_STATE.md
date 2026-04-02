@@ -1,8 +1,8 @@
 # Estado do Projeto — IOC ESG Municipal
-Atualizado: 2026-04-01 — 17/17 ODS cobertos, 364 testes, auth JWT + error handler
+Atualizado: 2026-04-02 — 17/17 ODS, simulador FPM, frontend routing, 384 testes
 
 ## Status geral
-12 coletores ativos + ODS Score Service orquestrando todos em paralelo. Cobertura completa dos 17 ODS da ONU. Auth JWT implementado. Error handler global. Zero erros TypeScript. 364 testes passando.
+12 coletores + ODS Score Service + Simulador FPM. Frontend com React Router, auth, dashboard, simulador. 384 testes passando, TSC clean.
 
 ---
 
