@@ -47,6 +47,7 @@
     "zod": "^3.22.4"
   },
   "devDependencies": {
+    "@playwright/test": "^1.59.1",
     "@types/bcryptjs": "^2.4.6",
     "@types/cors": "^2.8.17",
     "@types/express": "^4.17.21",
@@ -60,7 +61,7 @@
     "@vitest/ui": "^1.1.0",
     "concurrently": "^8.2.2",
     "eslint": "^8.56.0",
-    "playwright": "^1.40.1",
+    "playwright": "^1.59.1",
     "prettier": "^3.1.1",
     "prisma": "^5.7.1",
     "supertest": "^6.3.3",

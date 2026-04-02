@@ -7,6 +7,8 @@ import municipalitiesRouter from "./routes/municipalities.js";
 import odsRouter from "./routes/ods.js";
 import authRouter from "./routes/auth.js";
 import simulatorRouter from "./routes/simulator.js";
+import reportsRouter from "./routes/reports.js";
+import benchmarksRouter from "./routes/benchmarks.js";
 import { generalLimiter } from "./middleware/rate-limit.js";
 import { authenticateToken } from "./middleware/auth.js";
 import { globalErrorHandler, notFoundHandler } from "./middleware/error-handler.js";
@@ -48,6 +50,8 @@ app.use("/api/agents", authenticateToken, agentsRouter);
 app.use("/api/municipalities", authenticateToken, municipalitiesRouter);
 app.use("/api/ods", authenticateToken, odsRouter);
 app.use("/api/simulator", authenticateToken, simulatorRouter);
+app.use("/api/reports", authenticateToken, reportsRouter);
+app.use("/api/benchmarks", authenticateToken, benchmarksRouter);
 
 // ─── Error handlers (ordem importa: 404 antes do error handler global) ────────
 

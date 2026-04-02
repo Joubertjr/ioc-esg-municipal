@@ -1,8 +1,8 @@
 # Estado do Projeto — IOC ESG Municipal
-Atualizado: 2026-04-02 — 17/17 ODS, simulador FPM, frontend routing, 384 testes
+Atualizado: 2026-04-02 — 17/17 ODS, simulador FPM, relatórios ESG, benchmarks, 5 páginas frontend, E2E setup, 406 testes
 
 ## Status geral
-12 coletores + ODS Score Service + Simulador FPM. Frontend com React Router, auth, dashboard, simulador. 384 testes passando, TSC clean.
+12 coletores + ODS Score Service + Simulador FPM + Report Service + Benchmark Service. Frontend com React Router, auth, 5 páginas (dashboard, simulator, reports, monitoring, login). Playwright E2E configurado. 406 testes passando em 24 arquivos, TSC clean.
 
 ---
 
@@ -64,11 +64,53 @@ Atualizado: 2026-04-02 — 17/17 ODS, simulador FPM, frontend routing, 384 teste
 
 ---
 
+## Serviços
+
+| Serviço | Arquivo | Funcionalidade | Testes |
+|---------|---------|---------------|--------|
+| ODS Score | `ods_score_service.ts` | Orquestra 12 coletores, calcula scores 0-100 | 13 |
+| Simulador FPM | `simulator_service.ts` | Projeta impacto de investimento nos ODS | 10 |
+| Relatório ESG | `report_service.ts` | Gera relatório executivo com recomendações | 10 |
+| Benchmark | `benchmark_service.ts` | Comparativo entre municípios, ranking, médias | 7 |
+
+---
+
+## Frontend (5 páginas)
+
+| Página | Arquivo | Funcionalidade |
+|--------|---------|---------------|
+| Login | `LoginPage.tsx` | Auth com email/password, registro |
+| Dashboard | `DashboardPage.tsx` | Painel ODS com 17 cards, gauges, scores |
+| Simulador | `SimulatorPage.tsx` | Simulação de investimento FPM |
+| Relatórios | `ReportsPage.tsx` | Relatório ESG imprimível com recomendações |
+| Monitoramento | `MonitoringPage.tsx` | Acompanhamento de metas ODS |
+
+---
+
 ## Testes
 
-- **Total:** 364 testes passando em 19 arquivos
+- **Total:** 406 testes passando em 24 arquivos
 - **Erros TypeScript:** 0 (`tsc --noEmit` limpo)
-- **E2E (Playwright):** 0 — nao iniciado
+- **E2E (Playwright):** Configurado — 4 spec files (auth, navigation, dashboard, simulator)
+
+---
+
+## Rotas API
+
+| Rota | Método | Descrição | Auth |
+|------|--------|-----------|------|
+| `/api/auth/register` | POST | Registro de usuário | Não |
+| `/api/auth/login` | POST | Login JWT | Não |
+| `/api/auth/me` | GET | Dados do usuário | Sim |
+| `/api/ods/:ibgeCode` | GET | Scores ODS do município | Sim |
+| `/api/ods/compare` | POST | Compara ODS entre municípios | Sim |
+| `/api/simulator/simulate` | POST | Simulação de investimento | Sim |
+| `/api/simulator/compare` | POST | Compara cenários de simulação | Sim |
+| `/api/reports/:ibgeCode` | GET | Relatório ESG completo | Sim |
+| `/api/benchmarks` | POST | Benchmark entre municípios | Sim |
+| `/api/benchmarks/compare` | POST | Compara município vs grupo | Sim |
+| `/api/municipalities` | GET | Lista municípios | Sim |
+| `/api/municipalities/:ibgeCode` | GET | Detalhe município | Sim |
 
 ---
 
@@ -80,6 +122,7 @@ Atualizado: 2026-04-02 — 17/17 ODS, simulador FPM, frontend routing, 384 teste
 - Cache: Redis com TTL por fonte
 - Logger: Winston estruturado
 - Docker Compose: PostgreSQL + Redis + Adminer
+- Playwright: E2E config com webServer auto-start
 
 ---
 
@@ -91,11 +134,13 @@ Atualizado: 2026-04-02 — 17/17 ODS, simulador FPM, frontend routing, 384 teste
 3. ODS 2: complementar com dados SISVAN (vigilancia alimentar)
 
 ### Features de produto
-1. Simulador de cenarios de investimento FPM
+1. ~~Simulador de cenarios de investimento FPM~~ ✅
 2. Prisma schema v2: tabela `ods_scores` para historico
-3. Testes E2E com Playwright (dashboard + score endpoint)
-4. Seeding de 295 municipios SC com dados reais
-5. Frontend dashboard completo com React Query
+3. ~~Testes E2E com Playwright (dashboard + score endpoint)~~ ✅ (configurado, falta CI)
+4. ~~Seeding de 295 municipios SC com dados reais~~ ✅
+5. ~~Frontend dashboard completo com React Query~~ ✅
+6. ~~Relatório ESG e Benchmark Service~~ ✅
+7. ~~Página de Monitoramento~~ ✅
 
 ### Seguranca pendente
 1. JWT_SECRET validacao em producao (nao aceitar placeholder)
@@ -119,11 +164,11 @@ Atualizado: 2026-04-02 — 17/17 ODS, simulador FPM, frontend routing, 384 teste
 ## Git
 
 - Branch: main
-- Ultimo commit: `feat(ods): integrate 12 collectors for 17/17 ODS coverage`
+- Ultimo commit: `feat: reports, benchmarks, monitoring, E2E setup — 406 tests`
 
 ## Stack
 
 - Backend: Node.js 18 + TypeScript strict + Express + Prisma + PostgreSQL + Redis + Bull
 - Frontend: React 18 + Vite + Tailwind CSS + Shadcn/ui + Recharts + React Query
-- Testes: Vitest (364 unit) + Playwright (0 e2e)
+- Testes: Vitest (406 unit) + Playwright (4 e2e specs)
 - Infra: Docker Compose + GitHub Actions + Dockerfile

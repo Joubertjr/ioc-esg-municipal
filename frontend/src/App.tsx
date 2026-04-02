@@ -13,6 +13,12 @@ const LoginPage = lazy(() =>
 const SimulatorPage = lazy(() =>
   import("./pages/SimulatorPage").then((m) => ({ default: m.SimulatorPage })),
 );
+const ReportsPage = lazy(() =>
+  import("./pages/ReportsPage").then((m) => ({ default: m.ReportsPage })),
+);
+const MonitoringPage = lazy(() =>
+  import("./pages/MonitoringPage").then((m) => ({ default: m.MonitoringPage })),
+);
 
 function PageLoader() {
   return (
@@ -52,6 +58,22 @@ export function App() {
               element={
                 <ProtectedRoute>
                   <SimulatorPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/reports"
+              element={
+                <ProtectedRoute>
+                  <ReportsPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/monitoring"
+              element={
+                <ProtectedRoute>
+                  <MonitoringPage />
                 </ProtectedRoute>
               }
             />
