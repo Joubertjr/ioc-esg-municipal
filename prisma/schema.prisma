@@ -20,6 +20,7 @@ model Municipality {
   deletedAt   DateTime?
 
   indicators  OdsIndicator[]
+  odsScores   OdsScore[]
   simulations Simulation[]
 
   @@index([state])
@@ -44,6 +45,24 @@ model OdsIndicator {
 
   @@index([municipalityId, odsNumber])
   @@index([referenceDate])
+}
+
+model OdsScore {
+  id             String   @id @default(cuid())
+  municipalityId String
+  odsNumber      Int /// 1-17 (0 = global)
+  score          Int? /// 0-100, null = sem dados
+  status         String? /// verde|amarelo|vermelho
+  indicatorCount Int      @default(0)
+  referenceYear  Int
+  calculatedAt   DateTime @default(now())
+  sources        String[] /// ex: ["ibge","siconfi"]
+
+  municipality Municipality @relation(fields: [municipalityId], references: [id])
+
+  @@unique([municipalityId, odsNumber, referenceYear])
+  @@index([municipalityId, referenceYear])
+  @@index([odsNumber])
 }
 
 model Simulation {

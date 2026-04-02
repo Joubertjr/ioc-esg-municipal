@@ -1,0 +1,109 @@
+import { PrismaClient } from "@prisma/client";
+import { calculateMunicipalOds, type MunicipalOdsReport } from "./ods_score_service.js";
+import { logger } from "../../utils/logger.js";
+
+const prisma = new PrismaClient();
+
+/**
+ * Calcula e persiste scores ODS de um município no banco.
+ * Cria um snapshot histórico que pode ser consultado depois.
+ */
+export async function calculateAndPersistScores(ibgeCode: string): Promise<MunicipalOdsReport | null> {
+  const report = await calculateMunicipalOds(ibgeCode);
+  if (!report) return null;
+
+  const municipality = await prisma.municipality.findUnique({
+    where: { ibgeCode },
+  });
+
+  if (!municipality) {
+    logger.warn("[ods-history] município não encontrado no banco", { ibgeCode });
+    return report;
+  }
+
+  const upserts = report.ods.map((ods) =>
+    prisma.odsScore.upsert({
+      where: {
+        municipalityId_odsNumber_referenceYear: {
+          municipalityId: municipality.id,
+          odsNumber: ods.odsNumber,
+          referenceYear: report.referenceYear,
+        },
+      },
+      update: {
+        score: ods.score,
+        status: ods.status,
+        indicatorCount: ods.indicators.length,
+        sources: ods.sources,
+        calculatedAt: new Date(),
+      },
+      create: {
+        municipalityId: municipality.id,
+        odsNumber: ods.odsNumber,
+        score: ods.score,
+        status: ods.status,
+        indicatorCount: ods.indicators.length,
+        referenceYear: report.referenceYear,
+        sources: ods.sources,
+      },
+    }),
+  );
+
+  // Global score (odsNumber = 0)
+  upserts.push(
+    prisma.odsScore.upsert({
+      where: {
+        municipalityId_odsNumber_referenceYear: {
+          municipalityId: municipality.id,
+          odsNumber: 0,
+          referenceYear: report.referenceYear,
+        },
+      },
+      update: {
+        score: report.globalScore,
+        status: report.globalStatus,
+        indicatorCount: report.odsCount.withData,
+        sources: ["global"],
+        calculatedAt: new Date(),
+      },
+      create: {
+        municipalityId: municipality.id,
+        odsNumber: 0,
+        score: report.globalScore,
+        status: report.globalStatus,
+        indicatorCount: report.odsCount.withData,
+        referenceYear: report.referenceYear,
+        sources: ["global"],
+      },
+    }),
+  );
+
+  await prisma.$transaction(upserts);
+
+  logger.info("[ods-history] scores persistidos", {
+    ibgeCode,
+    referenceYear: report.referenceYear,
+    odsCount: report.odsCount.withData,
+  });
+
+  return report;
+}
+
+/**
+ * Busca histórico de scores ODS de um município.
+ */
+export async function getScoreHistory(ibgeCode: string, odsNumber?: number) {
+  const municipality = await prisma.municipality.findUnique({
+    where: { ibgeCode },
+  });
+
+  if (!municipality) return [];
+
+  return prisma.odsScore.findMany({
+    where: {
+      municipalityId: municipality.id,
+      ...(odsNumber !== undefined ? { odsNumber } : {}),
+    },
+    orderBy: [{ referenceYear: "desc" }, { odsNumber: "asc" }],
+  });
+}
