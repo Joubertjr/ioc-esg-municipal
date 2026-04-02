@@ -1,8 +1,8 @@
 # Estado do Projeto — IOC ESG Municipal
-Atualizado: 2026-04-02 — 17/17 ODS, simulador FPM, relatórios ESG, benchmarks, 5 páginas frontend, E2E setup, 406 testes
+Atualizado: 2026-04-02 — 17/17 ODS, simulador FPM, relatórios ESG, benchmarks, 5 páginas frontend, E2E setup, env-validator, 459 testes
 
 ## Status geral
-12 coletores + ODS Score Service + Simulador FPM + Report Service + Benchmark Service. Frontend com React Router, auth, 5 páginas (dashboard, simulator, reports, monitoring, login). Playwright E2E configurado. 406 testes passando em 24 arquivos, TSC clean.
+12 coletores + ODS Score Service + Simulador FPM + Report Service + Benchmark Service + ODS History Service + Env Validator. Frontend com React Router, auth, 5 páginas (dashboard, simulator, reports, monitoring, login). Playwright E2E configurado. **459 testes passando em 28 arquivos**, TSC clean.
 
 ---
 
@@ -72,6 +72,8 @@ Atualizado: 2026-04-02 — 17/17 ODS, simulador FPM, relatórios ESG, benchmarks
 | Simulador FPM | `simulator_service.ts` | Projeta impacto de investimento nos ODS | 10 |
 | Relatório ESG | `report_service.ts` | Gera relatório executivo com recomendações | 10 |
 | Benchmark | `benchmark_service.ts` | Comparativo entre municípios, ranking, médias | 7 |
+| ODS History | `ods_history_service.ts` | Persistência de snapshots ODS via Prisma upsert | — |
+| Env Validator | `env-validator.ts` | Validação Zod de variáveis de ambiente no startup | 14 |
 
 ---
 
@@ -89,7 +91,9 @@ Atualizado: 2026-04-02 — 17/17 ODS, simulador FPM, relatórios ESG, benchmarks
 
 ## Testes
 
-- **Total:** 406 testes passando em 24 arquivos
+- **Total:** 459 testes passando em 28 arquivos
+  - Unit: 420 testes em 25 arquivos
+  - Integração: 39 testes em 3 arquivos (health, auth, ODS)
 - **Erros TypeScript:** 0 (`tsc --noEmit` limpo)
 - **E2E (Playwright):** Configurado — 4 spec files (auth, navigation, dashboard, simulator)
 
@@ -135,7 +139,7 @@ Atualizado: 2026-04-02 — 17/17 ODS, simulador FPM, relatórios ESG, benchmarks
 
 ### Features de produto
 1. ~~Simulador de cenarios de investimento FPM~~ ✅
-2. Prisma schema v2: tabela `ods_scores` para historico
+2. ~~Prisma schema v2: tabela `ods_scores` para historico~~ ✅ (OdsScore + ods_history_service)
 3. ~~Testes E2E com Playwright (dashboard + score endpoint)~~ ✅ (configurado, falta CI)
 4. ~~Seeding de 295 municipios SC com dados reais~~ ✅
 5. ~~Frontend dashboard completo com React Query~~ ✅
@@ -143,9 +147,9 @@ Atualizado: 2026-04-02 — 17/17 ODS, simulador FPM, relatórios ESG, benchmarks
 7. ~~Página de Monitoramento~~ ✅
 
 ### Seguranca pendente
-1. JWT_SECRET validacao em producao (nao aceitar placeholder)
+1. ~~JWT_SECRET validacao em producao (nao aceitar placeholder)~~ ✅ (env-validator)
 2. Redis com auth em producao
-3. CORS: remover localhost fallback em producao
+3. ~~CORS: remover localhost fallback em producao~~ ✅ (env-validator bloqueia em produção)
 
 ---
 
@@ -164,7 +168,7 @@ Atualizado: 2026-04-02 — 17/17 ODS, simulador FPM, relatórios ESG, benchmarks
 ## Git
 
 - Branch: main
-- Ultimo commit: `feat: reports, benchmarks, monitoring, E2E setup — 406 tests`
+- Ultimo commit: `feat(infra): add env validation + integration tests — 459 tests`
 
 ## Stack
 
