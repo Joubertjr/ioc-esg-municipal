@@ -1,7 +1,6 @@
 import express, { type Express } from "express";
 import cors from "cors";
 import helmet from "helmet";
-import dotenv from "dotenv";
 import agentsRouter from "./routes/agents.js";
 import municipalitiesRouter from "./routes/municipalities.js";
 import odsRouter from "./routes/ods.js";
@@ -13,18 +12,17 @@ import { generalLimiter } from "./middleware/rate-limit.js";
 import { authenticateToken } from "./middleware/auth.js";
 import { globalErrorHandler, notFoundHandler } from "./middleware/error-handler.js";
 import { logger } from "./utils/logger.js";
-
-dotenv.config();
+import { env } from "./utils/env-validator.js";
 
 const app: Express = express();
-const PORT = Number(process.env["PORT"] ?? 3000);
+const PORT = env.PORT;
 
 // ─── Middlewares globais ──────────────────────────────────────────────────────
 
 app.use(helmet());
 app.use(
   cors({
-    origin: process.env["ALLOWED_ORIGINS"]?.split(",") ?? ["http://localhost:5173"],
+    origin: env.ALLOWED_ORIGINS.split(",").map((o) => o.trim()),
     credentials: true,
   }),
 );
