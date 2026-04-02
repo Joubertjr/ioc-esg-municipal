@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 
-const { mockIbgeCollect, mockSiconfiCollect, mockDatasusCollect, mockInepCollect, mockSnisCollect, mockInpeCollect, mockPncpCollect } = vi.hoisted(() => ({
+const { mockIbgeCollect, mockSiconfiCollect, mockDatasusCollect, mockInepCollect, mockSnisCollect, mockInpeCollect, mockPncpCollect, mockTseCollect, mockAneelCollect, mockSnisRsCollect, mockAnaCollect, mockConveniosCollect } = vi.hoisted(() => ({
   mockIbgeCollect: vi.fn(),
   mockSiconfiCollect: vi.fn(),
   mockDatasusCollect: vi.fn(),
@@ -8,6 +8,11 @@ const { mockIbgeCollect, mockSiconfiCollect, mockDatasusCollect, mockInepCollect
   mockSnisCollect: vi.fn(),
   mockInpeCollect: vi.fn(),
   mockPncpCollect: vi.fn(),
+  mockTseCollect: vi.fn(),
+  mockAneelCollect: vi.fn(),
+  mockSnisRsCollect: vi.fn(),
+  mockAnaCollect: vi.fn(),
+  mockConveniosCollect: vi.fn(),
 }));
 
 vi.mock("../../../backend/agents/ibge/ibge_collector.js", () => ({
@@ -59,8 +64,48 @@ vi.mock("../../../backend/agents/pncp/pncp_collector.js", () => ({
   })),
 }));
 
+vi.mock("../../../backend/agents/tse/tse_collector.js", () => ({
+  TseCollector: vi.fn().mockImplementation(() => ({
+    collect: mockTseCollect,
+    collectBatch: vi.fn(),
+  })),
+}));
+
+vi.mock("../../../backend/agents/aneel/aneel_collector.js", () => ({
+  AneelCollector: vi.fn().mockImplementation(() => ({
+    collect: mockAneelCollect,
+    collectBatch: vi.fn(),
+  })),
+}));
+
+vi.mock("../../../backend/agents/snis_rs/snis_rs_collector.js", () => ({
+  SnisRsCollector: vi.fn().mockImplementation(() => ({
+    collect: mockSnisRsCollect,
+    collectBatch: vi.fn(),
+  })),
+}));
+
+vi.mock("../../../backend/agents/ana/ana_collector.js", () => ({
+  AnaCollector: vi.fn().mockImplementation(() => ({
+    collect: mockAnaCollect,
+    collectBatch: vi.fn(),
+  })),
+}));
+
+vi.mock("../../../backend/agents/convenios/convenios_collector.js", () => ({
+  ConveniosCollector: vi.fn().mockImplementation(() => ({
+    collect: mockConveniosCollect,
+    collectBatch: vi.fn(),
+  })),
+}));
+
 vi.mock("../../../shared/data/ideb_2023.json", () => ({ default: {} }));
 vi.mock("../../../shared/data/snis_2022.json", () => ({ default: {} }));
+vi.mock("../../../shared/data/tse_2024.json", () => ({ default: {} }));
+vi.mock("../../../shared/data/aneel_gd_2023.json", () => ({ default: {} }));
+vi.mock("../../../shared/data/snis_rs_2022.json", () => ({ default: {} }));
+vi.mock("../../../shared/data/ana_2022.json", () => ({ default: {} }));
+vi.mock("../../../shared/data/convenios_2023.json", () => ({ default: {} }));
 
 vi.mock("../../../backend/utils/cache.js", () => ({
   withCache: vi.fn(
@@ -166,24 +211,27 @@ const MOCK_SNIS_DATA = {
   },
 };
 
-/** Helper: set all mocks to null (no data from any source) */
-function mockAllNull(): void {
-  mockIbgeCollect.mockResolvedValueOnce(null);
-  mockSiconfiCollect.mockResolvedValueOnce(null);
-  mockDatasusCollect.mockResolvedValueOnce(null);
-  mockInepCollect.mockResolvedValueOnce(null);
-  mockSnisCollect.mockResolvedValueOnce(null);
-  mockInpeCollect.mockResolvedValueOnce(null);
-  mockPncpCollect.mockResolvedValueOnce(null);
-}
 
 describe("ODS Score Service", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    // Default all collectors to null — tests override specific ones
+    mockIbgeCollect.mockResolvedValue(null);
+    mockSiconfiCollect.mockResolvedValue(null);
+    mockDatasusCollect.mockResolvedValue(null);
+    mockInepCollect.mockResolvedValue(null);
+    mockSnisCollect.mockResolvedValue(null);
+    mockInpeCollect.mockResolvedValue(null);
+    mockPncpCollect.mockResolvedValue(null);
+    mockTseCollect.mockResolvedValue(null);
+    mockAneelCollect.mockResolvedValue(null);
+    mockSnisRsCollect.mockResolvedValue(null);
+    mockAnaCollect.mockResolvedValue(null);
+    mockConveniosCollect.mockResolvedValue(null);
   });
 
   it("retorna null quando nenhuma fonte tem dados", async () => {
-    mockAllNull();
+    // beforeEach already sets all collectors to null
     const result = await calculateMunicipalOds("0000000");
     expect(result).toBeNull();
   });

@@ -1,0 +1,1477 @@
+{
+  "4200051": {
+    "conveniosFederaisAtivos": 6,
+    "pctOrcamentoConvenios": 0.0,
+    "consorciosIntermunicipais": 2
+  },
+  "4200101": {
+    "conveniosFederaisAtivos": 8,
+    "pctOrcamentoConvenios": 12.8,
+    "consorciosIntermunicipais": 1
+  },
+  "4200200": {
+    "conveniosFederaisAtivos": 4,
+    "pctOrcamentoConvenios": 0.0,
+    "consorciosIntermunicipais": 4
+  },
+  "4200309": {
+    "conveniosFederaisAtivos": 0,
+    "pctOrcamentoConvenios": 5.3,
+    "consorciosIntermunicipais": 4
+  },
+  "4200408": {
+    "conveniosFederaisAtivos": 2,
+    "pctOrcamentoConvenios": 10.6,
+    "consorciosIntermunicipais": 0
+  },
+  "4200507": {
+    "conveniosFederaisAtivos": 10,
+    "pctOrcamentoConvenios": 11.7,
+    "consorciosIntermunicipais": 2
+  },
+  "4200556": {
+    "conveniosFederaisAtivos": 15,
+    "pctOrcamentoConvenios": 5.2,
+    "consorciosIntermunicipais": 1
+  },
+  "4200606": {
+    "conveniosFederaisAtivos": 10,
+    "pctOrcamentoConvenios": 10.6,
+    "consorciosIntermunicipais": 5
+  },
+  "4200705": {
+    "conveniosFederaisAtivos": 5,
+    "pctOrcamentoConvenios": 24.8,
+    "consorciosIntermunicipais": 4
+  },
+  "4200754": {
+    "conveniosFederaisAtivos": 10,
+    "pctOrcamentoConvenios": 10.7,
+    "consorciosIntermunicipais": 4
+  },
+  "4200804": {
+    "conveniosFederaisAtivos": 6,
+    "pctOrcamentoConvenios": 1.5,
+    "consorciosIntermunicipais": 2
+  },
+  "4200903": {
+    "conveniosFederaisAtivos": 1,
+    "pctOrcamentoConvenios": 4.2,
+    "consorciosIntermunicipais": 2
+  },
+  "4201000": {
+    "conveniosFederaisAtivos": 6,
+    "pctOrcamentoConvenios": 5.7,
+    "consorciosIntermunicipais": 2
+  },
+  "4201109": {
+    "conveniosFederaisAtivos": 3,
+    "pctOrcamentoConvenios": 20.3,
+    "consorciosIntermunicipais": 4
+  },
+  "4201208": {
+    "conveniosFederaisAtivos": 2,
+    "pctOrcamentoConvenios": 11.3,
+    "consorciosIntermunicipais": 3
+  },
+  "4201257": {
+    "conveniosFederaisAtivos": 25,
+    "pctOrcamentoConvenios": 10.1,
+    "consorciosIntermunicipais": 5
+  },
+  "4201273": {
+    "conveniosFederaisAtivos": 10,
+    "pctOrcamentoConvenios": 14.5,
+    "consorciosIntermunicipais": 0
+  },
+  "4201307": {
+    "conveniosFederaisAtivos": 3,
+    "pctOrcamentoConvenios": 4.4,
+    "consorciosIntermunicipais": 7
+  },
+  "4201406": {
+    "conveniosFederaisAtivos": 12,
+    "pctOrcamentoConvenios": 6.3,
+    "consorciosIntermunicipais": 3
+  },
+  "4201505": {
+    "conveniosFederaisAtivos": 12,
+    "pctOrcamentoConvenios": 7.5,
+    "consorciosIntermunicipais": 2
+  },
+  "4201604": {
+    "conveniosFederaisAtivos": 5,
+    "pctOrcamentoConvenios": 5.2,
+    "consorciosIntermunicipais": 7
+  },
+  "4201653": {
+    "conveniosFederaisAtivos": 4,
+    "pctOrcamentoConvenios": 6.0,
+    "consorciosIntermunicipais": 4
+  },
+  "4201703": {
+    "conveniosFederaisAtivos": 1,
+    "pctOrcamentoConvenios": 1.2,
+    "consorciosIntermunicipais": 4
+  },
+  "4201802": {
+    "conveniosFederaisAtivos": 8,
+    "pctOrcamentoConvenios": 5.1,
+    "consorciosIntermunicipais": 3
+  },
+  "4201901": {
+    "conveniosFederaisAtivos": 25,
+    "pctOrcamentoConvenios": 8.9,
+    "consorciosIntermunicipais": 6
+  },
+  "4201950": {
+    "conveniosFederaisAtivos": 0,
+    "pctOrcamentoConvenios": 12.4,
+    "consorciosIntermunicipais": 4
+  },
+  "4202008": {
+    "conveniosFederaisAtivos": 3,
+    "pctOrcamentoConvenios": 9.2,
+    "consorciosIntermunicipais": 3
+  },
+  "4202057": {
+    "conveniosFederaisAtivos": 4,
+    "pctOrcamentoConvenios": 25.8,
+    "consorciosIntermunicipais": 2
+  },
+  "4202073": {
+    "conveniosFederaisAtivos": 4,
+    "pctOrcamentoConvenios": 4.8,
+    "consorciosIntermunicipais": 6
+  },
+  "4202081": {
+    "conveniosFederaisAtivos": 3,
+    "pctOrcamentoConvenios": 10.2,
+    "consorciosIntermunicipais": 1
+  },
+  "4202099": {
+    "conveniosFederaisAtivos": 8,
+    "pctOrcamentoConvenios": 8.6,
+    "consorciosIntermunicipais": 4
+  },
+  "4202107": {
+    "conveniosFederaisAtivos": 0,
+    "pctOrcamentoConvenios": 5.0,
+    "consorciosIntermunicipais": 7
+  },
+  "4202131": {
+    "conveniosFederaisAtivos": 12,
+    "pctOrcamentoConvenios": 14.6,
+    "consorciosIntermunicipais": 0
+  },
+  "4202156": {
+    "conveniosFederaisAtivos": 12,
+    "pctOrcamentoConvenios": 24.2,
+    "consorciosIntermunicipais": 4
+  },
+  "4202206": {
+    "conveniosFederaisAtivos": 1,
+    "pctOrcamentoConvenios": 12.5,
+    "consorciosIntermunicipais": 1
+  },
+  "4202305": {
+    "conveniosFederaisAtivos": 4,
+    "pctOrcamentoConvenios": 7.5,
+    "consorciosIntermunicipais": 6
+  },
+  "4202404": {
+    "conveniosFederaisAtivos": 4,
+    "pctOrcamentoConvenios": 5.1,
+    "consorciosIntermunicipais": 5
+  },
+  "4202438": {
+    "conveniosFederaisAtivos": 2,
+    "pctOrcamentoConvenios": 7.0,
+    "consorciosIntermunicipais": 5
+  },
+  "4202453": {
+    "conveniosFederaisAtivos": 4,
+    "pctOrcamentoConvenios": 7.2,
+    "consorciosIntermunicipais": 2
+  },
+  "4202503": {
+    "conveniosFederaisAtivos": 3,
+    "pctOrcamentoConvenios": 9.5,
+    "consorciosIntermunicipais": 2
+  },
+  "4202537": {
+    "conveniosFederaisAtivos": 1,
+    "pctOrcamentoConvenios": 9.5,
+    "consorciosIntermunicipais": 7
+  },
+  "4202578": {
+    "conveniosFederaisAtivos": 10,
+    "pctOrcamentoConvenios": 1.5,
+    "consorciosIntermunicipais": 5
+  },
+  "4202602": {
+    "conveniosFederaisAtivos": 2,
+    "pctOrcamentoConvenios": 4.9,
+    "consorciosIntermunicipais": 4
+  },
+  "4202701": {
+    "conveniosFederaisAtivos": 4,
+    "pctOrcamentoConvenios": 15.6,
+    "consorciosIntermunicipais": 2
+  },
+  "4202800": {
+    "conveniosFederaisAtivos": 1,
+    "pctOrcamentoConvenios": 7.8,
+    "consorciosIntermunicipais": 3
+  },
+  "4202859": {
+    "conveniosFederaisAtivos": 8,
+    "pctOrcamentoConvenios": 11.0,
+    "consorciosIntermunicipais": 1
+  },
+  "4202875": {
+    "conveniosFederaisAtivos": 4,
+    "pctOrcamentoConvenios": 6.7,
+    "consorciosIntermunicipais": 2
+  },
+  "4202909": {
+    "conveniosFederaisAtivos": 2,
+    "pctOrcamentoConvenios": 7.8,
+    "consorciosIntermunicipais": 2
+  },
+  "4203006": {
+    "conveniosFederaisAtivos": 2,
+    "pctOrcamentoConvenios": 19.9,
+    "consorciosIntermunicipais": 6
+  },
+  "4203105": {
+    "conveniosFederaisAtivos": 5,
+    "pctOrcamentoConvenios": 3.0,
+    "consorciosIntermunicipais": 6
+  },
+  "4203154": {
+    "conveniosFederaisAtivos": 20,
+    "pctOrcamentoConvenios": 20.7,
+    "consorciosIntermunicipais": 2
+  },
+  "4203204": {
+    "conveniosFederaisAtivos": 4,
+    "pctOrcamentoConvenios": 4.8,
+    "consorciosIntermunicipais": 0
+  },
+  "4203253": {
+    "conveniosFederaisAtivos": 3,
+    "pctOrcamentoConvenios": 29.5,
+    "consorciosIntermunicipais": 6
+  },
+  "4203303": {
+    "conveniosFederaisAtivos": 4,
+    "pctOrcamentoConvenios": 6.9,
+    "consorciosIntermunicipais": 8
+  },
+  "4203402": {
+    "conveniosFederaisAtivos": 5,
+    "pctOrcamentoConvenios": 11.3,
+    "consorciosIntermunicipais": 3
+  },
+  "4203501": {
+    "conveniosFederaisAtivos": 20,
+    "pctOrcamentoConvenios": 10.1,
+    "consorciosIntermunicipais": 5
+  },
+  "4203600": {
+    "conveniosFederaisAtivos": 1,
+    "pctOrcamentoConvenios": 10.0,
+    "consorciosIntermunicipais": 6
+  },
+  "4203709": {
+    "conveniosFederaisAtivos": 2,
+    "pctOrcamentoConvenios": 24.2,
+    "consorciosIntermunicipais": 2
+  },
+  "4203808": {
+    "conveniosFederaisAtivos": 5,
+    "pctOrcamentoConvenios": 11.5,
+    "consorciosIntermunicipais": 1
+  },
+  "4203907": {
+    "conveniosFederaisAtivos": 12,
+    "pctOrcamentoConvenios": 5.2,
+    "consorciosIntermunicipais": 4
+  },
+  "4203956": {
+    "conveniosFederaisAtivos": 4,
+    "pctOrcamentoConvenios": 10.0,
+    "consorciosIntermunicipais": 7
+  },
+  "4204004": {
+    "conveniosFederaisAtivos": 2,
+    "pctOrcamentoConvenios": 11.5,
+    "consorciosIntermunicipais": 3
+  },
+  "4204103": {
+    "conveniosFederaisAtivos": 6,
+    "pctOrcamentoConvenios": 5.6,
+    "consorciosIntermunicipais": 5
+  },
+  "4204152": {
+    "conveniosFederaisAtivos": 1,
+    "pctOrcamentoConvenios": 9.0,
+    "consorciosIntermunicipais": 8
+  },
+  "4204178": {
+    "conveniosFederaisAtivos": 1,
+    "pctOrcamentoConvenios": 4.5,
+    "consorciosIntermunicipais": 7
+  },
+  "4204194": {
+    "conveniosFederaisAtivos": 12,
+    "pctOrcamentoConvenios": 17.7,
+    "consorciosIntermunicipais": 2
+  },
+  "4204202": {
+    "conveniosFederaisAtivos": 10,
+    "pctOrcamentoConvenios": 12.2,
+    "consorciosIntermunicipais": 8
+  },
+  "4204251": {
+    "conveniosFederaisAtivos": 6,
+    "pctOrcamentoConvenios": 0.6,
+    "consorciosIntermunicipais": 3
+  },
+  "4204301": {
+    "conveniosFederaisAtivos": 6,
+    "pctOrcamentoConvenios": 19.3,
+    "consorciosIntermunicipais": 1
+  },
+  "4204350": {
+    "conveniosFederaisAtivos": 1,
+    "pctOrcamentoConvenios": 7.5,
+    "consorciosIntermunicipais": 4
+  },
+  "4204400": {
+    "conveniosFederaisAtivos": 6,
+    "pctOrcamentoConvenios": 5.3,
+    "consorciosIntermunicipais": 2
+  },
+  "4204459": {
+    "conveniosFederaisAtivos": 4,
+    "pctOrcamentoConvenios": 20.7,
+    "consorciosIntermunicipais": 1
+  },
+  "4204509": {
+    "conveniosFederaisAtivos": 4,
+    "pctOrcamentoConvenios": 4.0,
+    "consorciosIntermunicipais": 5
+  },
+  "4204558": {
+    "conveniosFederaisAtivos": 6,
+    "pctOrcamentoConvenios": 5.5,
+    "consorciosIntermunicipais": 4
+  },
+  "4204608": {
+    "conveniosFederaisAtivos": 4,
+    "pctOrcamentoConvenios": 0.0,
+    "consorciosIntermunicipais": 7
+  },
+  "4204707": {
+    "conveniosFederaisAtivos": 12,
+    "pctOrcamentoConvenios": 8.7,
+    "consorciosIntermunicipais": 4
+  },
+  "4204756": {
+    "conveniosFederaisAtivos": 2,
+    "pctOrcamentoConvenios": 3.6,
+    "consorciosIntermunicipais": 7
+  },
+  "4204806": {
+    "conveniosFederaisAtivos": 8,
+    "pctOrcamentoConvenios": 18.8,
+    "consorciosIntermunicipais": 2
+  },
+  "4204905": {
+    "conveniosFederaisAtivos": 2,
+    "pctOrcamentoConvenios": 4.6,
+    "consorciosIntermunicipais": 7
+  },
+  "4205001": {
+    "conveniosFederaisAtivos": 4,
+    "pctOrcamentoConvenios": 9.3,
+    "consorciosIntermunicipais": 7
+  },
+  "4205100": {
+    "conveniosFederaisAtivos": 10,
+    "pctOrcamentoConvenios": 25.6,
+    "consorciosIntermunicipais": 6
+  },
+  "4205159": {
+    "conveniosFederaisAtivos": 0,
+    "pctOrcamentoConvenios": 11.7,
+    "consorciosIntermunicipais": 7
+  },
+  "4205175": {
+    "conveniosFederaisAtivos": 10,
+    "pctOrcamentoConvenios": 18.6,
+    "consorciosIntermunicipais": 2
+  },
+  "4205191": {
+    "conveniosFederaisAtivos": 8,
+    "pctOrcamentoConvenios": 4.7,
+    "consorciosIntermunicipais": 6
+  },
+  "4205209": {
+    "conveniosFederaisAtivos": 2,
+    "pctOrcamentoConvenios": 14.9,
+    "consorciosIntermunicipais": 3
+  },
+  "4205308": {
+    "conveniosFederaisAtivos": 8,
+    "pctOrcamentoConvenios": 4.0,
+    "consorciosIntermunicipais": 2
+  },
+  "4205357": {
+    "conveniosFederaisAtivos": 3,
+    "pctOrcamentoConvenios": 18.9,
+    "consorciosIntermunicipais": 2
+  },
+  "4205407": {
+    "conveniosFederaisAtivos": 6,
+    "pctOrcamentoConvenios": 7.0,
+    "consorciosIntermunicipais": 4
+  },
+  "4205431": {
+    "conveniosFederaisAtivos": 15,
+    "pctOrcamentoConvenios": 4.9,
+    "consorciosIntermunicipais": 2
+  },
+  "4205456": {
+    "conveniosFederaisAtivos": 15,
+    "pctOrcamentoConvenios": 4.2,
+    "consorciosIntermunicipais": 3
+  },
+  "4205506": {
+    "conveniosFederaisAtivos": 8,
+    "pctOrcamentoConvenios": 6.2,
+    "consorciosIntermunicipais": 4
+  },
+  "4205555": {
+    "conveniosFederaisAtivos": 3,
+    "pctOrcamentoConvenios": 9.5,
+    "consorciosIntermunicipais": 5
+  },
+  "4205605": {
+    "conveniosFederaisAtivos": 0,
+    "pctOrcamentoConvenios": 20.1,
+    "consorciosIntermunicipais": 5
+  },
+  "4205704": {
+    "conveniosFederaisAtivos": 8,
+    "pctOrcamentoConvenios": 9.7,
+    "consorciosIntermunicipais": 1
+  },
+  "4205803": {
+    "conveniosFederaisAtivos": 6,
+    "pctOrcamentoConvenios": 5.6,
+    "consorciosIntermunicipais": 6
+  },
+  "4205902": {
+    "conveniosFederaisAtivos": 6,
+    "pctOrcamentoConvenios": 5.6,
+    "consorciosIntermunicipais": 3
+  },
+  "4206009": {
+    "conveniosFederaisAtivos": 4,
+    "pctOrcamentoConvenios": 5.3,
+    "consorciosIntermunicipais": 3
+  },
+  "4206108": {
+    "conveniosFederaisAtivos": 15,
+    "pctOrcamentoConvenios": 12.8,
+    "consorciosIntermunicipais": 4
+  },
+  "4206207": {
+    "conveniosFederaisAtivos": 3,
+    "pctOrcamentoConvenios": 7.0,
+    "consorciosIntermunicipais": 2
+  },
+  "4206306": {
+    "conveniosFederaisAtivos": 4,
+    "pctOrcamentoConvenios": 10.3,
+    "consorciosIntermunicipais": 3
+  },
+  "4206405": {
+    "conveniosFederaisAtivos": 4,
+    "pctOrcamentoConvenios": 4.9,
+    "consorciosIntermunicipais": 7
+  },
+  "4206504": {
+    "conveniosFederaisAtivos": 8,
+    "pctOrcamentoConvenios": 3.2,
+    "consorciosIntermunicipais": 4
+  },
+  "4206603": {
+    "conveniosFederaisAtivos": 5,
+    "pctOrcamentoConvenios": 6.6,
+    "consorciosIntermunicipais": 5
+  },
+  "4206652": {
+    "conveniosFederaisAtivos": 6,
+    "pctOrcamentoConvenios": 4.4,
+    "consorciosIntermunicipais": 0
+  },
+  "4206702": {
+    "conveniosFederaisAtivos": 2,
+    "pctOrcamentoConvenios": 8.7,
+    "consorciosIntermunicipais": 1
+  },
+  "4206751": {
+    "conveniosFederaisAtivos": 4,
+    "pctOrcamentoConvenios": 9.4,
+    "consorciosIntermunicipais": 5
+  },
+  "4206801": {
+    "conveniosFederaisAtivos": 4,
+    "pctOrcamentoConvenios": 5.3,
+    "consorciosIntermunicipais": 0
+  },
+  "4206900": {
+    "conveniosFederaisAtivos": 8,
+    "pctOrcamentoConvenios": 14.2,
+    "consorciosIntermunicipais": 3
+  },
+  "4207007": {
+    "conveniosFederaisAtivos": 2,
+    "pctOrcamentoConvenios": 25.0,
+    "consorciosIntermunicipais": 0
+  },
+  "4207106": {
+    "conveniosFederaisAtivos": 2,
+    "pctOrcamentoConvenios": 17.9,
+    "consorciosIntermunicipais": 6
+  },
+  "4207205": {
+    "conveniosFederaisAtivos": 6,
+    "pctOrcamentoConvenios": 30.0,
+    "consorciosIntermunicipais": 7
+  },
+  "4207304": {
+    "conveniosFederaisAtivos": 12,
+    "pctOrcamentoConvenios": 10.4,
+    "consorciosIntermunicipais": 4
+  },
+  "4207403": {
+    "conveniosFederaisAtivos": 10,
+    "pctOrcamentoConvenios": 8.8,
+    "consorciosIntermunicipais": 5
+  },
+  "4207502": {
+    "conveniosFederaisAtivos": 4,
+    "pctOrcamentoConvenios": 4.5,
+    "consorciosIntermunicipais": 5
+  },
+  "4207577": {
+    "conveniosFederaisAtivos": 8,
+    "pctOrcamentoConvenios": 8.3,
+    "consorciosIntermunicipais": 2
+  },
+  "4207601": {
+    "conveniosFederaisAtivos": 1,
+    "pctOrcamentoConvenios": 4.5,
+    "consorciosIntermunicipais": 3
+  },
+  "4207650": {
+    "conveniosFederaisAtivos": 5,
+    "pctOrcamentoConvenios": 3.5,
+    "consorciosIntermunicipais": 5
+  },
+  "4207684": {
+    "conveniosFederaisAtivos": 6,
+    "pctOrcamentoConvenios": 1.8,
+    "consorciosIntermunicipais": 4
+  },
+  "4207700": {
+    "conveniosFederaisAtivos": 4,
+    "pctOrcamentoConvenios": 4.8,
+    "consorciosIntermunicipais": 7
+  },
+  "4207759": {
+    "conveniosFederaisAtivos": 5,
+    "pctOrcamentoConvenios": 12.7,
+    "consorciosIntermunicipais": 5
+  },
+  "4207809": {
+    "conveniosFederaisAtivos": 3,
+    "pctOrcamentoConvenios": 0.0,
+    "consorciosIntermunicipais": 5
+  },
+  "4207858": {
+    "conveniosFederaisAtivos": 10,
+    "pctOrcamentoConvenios": 24.8,
+    "consorciosIntermunicipais": 5
+  },
+  "4207908": {
+    "conveniosFederaisAtivos": 5,
+    "pctOrcamentoConvenios": 9.4,
+    "consorciosIntermunicipais": 2
+  },
+  "4208005": {
+    "conveniosFederaisAtivos": 4,
+    "pctOrcamentoConvenios": 0.0,
+    "consorciosIntermunicipais": 5
+  },
+  "4208104": {
+    "conveniosFederaisAtivos": 4,
+    "pctOrcamentoConvenios": 3.9,
+    "consorciosIntermunicipais": 1
+  },
+  "4208203": {
+    "conveniosFederaisAtivos": 5,
+    "pctOrcamentoConvenios": 0.0,
+    "consorciosIntermunicipais": 4
+  },
+  "4208302": {
+    "conveniosFederaisAtivos": 0,
+    "pctOrcamentoConvenios": 9.3,
+    "consorciosIntermunicipais": 3
+  },
+  "4208401": {
+    "conveniosFederaisAtivos": 0,
+    "pctOrcamentoConvenios": 5.4,
+    "consorciosIntermunicipais": 3
+  },
+  "4208450": {
+    "conveniosFederaisAtivos": 8,
+    "pctOrcamentoConvenios": 6.5,
+    "consorciosIntermunicipais": 6
+  },
+  "4208500": {
+    "conveniosFederaisAtivos": 2,
+    "pctOrcamentoConvenios": 1.0,
+    "consorciosIntermunicipais": 4
+  },
+  "4208609": {
+    "conveniosFederaisAtivos": 25,
+    "pctOrcamentoConvenios": 6.3,
+    "consorciosIntermunicipais": 6
+  },
+  "4208708": {
+    "conveniosFederaisAtivos": 6,
+    "pctOrcamentoConvenios": 12.9,
+    "consorciosIntermunicipais": 2
+  },
+  "4208807": {
+    "conveniosFederaisAtivos": 0,
+    "pctOrcamentoConvenios": 3.3,
+    "consorciosIntermunicipais": 5
+  },
+  "4208906": {
+    "conveniosFederaisAtivos": 5,
+    "pctOrcamentoConvenios": 5.4,
+    "consorciosIntermunicipais": 5
+  },
+  "4208955": {
+    "conveniosFederaisAtivos": 2,
+    "pctOrcamentoConvenios": 10.5,
+    "consorciosIntermunicipais": 1
+  },
+  "4209003": {
+    "conveniosFederaisAtivos": 10,
+    "pctOrcamentoConvenios": 24.2,
+    "consorciosIntermunicipais": 0
+  },
+  "4209102": {
+    "conveniosFederaisAtivos": 3,
+    "pctOrcamentoConvenios": 12.9,
+    "consorciosIntermunicipais": 3
+  },
+  "4209151": {
+    "conveniosFederaisAtivos": 6,
+    "pctOrcamentoConvenios": 2.4,
+    "consorciosIntermunicipais": 4
+  },
+  "4209177": {
+    "conveniosFederaisAtivos": 1,
+    "pctOrcamentoConvenios": 15.7,
+    "consorciosIntermunicipais": 4
+  },
+  "4209201": {
+    "conveniosFederaisAtivos": 1,
+    "pctOrcamentoConvenios": 30.0,
+    "consorciosIntermunicipais": 3
+  },
+  "4209300": {
+    "conveniosFederaisAtivos": 4,
+    "pctOrcamentoConvenios": 6.0,
+    "consorciosIntermunicipais": 3
+  },
+  "4209409": {
+    "conveniosFederaisAtivos": 10,
+    "pctOrcamentoConvenios": 14.2,
+    "consorciosIntermunicipais": 8
+  },
+  "4209458": {
+    "conveniosFederaisAtivos": 6,
+    "pctOrcamentoConvenios": 15.4,
+    "consorciosIntermunicipais": 3
+  },
+  "4209508": {
+    "conveniosFederaisAtivos": 8,
+    "pctOrcamentoConvenios": 24.5,
+    "consorciosIntermunicipais": 6
+  },
+  "4209607": {
+    "conveniosFederaisAtivos": 5,
+    "pctOrcamentoConvenios": 7.9,
+    "consorciosIntermunicipais": 5
+  },
+  "4209706": {
+    "conveniosFederaisAtivos": 3,
+    "pctOrcamentoConvenios": 18.7,
+    "consorciosIntermunicipais": 1
+  },
+  "4209805": {
+    "conveniosFederaisAtivos": 12,
+    "pctOrcamentoConvenios": 4.9,
+    "consorciosIntermunicipais": 4
+  },
+  "4209854": {
+    "conveniosFederaisAtivos": 3,
+    "pctOrcamentoConvenios": 0.7,
+    "consorciosIntermunicipais": 2
+  },
+  "4209904": {
+    "conveniosFederaisAtivos": 2,
+    "pctOrcamentoConvenios": 14.7,
+    "consorciosIntermunicipais": 6
+  },
+  "4210001": {
+    "conveniosFederaisAtivos": 6,
+    "pctOrcamentoConvenios": 4.0,
+    "consorciosIntermunicipais": 7
+  },
+  "4210035": {
+    "conveniosFederaisAtivos": 1,
+    "pctOrcamentoConvenios": 12.0,
+    "consorciosIntermunicipais": 5
+  },
+  "4210050": {
+    "conveniosFederaisAtivos": 6,
+    "pctOrcamentoConvenios": 10.0,
+    "consorciosIntermunicipais": 6
+  },
+  "4210100": {
+    "conveniosFederaisAtivos": 1,
+    "pctOrcamentoConvenios": 5.4,
+    "consorciosIntermunicipais": 3
+  },
+  "4210209": {
+    "conveniosFederaisAtivos": 5,
+    "pctOrcamentoConvenios": 8.1,
+    "consorciosIntermunicipais": 3
+  },
+  "4210308": {
+    "conveniosFederaisAtivos": 8,
+    "pctOrcamentoConvenios": 6.4,
+    "consorciosIntermunicipais": 2
+  },
+  "4210407": {
+    "conveniosFederaisAtivos": 2,
+    "pctOrcamentoConvenios": 3.4,
+    "consorciosIntermunicipais": 1
+  },
+  "4210506": {
+    "conveniosFederaisAtivos": 5,
+    "pctOrcamentoConvenios": 11.4,
+    "consorciosIntermunicipais": 2
+  },
+  "4210555": {
+    "conveniosFederaisAtivos": 4,
+    "pctOrcamentoConvenios": 13.0,
+    "consorciosIntermunicipais": 4
+  },
+  "4210605": {
+    "conveniosFederaisAtivos": 3,
+    "pctOrcamentoConvenios": 3.4,
+    "consorciosIntermunicipais": 2
+  },
+  "4210704": {
+    "conveniosFederaisAtivos": 2,
+    "pctOrcamentoConvenios": 0.1,
+    "consorciosIntermunicipais": 2
+  },
+  "4210803": {
+    "conveniosFederaisAtivos": 20,
+    "pctOrcamentoConvenios": 8.4,
+    "consorciosIntermunicipais": 1
+  },
+  "4210852": {
+    "conveniosFederaisAtivos": 12,
+    "pctOrcamentoConvenios": 8.7,
+    "consorciosIntermunicipais": 4
+  },
+  "4210902": {
+    "conveniosFederaisAtivos": 4,
+    "pctOrcamentoConvenios": 7.4,
+    "consorciosIntermunicipais": 0
+  },
+  "4211009": {
+    "conveniosFederaisAtivos": 15,
+    "pctOrcamentoConvenios": 8.6,
+    "consorciosIntermunicipais": 3
+  },
+  "4211058": {
+    "conveniosFederaisAtivos": 1,
+    "pctOrcamentoConvenios": 9.1,
+    "consorciosIntermunicipais": 1
+  },
+  "4211108": {
+    "conveniosFederaisAtivos": 5,
+    "pctOrcamentoConvenios": 7.0,
+    "consorciosIntermunicipais": 1
+  },
+  "4211207": {
+    "conveniosFederaisAtivos": 8,
+    "pctOrcamentoConvenios": 10.6,
+    "consorciosIntermunicipais": 2
+  },
+  "4211256": {
+    "conveniosFederaisAtivos": 5,
+    "pctOrcamentoConvenios": 7.9,
+    "consorciosIntermunicipais": 6
+  },
+  "4211306": {
+    "conveniosFederaisAtivos": 25,
+    "pctOrcamentoConvenios": 6.2,
+    "consorciosIntermunicipais": 4
+  },
+  "4211405": {
+    "conveniosFederaisAtivos": 8,
+    "pctOrcamentoConvenios": 24.4,
+    "consorciosIntermunicipais": 2
+  },
+  "4211454": {
+    "conveniosFederaisAtivos": 6,
+    "pctOrcamentoConvenios": 3.3,
+    "consorciosIntermunicipais": 1
+  },
+  "4211504": {
+    "conveniosFederaisAtivos": 0,
+    "pctOrcamentoConvenios": 8.2,
+    "consorciosIntermunicipais": 2
+  },
+  "4211603": {
+    "conveniosFederaisAtivos": 2,
+    "pctOrcamentoConvenios": 12.4,
+    "consorciosIntermunicipais": 3
+  },
+  "4211652": {
+    "conveniosFederaisAtivos": 6,
+    "pctOrcamentoConvenios": 20.6,
+    "consorciosIntermunicipais": 4
+  },
+  "4211702": {
+    "conveniosFederaisAtivos": 6,
+    "pctOrcamentoConvenios": 19.9,
+    "consorciosIntermunicipais": 4
+  },
+  "4211751": {
+    "conveniosFederaisAtivos": 6,
+    "pctOrcamentoConvenios": 20.7,
+    "consorciosIntermunicipais": 1
+  },
+  "4211801": {
+    "conveniosFederaisAtivos": 2,
+    "pctOrcamentoConvenios": 6.5,
+    "consorciosIntermunicipais": 4
+  },
+  "4211850": {
+    "conveniosFederaisAtivos": 3,
+    "pctOrcamentoConvenios": 4.4,
+    "consorciosIntermunicipais": 5
+  },
+  "4211876": {
+    "conveniosFederaisAtivos": 15,
+    "pctOrcamentoConvenios": 8.0,
+    "consorciosIntermunicipais": 1
+  },
+  "4211892": {
+    "conveniosFederaisAtivos": 0,
+    "pctOrcamentoConvenios": 7.6,
+    "consorciosIntermunicipais": 2
+  },
+  "4211900": {
+    "conveniosFederaisAtivos": 1,
+    "pctOrcamentoConvenios": 25.7,
+    "consorciosIntermunicipais": 4
+  },
+  "4212007": {
+    "conveniosFederaisAtivos": 15,
+    "pctOrcamentoConvenios": 30.0,
+    "consorciosIntermunicipais": 2
+  },
+  "4212056": {
+    "conveniosFederaisAtivos": 0,
+    "pctOrcamentoConvenios": 11.9,
+    "consorciosIntermunicipais": 5
+  },
+  "4212106": {
+    "conveniosFederaisAtivos": 12,
+    "pctOrcamentoConvenios": 5.2,
+    "consorciosIntermunicipais": 4
+  },
+  "4212205": {
+    "conveniosFederaisAtivos": 4,
+    "pctOrcamentoConvenios": 3.7,
+    "consorciosIntermunicipais": 3
+  },
+  "4212239": {
+    "conveniosFederaisAtivos": 6,
+    "pctOrcamentoConvenios": 17.7,
+    "consorciosIntermunicipais": 5
+  },
+  "4212254": {
+    "conveniosFederaisAtivos": 3,
+    "pctOrcamentoConvenios": 25.6,
+    "consorciosIntermunicipais": 4
+  },
+  "4212270": {
+    "conveniosFederaisAtivos": 4,
+    "pctOrcamentoConvenios": 5.6,
+    "consorciosIntermunicipais": 8
+  },
+  "4212304": {
+    "conveniosFederaisAtivos": 4,
+    "pctOrcamentoConvenios": 9.0,
+    "consorciosIntermunicipais": 5
+  },
+  "4212403": {
+    "conveniosFederaisAtivos": 5,
+    "pctOrcamentoConvenios": 5.4,
+    "consorciosIntermunicipais": 3
+  },
+  "4212502": {
+    "conveniosFederaisAtivos": 8,
+    "pctOrcamentoConvenios": 10.5,
+    "consorciosIntermunicipais": 2
+  },
+  "4212601": {
+    "conveniosFederaisAtivos": 5,
+    "pctOrcamentoConvenios": 19.9,
+    "consorciosIntermunicipais": 5
+  },
+  "4212650": {
+    "conveniosFederaisAtivos": 1,
+    "pctOrcamentoConvenios": 25.2,
+    "consorciosIntermunicipais": 2
+  },
+  "4212700": {
+    "conveniosFederaisAtivos": 2,
+    "pctOrcamentoConvenios": 8.1,
+    "consorciosIntermunicipais": 1
+  },
+  "4212809": {
+    "conveniosFederaisAtivos": 25,
+    "pctOrcamentoConvenios": 19.9,
+    "consorciosIntermunicipais": 1
+  },
+  "4212908": {
+    "conveniosFederaisAtivos": 10,
+    "pctOrcamentoConvenios": 8.4,
+    "consorciosIntermunicipais": 4
+  },
+  "4213005": {
+    "conveniosFederaisAtivos": 3,
+    "pctOrcamentoConvenios": 16.0,
+    "consorciosIntermunicipais": 2
+  },
+  "4213104": {
+    "conveniosFederaisAtivos": 5,
+    "pctOrcamentoConvenios": 6.8,
+    "consorciosIntermunicipais": 4
+  },
+  "4213153": {
+    "conveniosFederaisAtivos": 12,
+    "pctOrcamentoConvenios": 17.6,
+    "consorciosIntermunicipais": 6
+  },
+  "4213203": {
+    "conveniosFederaisAtivos": 4,
+    "pctOrcamentoConvenios": 20.0,
+    "consorciosIntermunicipais": 6
+  },
+  "4213302": {
+    "conveniosFederaisAtivos": 3,
+    "pctOrcamentoConvenios": 6.2,
+    "consorciosIntermunicipais": 8
+  },
+  "4213351": {
+    "conveniosFederaisAtivos": 4,
+    "pctOrcamentoConvenios": 4.1,
+    "consorciosIntermunicipais": 3
+  },
+  "4213401": {
+    "conveniosFederaisAtivos": 5,
+    "pctOrcamentoConvenios": 7.9,
+    "consorciosIntermunicipais": 3
+  },
+  "4213500": {
+    "conveniosFederaisAtivos": 2,
+    "pctOrcamentoConvenios": 12.1,
+    "consorciosIntermunicipais": 2
+  },
+  "4213609": {
+    "conveniosFederaisAtivos": 8,
+    "pctOrcamentoConvenios": 2.5,
+    "consorciosIntermunicipais": 5
+  },
+  "4213708": {
+    "conveniosFederaisAtivos": 10,
+    "pctOrcamentoConvenios": 6.3,
+    "consorciosIntermunicipais": 6
+  },
+  "4213807": {
+    "conveniosFederaisAtivos": 20,
+    "pctOrcamentoConvenios": 7.1,
+    "consorciosIntermunicipais": 4
+  },
+  "4213906": {
+    "conveniosFederaisAtivos": 5,
+    "pctOrcamentoConvenios": 18.7,
+    "consorciosIntermunicipais": 3
+  },
+  "4214003": {
+    "conveniosFederaisAtivos": 5,
+    "pctOrcamentoConvenios": 8.4,
+    "consorciosIntermunicipais": 3
+  },
+  "4214102": {
+    "conveniosFederaisAtivos": 6,
+    "pctOrcamentoConvenios": 3.9,
+    "consorciosIntermunicipais": 8
+  },
+  "4214151": {
+    "conveniosFederaisAtivos": 3,
+    "pctOrcamentoConvenios": 12.3,
+    "consorciosIntermunicipais": 6
+  },
+  "4214201": {
+    "conveniosFederaisAtivos": 10,
+    "pctOrcamentoConvenios": 17.8,
+    "consorciosIntermunicipais": 3
+  },
+  "4214300": {
+    "conveniosFederaisAtivos": 6,
+    "pctOrcamentoConvenios": 12.7,
+    "consorciosIntermunicipais": 0
+  },
+  "4214409": {
+    "conveniosFederaisAtivos": 1,
+    "pctOrcamentoConvenios": 10.8,
+    "consorciosIntermunicipais": 8
+  },
+  "4214508": {
+    "conveniosFederaisAtivos": 8,
+    "pctOrcamentoConvenios": 7.2,
+    "consorciosIntermunicipais": 4
+  },
+  "4214607": {
+    "conveniosFederaisAtivos": 12,
+    "pctOrcamentoConvenios": 8.4,
+    "consorciosIntermunicipais": 7
+  },
+  "4214706": {
+    "conveniosFederaisAtivos": 0,
+    "pctOrcamentoConvenios": 14.6,
+    "consorciosIntermunicipais": 3
+  },
+  "4214805": {
+    "conveniosFederaisAtivos": 2,
+    "pctOrcamentoConvenios": 8.1,
+    "consorciosIntermunicipais": 6
+  },
+  "4214904": {
+    "conveniosFederaisAtivos": 2,
+    "pctOrcamentoConvenios": 2.7,
+    "consorciosIntermunicipais": 4
+  },
+  "4215000": {
+    "conveniosFederaisAtivos": 2,
+    "pctOrcamentoConvenios": 19.3,
+    "consorciosIntermunicipais": 3
+  },
+  "4215059": {
+    "conveniosFederaisAtivos": 2,
+    "pctOrcamentoConvenios": 4.0,
+    "consorciosIntermunicipais": 6
+  },
+  "4215075": {
+    "conveniosFederaisAtivos": 12,
+    "pctOrcamentoConvenios": 11.3,
+    "consorciosIntermunicipais": 3
+  },
+  "4215109": {
+    "conveniosFederaisAtivos": 3,
+    "pctOrcamentoConvenios": 10.3,
+    "consorciosIntermunicipais": 3
+  },
+  "4215208": {
+    "conveniosFederaisAtivos": 2,
+    "pctOrcamentoConvenios": 17.4,
+    "consorciosIntermunicipais": 3
+  },
+  "4215307": {
+    "conveniosFederaisAtivos": 4,
+    "pctOrcamentoConvenios": 5.1,
+    "consorciosIntermunicipais": 4
+  },
+  "4215356": {
+    "conveniosFederaisAtivos": 25,
+    "pctOrcamentoConvenios": 7.0,
+    "consorciosIntermunicipais": 5
+  },
+  "4215406": {
+    "conveniosFederaisAtivos": 3,
+    "pctOrcamentoConvenios": 10.4,
+    "consorciosIntermunicipais": 5
+  },
+  "4215455": {
+    "conveniosFederaisAtivos": 0,
+    "pctOrcamentoConvenios": 10.0,
+    "consorciosIntermunicipais": 7
+  },
+  "4215505": {
+    "conveniosFederaisAtivos": 3,
+    "pctOrcamentoConvenios": 15.2,
+    "consorciosIntermunicipais": 3
+  },
+  "4215554": {
+    "conveniosFederaisAtivos": 6,
+    "pctOrcamentoConvenios": 10.4,
+    "consorciosIntermunicipais": 5
+  },
+  "4215604": {
+    "conveniosFederaisAtivos": 6,
+    "pctOrcamentoConvenios": 15.3,
+    "consorciosIntermunicipais": 7
+  },
+  "4215653": {
+    "conveniosFederaisAtivos": 6,
+    "pctOrcamentoConvenios": 5.9,
+    "consorciosIntermunicipais": 4
+  },
+  "4215679": {
+    "conveniosFederaisAtivos": 8,
+    "pctOrcamentoConvenios": 3.6,
+    "consorciosIntermunicipais": 5
+  },
+  "4215687": {
+    "conveniosFederaisAtivos": 2,
+    "pctOrcamentoConvenios": 4.1,
+    "consorciosIntermunicipais": 8
+  },
+  "4215695": {
+    "conveniosFederaisAtivos": 5,
+    "pctOrcamentoConvenios": 20.7,
+    "consorciosIntermunicipais": 2
+  },
+  "4215703": {
+    "conveniosFederaisAtivos": 10,
+    "pctOrcamentoConvenios": 8.6,
+    "consorciosIntermunicipais": 5
+  },
+  "4215752": {
+    "conveniosFederaisAtivos": 3,
+    "pctOrcamentoConvenios": 4.9,
+    "consorciosIntermunicipais": 1
+  },
+  "4215802": {
+    "conveniosFederaisAtivos": 15,
+    "pctOrcamentoConvenios": 18.4,
+    "consorciosIntermunicipais": 8
+  },
+  "4215901": {
+    "conveniosFederaisAtivos": 20,
+    "pctOrcamentoConvenios": 14.7,
+    "consorciosIntermunicipais": 6
+  },
+  "4216008": {
+    "conveniosFederaisAtivos": 0,
+    "pctOrcamentoConvenios": 7.9,
+    "consorciosIntermunicipais": 5
+  },
+  "4216057": {
+    "conveniosFederaisAtivos": 6,
+    "pctOrcamentoConvenios": 10.6,
+    "consorciosIntermunicipais": 7
+  },
+  "4216107": {
+    "conveniosFederaisAtivos": 1,
+    "pctOrcamentoConvenios": 4.1,
+    "consorciosIntermunicipais": 7
+  },
+  "4216206": {
+    "conveniosFederaisAtivos": 5,
+    "pctOrcamentoConvenios": 19.4,
+    "consorciosIntermunicipais": 1
+  },
+  "4216255": {
+    "conveniosFederaisAtivos": 10,
+    "pctOrcamentoConvenios": 19.6,
+    "consorciosIntermunicipais": 3
+  },
+  "4216305": {
+    "conveniosFederaisAtivos": 1,
+    "pctOrcamentoConvenios": 24.6,
+    "consorciosIntermunicipais": 4
+  },
+  "4216354": {
+    "conveniosFederaisAtivos": 1,
+    "pctOrcamentoConvenios": 17.3,
+    "consorciosIntermunicipais": 3
+  },
+  "4216404": {
+    "conveniosFederaisAtivos": 6,
+    "pctOrcamentoConvenios": 12.9,
+    "consorciosIntermunicipais": 3
+  },
+  "4216503": {
+    "conveniosFederaisAtivos": 8,
+    "pctOrcamentoConvenios": 3.8,
+    "consorciosIntermunicipais": 1
+  },
+  "4216602": {
+    "conveniosFederaisAtivos": 4,
+    "pctOrcamentoConvenios": 6.9,
+    "consorciosIntermunicipais": 0
+  },
+  "4216701": {
+    "conveniosFederaisAtivos": 3,
+    "pctOrcamentoConvenios": 8.9,
+    "consorciosIntermunicipais": 6
+  },
+  "4216800": {
+    "conveniosFederaisAtivos": 1,
+    "pctOrcamentoConvenios": 12.1,
+    "consorciosIntermunicipais": 8
+  },
+  "4216909": {
+    "conveniosFederaisAtivos": 3,
+    "pctOrcamentoConvenios": 5.4,
+    "consorciosIntermunicipais": 1
+  },
+  "4217006": {
+    "conveniosFederaisAtivos": 10,
+    "pctOrcamentoConvenios": 8.3,
+    "consorciosIntermunicipais": 5
+  },
+  "4217105": {
+    "conveniosFederaisAtivos": 5,
+    "pctOrcamentoConvenios": 0.6,
+    "consorciosIntermunicipais": 2
+  },
+  "4217154": {
+    "conveniosFederaisAtivos": 1,
+    "pctOrcamentoConvenios": 9.1,
+    "consorciosIntermunicipais": 5
+  },
+  "4217204": {
+    "conveniosFederaisAtivos": 2,
+    "pctOrcamentoConvenios": 5.7,
+    "consorciosIntermunicipais": 3
+  },
+  "4217253": {
+    "conveniosFederaisAtivos": 2,
+    "pctOrcamentoConvenios": 19.0,
+    "consorciosIntermunicipais": 6
+  },
+  "4217303": {
+    "conveniosFederaisAtivos": 2,
+    "pctOrcamentoConvenios": 3.5,
+    "consorciosIntermunicipais": 2
+  },
+  "4217402": {
+    "conveniosFederaisAtivos": 6,
+    "pctOrcamentoConvenios": 0.0,
+    "consorciosIntermunicipais": 6
+  },
+  "4217501": {
+    "conveniosFederaisAtivos": 2,
+    "pctOrcamentoConvenios": 5.3,
+    "consorciosIntermunicipais": 0
+  },
+  "4217550": {
+    "conveniosFederaisAtivos": 8,
+    "pctOrcamentoConvenios": 8.5,
+    "consorciosIntermunicipais": 4
+  },
+  "4217600": {
+    "conveniosFederaisAtivos": 8,
+    "pctOrcamentoConvenios": 7.2,
+    "consorciosIntermunicipais": 4
+  },
+  "4217709": {
+    "conveniosFederaisAtivos": 15,
+    "pctOrcamentoConvenios": 2.6,
+    "consorciosIntermunicipais": 6
+  },
+  "4217758": {
+    "conveniosFederaisAtivos": 4,
+    "pctOrcamentoConvenios": 8.9,
+    "consorciosIntermunicipais": 1
+  },
+  "4217808": {
+    "conveniosFederaisAtivos": 4,
+    "pctOrcamentoConvenios": 6.4,
+    "consorciosIntermunicipais": 4
+  },
+  "4217907": {
+    "conveniosFederaisAtivos": 12,
+    "pctOrcamentoConvenios": 1.2,
+    "consorciosIntermunicipais": 4
+  },
+  "4217956": {
+    "conveniosFederaisAtivos": 1,
+    "pctOrcamentoConvenios": 5.3,
+    "consorciosIntermunicipais": 4
+  },
+  "4218004": {
+    "conveniosFederaisAtivos": 3,
+    "pctOrcamentoConvenios": 30.0,
+    "consorciosIntermunicipais": 3
+  },
+  "4218103": {
+    "conveniosFederaisAtivos": 5,
+    "pctOrcamentoConvenios": 4.4,
+    "consorciosIntermunicipais": 6
+  },
+  "4218202": {
+    "conveniosFederaisAtivos": 6,
+    "pctOrcamentoConvenios": 15.4,
+    "consorciosIntermunicipais": 2
+  },
+  "4218251": {
+    "conveniosFederaisAtivos": 4,
+    "pctOrcamentoConvenios": 4.7,
+    "consorciosIntermunicipais": 3
+  },
+  "4218301": {
+    "conveniosFederaisAtivos": 4,
+    "pctOrcamentoConvenios": 3.9,
+    "consorciosIntermunicipais": 5
+  },
+  "4218350": {
+    "conveniosFederaisAtivos": 3,
+    "pctOrcamentoConvenios": 4.8,
+    "consorciosIntermunicipais": 1
+  },
+  "4218400": {
+    "conveniosFederaisAtivos": 10,
+    "pctOrcamentoConvenios": 3.2,
+    "consorciosIntermunicipais": 5
+  },
+  "4218509": {
+    "conveniosFederaisAtivos": 10,
+    "pctOrcamentoConvenios": 8.2,
+    "consorciosIntermunicipais": 4
+  },
+  "4218608": {
+    "conveniosFederaisAtivos": 3,
+    "pctOrcamentoConvenios": 3.7,
+    "consorciosIntermunicipais": 5
+  },
+  "4218707": {
+    "conveniosFederaisAtivos": 8,
+    "pctOrcamentoConvenios": 18.4,
+    "consorciosIntermunicipais": 8
+  },
+  "4218756": {
+    "conveniosFederaisAtivos": 5,
+    "pctOrcamentoConvenios": 6.2,
+    "consorciosIntermunicipais": 2
+  },
+  "4218806": {
+    "conveniosFederaisAtivos": 6,
+    "pctOrcamentoConvenios": 4.2,
+    "consorciosIntermunicipais": 6
+  },
+  "4218855": {
+    "conveniosFederaisAtivos": 3,
+    "pctOrcamentoConvenios": 12.1,
+    "consorciosIntermunicipais": 6
+  },
+  "4218905": {
+    "conveniosFederaisAtivos": 10,
+    "pctOrcamentoConvenios": 25.6,
+    "consorciosIntermunicipais": 4
+  },
+  "4218954": {
+    "conveniosFederaisAtivos": 6,
+    "pctOrcamentoConvenios": 0.9,
+    "consorciosIntermunicipais": 6
+  },
+  "4219002": {
+    "conveniosFederaisAtivos": 3,
+    "pctOrcamentoConvenios": 5.4,
+    "consorciosIntermunicipais": 3
+  },
+  "4219101": {
+    "conveniosFederaisAtivos": 3,
+    "pctOrcamentoConvenios": 0.7,
+    "consorciosIntermunicipais": 4
+  },
+  "4219150": {
+    "conveniosFederaisAtivos": 4,
+    "pctOrcamentoConvenios": 4.3,
+    "consorciosIntermunicipais": 0
+  },
+  "4219176": {
+    "conveniosFederaisAtivos": 8,
+    "pctOrcamentoConvenios": 4.8,
+    "consorciosIntermunicipais": 3
+  },
+  "4219200": {
+    "conveniosFederaisAtivos": 3,
+    "pctOrcamentoConvenios": 12.6,
+    "consorciosIntermunicipais": 4
+  },
+  "4219309": {
+    "conveniosFederaisAtivos": 1,
+    "pctOrcamentoConvenios": 1.3,
+    "consorciosIntermunicipais": 4
+  },
+  "4219358": {
+    "conveniosFederaisAtivos": 6,
+    "pctOrcamentoConvenios": 5.3,
+    "consorciosIntermunicipais": 4
+  },
+  "4219408": {
+    "conveniosFederaisAtivos": 4,
+    "pctOrcamentoConvenios": 5.5,
+    "consorciosIntermunicipais": 1
+  },
+  "4219507": {
+    "conveniosFederaisAtivos": 4,
+    "pctOrcamentoConvenios": 5.4,
+    "consorciosIntermunicipais": 4
+  },
+  "4219606": {
+    "conveniosFederaisAtivos": 6,
+    "pctOrcamentoConvenios": 1.8,
+    "consorciosIntermunicipais": 4
+  },
+  "4219705": {
+    "conveniosFederaisAtivos": 0,
+    "pctOrcamentoConvenios": 5.4,
+    "consorciosIntermunicipais": 1
+  },
+  "4219853": {
+    "conveniosFederaisAtivos": 2,
+    "pctOrcamentoConvenios": 5.0,
+    "consorciosIntermunicipais": 5
+  },
+  "4220000": {
+    "conveniosFederaisAtivos": 2,
+    "pctOrcamentoConvenios": 6.4,
+    "consorciosIntermunicipais": 4
+  }
+}

@@ -1,0 +1,1422 @@
+{
+  "4200051": {
+    "coletaSeletivaPct": 57.4,
+    "taxaReciclagemPct": 20.3,
+    "residuoPerCapitaKgDia": 0.8
+  },
+  "4200101": {
+    "coletaSeletivaPct": 75.4,
+    "taxaReciclagemPct": 26.0,
+    "residuoPerCapitaKgDia": 0.7
+  },
+  "4200200": {
+    "coletaSeletivaPct": 55.2,
+    "taxaReciclagemPct": 19.7,
+    "residuoPerCapitaKgDia": 0.7
+  },
+  "4200309": {
+    "coletaSeletivaPct": 39.8,
+    "taxaReciclagemPct": 12.0,
+    "residuoPerCapitaKgDia": 0.7
+  },
+  "4200408": {
+    "coletaSeletivaPct": 6.1,
+    "taxaReciclagemPct": 1.9,
+    "residuoPerCapitaKgDia": 1.1
+  },
+  "4200507": {
+    "coletaSeletivaPct": 41.6,
+    "taxaReciclagemPct": 14.2,
+    "residuoPerCapitaKgDia": 0.9
+  },
+  "4200556": {
+    "coletaSeletivaPct": 35.0,
+    "taxaReciclagemPct": 15.1,
+    "residuoPerCapitaKgDia": 1.0
+  },
+  "4200606": {
+    "coletaSeletivaPct": 64.4,
+    "taxaReciclagemPct": 23.9,
+    "residuoPerCapitaKgDia": 0.5
+  },
+  "4200705": {
+    "coletaSeletivaPct": 61.2,
+    "taxaReciclagemPct": 20.1,
+    "residuoPerCapitaKgDia": 0.5
+  },
+  "4200754": {
+    "coletaSeletivaPct": 26.7,
+    "taxaReciclagemPct": 14.8,
+    "residuoPerCapitaKgDia": 0.7
+  },
+  "4200804": {
+    "coletaSeletivaPct": 55.2,
+    "taxaReciclagemPct": 20.0,
+    "residuoPerCapitaKgDia": 0.8
+  },
+  "4200903": {
+    "coletaSeletivaPct": 48.7,
+    "taxaReciclagemPct": 20.0,
+    "residuoPerCapitaKgDia": 0.8
+  },
+  "4201000": {
+    "coletaSeletivaPct": 26.0,
+    "taxaReciclagemPct": 14.1,
+    "residuoPerCapitaKgDia": 0.8
+  },
+  "4201109": {
+    "coletaSeletivaPct": 56.8,
+    "taxaReciclagemPct": 16.3,
+    "residuoPerCapitaKgDia": 0.6
+  },
+  "4201208": {
+    "coletaSeletivaPct": 38.3,
+    "taxaReciclagemPct": 12.2,
+    "residuoPerCapitaKgDia": 0.5
+  },
+  "4201257": {
+    "coletaSeletivaPct": 85.6,
+    "taxaReciclagemPct": 21.8,
+    "residuoPerCapitaKgDia": 0.7
+  },
+  "4201307": {
+    "coletaSeletivaPct": 42.6,
+    "taxaReciclagemPct": 12.9,
+    "residuoPerCapitaKgDia": 0.9
+  },
+  "4201406": {
+    "coletaSeletivaPct": 43.8,
+    "taxaReciclagemPct": 18.4,
+    "residuoPerCapitaKgDia": 1.1
+  },
+  "4201604": {
+    "coletaSeletivaPct": 27.3,
+    "taxaReciclagemPct": 16.9,
+    "residuoPerCapitaKgDia": 0.5
+  },
+  "4201653": {
+    "coletaSeletivaPct": 69.8,
+    "taxaReciclagemPct": 22.8,
+    "residuoPerCapitaKgDia": 0.9
+  },
+  "4201703": {
+    "coletaSeletivaPct": 37.7,
+    "taxaReciclagemPct": 19.6,
+    "residuoPerCapitaKgDia": 0.9
+  },
+  "4201802": {
+    "coletaSeletivaPct": 26.7,
+    "taxaReciclagemPct": 16.1,
+    "residuoPerCapitaKgDia": 0.8
+  },
+  "4201901": {
+    "coletaSeletivaPct": 50.1,
+    "taxaReciclagemPct": 18.3,
+    "residuoPerCapitaKgDia": 0.6
+  },
+  "4201950": {
+    "coletaSeletivaPct": 12.0,
+    "taxaReciclagemPct": 11.0,
+    "residuoPerCapitaKgDia": 0.9
+  },
+  "4202008": {
+    "coletaSeletivaPct": 5,
+    "taxaReciclagemPct": 0,
+    "residuoPerCapitaKgDia": 0.9
+  },
+  "4202057": {
+    "coletaSeletivaPct": 37.4,
+    "taxaReciclagemPct": 12.2,
+    "residuoPerCapitaKgDia": 0.7
+  },
+  "4202073": {
+    "coletaSeletivaPct": 33.2,
+    "taxaReciclagemPct": 11.6,
+    "residuoPerCapitaKgDia": 0.7
+  },
+  "4202081": {
+    "coletaSeletivaPct": 49.6,
+    "taxaReciclagemPct": 19.9,
+    "residuoPerCapitaKgDia": 0.7
+  },
+  "4202099": {
+    "coletaSeletivaPct": 61.1,
+    "taxaReciclagemPct": 28.7,
+    "residuoPerCapitaKgDia": 0.8
+  },
+  "4202107": {
+    "coletaSeletivaPct": 26.5,
+    "taxaReciclagemPct": 9.5,
+    "residuoPerCapitaKgDia": 0.8
+  },
+  "4202131": {
+    "coletaSeletivaPct": 5,
+    "taxaReciclagemPct": 3.2,
+    "residuoPerCapitaKgDia": 0.9
+  },
+  "4202156": {
+    "coletaSeletivaPct": 39.9,
+    "taxaReciclagemPct": 24.1,
+    "residuoPerCapitaKgDia": 0.8
+  },
+  "4202206": {
+    "coletaSeletivaPct": 49.3,
+    "taxaReciclagemPct": 14.5,
+    "residuoPerCapitaKgDia": 1.1
+  },
+  "4202305": {
+    "coletaSeletivaPct": 56.1,
+    "taxaReciclagemPct": 23.3,
+    "residuoPerCapitaKgDia": 0.8
+  },
+  "4202404": {
+    "coletaSeletivaPct": 42.5,
+    "taxaReciclagemPct": 8.9,
+    "residuoPerCapitaKgDia": 0.9
+  },
+  "4202438": {
+    "coletaSeletivaPct": 58.0,
+    "taxaReciclagemPct": 19.2,
+    "residuoPerCapitaKgDia": 1.1
+  },
+  "4202453": {
+    "coletaSeletivaPct": 46.5,
+    "taxaReciclagemPct": 21.6,
+    "residuoPerCapitaKgDia": 0.7
+  },
+  "4202503": {
+    "coletaSeletivaPct": 25.4,
+    "taxaReciclagemPct": 16.8,
+    "residuoPerCapitaKgDia": 0.8
+  },
+  "4202537": {
+    "coletaSeletivaPct": 28.9,
+    "taxaReciclagemPct": 11.7,
+    "residuoPerCapitaKgDia": 0.8
+  },
+  "4202578": {
+    "coletaSeletivaPct": 59.7,
+    "taxaReciclagemPct": 20.7,
+    "residuoPerCapitaKgDia": 0.9
+  },
+  "4202602": {
+    "coletaSeletivaPct": 29.2,
+    "taxaReciclagemPct": 9.9,
+    "residuoPerCapitaKgDia": 1.1
+  },
+  "4202701": {
+    "coletaSeletivaPct": 15.6,
+    "taxaReciclagemPct": 8.8,
+    "residuoPerCapitaKgDia": 1.0
+  },
+  "4202800": {
+    "coletaSeletivaPct": 74.7,
+    "taxaReciclagemPct": 31.4,
+    "residuoPerCapitaKgDia": 0.6
+  },
+  "4202859": {
+    "coletaSeletivaPct": 29.3,
+    "taxaReciclagemPct": 13.0,
+    "residuoPerCapitaKgDia": 0.7
+  },
+  "4202875": {
+    "coletaSeletivaPct": 19.0,
+    "taxaReciclagemPct": 11.0,
+    "residuoPerCapitaKgDia": 0.6
+  },
+  "4202909": {
+    "coletaSeletivaPct": 47.3,
+    "taxaReciclagemPct": 18.8,
+    "residuoPerCapitaKgDia": 0.8
+  },
+  "4203006": {
+    "coletaSeletivaPct": 16.7,
+    "taxaReciclagemPct": 15.4,
+    "residuoPerCapitaKgDia": 0.8
+  },
+  "4203105": {
+    "coletaSeletivaPct": 54.3,
+    "taxaReciclagemPct": 16.0,
+    "residuoPerCapitaKgDia": 0.8
+  },
+  "4203154": {
+    "coletaSeletivaPct": 61.1,
+    "taxaReciclagemPct": 18.7,
+    "residuoPerCapitaKgDia": 0.9
+  },
+  "4203204": {
+    "coletaSeletivaPct": 18.7,
+    "taxaReciclagemPct": 16.8,
+    "residuoPerCapitaKgDia": 0.8
+  },
+  "4203253": {
+    "coletaSeletivaPct": 78.3,
+    "taxaReciclagemPct": 22.0,
+    "residuoPerCapitaKgDia": 0.8
+  },
+  "4203303": {
+    "coletaSeletivaPct": 61.9,
+    "taxaReciclagemPct": 19.9,
+    "residuoPerCapitaKgDia": 0.8
+  },
+  "4203402": {
+    "coletaSeletivaPct": 57.2,
+    "taxaReciclagemPct": 19.4,
+    "residuoPerCapitaKgDia": 0.8
+  },
+  "4203600": {
+    "coletaSeletivaPct": 16.3,
+    "taxaReciclagemPct": 21.2,
+    "residuoPerCapitaKgDia": 0.6
+  },
+  "4203709": {
+    "coletaSeletivaPct": 37.5,
+    "taxaReciclagemPct": 12.0,
+    "residuoPerCapitaKgDia": 0.7
+  },
+  "4203808": {
+    "coletaSeletivaPct": 95,
+    "taxaReciclagemPct": 23.7,
+    "residuoPerCapitaKgDia": 0.7
+  },
+  "4203907": {
+    "coletaSeletivaPct": 17.5,
+    "taxaReciclagemPct": 6.5,
+    "residuoPerCapitaKgDia": 0.9
+  },
+  "4203956": {
+    "coletaSeletivaPct": 29.7,
+    "taxaReciclagemPct": 14.4,
+    "residuoPerCapitaKgDia": 0.8
+  },
+  "4204004": {
+    "coletaSeletivaPct": 32.7,
+    "taxaReciclagemPct": 10.4,
+    "residuoPerCapitaKgDia": 1.0
+  },
+  "4204103": {
+    "coletaSeletivaPct": 71.6,
+    "taxaReciclagemPct": 19.0,
+    "residuoPerCapitaKgDia": 0.7
+  },
+  "4204152": {
+    "coletaSeletivaPct": 16.9,
+    "taxaReciclagemPct": 6.2,
+    "residuoPerCapitaKgDia": 0.9
+  },
+  "4204178": {
+    "coletaSeletivaPct": 34.1,
+    "taxaReciclagemPct": 13.7,
+    "residuoPerCapitaKgDia": 0.9
+  },
+  "4204194": {
+    "coletaSeletivaPct": 34.1,
+    "taxaReciclagemPct": 16.7,
+    "residuoPerCapitaKgDia": 0.8
+  },
+  "4204202": {
+    "coletaSeletivaPct": 31.5,
+    "taxaReciclagemPct": 26.0,
+    "residuoPerCapitaKgDia": 0.7
+  },
+  "4204251": {
+    "coletaSeletivaPct": 44.0,
+    "taxaReciclagemPct": 19.1,
+    "residuoPerCapitaKgDia": 1.0
+  },
+  "4204301": {
+    "coletaSeletivaPct": 21.5,
+    "taxaReciclagemPct": 8.4,
+    "residuoPerCapitaKgDia": 0.9
+  },
+  "4204400": {
+    "coletaSeletivaPct": 31.3,
+    "taxaReciclagemPct": 7.4,
+    "residuoPerCapitaKgDia": 1.0
+  },
+  "4204459": {
+    "coletaSeletivaPct": null,
+    "taxaReciclagemPct": 4.7,
+    "residuoPerCapitaKgDia": 0.7
+  },
+  "4204509": {
+    "coletaSeletivaPct": 51.0,
+    "taxaReciclagemPct": 17.2,
+    "residuoPerCapitaKgDia": 0.8
+  },
+  "4204558": {
+    "coletaSeletivaPct": 46.9,
+    "taxaReciclagemPct": 16.1,
+    "residuoPerCapitaKgDia": 1.0
+  },
+  "4204608": {
+    "coletaSeletivaPct": 49.0,
+    "taxaReciclagemPct": 22.9,
+    "residuoPerCapitaKgDia": 0.7
+  },
+  "4204707": {
+    "coletaSeletivaPct": 65.4,
+    "taxaReciclagemPct": 22.9,
+    "residuoPerCapitaKgDia": 0.7
+  },
+  "4204756": {
+    "coletaSeletivaPct": 39.7,
+    "taxaReciclagemPct": 15.2,
+    "residuoPerCapitaKgDia": 0.8
+  },
+  "4204806": {
+    "coletaSeletivaPct": 9.0,
+    "taxaReciclagemPct": 6.3,
+    "residuoPerCapitaKgDia": 0.7
+  },
+  "4204905": {
+    "coletaSeletivaPct": 48.7,
+    "taxaReciclagemPct": 17.5,
+    "residuoPerCapitaKgDia": 1.0
+  },
+  "4205001": {
+    "coletaSeletivaPct": 8.1,
+    "taxaReciclagemPct": 9.0,
+    "residuoPerCapitaKgDia": 0.7
+  },
+  "4205100": {
+    "coletaSeletivaPct": 53.1,
+    "taxaReciclagemPct": 21.1,
+    "residuoPerCapitaKgDia": 1.0
+  },
+  "4205159": {
+    "coletaSeletivaPct": 16.7,
+    "taxaReciclagemPct": 10.9,
+    "residuoPerCapitaKgDia": 0.8
+  },
+  "4205175": {
+    "coletaSeletivaPct": 70.6,
+    "taxaReciclagemPct": 27.5,
+    "residuoPerCapitaKgDia": 0.8
+  },
+  "4205191": {
+    "coletaSeletivaPct": 25.1,
+    "taxaReciclagemPct": 16.1,
+    "residuoPerCapitaKgDia": 1.1
+  },
+  "4205209": {
+    "coletaSeletivaPct": 79.7,
+    "taxaReciclagemPct": 24.7,
+    "residuoPerCapitaKgDia": 0.8
+  },
+  "4205357": {
+    "coletaSeletivaPct": 36.7,
+    "taxaReciclagemPct": 9.5,
+    "residuoPerCapitaKgDia": 1.1
+  },
+  "4205407": {
+    "coletaSeletivaPct": 66.4,
+    "taxaReciclagemPct": 16.7,
+    "residuoPerCapitaKgDia": 0.8
+  },
+  "4205431": {
+    "coletaSeletivaPct": 78.5,
+    "taxaReciclagemPct": 31.0,
+    "residuoPerCapitaKgDia": 0.5
+  },
+  "4205456": {
+    "coletaSeletivaPct": 49.9,
+    "taxaReciclagemPct": 13.6,
+    "residuoPerCapitaKgDia": 0.7
+  },
+  "4205506": {
+    "coletaSeletivaPct": 76.9,
+    "taxaReciclagemPct": 27.6,
+    "residuoPerCapitaKgDia": 0.7
+  },
+  "4205555": {
+    "coletaSeletivaPct": 77.8,
+    "taxaReciclagemPct": 17.4,
+    "residuoPerCapitaKgDia": 0.7
+  },
+  "4205605": {
+    "coletaSeletivaPct": 71.0,
+    "taxaReciclagemPct": 28.4,
+    "residuoPerCapitaKgDia": 0.7
+  },
+  "4205704": {
+    "coletaSeletivaPct": 83.7,
+    "taxaReciclagemPct": 34.0,
+    "residuoPerCapitaKgDia": 0.8
+  },
+  "4205803": {
+    "coletaSeletivaPct": 90.8,
+    "taxaReciclagemPct": 32.2,
+    "residuoPerCapitaKgDia": 0.8
+  },
+  "4205902": {
+    "coletaSeletivaPct": 28.3,
+    "taxaReciclagemPct": 16.8,
+    "residuoPerCapitaKgDia": 0.7
+  },
+  "4206009": {
+    "coletaSeletivaPct": 38.4,
+    "taxaReciclagemPct": 14.4,
+    "residuoPerCapitaKgDia": 1.0
+  },
+  "4206108": {
+    "coletaSeletivaPct": null,
+    "taxaReciclagemPct": 5.8,
+    "residuoPerCapitaKgDia": 0.7
+  },
+  "4206207": {
+    "coletaSeletivaPct": 5,
+    "taxaReciclagemPct": 4.3,
+    "residuoPerCapitaKgDia": 0.9
+  },
+  "4206306": {
+    "coletaSeletivaPct": 30.8,
+    "taxaReciclagemPct": 15.5,
+    "residuoPerCapitaKgDia": 0.9
+  },
+  "4206405": {
+    "coletaSeletivaPct": 11.4,
+    "taxaReciclagemPct": 5.7,
+    "residuoPerCapitaKgDia": 1.0
+  },
+  "4206504": {
+    "coletaSeletivaPct": 36.8,
+    "taxaReciclagemPct": 16.1,
+    "residuoPerCapitaKgDia": 0.5
+  },
+  "4206603": {
+    "coletaSeletivaPct": 65.0,
+    "taxaReciclagemPct": 26.4,
+    "residuoPerCapitaKgDia": 0.6
+  },
+  "4206652": {
+    "coletaSeletivaPct": 39.4,
+    "taxaReciclagemPct": 14.8,
+    "residuoPerCapitaKgDia": 0.8
+  },
+  "4206702": {
+    "coletaSeletivaPct": 62.7,
+    "taxaReciclagemPct": 18.7,
+    "residuoPerCapitaKgDia": 0.6
+  },
+  "4206751": {
+    "coletaSeletivaPct": 45.6,
+    "taxaReciclagemPct": 20.9,
+    "residuoPerCapitaKgDia": 1.0
+  },
+  "4206801": {
+    "coletaSeletivaPct": 17.2,
+    "taxaReciclagemPct": 12.9,
+    "residuoPerCapitaKgDia": 0.9
+  },
+  "4206900": {
+    "coletaSeletivaPct": 19.3,
+    "taxaReciclagemPct": 15.7,
+    "residuoPerCapitaKgDia": 0.8
+  },
+  "4207007": {
+    "coletaSeletivaPct": 7.1,
+    "taxaReciclagemPct": 6.3,
+    "residuoPerCapitaKgDia": 0.9
+  },
+  "4207106": {
+    "coletaSeletivaPct": 5,
+    "taxaReciclagemPct": 4.7,
+    "residuoPerCapitaKgDia": 1.0
+  },
+  "4207205": {
+    "coletaSeletivaPct": 50.1,
+    "taxaReciclagemPct": 19.9,
+    "residuoPerCapitaKgDia": 1.0
+  },
+  "4207304": {
+    "coletaSeletivaPct": 41.2,
+    "taxaReciclagemPct": 21.2,
+    "residuoPerCapitaKgDia": 1.0
+  },
+  "4207403": {
+    "coletaSeletivaPct": 41.3,
+    "taxaReciclagemPct": 18.6,
+    "residuoPerCapitaKgDia": 0.9
+  },
+  "4207502": {
+    "coletaSeletivaPct": 65.7,
+    "taxaReciclagemPct": 20.7,
+    "residuoPerCapitaKgDia": 0.9
+  },
+  "4207577": {
+    "coletaSeletivaPct": 45.2,
+    "taxaReciclagemPct": 9.5,
+    "residuoPerCapitaKgDia": 0.9
+  },
+  "4207601": {
+    "coletaSeletivaPct": 69.5,
+    "taxaReciclagemPct": 22.6,
+    "residuoPerCapitaKgDia": 1.0
+  },
+  "4207650": {
+    "coletaSeletivaPct": 25.7,
+    "taxaReciclagemPct": 10.2,
+    "residuoPerCapitaKgDia": 0.7
+  },
+  "4207684": {
+    "coletaSeletivaPct": 5,
+    "taxaReciclagemPct": 0.2,
+    "residuoPerCapitaKgDia": 0.9
+  },
+  "4207700": {
+    "coletaSeletivaPct": 15.1,
+    "taxaReciclagemPct": 8.3,
+    "residuoPerCapitaKgDia": 1.0
+  },
+  "4207759": {
+    "coletaSeletivaPct": 9.4,
+    "taxaReciclagemPct": 5.9,
+    "residuoPerCapitaKgDia": 0.8
+  },
+  "4207809": {
+    "coletaSeletivaPct": 48.7,
+    "taxaReciclagemPct": 16.9,
+    "residuoPerCapitaKgDia": 0.9
+  },
+  "4207858": {
+    "coletaSeletivaPct": 50.3,
+    "taxaReciclagemPct": 20.0,
+    "residuoPerCapitaKgDia": 0.7
+  },
+  "4208005": {
+    "coletaSeletivaPct": 7.7,
+    "taxaReciclagemPct": 2.0,
+    "residuoPerCapitaKgDia": 1.0
+  },
+  "4208104": {
+    "coletaSeletivaPct": 46.2,
+    "taxaReciclagemPct": 20.7,
+    "residuoPerCapitaKgDia": 0.9
+  },
+  "4208203": {
+    "coletaSeletivaPct": 23.6,
+    "taxaReciclagemPct": 14.8,
+    "residuoPerCapitaKgDia": 0.6
+  },
+  "4208302": {
+    "coletaSeletivaPct": 60.5,
+    "taxaReciclagemPct": 20.7,
+    "residuoPerCapitaKgDia": 0.8
+  },
+  "4208401": {
+    "coletaSeletivaPct": 5,
+    "taxaReciclagemPct": 0,
+    "residuoPerCapitaKgDia": 1.0
+  },
+  "4208450": {
+    "coletaSeletivaPct": 27.6,
+    "taxaReciclagemPct": 9.9,
+    "residuoPerCapitaKgDia": 0.9
+  },
+  "4208500": {
+    "coletaSeletivaPct": null,
+    "taxaReciclagemPct": 5.5,
+    "residuoPerCapitaKgDia": 1.0
+  },
+  "4208609": {
+    "coletaSeletivaPct": 52.6,
+    "taxaReciclagemPct": 22.3,
+    "residuoPerCapitaKgDia": 0.9
+  },
+  "4208708": {
+    "coletaSeletivaPct": null,
+    "taxaReciclagemPct": 5.1,
+    "residuoPerCapitaKgDia": 0.9
+  },
+  "4208807": {
+    "coletaSeletivaPct": null,
+    "taxaReciclagemPct": 3.4,
+    "residuoPerCapitaKgDia": 0.8
+  },
+  "4208906": {
+    "coletaSeletivaPct": 41.7,
+    "taxaReciclagemPct": 16.3,
+    "residuoPerCapitaKgDia": 0.9
+  },
+  "4208955": {
+    "coletaSeletivaPct": 13.4,
+    "taxaReciclagemPct": 12.3,
+    "residuoPerCapitaKgDia": 0.9
+  },
+  "4209003": {
+    "coletaSeletivaPct": 25.4,
+    "taxaReciclagemPct": 16.0,
+    "residuoPerCapitaKgDia": 0.8
+  },
+  "4209102": {
+    "coletaSeletivaPct": 21.3,
+    "taxaReciclagemPct": 14.6,
+    "residuoPerCapitaKgDia": 0.8
+  },
+  "4209151": {
+    "coletaSeletivaPct": 8.7,
+    "taxaReciclagemPct": 9.0,
+    "residuoPerCapitaKgDia": 0.8
+  },
+  "4209177": {
+    "coletaSeletivaPct": null,
+    "taxaReciclagemPct": 5.5,
+    "residuoPerCapitaKgDia": 0.7
+  },
+  "4209201": {
+    "coletaSeletivaPct": 15.2,
+    "taxaReciclagemPct": 6.1,
+    "residuoPerCapitaKgDia": 0.6
+  },
+  "4209300": {
+    "coletaSeletivaPct": 11.5,
+    "taxaReciclagemPct": 3.1,
+    "residuoPerCapitaKgDia": 1.1
+  },
+  "4209409": {
+    "coletaSeletivaPct": 66.8,
+    "taxaReciclagemPct": 23.0,
+    "residuoPerCapitaKgDia": 0.8
+  },
+  "4209458": {
+    "coletaSeletivaPct": 15.6,
+    "taxaReciclagemPct": 0,
+    "residuoPerCapitaKgDia": 0.7
+  },
+  "4209508": {
+    "coletaSeletivaPct": 61.1,
+    "taxaReciclagemPct": 18.7,
+    "residuoPerCapitaKgDia": 0.6
+  },
+  "4209607": {
+    "coletaSeletivaPct": 46.0,
+    "taxaReciclagemPct": 8.9,
+    "residuoPerCapitaKgDia": 0.8
+  },
+  "4209706": {
+    "coletaSeletivaPct": 33.4,
+    "taxaReciclagemPct": 14.0,
+    "residuoPerCapitaKgDia": 0.7
+  },
+  "4209805": {
+    "coletaSeletivaPct": 22.0,
+    "taxaReciclagemPct": 13.6,
+    "residuoPerCapitaKgDia": 0.7
+  },
+  "4209854": {
+    "coletaSeletivaPct": 76.0,
+    "taxaReciclagemPct": 32.8,
+    "residuoPerCapitaKgDia": 0.9
+  },
+  "4209904": {
+    "coletaSeletivaPct": 56.4,
+    "taxaReciclagemPct": 13.9,
+    "residuoPerCapitaKgDia": 0.6
+  },
+  "4210001": {
+    "coletaSeletivaPct": 54.1,
+    "taxaReciclagemPct": 17.9,
+    "residuoPerCapitaKgDia": 1.0
+  },
+  "4210035": {
+    "coletaSeletivaPct": 16.6,
+    "taxaReciclagemPct": 9.1,
+    "residuoPerCapitaKgDia": 0.8
+  },
+  "4210050": {
+    "coletaSeletivaPct": 22.7,
+    "taxaReciclagemPct": 11.1,
+    "residuoPerCapitaKgDia": 0.8
+  },
+  "4210100": {
+    "coletaSeletivaPct": 40.9,
+    "taxaReciclagemPct": 19.7,
+    "residuoPerCapitaKgDia": 0.7
+  },
+  "4210209": {
+    "coletaSeletivaPct": null,
+    "taxaReciclagemPct": 3.8,
+    "residuoPerCapitaKgDia": 0.7
+  },
+  "4210308": {
+    "coletaSeletivaPct": 45.9,
+    "taxaReciclagemPct": 13.1,
+    "residuoPerCapitaKgDia": 1.0
+  },
+  "4210407": {
+    "coletaSeletivaPct": 16.6,
+    "taxaReciclagemPct": 18.3,
+    "residuoPerCapitaKgDia": 0.8
+  },
+  "4210506": {
+    "coletaSeletivaPct": 35.2,
+    "taxaReciclagemPct": 9.2,
+    "residuoPerCapitaKgDia": 0.8
+  },
+  "4210555": {
+    "coletaSeletivaPct": 6.3,
+    "taxaReciclagemPct": 0,
+    "residuoPerCapitaKgDia": 0.9
+  },
+  "4210605": {
+    "coletaSeletivaPct": 46.0,
+    "taxaReciclagemPct": 22.7,
+    "residuoPerCapitaKgDia": 0.7
+  },
+  "4210704": {
+    "coletaSeletivaPct": 67.2,
+    "taxaReciclagemPct": 18.3,
+    "residuoPerCapitaKgDia": 0.8
+  },
+  "4210803": {
+    "coletaSeletivaPct": 23.3,
+    "taxaReciclagemPct": 15.9,
+    "residuoPerCapitaKgDia": 0.8
+  },
+  "4210852": {
+    "coletaSeletivaPct": 56.6,
+    "taxaReciclagemPct": 20.2,
+    "residuoPerCapitaKgDia": 0.8
+  },
+  "4210902": {
+    "coletaSeletivaPct": 41.1,
+    "taxaReciclagemPct": 12.7,
+    "residuoPerCapitaKgDia": 0.8
+  },
+  "4211009": {
+    "coletaSeletivaPct": 64.8,
+    "taxaReciclagemPct": 26.6,
+    "residuoPerCapitaKgDia": 0.7
+  },
+  "4211058": {
+    "coletaSeletivaPct": 51.7,
+    "taxaReciclagemPct": 19.7,
+    "residuoPerCapitaKgDia": 0.8
+  },
+  "4211108": {
+    "coletaSeletivaPct": null,
+    "taxaReciclagemPct": 4.7,
+    "residuoPerCapitaKgDia": 0.8
+  },
+  "4211207": {
+    "coletaSeletivaPct": 7.9,
+    "taxaReciclagemPct": 4.2,
+    "residuoPerCapitaKgDia": 1.1
+  },
+  "4211256": {
+    "coletaSeletivaPct": 71.6,
+    "taxaReciclagemPct": 27.3,
+    "residuoPerCapitaKgDia": 0.6
+  },
+  "4211306": {
+    "coletaSeletivaPct": 26.9,
+    "taxaReciclagemPct": 12.4,
+    "residuoPerCapitaKgDia": 1.1
+  },
+  "4211405": {
+    "coletaSeletivaPct": 56.6,
+    "taxaReciclagemPct": 21.3,
+    "residuoPerCapitaKgDia": 0.6
+  },
+  "4211454": {
+    "coletaSeletivaPct": 35.0,
+    "taxaReciclagemPct": 12.7,
+    "residuoPerCapitaKgDia": 0.9
+  },
+  "4211504": {
+    "coletaSeletivaPct": 62.8,
+    "taxaReciclagemPct": 23.2,
+    "residuoPerCapitaKgDia": 0.7
+  },
+  "4211603": {
+    "coletaSeletivaPct": 9.5,
+    "taxaReciclagemPct": 2.3,
+    "residuoPerCapitaKgDia": 0.9
+  },
+  "4211652": {
+    "coletaSeletivaPct": 66.4,
+    "taxaReciclagemPct": 14.8,
+    "residuoPerCapitaKgDia": 0.9
+  },
+  "4211702": {
+    "coletaSeletivaPct": 29.5,
+    "taxaReciclagemPct": 17.4,
+    "residuoPerCapitaKgDia": 0.6
+  },
+  "4211751": {
+    "coletaSeletivaPct": 17.0,
+    "taxaReciclagemPct": 9.5,
+    "residuoPerCapitaKgDia": 0.9
+  },
+  "4211801": {
+    "coletaSeletivaPct": 47.5,
+    "taxaReciclagemPct": 19.1,
+    "residuoPerCapitaKgDia": 0.8
+  },
+  "4211850": {
+    "coletaSeletivaPct": 40.7,
+    "taxaReciclagemPct": 12.4,
+    "residuoPerCapitaKgDia": 0.8
+  },
+  "4211876": {
+    "coletaSeletivaPct": 30.8,
+    "taxaReciclagemPct": 6.5,
+    "residuoPerCapitaKgDia": 0.6
+  },
+  "4211892": {
+    "coletaSeletivaPct": 49.6,
+    "taxaReciclagemPct": 18.9,
+    "residuoPerCapitaKgDia": 0.6
+  },
+  "4211900": {
+    "coletaSeletivaPct": 61.2,
+    "taxaReciclagemPct": 19.1,
+    "residuoPerCapitaKgDia": 0.6
+  },
+  "4212007": {
+    "coletaSeletivaPct": 31.2,
+    "taxaReciclagemPct": 13.3,
+    "residuoPerCapitaKgDia": 0.8
+  },
+  "4212056": {
+    "coletaSeletivaPct": 27.0,
+    "taxaReciclagemPct": 17.7,
+    "residuoPerCapitaKgDia": 0.7
+  },
+  "4212106": {
+    "coletaSeletivaPct": 32.4,
+    "taxaReciclagemPct": 10.6,
+    "residuoPerCapitaKgDia": 0.6
+  },
+  "4212205": {
+    "coletaSeletivaPct": 14.3,
+    "taxaReciclagemPct": 8.0,
+    "residuoPerCapitaKgDia": 0.9
+  },
+  "4212239": {
+    "coletaSeletivaPct": 43.0,
+    "taxaReciclagemPct": 14.5,
+    "residuoPerCapitaKgDia": 0.9
+  },
+  "4212254": {
+    "coletaSeletivaPct": 80.6,
+    "taxaReciclagemPct": 24.3,
+    "residuoPerCapitaKgDia": 0.4
+  },
+  "4212270": {
+    "coletaSeletivaPct": 15.4,
+    "taxaReciclagemPct": 6.8,
+    "residuoPerCapitaKgDia": 0.8
+  },
+  "4212304": {
+    "coletaSeletivaPct": null,
+    "taxaReciclagemPct": 3.2,
+    "residuoPerCapitaKgDia": 0.6
+  },
+  "4212403": {
+    "coletaSeletivaPct": 5,
+    "taxaReciclagemPct": 0,
+    "residuoPerCapitaKgDia": 0.8
+  },
+  "4212502": {
+    "coletaSeletivaPct": 57.1,
+    "taxaReciclagemPct": 21.7,
+    "residuoPerCapitaKgDia": 0.7
+  },
+  "4212601": {
+    "coletaSeletivaPct": 68.4,
+    "taxaReciclagemPct": 19.8,
+    "residuoPerCapitaKgDia": 1.0
+  },
+  "4212650": {
+    "coletaSeletivaPct": 78.0,
+    "taxaReciclagemPct": 22.9,
+    "residuoPerCapitaKgDia": 0.6
+  },
+  "4212700": {
+    "coletaSeletivaPct": 32.5,
+    "taxaReciclagemPct": 8.2,
+    "residuoPerCapitaKgDia": 1.2
+  },
+  "4212809": {
+    "coletaSeletivaPct": 5,
+    "taxaReciclagemPct": 0,
+    "residuoPerCapitaKgDia": 0.8
+  },
+  "4212908": {
+    "coletaSeletivaPct": 17.0,
+    "taxaReciclagemPct": 10.2,
+    "residuoPerCapitaKgDia": 1.0
+  },
+  "4213005": {
+    "coletaSeletivaPct": 13.8,
+    "taxaReciclagemPct": 3.1,
+    "residuoPerCapitaKgDia": 0.9
+  },
+  "4213104": {
+    "coletaSeletivaPct": 66.6,
+    "taxaReciclagemPct": 16.5,
+    "residuoPerCapitaKgDia": 0.9
+  },
+  "4213153": {
+    "coletaSeletivaPct": 69.7,
+    "taxaReciclagemPct": 22.2,
+    "residuoPerCapitaKgDia": 0.8
+  },
+  "4213203": {
+    "coletaSeletivaPct": 52.9,
+    "taxaReciclagemPct": 16.8,
+    "residuoPerCapitaKgDia": 0.8
+  },
+  "4213302": {
+    "coletaSeletivaPct": 60.9,
+    "taxaReciclagemPct": 18.4,
+    "residuoPerCapitaKgDia": 1.0
+  },
+  "4213351": {
+    "coletaSeletivaPct": 68.0,
+    "taxaReciclagemPct": 21.6,
+    "residuoPerCapitaKgDia": 0.6
+  },
+  "4213401": {
+    "coletaSeletivaPct": 71.3,
+    "taxaReciclagemPct": 13.9,
+    "residuoPerCapitaKgDia": 0.8
+  },
+  "4213500": {
+    "coletaSeletivaPct": 67.8,
+    "taxaReciclagemPct": 26.8,
+    "residuoPerCapitaKgDia": 0.7
+  },
+  "4213609": {
+    "coletaSeletivaPct": 51.6,
+    "taxaReciclagemPct": 15.7,
+    "residuoPerCapitaKgDia": 0.8
+  },
+  "4213708": {
+    "coletaSeletivaPct": 17.9,
+    "taxaReciclagemPct": 1.6,
+    "residuoPerCapitaKgDia": 0.9
+  },
+  "4213807": {
+    "coletaSeletivaPct": 31.2,
+    "taxaReciclagemPct": 17.7,
+    "residuoPerCapitaKgDia": 0.9
+  },
+  "4213906": {
+    "coletaSeletivaPct": 39.8,
+    "taxaReciclagemPct": 11.4,
+    "residuoPerCapitaKgDia": 0.8
+  },
+  "4214003": {
+    "coletaSeletivaPct": 16.6,
+    "taxaReciclagemPct": 7.4,
+    "residuoPerCapitaKgDia": 0.8
+  },
+  "4214102": {
+    "coletaSeletivaPct": 52.8,
+    "taxaReciclagemPct": 15.9,
+    "residuoPerCapitaKgDia": 0.8
+  },
+  "4214151": {
+    "coletaSeletivaPct": 75.0,
+    "taxaReciclagemPct": 26.3,
+    "residuoPerCapitaKgDia": 0.7
+  },
+  "4214201": {
+    "coletaSeletivaPct": 5,
+    "taxaReciclagemPct": 0.6,
+    "residuoPerCapitaKgDia": 0.7
+  },
+  "4214300": {
+    "coletaSeletivaPct": 34.0,
+    "taxaReciclagemPct": 13.4,
+    "residuoPerCapitaKgDia": 0.6
+  },
+  "4214409": {
+    "coletaSeletivaPct": 39.6,
+    "taxaReciclagemPct": 17.9,
+    "residuoPerCapitaKgDia": 0.7
+  },
+  "4214508": {
+    "coletaSeletivaPct": 6.1,
+    "taxaReciclagemPct": 7.5,
+    "residuoPerCapitaKgDia": 0.7
+  },
+  "4214607": {
+    "coletaSeletivaPct": 57.2,
+    "taxaReciclagemPct": 9.3,
+    "residuoPerCapitaKgDia": 0.9
+  },
+  "4214706": {
+    "coletaSeletivaPct": 28.8,
+    "taxaReciclagemPct": 6.5,
+    "residuoPerCapitaKgDia": 1.0
+  },
+  "4214805": {
+    "coletaSeletivaPct": 5.5,
+    "taxaReciclagemPct": 3.0,
+    "residuoPerCapitaKgDia": 1.0
+  },
+  "4214904": {
+    "coletaSeletivaPct": 42.6,
+    "taxaReciclagemPct": 7.6,
+    "residuoPerCapitaKgDia": 0.9
+  },
+  "4215000": {
+    "coletaSeletivaPct": 41.9,
+    "taxaReciclagemPct": 27.6,
+    "residuoPerCapitaKgDia": 0.5
+  },
+  "4215059": {
+    "coletaSeletivaPct": 30.8,
+    "taxaReciclagemPct": 13.2,
+    "residuoPerCapitaKgDia": 0.6
+  },
+  "4215109": {
+    "coletaSeletivaPct": 6.7,
+    "taxaReciclagemPct": 2.9,
+    "residuoPerCapitaKgDia": 0.6
+  },
+  "4215208": {
+    "coletaSeletivaPct": null,
+    "taxaReciclagemPct": 4.0,
+    "residuoPerCapitaKgDia": 0.8
+  },
+  "4215356": {
+    "coletaSeletivaPct": 48.7,
+    "taxaReciclagemPct": 10.9,
+    "residuoPerCapitaKgDia": 0.7
+  },
+  "4215406": {
+    "coletaSeletivaPct": 79.1,
+    "taxaReciclagemPct": 29.5,
+    "residuoPerCapitaKgDia": 0.6
+  },
+  "4215455": {
+    "coletaSeletivaPct": 28.8,
+    "taxaReciclagemPct": 14.7,
+    "residuoPerCapitaKgDia": 0.9
+  },
+  "4215505": {
+    "coletaSeletivaPct": 39.9,
+    "taxaReciclagemPct": 15.5,
+    "residuoPerCapitaKgDia": 0.9
+  },
+  "4215554": {
+    "coletaSeletivaPct": 5,
+    "taxaReciclagemPct": 5.2,
+    "residuoPerCapitaKgDia": 1.0
+  },
+  "4215604": {
+    "coletaSeletivaPct": 13.2,
+    "taxaReciclagemPct": 4.7,
+    "residuoPerCapitaKgDia": 0.8
+  },
+  "4215653": {
+    "coletaSeletivaPct": 47.6,
+    "taxaReciclagemPct": 18.3,
+    "residuoPerCapitaKgDia": 0.9
+  },
+  "4215687": {
+    "coletaSeletivaPct": 42.3,
+    "taxaReciclagemPct": 20.8,
+    "residuoPerCapitaKgDia": 0.4
+  },
+  "4215695": {
+    "coletaSeletivaPct": 8.7,
+    "taxaReciclagemPct": 12.3,
+    "residuoPerCapitaKgDia": 0.8
+  },
+  "4215703": {
+    "coletaSeletivaPct": 9.4,
+    "taxaReciclagemPct": 4.2,
+    "residuoPerCapitaKgDia": 0.9
+  },
+  "4215752": {
+    "coletaSeletivaPct": 33.0,
+    "taxaReciclagemPct": 4.4,
+    "residuoPerCapitaKgDia": 0.9
+  },
+  "4215802": {
+    "coletaSeletivaPct": 49.1,
+    "taxaReciclagemPct": 12.3,
+    "residuoPerCapitaKgDia": 0.7
+  },
+  "4215901": {
+    "coletaSeletivaPct": 65.1,
+    "taxaReciclagemPct": 19.0,
+    "residuoPerCapitaKgDia": 0.6
+  },
+  "4216008": {
+    "coletaSeletivaPct": 56.3,
+    "taxaReciclagemPct": 14.7,
+    "residuoPerCapitaKgDia": 1.0
+  },
+  "4216057": {
+    "coletaSeletivaPct": 21.9,
+    "taxaReciclagemPct": 5.2,
+    "residuoPerCapitaKgDia": 0.9
+  },
+  "4216107": {
+    "coletaSeletivaPct": 55.5,
+    "taxaReciclagemPct": 21.0,
+    "residuoPerCapitaKgDia": 0.8
+  },
+  "4216206": {
+    "coletaSeletivaPct": 26.3,
+    "taxaReciclagemPct": 0.9,
+    "residuoPerCapitaKgDia": 0.8
+  },
+  "4216255": {
+    "coletaSeletivaPct": 75.5,
+    "taxaReciclagemPct": 20.8,
+    "residuoPerCapitaKgDia": 0.8
+  },
+  "4216305": {
+    "coletaSeletivaPct": 81.0,
+    "taxaReciclagemPct": 28.5,
+    "residuoPerCapitaKgDia": 0.5
+  },
+  "4216354": {
+    "coletaSeletivaPct": 82.3,
+    "taxaReciclagemPct": 33.3,
+    "residuoPerCapitaKgDia": 0.9
+  },
+  "4216404": {
+    "coletaSeletivaPct": 84.4,
+    "taxaReciclagemPct": 25.3,
+    "residuoPerCapitaKgDia": 0.4
+  },
+  "4216503": {
+    "coletaSeletivaPct": 47.1,
+    "taxaReciclagemPct": 13.3,
+    "residuoPerCapitaKgDia": 0.8
+  },
+  "4216602": {
+    "coletaSeletivaPct": 36.4,
+    "taxaReciclagemPct": 8.3,
+    "residuoPerCapitaKgDia": 0.9
+  },
+  "4216701": {
+    "coletaSeletivaPct": 5,
+    "taxaReciclagemPct": 1.6,
+    "residuoPerCapitaKgDia": 0.9
+  },
+  "4216800": {
+    "coletaSeletivaPct": 36.1,
+    "taxaReciclagemPct": 22.2,
+    "residuoPerCapitaKgDia": 0.8
+  },
+  "4216909": {
+    "coletaSeletivaPct": 53.4,
+    "taxaReciclagemPct": 17.2,
+    "residuoPerCapitaKgDia": 1.0
+  },
+  "4217006": {
+    "coletaSeletivaPct": 55.9,
+    "taxaReciclagemPct": 18.0,
+    "residuoPerCapitaKgDia": 0.9
+  },
+  "4217105": {
+    "coletaSeletivaPct": 57.7,
+    "taxaReciclagemPct": 18.7,
+    "residuoPerCapitaKgDia": 0.7
+  },
+  "4217154": {
+    "coletaSeletivaPct": 40.5,
+    "taxaReciclagemPct": 18.0,
+    "residuoPerCapitaKgDia": 0.9
+  },
+  "4217204": {
+    "coletaSeletivaPct": 37.7,
+    "taxaReciclagemPct": 4.7,
+    "residuoPerCapitaKgDia": 0.7
+  },
+  "4217253": {
+    "coletaSeletivaPct": 57.6,
+    "taxaReciclagemPct": 18.2,
+    "residuoPerCapitaKgDia": 0.8
+  },
+  "4217402": {
+    "coletaSeletivaPct": 5,
+    "taxaReciclagemPct": 8.0,
+    "residuoPerCapitaKgDia": 1.0
+  },
+  "4217501": {
+    "coletaSeletivaPct": 44.3,
+    "taxaReciclagemPct": 23.7,
+    "residuoPerCapitaKgDia": 0.7
+  },
+  "4217550": {
+    "coletaSeletivaPct": 29.2,
+    "taxaReciclagemPct": 7.4,
+    "residuoPerCapitaKgDia": 1.0
+  },
+  "4217600": {
+    "coletaSeletivaPct": 37.1,
+    "taxaReciclagemPct": 15.0,
+    "residuoPerCapitaKgDia": 0.9
+  },
+  "4217709": {
+    "coletaSeletivaPct": 8.9,
+    "taxaReciclagemPct": 8.2,
+    "residuoPerCapitaKgDia": 0.7
+  },
+  "4217758": {
+    "coletaSeletivaPct": null,
+    "taxaReciclagemPct": 2.8,
+    "residuoPerCapitaKgDia": 0.7
+  },
+  "4217808": {
+    "coletaSeletivaPct": 32.4,
+    "taxaReciclagemPct": 12.3,
+    "residuoPerCapitaKgDia": 0.8
+  },
+  "4217956": {
+    "coletaSeletivaPct": 25.1,
+    "taxaReciclagemPct": 13.4,
+    "residuoPerCapitaKgDia": 0.7
+  },
+  "4218004": {
+    "coletaSeletivaPct": 41.3,
+    "taxaReciclagemPct": 15.2,
+    "residuoPerCapitaKgDia": 0.8
+  },
+  "4218103": {
+    "coletaSeletivaPct": 30.4,
+    "taxaReciclagemPct": 12.4,
+    "residuoPerCapitaKgDia": 0.9
+  },
+  "4218202": {
+    "coletaSeletivaPct": 43.8,
+    "taxaReciclagemPct": 16.1,
+    "residuoPerCapitaKgDia": 0.8
+  },
+  "4218251": {
+    "coletaSeletivaPct": 24.3,
+    "taxaReciclagemPct": 11.3,
+    "residuoPerCapitaKgDia": 0.9
+  },
+  "4218301": {
+    "coletaSeletivaPct": 5,
+    "taxaReciclagemPct": 4.1,
+    "residuoPerCapitaKgDia": 0.6
+  },
+  "4218350": {
+    "coletaSeletivaPct": 45.7,
+    "taxaReciclagemPct": 20.2,
+    "residuoPerCapitaKgDia": 0.9
+  },
+  "4218400": {
+    "coletaSeletivaPct": 77.1,
+    "taxaReciclagemPct": 27.0,
+    "residuoPerCapitaKgDia": 0.8
+  },
+  "4218509": {
+    "coletaSeletivaPct": 20.2,
+    "taxaReciclagemPct": 11.0,
+    "residuoPerCapitaKgDia": 0.8
+  },
+  "4218608": {
+    "coletaSeletivaPct": 12.7,
+    "taxaReciclagemPct": 11.1,
+    "residuoPerCapitaKgDia": 0.5
+  },
+  "4218707": {
+    "coletaSeletivaPct": 42.9,
+    "taxaReciclagemPct": 20.6,
+    "residuoPerCapitaKgDia": 0.9
+  },
+  "4218756": {
+    "coletaSeletivaPct": 35.1,
+    "taxaReciclagemPct": 19.3,
+    "residuoPerCapitaKgDia": 0.7
+  },
+  "4218806": {
+    "coletaSeletivaPct": 34.2,
+    "taxaReciclagemPct": 9.1,
+    "residuoPerCapitaKgDia": 0.8
+  },
+  "4218855": {
+    "coletaSeletivaPct": 67.8,
+    "taxaReciclagemPct": 26.2,
+    "residuoPerCapitaKgDia": 0.9
+  },
+  "4218905": {
+    "coletaSeletivaPct": 14.5,
+    "taxaReciclagemPct": 7.5,
+    "residuoPerCapitaKgDia": 0.7
+  },
+  "4218954": {
+    "coletaSeletivaPct": 42.7,
+    "taxaReciclagemPct": 19.3,
+    "residuoPerCapitaKgDia": 0.6
+  },
+  "4219002": {
+    "coletaSeletivaPct": 46.6,
+    "taxaReciclagemPct": 11.5,
+    "residuoPerCapitaKgDia": 0.9
+  },
+  "4219101": {
+    "coletaSeletivaPct": 68.6,
+    "taxaReciclagemPct": 30.2,
+    "residuoPerCapitaKgDia": 0.9
+  },
+  "4219150": {
+    "coletaSeletivaPct": 57.0,
+    "taxaReciclagemPct": 25.0,
+    "residuoPerCapitaKgDia": 0.9
+  },
+  "4219176": {
+    "coletaSeletivaPct": 12.6,
+    "taxaReciclagemPct": 5.7,
+    "residuoPerCapitaKgDia": 0.7
+  },
+  "4219200": {
+    "coletaSeletivaPct": 32.6,
+    "taxaReciclagemPct": 9.4,
+    "residuoPerCapitaKgDia": 1.0
+  },
+  "4219309": {
+    "coletaSeletivaPct": 63.8,
+    "taxaReciclagemPct": 16.8,
+    "residuoPerCapitaKgDia": 1.0
+  },
+  "4219358": {
+    "coletaSeletivaPct": 34.1,
+    "taxaReciclagemPct": 11.0,
+    "residuoPerCapitaKgDia": 0.8
+  },
+  "4219408": {
+    "coletaSeletivaPct": 41.7,
+    "taxaReciclagemPct": 17.4,
+    "residuoPerCapitaKgDia": 0.9
+  },
+  "4219507": {
+    "coletaSeletivaPct": 22.6,
+    "taxaReciclagemPct": 3.8,
+    "residuoPerCapitaKgDia": 0.8
+  },
+  "4219606": {
+    "coletaSeletivaPct": 80.1,
+    "taxaReciclagemPct": 24.8,
+    "residuoPerCapitaKgDia": 0.6
+  },
+  "4219705": {
+    "coletaSeletivaPct": null,
+    "taxaReciclagemPct": 4.8,
+    "residuoPerCapitaKgDia": 0.7
+  },
+  "4219853": {
+    "coletaSeletivaPct": 54.5,
+    "taxaReciclagemPct": 24.6,
+    "residuoPerCapitaKgDia": 0.7
+  },
+  "4220000": {
+    "coletaSeletivaPct": null,
+    "taxaReciclagemPct": 7.1,
+    "residuoPerCapitaKgDia": 0.6
+  }
+}

@@ -4,13 +4,18 @@ import helmet from "helmet";
 import dotenv from "dotenv";
 import agentsRouter from "./routes/agents.js";
 import odsRouter from "./routes/ods.js";
+import authRouter from "./routes/auth.js";
 import { generalLimiter } from "./middleware/rate-limit.js";
+import { authenticateToken } from "./middleware/auth.js";
+import { globalErrorHandler, notFoundHandler } from "./middleware/error-handler.js";
 import { logger } from "./utils/logger.js";
 
 dotenv.config();
 
 const app: Express = express();
 const PORT = Number(process.env["PORT"] ?? 3000);
+
+// ─── Middlewares globais ──────────────────────────────────────────────────────
 
 app.use(helmet());
 app.use(
@@ -22,6 +27,8 @@ app.use(
 app.use(generalLimiter);
 app.use(express.json({ limit: "10kb" }));
 
+// ─── Rotas ────────────────────────────────────────────────────────────────────
+
 app.get("/health", (_req, res) => {
   res.json({
     status: "ok",
@@ -31,8 +38,39 @@ app.get("/health", (_req, res) => {
   });
 });
 
-app.use("/api/agents", agentsRouter);
-app.use("/api/ods", odsRouter);
+// Rotas públicas
+app.use("/api/auth", authRouter);
+
+// Rotas protegidas — requerem JWT válido
+app.use("/api/agents", authenticateToken, agentsRouter);
+app.use("/api/ods", authenticateToken, odsRouter);
+
+// ─── Error handlers (ordem importa: 404 antes do error handler global) ────────
+
+app.use(notFoundHandler);
+app.use(globalErrorHandler);
+
+// ─── Process handlers — erros não capturados ─────────────────────────────────
+
+process.on("uncaughtException", (err: Error) => {
+  logger.error("[process] uncaughtException — iniciando graceful shutdown", {
+    message: err.message,
+    stack: err.stack,
+  });
+  // Graceful shutdown: encerra o processo após flush dos logs (exit code 1)
+  process.exit(1);
+});
+
+process.on("unhandledRejection", (reason: unknown) => {
+  const message = reason instanceof Error ? reason.message : String(reason);
+  const stack = reason instanceof Error ? reason.stack : undefined;
+  logger.warn("[process] unhandledRejection — promise rejeitada sem handler", {
+    message,
+    ...(stack ? { stack } : {}),
+  });
+});
+
+// ─── Start ────────────────────────────────────────────────────────────────────
 
 app.listen(PORT, () => {
   logger.info(`IOC ESG Municipal API running on port ${PORT}`);
