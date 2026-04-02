@@ -16,7 +16,7 @@ import { Decimal } from "decimal.js";
 const prisma = new PrismaClient();
 
 // ---------------------------------------------------------------------------
-// Tipo interno para o seed
+// Tipos internos para o seed
 // ---------------------------------------------------------------------------
 
 interface MunicipalityRecord {
@@ -26,6 +26,168 @@ interface MunicipalityRecord {
   state: "SC";
   population: number;
   fpmAnnual: Decimal;
+}
+
+interface OdsScoreInput {
+  odsNumber: number; // 0 = global, 1-17 = ODS específico
+  score: number;
+  status: "verde" | "amarelo" | "vermelho";
+  indicatorCount: number;
+  sources: string[];
+}
+
+/**
+ * Determina o status com base no score.
+ * Verde >= 70 | Amarelo 40-69 | Vermelho < 40
+ */
+function scoreToStatus(score: number): "verde" | "amarelo" | "vermelho" {
+  if (score >= 70) return "verde";
+  if (score >= 40) return "amarelo";
+  return "vermelho";
+}
+
+/**
+ * Fontes de dados por ODS.
+ */
+const ODS_SOURCES: Record<number, string[]> = {
+  0:  ["ibge", "siconfi", "datasus", "inep", "snis", "inpe", "pncp"],
+  1:  ["ibge", "siconfi"],
+  2:  ["ibge", "datasus"],
+  3:  ["datasus", "siconfi"],
+  4:  ["inep", "siconfi"],
+  5:  ["ibge"],
+  6:  ["snis"],
+  7:  ["siconfi"],
+  8:  ["ibge", "siconfi"],
+  9:  ["siconfi", "pncp"],
+  10: ["ibge"],
+  11: ["ibge", "snis", "pncp"],
+  12: ["siconfi", "pncp"],
+  13: ["inpe"],
+  14: ["ibge"],
+  15: ["inpe", "ibge"],
+  16: ["siconfi", "pncp"],
+  17: ["siconfi"],
+};
+
+/**
+ * Número de indicadores por ODS usado no seed (estimativa).
+ */
+const ODS_INDICATOR_COUNT: Record<number, number> = {
+  0:  17,
+  1:  4,
+  2:  3,
+  3:  5,
+  4:  4,
+  5:  3,
+  6:  4,
+  7:  2,
+  8:  4,
+  9:  3,
+  10: 3,
+  11: 5,
+  12: 3,
+  13: 3,
+  14: 2,
+  15: 3,
+  16: 4,
+  17: 2,
+};
+
+/**
+ * Scores base por ODS para municípios de diferentes perfis.
+ * Variações são adicionadas por município individualmente.
+ */
+const ODS_BASE_SCORES_LARGE: Record<number, number> = {
+  1: 68, 2: 62, 3: 72, 4: 74, 5: 60, 6: 71, 7: 65, 8: 70,
+  9: 66, 10: 55, 11: 68, 12: 58, 13: 54, 14: 45, 15: 52, 16: 67, 17: 63,
+};
+
+const ODS_BASE_SCORES_MEDIUM: Record<number, number> = {
+  1: 54, 2: 50, 3: 58, 4: 60, 5: 48, 6: 56, 7: 52, 8: 55,
+  9: 50, 10: 44, 11: 53, 12: 46, 13: 42, 14: 38, 15: 43, 16: 52, 17: 49,
+};
+
+const ODS_BASE_SCORES_SMALL: Record<number, number> = {
+  1: 42, 2: 38, 3: 46, 4: 48, 5: 36, 6: 44, 7: 40, 8: 43,
+  9: 38, 10: 34, 11: 41, 12: 36, 13: 33, 14: 30, 15: 35, 16: 40, 17: 37,
+};
+
+/**
+ * Perfil por ibgeCode para os top-20 municípios.
+ * Variação determinística via hash do ibgeCode para reprodutibilidade.
+ */
+function deterministicVariation(ibgeCode: string, odsNumber: number): number {
+  const seed = parseInt(ibgeCode, 10);
+  // Variação de -8 a +8, determinística
+  return ((seed * (odsNumber + 1)) % 17) - 8;
+}
+
+type MunicipalityProfile = "large" | "medium" | "small";
+
+const TOP_20_PROFILES: Record<string, MunicipalityProfile> = {
+  "4209102": "large",  // Joinville
+  "4205407": "large",  // Florianópolis
+  "4202404": "large",  // Blumenau
+  "4215802": "large",  // São José
+  "4208203": "medium", // Itajaí
+  "4204202": "medium", // Chapecó
+  "4204608": "medium", // Criciúma
+  "4214805": "medium", // Palhoça
+  "4208906": "medium", // Jaraguá do Sul
+  "4209300": "medium", // Lages
+  "4201307": "medium", // Araquari
+  "4218202": "medium", // Tubarão
+  "4213609": "small",  // Navegantes
+  "4202305": "small",  // Biguaçu
+  "4203006": "small",  // Caçador
+  "4207502": "small",  // Indaial
+  "4205902": "small",  // Gaspar
+  "4211801": "small",  // Mafra
+  "4206504": "small",  // Guaramirim
+  "4211900": "small",  // Maravilha
+};
+
+const BASE_SCORES_BY_PROFILE: Record<MunicipalityProfile, Record<number, number>> = {
+  large:  ODS_BASE_SCORES_LARGE,
+  medium: ODS_BASE_SCORES_MEDIUM,
+  small:  ODS_BASE_SCORES_SMALL,
+};
+
+/**
+ * Gera os 18 OdsScoreInput (17 ODS + 1 global) para um município do top-20.
+ */
+function buildOdsScores(ibgeCode: string): OdsScoreInput[] {
+  const profile = TOP_20_PROFILES[ibgeCode] ?? "small";
+  const baseScores = BASE_SCORES_BY_PROFILE[profile];
+  const scores: OdsScoreInput[] = [];
+  let globalSum = 0;
+
+  for (let ods = 1; ods <= 17; ods++) {
+    const variation = deterministicVariation(ibgeCode, ods);
+    const raw = (baseScores[ods] ?? 50) + variation;
+    const score = Math.min(100, Math.max(0, raw));
+    globalSum += score;
+
+    scores.push({
+      odsNumber: ods,
+      score,
+      status: scoreToStatus(score),
+      indicatorCount: ODS_INDICATOR_COUNT[ods] ?? 2,
+      sources: ODS_SOURCES[ods] ?? ["ibge"],
+    });
+  }
+
+  const globalScore = Math.round(globalSum / 17);
+  scores.push({
+    odsNumber: 0,
+    score: globalScore,
+    status: scoreToStatus(globalScore),
+    indicatorCount: ODS_INDICATOR_COUNT[0] ?? 17,
+    sources: ODS_SOURCES[0] ?? ["ibge"],
+  });
+
+  return scores;
 }
 
 // ---------------------------------------------------------------------------
@@ -401,7 +563,7 @@ const MUNICIPALITIES: MunicipalityRecord[] = ALL_SC_MUNICIPALITIES.map(buildReco
 // Seed principal
 // ---------------------------------------------------------------------------
 
-async function main(): Promise<void> {
+async function seedMunicipalities(): Promise<void> {
   console.log(`[seed] Iniciando seed de ${MUNICIPALITIES.length} municípios de SC...`);
 
   let upserted = 0;
@@ -436,12 +598,90 @@ async function main(): Promise<void> {
 
   const total = await prisma.municipality.count();
   console.log(
-    `[seed] Concluído: ${upserted} upserts, ${failed} falhas. Total no banco: ${total} municípios.`,
+    `[seed] Municípios: ${upserted} upserts, ${failed} falhas. Total no banco: ${total} municípios.`,
   );
 
   if (failed > 0) {
     throw new Error(`[seed] ${failed} municípios falharam ao ser inseridos.`);
   }
+}
+
+async function seedOdsScores(): Promise<void> {
+  const REFERENCE_YEAR = 2023;
+  const top20IbgeCodes = Object.keys(TOP_20_PROFILES);
+
+  console.log(`[seed] Iniciando seed de OdsScore para ${top20IbgeCodes.length} municípios top-20...`);
+
+  let upserted = 0;
+  let failed = 0;
+
+  for (const ibgeCode of top20IbgeCodes) {
+    // Busca o município no banco (deve existir após seedMunicipalities)
+    const municipality = await prisma.municipality.findUnique({
+      where: { ibgeCode },
+      select: { id: true, name: true },
+    });
+
+    if (municipality === null) {
+      console.warn(`[seed] Município ${ibgeCode} não encontrado — pulando OdsScore.`);
+      continue;
+    }
+
+    const scores = buildOdsScores(ibgeCode);
+
+    for (const scoreInput of scores) {
+      try {
+        await prisma.odsScore.upsert({
+          where: {
+            municipalityId_odsNumber_referenceYear: {
+              municipalityId: municipality.id,
+              odsNumber: scoreInput.odsNumber,
+              referenceYear: REFERENCE_YEAR,
+            },
+          },
+          update: {
+            score: scoreInput.score,
+            status: scoreInput.status,
+            indicatorCount: scoreInput.indicatorCount,
+            sources: scoreInput.sources,
+            calculatedAt: new Date("2024-03-15T12:00:00Z"),
+          },
+          create: {
+            municipalityId: municipality.id,
+            odsNumber: scoreInput.odsNumber,
+            score: scoreInput.score,
+            status: scoreInput.status,
+            indicatorCount: scoreInput.indicatorCount,
+            referenceYear: REFERENCE_YEAR,
+            calculatedAt: new Date("2024-03-15T12:00:00Z"),
+            sources: scoreInput.sources,
+          },
+        });
+        upserted++;
+      } catch (err) {
+        failed++;
+        console.error(
+          `[seed] Falha ao processar OdsScore ${municipality.name} ODS ${scoreInput.odsNumber}:`,
+          err,
+        );
+      }
+    }
+  }
+
+  const totalScores = await prisma.odsScore.count();
+  console.log(
+    `[seed] OdsScore: ${upserted} upserts, ${failed} falhas. Total no banco: ${totalScores} scores.`,
+  );
+
+  if (failed > 0) {
+    throw new Error(`[seed] ${failed} OdsScore falharam ao ser inseridos.`);
+  }
+}
+
+async function main(): Promise<void> {
+  await seedMunicipalities();
+  await seedOdsScores();
+  console.log("[seed] Seed completo.");
 }
 
 main()
