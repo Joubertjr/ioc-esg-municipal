@@ -19,12 +19,27 @@ services:
   redis:
     image: redis:7-alpine
     container_name: ioc_redis
+    command: >
+      sh -c "if [ -n \"$$REDIS_PASSWORD\" ]; then
+               redis-server --requirepass $$REDIS_PASSWORD;
+             else
+               redis-server;
+             fi"
+    environment:
+      REDIS_PASSWORD: ${REDIS_PASSWORD:-}
     ports:
       - "6379:6379"
     volumes:
       - redis_data:/data
     healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
+      test:
+        - "CMD-SHELL"
+        - >
+          if [ -n "$$REDIS_PASSWORD" ]; then
+            redis-cli -a "$$REDIS_PASSWORD" ping;
+          else
+            redis-cli ping;
+          fi
       interval: 10s
       timeout: 5s
       retries: 5

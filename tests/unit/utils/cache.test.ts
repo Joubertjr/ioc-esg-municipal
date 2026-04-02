@@ -23,7 +23,33 @@ vi.mock("../../../backend/utils/logger.js", () => ({
 }));
 
 // Importar apos mocks para garantir que o modulo usa os mocks
-import { withCache } from "../../../backend/utils/cache.js";
+import { withCache, buildRedisUrl } from "../../../backend/utils/cache.js";
+
+describe("buildRedisUrl", () => {
+  it("retorna URL original quando password esta vazio", () => {
+    expect(buildRedisUrl("redis://localhost:6379", "")).toBe("redis://localhost:6379");
+  });
+
+  it("injeta password na URL quando nao ha credenciais presentes", () => {
+    const result = buildRedisUrl("redis://redis.example.com:6379", "minhaSenha");
+    expect(result).toBe("redis://:minhaSenha@redis.example.com:6379");
+  });
+
+  it("nao substitui credenciais se URL ja contem @", () => {
+    const urlComCredenciais = "redis://:senhaExistente@redis.example.com:6379";
+    expect(buildRedisUrl(urlComCredenciais, "outraSenha")).toBe(urlComCredenciais);
+  });
+
+  it("funciona com schema rediss (TLS)", () => {
+    const result = buildRedisUrl("rediss://redis.example.com:6380", "senhaSegura");
+    expect(result).toBe("rediss://:senhaSegura@redis.example.com:6380");
+  });
+
+  it("codifica caracteres especiais na password via encodeURIComponent", () => {
+    const result = buildRedisUrl("redis://localhost:6379", "senha@especial!");
+    expect(result).toBe("redis://:senha%40especial!@localhost:6379");
+  });
+});
 
 describe("withCache", () => {
   beforeEach(() => {

@@ -22,6 +22,7 @@ const validDevEnv: NodeJS.ProcessEnv = {
   JWT_SECRET: "troque-por-chave-segura-em-producao",
   JWT_EXPIRATION: "7d",
   REDIS_URL: "redis://localhost:6379",
+  REDIS_PASSWORD: "",
   ALLOWED_ORIGINS: "http://localhost:5173",
   IBGE_API_URL: "https://servicodados.ibge.gov.br/api/v1",
   SICONFI_API_URL: "https://api.siconfi.tesouro.gov.br/v1",
@@ -42,6 +43,7 @@ const validProdEnv: NodeJS.ProcessEnv = {
   JWT_SECRET: "supersecretkey-that-is-long-enough-for-production",
   JWT_EXPIRATION: "1d",
   REDIS_URL: "redis://redis.example.com:6379",
+  REDIS_PASSWORD: "redisSecurePass123",
   ALLOWED_ORIGINS: "https://app.example.com,https://admin.example.com",
   IBGE_API_URL: "https://servicodados.ibge.gov.br/api/v1",
   SICONFI_API_URL: "https://api.siconfi.tesouro.gov.br/v1",
@@ -135,6 +137,40 @@ describe("validateEnv", () => {
 
     expect(() => validateEnv(envComLocalhost)).toThrow("process.exit(1)");
     expect(mockProcessExit).toHaveBeenCalledWith(1);
+  });
+
+  it("REDIS_PASSWORD ausente em produção causa process.exit(1)", () => {
+    const envSemRedisPassword = { ...validProdEnv };
+    delete envSemRedisPassword["REDIS_PASSWORD"];
+
+    expect(() => validateEnv(envSemRedisPassword)).toThrow("process.exit(1)");
+    expect(mockProcessExit).toHaveBeenCalledWith(1);
+  });
+
+  it("REDIS_PASSWORD vazio em produção causa process.exit(1)", () => {
+    const envRedisPasswordVazio = { ...validProdEnv, REDIS_PASSWORD: "" };
+
+    expect(() => validateEnv(envRedisPasswordVazio)).toThrow("process.exit(1)");
+    expect(mockProcessExit).toHaveBeenCalledWith(1);
+  });
+
+  it("REDIS_PASSWORD com menos de 8 caracteres em produção causa process.exit(1)", () => {
+    const envRedisPasswordCurto = { ...validProdEnv, REDIS_PASSWORD: "abc123" };
+
+    expect(() => validateEnv(envRedisPasswordCurto)).toThrow("process.exit(1)");
+    expect(mockProcessExit).toHaveBeenCalledWith(1);
+  });
+
+  it("REDIS_PASSWORD com exatamente 8 caracteres em produção passa", () => {
+    const result = validateEnv({ ...validProdEnv, REDIS_PASSWORD: "abc12345" });
+
+    expect(result.REDIS_PASSWORD).toBe("abc12345");
+  });
+
+  it("em desenvolvimento REDIS_PASSWORD vazio é aceito sem warning extra", () => {
+    const result = validateEnv({ ...validDevEnv, REDIS_PASSWORD: "" });
+
+    expect(result.REDIS_PASSWORD).toBe("");
   });
 
   // ── PORT ─────────────────────────────────────────────────────────────────────

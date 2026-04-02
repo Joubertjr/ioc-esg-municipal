@@ -28,6 +28,7 @@ const baseSchema = z.object({
   JWT_SECRET: z.string().min(1, "JWT_SECRET é obrigatório").default("troque-por-chave-segura-em-producao"),
   JWT_EXPIRATION: z.string().default("7d"),
   REDIS_URL: z.string().min(1, "REDIS_URL é obrigatória").default("redis://localhost:6379"),
+  REDIS_PASSWORD: z.string().optional().default(""),
   ALLOWED_ORIGINS: z.string().default("http://localhost:5173"),
   IBGE_API_URL: z.string().url().default("https://servicodados.ibge.gov.br/api/v1"),
   SICONFI_API_URL: z.string().url().default("https://api.siconfi.tesouro.gov.br/v1"),
@@ -56,7 +57,11 @@ const productionRefinements = baseSchema
       message: "ALLOWED_ORIGINS não pode conter localhost em produção",
       path: ["ALLOWED_ORIGINS"],
     },
-  );
+  )
+  .refine((data) => (data.REDIS_PASSWORD ?? "").length >= 8, {
+    message: "REDIS_PASSWORD deve ter no mínimo 8 caracteres em produção",
+    path: ["REDIS_PASSWORD"],
+  });
 
 // ─── Resultado tipado ─────────────────────────────────────────────────────────
 
