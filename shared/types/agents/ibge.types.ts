@@ -99,9 +99,16 @@ export interface IbgeIndicators {
   despesasOrcamentarias: number | null;
   /**
    * Razão de dependência (%) — (pop 0-14 + 65+) / pop 15-64 × 100.
-   * Menor valor indica menor dependência demográfica. Proxy para ODS 10.
+   * Menor valor indica menor dependência demográfica.
+   * Mantido como indicador estrutural, mas ODS 10 agora usa coeficienteGini.
    */
   razaoDependencia: number | null;
+  /**
+   * Coeficiente de Gini de renda domiciliar per capita (Censo IBGE 2022).
+   * Range 0-1. Menor = menor desigualdade = melhor para ODS 10.
+   * Preenchido a partir do JSON estático shared/data/gini_2022.json.
+   */
+  coeficienteGini: number | null;
   /**
    * Área territorial (km²). Usada junto com populacao para calcular
    * densidade demográfica (hab/km²) no ODS 11.

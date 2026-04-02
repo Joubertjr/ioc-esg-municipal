@@ -1,0 +1,887 @@
+{
+  "4200051": {
+    "coeficienteGini": 0.513
+  },
+  "4200101": {
+    "coeficienteGini": 0.507
+  },
+  "4200200": {
+    "coeficienteGini": 0.393
+  },
+  "4200309": {
+    "coeficienteGini": 0.399
+  },
+  "4200408": {
+    "coeficienteGini": 0.47
+  },
+  "4200507": {
+    "coeficienteGini": 0.462
+  },
+  "4200556": {
+    "coeficienteGini": 0.453
+  },
+  "4200606": {
+    "coeficienteGini": 0.407
+  },
+  "4200705": {
+    "coeficienteGini": 0.368
+  },
+  "4200754": {
+    "coeficienteGini": 0.454
+  },
+  "4200804": {
+    "coeficienteGini": 0.432
+  },
+  "4200903": {
+    "coeficienteGini": 0.463
+  },
+  "4201000": {
+    "coeficienteGini": 0.381
+  },
+  "4201109": {
+    "coeficienteGini": 0.369
+  },
+  "4201208": {
+    "coeficienteGini": 0.482
+  },
+  "4201257": {
+    "coeficienteGini": 0.456
+  },
+  "4201273": {
+    "coeficienteGini": 0.382
+  },
+  "4201307": {
+    "coeficienteGini": 0.439
+  },
+  "4201406": {
+    "coeficienteGini": 0.438
+  },
+  "4201505": {
+    "coeficienteGini": 0.412
+  },
+  "4201604": {
+    "coeficienteGini": 0.32
+  },
+  "4201653": {
+    "coeficienteGini": 0.472
+  },
+  "4201703": {
+    "coeficienteGini": 0.478
+  },
+  "4201802": {
+    "coeficienteGini": 0.445
+  },
+  "4201901": {
+    "coeficienteGini": 0.344
+  },
+  "4201950": {
+    "coeficienteGini": 0.447
+  },
+  "4202008": {
+    "coeficienteGini": 0.496
+  },
+  "4202057": {
+    "coeficienteGini": 0.475
+  },
+  "4202073": {
+    "coeficienteGini": 0.376
+  },
+  "4202081": {
+    "coeficienteGini": 0.391
+  },
+  "4202099": {
+    "coeficienteGini": 0.453
+  },
+  "4202107": {
+    "coeficienteGini": 0.385
+  },
+  "4202131": {
+    "coeficienteGini": 0.522
+  },
+  "4202156": {
+    "coeficienteGini": 0.466
+  },
+  "4202206": {
+    "coeficienteGini": 0.518
+  },
+  "4202305": {
+    "coeficienteGini": 0.487
+  },
+  "4202404": {
+    "coeficienteGini": 0.45
+  },
+  "4202438": {
+    "coeficienteGini": 0.442
+  },
+  "4202453": {
+    "coeficienteGini": 0.396
+  },
+  "4202503": {
+    "coeficienteGini": 0.431
+  },
+  "4202537": {
+    "coeficienteGini": 0.442
+  },
+  "4202578": {
+    "coeficienteGini": 0.527
+  },
+  "4202602": {
+    "coeficienteGini": 0.451
+  },
+  "4202701": {
+    "coeficienteGini": 0.447
+  },
+  "4202800": {
+    "coeficienteGini": 0.479
+  },
+  "4202859": {
+    "coeficienteGini": 0.407
+  },
+  "4202875": {
+    "coeficienteGini": 0.487
+  },
+  "4202909": {
+    "coeficienteGini": 0.47
+  },
+  "4203006": {
+    "coeficienteGini": 0.5
+  },
+  "4203105": {
+    "coeficienteGini": 0.435
+  },
+  "4203154": {
+    "coeficienteGini": 0.421
+  },
+  "4203204": {
+    "coeficienteGini": 0.439
+  },
+  "4203253": {
+    "coeficienteGini": 0.351
+  },
+  "4203303": {
+    "coeficienteGini": 0.534
+  },
+  "4203402": {
+    "coeficienteGini": 0.44
+  },
+  "4203501": {
+    "coeficienteGini": 0.397
+  },
+  "4203600": {
+    "coeficienteGini": 0.422
+  },
+  "4203709": {
+    "coeficienteGini": 0.376
+  },
+  "4203808": {
+    "coeficienteGini": 0.409
+  },
+  "4203907": {
+    "coeficienteGini": 0.461
+  },
+  "4203956": {
+    "coeficienteGini": 0.503
+  },
+  "4204004": {
+    "coeficienteGini": 0.35
+  },
+  "4204103": {
+    "coeficienteGini": 0.41
+  },
+  "4204152": {
+    "coeficienteGini": 0.402
+  },
+  "4204178": {
+    "coeficienteGini": 0.441
+  },
+  "4204194": {
+    "coeficienteGini": 0.464
+  },
+  "4204202": {
+    "coeficienteGini": 0.45
+  },
+  "4204251": {
+    "coeficienteGini": 0.429
+  },
+  "4204301": {
+    "coeficienteGini": 0.42
+  },
+  "4204350": {
+    "coeficienteGini": 0.423
+  },
+  "4204400": {
+    "coeficienteGini": 0.418
+  },
+  "4204459": {
+    "coeficienteGini": 0.483
+  },
+  "4204509": {
+    "coeficienteGini": 0.429
+  },
+  "4204558": {
+    "coeficienteGini": 0.32
+  },
+  "4204608": {
+    "coeficienteGini": 0.422
+  },
+  "4204707": {
+    "coeficienteGini": 0.448
+  },
+  "4204756": {
+    "coeficienteGini": 0.402
+  },
+  "4204806": {
+    "coeficienteGini": 0.438
+  },
+  "4204905": {
+    "coeficienteGini": 0.386
+  },
+  "4205001": {
+    "coeficienteGini": 0.483
+  },
+  "4205100": {
+    "coeficienteGini": 0.503
+  },
+  "4205159": {
+    "coeficienteGini": 0.51
+  },
+  "4205175": {
+    "coeficienteGini": 0.404
+  },
+  "4205191": {
+    "coeficienteGini": 0.429
+  },
+  "4205209": {
+    "coeficienteGini": 0.492
+  },
+  "4205308": {
+    "coeficienteGini": 0.403
+  },
+  "4205357": {
+    "coeficienteGini": 0.387
+  },
+  "4205407": {
+    "coeficienteGini": 0.396
+  },
+  "4205431": {
+    "coeficienteGini": 0.439
+  },
+  "4205456": {
+    "coeficienteGini": 0.451
+  },
+  "4205506": {
+    "coeficienteGini": 0.468
+  },
+  "4205555": {
+    "coeficienteGini": 0.439
+  },
+  "4205605": {
+    "coeficienteGini": 0.376
+  },
+  "4205704": {
+    "coeficienteGini": 0.45
+  },
+  "4205803": {
+    "coeficienteGini": 0.451
+  },
+  "4205902": {
+    "coeficienteGini": 0.413
+  },
+  "4206009": {
+    "coeficienteGini": 0.426
+  },
+  "4206108": {
+    "coeficienteGini": 0.36
+  },
+  "4206207": {
+    "coeficienteGini": 0.404
+  },
+  "4206306": {
+    "coeficienteGini": 0.53
+  },
+  "4206405": {
+    "coeficienteGini": 0.336
+  },
+  "4206504": {
+    "coeficienteGini": 0.373
+  },
+  "4206603": {
+    "coeficienteGini": 0.426
+  },
+  "4206652": {
+    "coeficienteGini": 0.402
+  },
+  "4206702": {
+    "coeficienteGini": 0.484
+  },
+  "4206751": {
+    "coeficienteGini": 0.482
+  },
+  "4206801": {
+    "coeficienteGini": 0.417
+  },
+  "4206900": {
+    "coeficienteGini": 0.34
+  },
+  "4207007": {
+    "coeficienteGini": 0.437
+  },
+  "4207106": {
+    "coeficienteGini": 0.444
+  },
+  "4207205": {
+    "coeficienteGini": 0.498
+  },
+  "4207304": {
+    "coeficienteGini": 0.43
+  },
+  "4207403": {
+    "coeficienteGini": 0.496
+  },
+  "4207502": {
+    "coeficienteGini": 0.429
+  },
+  "4207577": {
+    "coeficienteGini": 0.452
+  },
+  "4207601": {
+    "coeficienteGini": 0.369
+  },
+  "4207650": {
+    "coeficienteGini": 0.457
+  },
+  "4207684": {
+    "coeficienteGini": 0.419
+  },
+  "4207700": {
+    "coeficienteGini": 0.343
+  },
+  "4207759": {
+    "coeficienteGini": 0.503
+  },
+  "4207809": {
+    "coeficienteGini": 0.407
+  },
+  "4207858": {
+    "coeficienteGini": 0.435
+  },
+  "4207908": {
+    "coeficienteGini": 0.433
+  },
+  "4208005": {
+    "coeficienteGini": 0.484
+  },
+  "4208104": {
+    "coeficienteGini": 0.419
+  },
+  "4208203": {
+    "coeficienteGini": 0.345
+  },
+  "4208302": {
+    "coeficienteGini": 0.45
+  },
+  "4208401": {
+    "coeficienteGini": 0.373
+  },
+  "4208450": {
+    "coeficienteGini": 0.546
+  },
+  "4208500": {
+    "coeficienteGini": 0.41
+  },
+  "4208609": {
+    "coeficienteGini": 0.362
+  },
+  "4208708": {
+    "coeficienteGini": 0.441
+  },
+  "4208807": {
+    "coeficienteGini": 0.397
+  },
+  "4208906": {
+    "coeficienteGini": 0.39
+  },
+  "4208955": {
+    "coeficienteGini": 0.39
+  },
+  "4209003": {
+    "coeficienteGini": 0.37
+  },
+  "4209102": {
+    "coeficienteGini": 0.48
+  },
+  "4209151": {
+    "coeficienteGini": 0.419
+  },
+  "4209177": {
+    "coeficienteGini": 0.372
+  },
+  "4209201": {
+    "coeficienteGini": 0.424
+  },
+  "4209300": {
+    "coeficienteGini": 0.32
+  },
+  "4209409": {
+    "coeficienteGini": 0.447
+  },
+  "4209458": {
+    "coeficienteGini": 0.43
+  },
+  "4209508": {
+    "coeficienteGini": 0.493
+  },
+  "4209607": {
+    "coeficienteGini": 0.498
+  },
+  "4209706": {
+    "coeficienteGini": 0.521
+  },
+  "4209805": {
+    "coeficienteGini": 0.476
+  },
+  "4209854": {
+    "coeficienteGini": 0.457
+  },
+  "4209904": {
+    "coeficienteGini": 0.409
+  },
+  "4210001": {
+    "coeficienteGini": 0.384
+  },
+  "4210035": {
+    "coeficienteGini": 0.455
+  },
+  "4210050": {
+    "coeficienteGini": 0.441
+  },
+  "4210100": {
+    "coeficienteGini": 0.369
+  },
+  "4210209": {
+    "coeficienteGini": 0.581
+  },
+  "4210308": {
+    "coeficienteGini": 0.505
+  },
+  "4210407": {
+    "coeficienteGini": 0.468
+  },
+  "4210506": {
+    "coeficienteGini": 0.354
+  },
+  "4210555": {
+    "coeficienteGini": 0.349
+  },
+  "4210605": {
+    "coeficienteGini": 0.401
+  },
+  "4210704": {
+    "coeficienteGini": 0.426
+  },
+  "4210803": {
+    "coeficienteGini": 0.351
+  },
+  "4210852": {
+    "coeficienteGini": 0.456
+  },
+  "4210902": {
+    "coeficienteGini": 0.447
+  },
+  "4211009": {
+    "coeficienteGini": 0.453
+  },
+  "4211058": {
+    "coeficienteGini": 0.365
+  },
+  "4211108": {
+    "coeficienteGini": 0.346
+  },
+  "4211207": {
+    "coeficienteGini": 0.43
+  },
+  "4211256": {
+    "coeficienteGini": 0.406
+  },
+  "4211306": {
+    "coeficienteGini": 0.525
+  },
+  "4211405": {
+    "coeficienteGini": 0.345
+  },
+  "4211454": {
+    "coeficienteGini": 0.469
+  },
+  "4211504": {
+    "coeficienteGini": 0.393
+  },
+  "4211603": {
+    "coeficienteGini": 0.41
+  },
+  "4211652": {
+    "coeficienteGini": 0.421
+  },
+  "4211702": {
+    "coeficienteGini": 0.379
+  },
+  "4211751": {
+    "coeficienteGini": 0.447
+  },
+  "4211801": {
+    "coeficienteGini": 0.355
+  },
+  "4211850": {
+    "coeficienteGini": 0.437
+  },
+  "4211876": {
+    "coeficienteGini": 0.37
+  },
+  "4211892": {
+    "coeficienteGini": 0.35
+  },
+  "4211900": {
+    "coeficienteGini": 0.404
+  },
+  "4212007": {
+    "coeficienteGini": 0.409
+  },
+  "4212056": {
+    "coeficienteGini": 0.339
+  },
+  "4212106": {
+    "coeficienteGini": 0.352
+  },
+  "4212205": {
+    "coeficienteGini": 0.419
+  },
+  "4212239": {
+    "coeficienteGini": 0.511
+  },
+  "4212254": {
+    "coeficienteGini": 0.494
+  },
+  "4212270": {
+    "coeficienteGini": 0.542
+  },
+  "4212304": {
+    "coeficienteGini": 0.449
+  },
+  "4212403": {
+    "coeficienteGini": 0.438
+  },
+  "4212502": {
+    "coeficienteGini": 0.48
+  },
+  "4212601": {
+    "coeficienteGini": 0.369
+  },
+  "4212650": {
+    "coeficienteGini": 0.379
+  },
+  "4212700": {
+    "coeficienteGini": 0.455
+  },
+  "4212809": {
+    "coeficienteGini": 0.501
+  },
+  "4212908": {
+    "coeficienteGini": 0.507
+  },
+  "4213005": {
+    "coeficienteGini": 0.435
+  },
+  "4213104": {
+    "coeficienteGini": 0.38
+  },
+  "4213153": {
+    "coeficienteGini": 0.481
+  },
+  "4213203": {
+    "coeficienteGini": 0.447
+  },
+  "4213302": {
+    "coeficienteGini": 0.376
+  },
+  "4213351": {
+    "coeficienteGini": 0.54
+  },
+  "4213401": {
+    "coeficienteGini": 0.395
+  },
+  "4213500": {
+    "coeficienteGini": 0.412
+  },
+  "4213609": {
+    "coeficienteGini": 0.446
+  },
+  "4213708": {
+    "coeficienteGini": 0.384
+  },
+  "4213807": {
+    "coeficienteGini": 0.43
+  },
+  "4213906": {
+    "coeficienteGini": 0.405
+  },
+  "4214003": {
+    "coeficienteGini": 0.47
+  },
+  "4214102": {
+    "coeficienteGini": 0.344
+  },
+  "4214151": {
+    "coeficienteGini": 0.45
+  },
+  "4214201": {
+    "coeficienteGini": 0.446
+  },
+  "4214300": {
+    "coeficienteGini": 0.412
+  },
+  "4214409": {
+    "coeficienteGini": 0.32
+  },
+  "4214508": {
+    "coeficienteGini": 0.436
+  },
+  "4214607": {
+    "coeficienteGini": 0.408
+  },
+  "4214706": {
+    "coeficienteGini": 0.475
+  },
+  "4214805": {
+    "coeficienteGini": 0.445
+  },
+  "4214904": {
+    "coeficienteGini": 0.377
+  },
+  "4215000": {
+    "coeficienteGini": 0.403
+  },
+  "4215059": {
+    "coeficienteGini": 0.38
+  },
+  "4215075": {
+    "coeficienteGini": 0.476
+  },
+  "4215109": {
+    "coeficienteGini": 0.532
+  },
+  "4215208": {
+    "coeficienteGini": 0.432
+  },
+  "4215307": {
+    "coeficienteGini": 0.455
+  },
+  "4215356": {
+    "coeficienteGini": 0.418
+  },
+  "4215406": {
+    "coeficienteGini": 0.489
+  },
+  "4215455": {
+    "coeficienteGini": 0.514
+  },
+  "4215505": {
+    "coeficienteGini": 0.413
+  },
+  "4215554": {
+    "coeficienteGini": 0.509
+  },
+  "4215604": {
+    "coeficienteGini": 0.435
+  },
+  "4215653": {
+    "coeficienteGini": 0.422
+  },
+  "4215679": {
+    "coeficienteGini": 0.408
+  },
+  "4215687": {
+    "coeficienteGini": 0.339
+  },
+  "4215695": {
+    "coeficienteGini": 0.43
+  },
+  "4215703": {
+    "coeficienteGini": 0.402
+  },
+  "4215752": {
+    "coeficienteGini": 0.495
+  },
+  "4215802": {
+    "coeficienteGini": 0.41
+  },
+  "4215901": {
+    "coeficienteGini": 0.437
+  },
+  "4216008": {
+    "coeficienteGini": 0.497
+  },
+  "4216057": {
+    "coeficienteGini": 0.406
+  },
+  "4216107": {
+    "coeficienteGini": 0.32
+  },
+  "4216206": {
+    "coeficienteGini": 0.387
+  },
+  "4216255": {
+    "coeficienteGini": 0.401
+  },
+  "4216305": {
+    "coeficienteGini": 0.32
+  },
+  "4216354": {
+    "coeficienteGini": 0.427
+  },
+  "4216404": {
+    "coeficienteGini": 0.519
+  },
+  "4216503": {
+    "coeficienteGini": 0.462
+  },
+  "4216602": {
+    "coeficienteGini": 0.445
+  },
+  "4216701": {
+    "coeficienteGini": 0.364
+  },
+  "4216800": {
+    "coeficienteGini": 0.394
+  },
+  "4216909": {
+    "coeficienteGini": 0.44
+  },
+  "4217006": {
+    "coeficienteGini": 0.48
+  },
+  "4217105": {
+    "coeficienteGini": 0.427
+  },
+  "4217154": {
+    "coeficienteGini": 0.483
+  },
+  "4217204": {
+    "coeficienteGini": 0.407
+  },
+  "4217253": {
+    "coeficienteGini": 0.465
+  },
+  "4217303": {
+    "coeficienteGini": 0.423
+  },
+  "4217402": {
+    "coeficienteGini": 0.407
+  },
+  "4217501": {
+    "coeficienteGini": 0.466
+  },
+  "4217550": {
+    "coeficienteGini": 0.458
+  },
+  "4217600": {
+    "coeficienteGini": 0.46
+  },
+  "4217709": {
+    "coeficienteGini": 0.459
+  },
+  "4217758": {
+    "coeficienteGini": 0.449
+  },
+  "4217808": {
+    "coeficienteGini": 0.484
+  },
+  "4217907": {
+    "coeficienteGini": 0.422
+  },
+  "4217956": {
+    "coeficienteGini": 0.413
+  },
+  "4218004": {
+    "coeficienteGini": 0.541
+  },
+  "4218103": {
+    "coeficienteGini": 0.463
+  },
+  "4218202": {
+    "coeficienteGini": 0.455
+  },
+  "4218251": {
+    "coeficienteGini": 0.448
+  },
+  "4218301": {
+    "coeficienteGini": 0.402
+  },
+  "4218350": {
+    "coeficienteGini": 0.442
+  },
+  "4218400": {
+    "coeficienteGini": 0.417
+  },
+  "4218509": {
+    "coeficienteGini": 0.428
+  },
+  "4218608": {
+    "coeficienteGini": 0.589
+  },
+  "4218707": {
+    "coeficienteGini": 0.574
+  },
+  "4218756": {
+    "coeficienteGini": 0.385
+  },
+  "4218806": {
+    "coeficienteGini": 0.421
+  },
+  "4218855": {
+    "coeficienteGini": 0.464
+  },
+  "4218905": {
+    "coeficienteGini": 0.484
+  },
+  "4218954": {
+    "coeficienteGini": 0.42
+  },
+  "4219002": {
+    "coeficienteGini": 0.413
+  },
+  "4219101": {
+    "coeficienteGini": 0.527
+  },
+  "4219150": {
+    "coeficienteGini": 0.389
+  },
+  "4219176": {
+    "coeficienteGini": 0.377
+  },
+  "4219200": {
+    "coeficienteGini": 0.351
+  },
+  "4219309": {
+    "coeficienteGini": 0.474
+  },
+  "4219358": {
+    "coeficienteGini": 0.457
+  },
+  "4219408": {
+    "coeficienteGini": 0.457
+  },
+  "4219507": {
+    "coeficienteGini": 0.453
+  },
+  "4219606": {
+    "coeficienteGini": 0.443
+  },
+  "4219705": {
+    "coeficienteGini": 0.447
+  },
+  "4219853": {
+    "coeficienteGini": 0.491
+  },
+  "4220000": {
+    "coeficienteGini": 0.467
+  }
+}

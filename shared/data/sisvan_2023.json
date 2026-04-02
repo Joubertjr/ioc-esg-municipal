@@ -1,0 +1,1422 @@
+{
+  "4200051": {
+    "cobertura_acompanhamento": 75.2,
+    "deficit_nutricional": 2.5,
+    "sobrepeso_infantil": 11.9
+  },
+  "4200101": {
+    "cobertura_acompanhamento": 52.3,
+    "deficit_nutricional": 15.3,
+    "sobrepeso_infantil": 21.9
+  },
+  "4200200": {
+    "cobertura_acompanhamento": 89.1,
+    "deficit_nutricional": 3.6,
+    "sobrepeso_infantil": 15.5
+  },
+  "4200309": {
+    "cobertura_acompanhamento": 41.6,
+    "deficit_nutricional": 5.9,
+    "sobrepeso_infantil": 17.6
+  },
+  "4200408": {
+    "cobertura_acompanhamento": 41.5,
+    "deficit_nutricional": 5.6,
+    "sobrepeso_infantil": 21.2
+  },
+  "4200507": {
+    "cobertura_acompanhamento": 70.0,
+    "deficit_nutricional": 6.0,
+    "sobrepeso_infantil": 19.7
+  },
+  "4200556": {
+    "cobertura_acompanhamento": 84.5,
+    "deficit_nutricional": 2.1,
+    "sobrepeso_infantil": 25.1
+  },
+  "4200606": {
+    "cobertura_acompanhamento": 78.4,
+    "deficit_nutricional": 8.1,
+    "sobrepeso_infantil": 8.9
+  },
+  "4200705": {
+    "cobertura_acompanhamento": 92.6,
+    "deficit_nutricional": 8.1,
+    "sobrepeso_infantil": 7.3
+  },
+  "4200754": {
+    "cobertura_acompanhamento": 45.3,
+    "deficit_nutricional": 17.3,
+    "sobrepeso_infantil": 20.1
+  },
+  "4200804": {
+    "cobertura_acompanhamento": 84.4,
+    "deficit_nutricional": 15.1,
+    "sobrepeso_infantil": 18.4
+  },
+  "4200903": {
+    "cobertura_acompanhamento": 93.5,
+    "deficit_nutricional": 8.8,
+    "sobrepeso_infantil": 18.8
+  },
+  "4201000": {
+    "cobertura_acompanhamento": 85.6,
+    "deficit_nutricional": 13.1,
+    "sobrepeso_infantil": 26.5
+  },
+  "4201109": {
+    "cobertura_acompanhamento": 71.8,
+    "deficit_nutricional": 14.7,
+    "sobrepeso_infantil": 6.1
+  },
+  "4201208": {
+    "cobertura_acompanhamento": 52.5,
+    "deficit_nutricional": 7.2,
+    "sobrepeso_infantil": 7.0
+  },
+  "4201257": {
+    "cobertura_acompanhamento": 52.8,
+    "deficit_nutricional": 3.8,
+    "sobrepeso_infantil": 11.9
+  },
+  "4201307": {
+    "cobertura_acompanhamento": 75.0,
+    "deficit_nutricional": 8.6,
+    "sobrepeso_infantil": 14.3
+  },
+  "4201406": {
+    "cobertura_acompanhamento": 51.5,
+    "deficit_nutricional": 6.8,
+    "sobrepeso_infantil": 28.4
+  },
+  "4201604": {
+    "cobertura_acompanhamento": 75.6,
+    "deficit_nutricional": 13.0,
+    "sobrepeso_infantil": 9.3
+  },
+  "4201653": {
+    "cobertura_acompanhamento": 80.1,
+    "deficit_nutricional": 4.9,
+    "sobrepeso_infantil": 14.5
+  },
+  "4201703": {
+    "cobertura_acompanhamento": 94.4,
+    "deficit_nutricional": 13.5,
+    "sobrepeso_infantil": 18.9
+  },
+  "4201802": {
+    "cobertura_acompanhamento": 77.7,
+    "deficit_nutricional": 17.2,
+    "sobrepeso_infantil": 24.4
+  },
+  "4201901": {
+    "cobertura_acompanhamento": 52.6,
+    "deficit_nutricional": 2.6,
+    "sobrepeso_infantil": 12.9
+  },
+  "4201950": {
+    "cobertura_acompanhamento": 54.7,
+    "deficit_nutricional": 5.8,
+    "sobrepeso_infantil": 28.6
+  },
+  "4202008": {
+    "cobertura_acompanhamento": 88.2,
+    "deficit_nutricional": 7.7,
+    "sobrepeso_infantil": 21.4
+  },
+  "4202057": {
+    "cobertura_acompanhamento": 61.8,
+    "deficit_nutricional": 18.5,
+    "sobrepeso_infantil": 16.5
+  },
+  "4202073": {
+    "cobertura_acompanhamento": 54.6,
+    "deficit_nutricional": 6.4,
+    "sobrepeso_infantil": 19.0
+  },
+  "4202081": {
+    "cobertura_acompanhamento": 54.5,
+    "deficit_nutricional": 12.5,
+    "sobrepeso_infantil": 27.4
+  },
+  "4202099": {
+    "cobertura_acompanhamento": 62.0,
+    "deficit_nutricional": 5.9,
+    "sobrepeso_infantil": 29.9
+  },
+  "4202107": {
+    "cobertura_acompanhamento": 68.0,
+    "deficit_nutricional": 3.6,
+    "sobrepeso_infantil": 6.2
+  },
+  "4202131": {
+    "cobertura_acompanhamento": 46.0,
+    "deficit_nutricional": 13.3,
+    "sobrepeso_infantil": 24.8
+  },
+  "4202156": {
+    "cobertura_acompanhamento": 63.2,
+    "deficit_nutricional": 3.1,
+    "sobrepeso_infantil": 14.5
+  },
+  "4202206": {
+    "cobertura_acompanhamento": 94.8,
+    "deficit_nutricional": 11.5,
+    "sobrepeso_infantil": 29.3
+  },
+  "4202305": {
+    "cobertura_acompanhamento": 87.3,
+    "deficit_nutricional": 2.2,
+    "sobrepeso_infantil": 23.0
+  },
+  "4202404": {
+    "cobertura_acompanhamento": 77.5,
+    "deficit_nutricional": 11.7,
+    "sobrepeso_infantil": 11.7
+  },
+  "4202438": {
+    "cobertura_acompanhamento": 75.3,
+    "deficit_nutricional": 4.0,
+    "sobrepeso_infantil": 15.9
+  },
+  "4202453": {
+    "cobertura_acompanhamento": 65.0,
+    "deficit_nutricional": 19.2,
+    "sobrepeso_infantil": 26.9
+  },
+  "4202503": {
+    "cobertura_acompanhamento": 54.5,
+    "deficit_nutricional": 11.0,
+    "sobrepeso_infantil": 9.5
+  },
+  "4202537": {
+    "cobertura_acompanhamento": 90.2,
+    "deficit_nutricional": 17.7,
+    "sobrepeso_infantil": 12.5
+  },
+  "4202578": {
+    "cobertura_acompanhamento": 75.1,
+    "deficit_nutricional": 13.0,
+    "sobrepeso_infantil": 8.8
+  },
+  "4202602": {
+    "cobertura_acompanhamento": 81.9,
+    "deficit_nutricional": 11.7,
+    "sobrepeso_infantil": 24.5
+  },
+  "4202701": {
+    "cobertura_acompanhamento": 69.2,
+    "deficit_nutricional": 2.0,
+    "sobrepeso_infantil": 13.1
+  },
+  "4202800": {
+    "cobertura_acompanhamento": 41.1,
+    "deficit_nutricional": 18.7,
+    "sobrepeso_infantil": 27.0
+  },
+  "4202859": {
+    "cobertura_acompanhamento": 85.7,
+    "deficit_nutricional": 7.5,
+    "sobrepeso_infantil": 6.4
+  },
+  "4202875": {
+    "cobertura_acompanhamento": 88.3,
+    "deficit_nutricional": 19.0,
+    "sobrepeso_infantil": 7.1
+  },
+  "4202909": {
+    "cobertura_acompanhamento": 66.7,
+    "deficit_nutricional": 3.2,
+    "sobrepeso_infantil": 24.0
+  },
+  "4203006": {
+    "cobertura_acompanhamento": 82.1,
+    "deficit_nutricional": 4.3,
+    "sobrepeso_infantil": 16.9
+  },
+  "4203105": {
+    "cobertura_acompanhamento": 70.2,
+    "deficit_nutricional": 6.8,
+    "sobrepeso_infantil": 26.8
+  },
+  "4203154": {
+    "cobertura_acompanhamento": 63.3,
+    "deficit_nutricional": 5.8,
+    "sobrepeso_infantil": 18.5
+  },
+  "4203204": {
+    "cobertura_acompanhamento": 80.1,
+    "deficit_nutricional": 5.6,
+    "sobrepeso_infantil": 12.8
+  },
+  "4203253": {
+    "cobertura_acompanhamento": 94.7,
+    "deficit_nutricional": 13.7,
+    "sobrepeso_infantil": 16.0
+  },
+  "4203303": {
+    "cobertura_acompanhamento": 68.5,
+    "deficit_nutricional": 4.2,
+    "sobrepeso_infantil": 10.6
+  },
+  "4203402": {
+    "cobertura_acompanhamento": 58.6,
+    "deficit_nutricional": 12.6,
+    "sobrepeso_infantil": 10.8
+  },
+  "4203600": {
+    "cobertura_acompanhamento": 52.1,
+    "deficit_nutricional": 3.3,
+    "sobrepeso_infantil": 20.8
+  },
+  "4203709": {
+    "cobertura_acompanhamento": 52.6,
+    "deficit_nutricional": 18.3,
+    "sobrepeso_infantil": 26.5
+  },
+  "4203808": {
+    "cobertura_acompanhamento": 43.9,
+    "deficit_nutricional": 6.3,
+    "sobrepeso_infantil": 21.7
+  },
+  "4203907": {
+    "cobertura_acompanhamento": 51.8,
+    "deficit_nutricional": 4.4,
+    "sobrepeso_infantil": 28.4
+  },
+  "4203956": {
+    "cobertura_acompanhamento": 71.4,
+    "deficit_nutricional": 10.5,
+    "sobrepeso_infantil": 24.6
+  },
+  "4204004": {
+    "cobertura_acompanhamento": 84.4,
+    "deficit_nutricional": 5.4,
+    "sobrepeso_infantil": 7.4
+  },
+  "4204103": {
+    "cobertura_acompanhamento": 63.7,
+    "deficit_nutricional": 9.6,
+    "sobrepeso_infantil": 16.7
+  },
+  "4204152": {
+    "cobertura_acompanhamento": 80.1,
+    "deficit_nutricional": 14.1,
+    "sobrepeso_infantil": 29.6
+  },
+  "4204178": {
+    "cobertura_acompanhamento": 45.4,
+    "deficit_nutricional": 9.2,
+    "sobrepeso_infantil": 13.5
+  },
+  "4204194": {
+    "cobertura_acompanhamento": 87.4,
+    "deficit_nutricional": 6.5,
+    "sobrepeso_infantil": 9.8
+  },
+  "4204202": {
+    "cobertura_acompanhamento": 64.7,
+    "deficit_nutricional": 9.6,
+    "sobrepeso_infantil": 12.0
+  },
+  "4204251": {
+    "cobertura_acompanhamento": 53.7,
+    "deficit_nutricional": 18.6,
+    "sobrepeso_infantil": 16.1
+  },
+  "4204301": {
+    "cobertura_acompanhamento": 87.4,
+    "deficit_nutricional": 11.9,
+    "sobrepeso_infantil": 6.3
+  },
+  "4204400": {
+    "cobertura_acompanhamento": 95.0,
+    "deficit_nutricional": 17.0,
+    "sobrepeso_infantil": 29.2
+  },
+  "4204459": {
+    "cobertura_acompanhamento": 91.0,
+    "deficit_nutricional": 17.3,
+    "sobrepeso_infantil": 9.2
+  },
+  "4204509": {
+    "cobertura_acompanhamento": 66.7,
+    "deficit_nutricional": 5.8,
+    "sobrepeso_infantil": 15.0
+  },
+  "4204558": {
+    "cobertura_acompanhamento": 43.2,
+    "deficit_nutricional": 8.8,
+    "sobrepeso_infantil": 29.6
+  },
+  "4204608": {
+    "cobertura_acompanhamento": 54.6,
+    "deficit_nutricional": 16.1,
+    "sobrepeso_infantil": 16.4
+  },
+  "4204707": {
+    "cobertura_acompanhamento": 63.3,
+    "deficit_nutricional": 19.2,
+    "sobrepeso_infantil": 29.9
+  },
+  "4204756": {
+    "cobertura_acompanhamento": 70.6,
+    "deficit_nutricional": 14.9,
+    "sobrepeso_infantil": 8.9
+  },
+  "4204806": {
+    "cobertura_acompanhamento": 56.3,
+    "deficit_nutricional": 19.4,
+    "sobrepeso_infantil": 19.5
+  },
+  "4204905": {
+    "cobertura_acompanhamento": 69.8,
+    "deficit_nutricional": 15.5,
+    "sobrepeso_infantil": 6.4
+  },
+  "4205001": {
+    "cobertura_acompanhamento": 72.1,
+    "deficit_nutricional": 11.1,
+    "sobrepeso_infantil": 26.3
+  },
+  "4205100": {
+    "cobertura_acompanhamento": 48.7,
+    "deficit_nutricional": 19.3,
+    "sobrepeso_infantil": 7.0
+  },
+  "4205159": {
+    "cobertura_acompanhamento": 50.2,
+    "deficit_nutricional": 12.7,
+    "sobrepeso_infantil": 21.9
+  },
+  "4205175": {
+    "cobertura_acompanhamento": 52.9,
+    "deficit_nutricional": 4.2,
+    "sobrepeso_infantil": 27.3
+  },
+  "4205191": {
+    "cobertura_acompanhamento": 53.5,
+    "deficit_nutricional": 12.7,
+    "sobrepeso_infantil": 20.5
+  },
+  "4205209": {
+    "cobertura_acompanhamento": 63.1,
+    "deficit_nutricional": 12.5,
+    "sobrepeso_infantil": 18.1
+  },
+  "4205357": {
+    "cobertura_acompanhamento": 91.4,
+    "deficit_nutricional": 5.7,
+    "sobrepeso_infantil": 22.9
+  },
+  "4205407": {
+    "cobertura_acompanhamento": 53.1,
+    "deficit_nutricional": 9.1,
+    "sobrepeso_infantil": 21.8
+  },
+  "4205431": {
+    "cobertura_acompanhamento": 56.5,
+    "deficit_nutricional": 7.7,
+    "sobrepeso_infantil": 23.8
+  },
+  "4205456": {
+    "cobertura_acompanhamento": 44.0,
+    "deficit_nutricional": 10.2,
+    "sobrepeso_infantil": 30.0
+  },
+  "4205506": {
+    "cobertura_acompanhamento": 94.8,
+    "deficit_nutricional": 3.3,
+    "sobrepeso_infantil": 10.3
+  },
+  "4205555": {
+    "cobertura_acompanhamento": 54.6,
+    "deficit_nutricional": 18.8,
+    "sobrepeso_infantil": 27.0
+  },
+  "4205605": {
+    "cobertura_acompanhamento": 88.4,
+    "deficit_nutricional": 8.7,
+    "sobrepeso_infantil": 8.9
+  },
+  "4205704": {
+    "cobertura_acompanhamento": 85.9,
+    "deficit_nutricional": 14.7,
+    "sobrepeso_infantil": 20.3
+  },
+  "4205803": {
+    "cobertura_acompanhamento": 94.3,
+    "deficit_nutricional": 13.8,
+    "sobrepeso_infantil": 5.2
+  },
+  "4205902": {
+    "cobertura_acompanhamento": 84.9,
+    "deficit_nutricional": 7.4,
+    "sobrepeso_infantil": 21.6
+  },
+  "4206009": {
+    "cobertura_acompanhamento": 91.6,
+    "deficit_nutricional": 4.4,
+    "sobrepeso_infantil": 7.9
+  },
+  "4206108": {
+    "cobertura_acompanhamento": 45.9,
+    "deficit_nutricional": 12.0,
+    "sobrepeso_infantil": 11.8
+  },
+  "4206207": {
+    "cobertura_acompanhamento": 73.3,
+    "deficit_nutricional": 14.9,
+    "sobrepeso_infantil": 10.1
+  },
+  "4206306": {
+    "cobertura_acompanhamento": 74.9,
+    "deficit_nutricional": 6.8,
+    "sobrepeso_infantil": 17.2
+  },
+  "4206405": {
+    "cobertura_acompanhamento": 89.8,
+    "deficit_nutricional": 17.2,
+    "sobrepeso_infantil": 7.3
+  },
+  "4206504": {
+    "cobertura_acompanhamento": 63.3,
+    "deficit_nutricional": 7.0,
+    "sobrepeso_infantil": 5.1
+  },
+  "4206603": {
+    "cobertura_acompanhamento": 82.4,
+    "deficit_nutricional": 13.5,
+    "sobrepeso_infantil": 11.5
+  },
+  "4206652": {
+    "cobertura_acompanhamento": 80.8,
+    "deficit_nutricional": 11.9,
+    "sobrepeso_infantil": 15.7
+  },
+  "4206702": {
+    "cobertura_acompanhamento": 40.5,
+    "deficit_nutricional": 3.4,
+    "sobrepeso_infantil": 27.1
+  },
+  "4206751": {
+    "cobertura_acompanhamento": 89.7,
+    "deficit_nutricional": 11.8,
+    "sobrepeso_infantil": 25.9
+  },
+  "4206801": {
+    "cobertura_acompanhamento": 72.0,
+    "deficit_nutricional": 4.7,
+    "sobrepeso_infantil": 8.2
+  },
+  "4206900": {
+    "cobertura_acompanhamento": 57.0,
+    "deficit_nutricional": 18.2,
+    "sobrepeso_infantil": 24.9
+  },
+  "4207007": {
+    "cobertura_acompanhamento": 87.3,
+    "deficit_nutricional": 18.2,
+    "sobrepeso_infantil": 10.3
+  },
+  "4207106": {
+    "cobertura_acompanhamento": 53.7,
+    "deficit_nutricional": 3.9,
+    "sobrepeso_infantil": 24.5
+  },
+  "4207205": {
+    "cobertura_acompanhamento": 88.6,
+    "deficit_nutricional": 9.3,
+    "sobrepeso_infantil": 20.5
+  },
+  "4207304": {
+    "cobertura_acompanhamento": 48.5,
+    "deficit_nutricional": 18.7,
+    "sobrepeso_infantil": 26.6
+  },
+  "4207403": {
+    "cobertura_acompanhamento": 93.7,
+    "deficit_nutricional": 16.6,
+    "sobrepeso_infantil": 27.0
+  },
+  "4207502": {
+    "cobertura_acompanhamento": 41.4,
+    "deficit_nutricional": 15.3,
+    "sobrepeso_infantil": 13.3
+  },
+  "4207577": {
+    "cobertura_acompanhamento": 91.2,
+    "deficit_nutricional": 16.4,
+    "sobrepeso_infantil": 26.6
+  },
+  "4207601": {
+    "cobertura_acompanhamento": 84.6,
+    "deficit_nutricional": 6.8,
+    "sobrepeso_infantil": 24.7
+  },
+  "4207650": {
+    "cobertura_acompanhamento": 45.9,
+    "deficit_nutricional": 17.7,
+    "sobrepeso_infantil": 26.5
+  },
+  "4207684": {
+    "cobertura_acompanhamento": 52.2,
+    "deficit_nutricional": 16.7,
+    "sobrepeso_infantil": 16.5
+  },
+  "4207700": {
+    "cobertura_acompanhamento": 56.8,
+    "deficit_nutricional": 16.3,
+    "sobrepeso_infantil": 10.7
+  },
+  "4207759": {
+    "cobertura_acompanhamento": 41.3,
+    "deficit_nutricional": 5.5,
+    "sobrepeso_infantil": 13.2
+  },
+  "4207809": {
+    "cobertura_acompanhamento": 87.5,
+    "deficit_nutricional": 19.4,
+    "sobrepeso_infantil": 12.0
+  },
+  "4207858": {
+    "cobertura_acompanhamento": 75.3,
+    "deficit_nutricional": 9.2,
+    "sobrepeso_infantil": 29.5
+  },
+  "4208005": {
+    "cobertura_acompanhamento": 69.5,
+    "deficit_nutricional": 18.9,
+    "sobrepeso_infantil": 7.9
+  },
+  "4208104": {
+    "cobertura_acompanhamento": 93.4,
+    "deficit_nutricional": 5.2,
+    "sobrepeso_infantil": 29.1
+  },
+  "4208203": {
+    "cobertura_acompanhamento": 54.6,
+    "deficit_nutricional": 4.0,
+    "sobrepeso_infantil": 15.9
+  },
+  "4208302": {
+    "cobertura_acompanhamento": 80.1,
+    "deficit_nutricional": 7.6,
+    "sobrepeso_infantil": 20.2
+  },
+  "4208401": {
+    "cobertura_acompanhamento": 68.1,
+    "deficit_nutricional": 8.9,
+    "sobrepeso_infantil": 19.4
+  },
+  "4208450": {
+    "cobertura_acompanhamento": 54.0,
+    "deficit_nutricional": 14.8,
+    "sobrepeso_infantil": 5.0
+  },
+  "4208500": {
+    "cobertura_acompanhamento": 90.9,
+    "deficit_nutricional": 11.7,
+    "sobrepeso_infantil": 23.0
+  },
+  "4208609": {
+    "cobertura_acompanhamento": 80.8,
+    "deficit_nutricional": 14.1,
+    "sobrepeso_infantil": 14.1
+  },
+  "4208708": {
+    "cobertura_acompanhamento": 43.8,
+    "deficit_nutricional": 14.0,
+    "sobrepeso_infantil": 13.3
+  },
+  "4208807": {
+    "cobertura_acompanhamento": 57.3,
+    "deficit_nutricional": 17.3,
+    "sobrepeso_infantil": 23.0
+  },
+  "4208906": {
+    "cobertura_acompanhamento": 56.5,
+    "deficit_nutricional": 7.6,
+    "sobrepeso_infantil": 15.2
+  },
+  "4208955": {
+    "cobertura_acompanhamento": 62.1,
+    "deficit_nutricional": 7.3,
+    "sobrepeso_infantil": 8.2
+  },
+  "4209003": {
+    "cobertura_acompanhamento": 63.1,
+    "deficit_nutricional": 18.9,
+    "sobrepeso_infantil": 21.9
+  },
+  "4209102": {
+    "cobertura_acompanhamento": 89.7,
+    "deficit_nutricional": 13.1,
+    "sobrepeso_infantil": 12.5
+  },
+  "4209151": {
+    "cobertura_acompanhamento": 70.1,
+    "deficit_nutricional": 2.0,
+    "sobrepeso_infantil": 12.2
+  },
+  "4209177": {
+    "cobertura_acompanhamento": 63.6,
+    "deficit_nutricional": 12.4,
+    "sobrepeso_infantil": 21.4
+  },
+  "4209201": {
+    "cobertura_acompanhamento": 65.6,
+    "deficit_nutricional": 10.0,
+    "sobrepeso_infantil": 10.3
+  },
+  "4209300": {
+    "cobertura_acompanhamento": 66.0,
+    "deficit_nutricional": 18.2,
+    "sobrepeso_infantil": 24.9
+  },
+  "4209409": {
+    "cobertura_acompanhamento": 49.3,
+    "deficit_nutricional": 3.5,
+    "sobrepeso_infantil": 17.9
+  },
+  "4209458": {
+    "cobertura_acompanhamento": 74.8,
+    "deficit_nutricional": 8.0,
+    "sobrepeso_infantil": 25.5
+  },
+  "4209508": {
+    "cobertura_acompanhamento": 81.3,
+    "deficit_nutricional": 14.1,
+    "sobrepeso_infantil": 10.6
+  },
+  "4209607": {
+    "cobertura_acompanhamento": 51.0,
+    "deficit_nutricional": 2.4,
+    "sobrepeso_infantil": 11.1
+  },
+  "4209706": {
+    "cobertura_acompanhamento": 66.1,
+    "deficit_nutricional": 17.3,
+    "sobrepeso_infantil": 6.8
+  },
+  "4209805": {
+    "cobertura_acompanhamento": 62.8,
+    "deficit_nutricional": 13.3,
+    "sobrepeso_infantil": 9.9
+  },
+  "4209854": {
+    "cobertura_acompanhamento": 78.3,
+    "deficit_nutricional": 10.9,
+    "sobrepeso_infantil": 11.1
+  },
+  "4209904": {
+    "cobertura_acompanhamento": 76.1,
+    "deficit_nutricional": 2.1,
+    "sobrepeso_infantil": 23.8
+  },
+  "4210001": {
+    "cobertura_acompanhamento": 82.4,
+    "deficit_nutricional": 3.9,
+    "sobrepeso_infantil": 15.6
+  },
+  "4210035": {
+    "cobertura_acompanhamento": 49.7,
+    "deficit_nutricional": 19.2,
+    "sobrepeso_infantil": 17.9
+  },
+  "4210050": {
+    "cobertura_acompanhamento": 42.8,
+    "deficit_nutricional": 6.5,
+    "sobrepeso_infantil": 26.2
+  },
+  "4210100": {
+    "cobertura_acompanhamento": 65.1,
+    "deficit_nutricional": 16.4,
+    "sobrepeso_infantil": 21.7
+  },
+  "4210209": {
+    "cobertura_acompanhamento": 94.3,
+    "deficit_nutricional": 12.7,
+    "sobrepeso_infantil": 28.8
+  },
+  "4210308": {
+    "cobertura_acompanhamento": 89.0,
+    "deficit_nutricional": 13.0,
+    "sobrepeso_infantil": 23.0
+  },
+  "4210407": {
+    "cobertura_acompanhamento": 67.8,
+    "deficit_nutricional": 17.0,
+    "sobrepeso_infantil": 18.7
+  },
+  "4210506": {
+    "cobertura_acompanhamento": 89.3,
+    "deficit_nutricional": 15.4,
+    "sobrepeso_infantil": 16.9
+  },
+  "4210555": {
+    "cobertura_acompanhamento": 54.3,
+    "deficit_nutricional": 6.5,
+    "sobrepeso_infantil": 20.9
+  },
+  "4210605": {
+    "cobertura_acompanhamento": 82.1,
+    "deficit_nutricional": 11.4,
+    "sobrepeso_infantil": 20.7
+  },
+  "4210704": {
+    "cobertura_acompanhamento": 55.1,
+    "deficit_nutricional": 3.4,
+    "sobrepeso_infantil": 12.1
+  },
+  "4210803": {
+    "cobertura_acompanhamento": 54.9,
+    "deficit_nutricional": 7.8,
+    "sobrepeso_infantil": 18.5
+  },
+  "4210852": {
+    "cobertura_acompanhamento": 47.6,
+    "deficit_nutricional": 6.2,
+    "sobrepeso_infantil": 22.3
+  },
+  "4210902": {
+    "cobertura_acompanhamento": 78.9,
+    "deficit_nutricional": 3.2,
+    "sobrepeso_infantil": 15.2
+  },
+  "4211009": {
+    "cobertura_acompanhamento": 69.8,
+    "deficit_nutricional": 9.5,
+    "sobrepeso_infantil": 10.2
+  },
+  "4211058": {
+    "cobertura_acompanhamento": 63.1,
+    "deficit_nutricional": 18.3,
+    "sobrepeso_infantil": 19.6
+  },
+  "4211108": {
+    "cobertura_acompanhamento": 78.3,
+    "deficit_nutricional": 17.4,
+    "sobrepeso_infantil": 24.1
+  },
+  "4211207": {
+    "cobertura_acompanhamento": 60.9,
+    "deficit_nutricional": 2.1,
+    "sobrepeso_infantil": 13.8
+  },
+  "4211256": {
+    "cobertura_acompanhamento": 81.4,
+    "deficit_nutricional": 17.4,
+    "sobrepeso_infantil": 28.8
+  },
+  "4211306": {
+    "cobertura_acompanhamento": 63.0,
+    "deficit_nutricional": 15.5,
+    "sobrepeso_infantil": 18.7
+  },
+  "4211405": {
+    "cobertura_acompanhamento": 73.2,
+    "deficit_nutricional": 6.0,
+    "sobrepeso_infantil": 10.5
+  },
+  "4211454": {
+    "cobertura_acompanhamento": 64.0,
+    "deficit_nutricional": 2.5,
+    "sobrepeso_infantil": 13.4
+  },
+  "4211504": {
+    "cobertura_acompanhamento": 77.4,
+    "deficit_nutricional": 9.3,
+    "sobrepeso_infantil": 9.1
+  },
+  "4211603": {
+    "cobertura_acompanhamento": 65.7,
+    "deficit_nutricional": 4.3,
+    "sobrepeso_infantil": 20.6
+  },
+  "4211652": {
+    "cobertura_acompanhamento": 41.5,
+    "deficit_nutricional": 9.1,
+    "sobrepeso_infantil": 19.1
+  },
+  "4211702": {
+    "cobertura_acompanhamento": 41.5,
+    "deficit_nutricional": 13.6,
+    "sobrepeso_infantil": 8.4
+  },
+  "4211751": {
+    "cobertura_acompanhamento": 65.4,
+    "deficit_nutricional": 2.9,
+    "sobrepeso_infantil": 14.5
+  },
+  "4211801": {
+    "cobertura_acompanhamento": 51.6,
+    "deficit_nutricional": 7.9,
+    "sobrepeso_infantil": 24.0
+  },
+  "4211850": {
+    "cobertura_acompanhamento": 60.9,
+    "deficit_nutricional": 15.5,
+    "sobrepeso_infantil": 25.8
+  },
+  "4211876": {
+    "cobertura_acompanhamento": 53.9,
+    "deficit_nutricional": 3.5,
+    "sobrepeso_infantil": 5.5
+  },
+  "4211892": {
+    "cobertura_acompanhamento": 69.7,
+    "deficit_nutricional": 20.0,
+    "sobrepeso_infantil": 13.7
+  },
+  "4211900": {
+    "cobertura_acompanhamento": 75.8,
+    "deficit_nutricional": 16.1,
+    "sobrepeso_infantil": 21.3
+  },
+  "4212007": {
+    "cobertura_acompanhamento": 81.5,
+    "deficit_nutricional": 19.1,
+    "sobrepeso_infantil": 10.0
+  },
+  "4212056": {
+    "cobertura_acompanhamento": 41.1,
+    "deficit_nutricional": 4.7,
+    "sobrepeso_infantil": 8.2
+  },
+  "4212106": {
+    "cobertura_acompanhamento": 76.8,
+    "deficit_nutricional": 12.2,
+    "sobrepeso_infantil": 10.4
+  },
+  "4212205": {
+    "cobertura_acompanhamento": 78.5,
+    "deficit_nutricional": 15.8,
+    "sobrepeso_infantil": 9.2
+  },
+  "4212239": {
+    "cobertura_acompanhamento": 73.4,
+    "deficit_nutricional": 15.5,
+    "sobrepeso_infantil": 7.9
+  },
+  "4212254": {
+    "cobertura_acompanhamento": 85.1,
+    "deficit_nutricional": 19.4,
+    "sobrepeso_infantil": 7.7
+  },
+  "4212270": {
+    "cobertura_acompanhamento": 41.4,
+    "deficit_nutricional": 7.6,
+    "sobrepeso_infantil": 21.9
+  },
+  "4212304": {
+    "cobertura_acompanhamento": 92.7,
+    "deficit_nutricional": 9.1,
+    "sobrepeso_infantil": 22.9
+  },
+  "4212403": {
+    "cobertura_acompanhamento": 44.2,
+    "deficit_nutricional": 14.4,
+    "sobrepeso_infantil": 20.7
+  },
+  "4212502": {
+    "cobertura_acompanhamento": 45.6,
+    "deficit_nutricional": 15.9,
+    "sobrepeso_infantil": 26.3
+  },
+  "4212601": {
+    "cobertura_acompanhamento": 73.0,
+    "deficit_nutricional": 4.2,
+    "sobrepeso_infantil": 29.6
+  },
+  "4212650": {
+    "cobertura_acompanhamento": 83.0,
+    "deficit_nutricional": 8.2,
+    "sobrepeso_infantil": 15.7
+  },
+  "4212700": {
+    "cobertura_acompanhamento": 60.4,
+    "deficit_nutricional": 11.1,
+    "sobrepeso_infantil": 13.5
+  },
+  "4212809": {
+    "cobertura_acompanhamento": 86.7,
+    "deficit_nutricional": 16.8,
+    "sobrepeso_infantil": 7.6
+  },
+  "4212908": {
+    "cobertura_acompanhamento": 92.8,
+    "deficit_nutricional": 13.4,
+    "sobrepeso_infantil": 25.7
+  },
+  "4213005": {
+    "cobertura_acompanhamento": 78.9,
+    "deficit_nutricional": 9.8,
+    "sobrepeso_infantil": 23.3
+  },
+  "4213104": {
+    "cobertura_acompanhamento": 93.1,
+    "deficit_nutricional": 6.9,
+    "sobrepeso_infantil": 25.2
+  },
+  "4213153": {
+    "cobertura_acompanhamento": 69.6,
+    "deficit_nutricional": 10.7,
+    "sobrepeso_infantil": 15.9
+  },
+  "4213203": {
+    "cobertura_acompanhamento": 80.2,
+    "deficit_nutricional": 6.8,
+    "sobrepeso_infantil": 26.3
+  },
+  "4213302": {
+    "cobertura_acompanhamento": 85.7,
+    "deficit_nutricional": 3.6,
+    "sobrepeso_infantil": 27.0
+  },
+  "4213351": {
+    "cobertura_acompanhamento": 53.4,
+    "deficit_nutricional": 10.4,
+    "sobrepeso_infantil": 20.3
+  },
+  "4213401": {
+    "cobertura_acompanhamento": 60.8,
+    "deficit_nutricional": 2.5,
+    "sobrepeso_infantil": 26.3
+  },
+  "4213500": {
+    "cobertura_acompanhamento": 50.0,
+    "deficit_nutricional": 5.8,
+    "sobrepeso_infantil": 24.9
+  },
+  "4213609": {
+    "cobertura_acompanhamento": 58.7,
+    "deficit_nutricional": 17.8,
+    "sobrepeso_infantil": 22.5
+  },
+  "4213708": {
+    "cobertura_acompanhamento": 55.2,
+    "deficit_nutricional": 2.2,
+    "sobrepeso_infantil": 28.7
+  },
+  "4213807": {
+    "cobertura_acompanhamento": 44.7,
+    "deficit_nutricional": 15.0,
+    "sobrepeso_infantil": 17.2
+  },
+  "4213906": {
+    "cobertura_acompanhamento": 81.7,
+    "deficit_nutricional": 14.4,
+    "sobrepeso_infantil": 21.1
+  },
+  "4214003": {
+    "cobertura_acompanhamento": 67.0,
+    "deficit_nutricional": 16.3,
+    "sobrepeso_infantil": 7.3
+  },
+  "4214102": {
+    "cobertura_acompanhamento": 52.2,
+    "deficit_nutricional": 14.5,
+    "sobrepeso_infantil": 12.7
+  },
+  "4214151": {
+    "cobertura_acompanhamento": 72.0,
+    "deficit_nutricional": 10.5,
+    "sobrepeso_infantil": 18.3
+  },
+  "4214201": {
+    "cobertura_acompanhamento": 63.4,
+    "deficit_nutricional": 15.4,
+    "sobrepeso_infantil": 13.3
+  },
+  "4214300": {
+    "cobertura_acompanhamento": 78.7,
+    "deficit_nutricional": 6.9,
+    "sobrepeso_infantil": 11.3
+  },
+  "4214409": {
+    "cobertura_acompanhamento": 46.6,
+    "deficit_nutricional": 5.5,
+    "sobrepeso_infantil": 8.0
+  },
+  "4214508": {
+    "cobertura_acompanhamento": 69.5,
+    "deficit_nutricional": 15.7,
+    "sobrepeso_infantil": 9.6
+  },
+  "4214607": {
+    "cobertura_acompanhamento": 51.9,
+    "deficit_nutricional": 10.7,
+    "sobrepeso_infantil": 23.1
+  },
+  "4214706": {
+    "cobertura_acompanhamento": 93.7,
+    "deficit_nutricional": 11.4,
+    "sobrepeso_infantil": 12.1
+  },
+  "4214805": {
+    "cobertura_acompanhamento": 45.5,
+    "deficit_nutricional": 5.5,
+    "sobrepeso_infantil": 10.7
+  },
+  "4214904": {
+    "cobertura_acompanhamento": 49.9,
+    "deficit_nutricional": 2.3,
+    "sobrepeso_infantil": 18.4
+  },
+  "4215000": {
+    "cobertura_acompanhamento": 55.1,
+    "deficit_nutricional": 19.5,
+    "sobrepeso_infantil": 18.8
+  },
+  "4215059": {
+    "cobertura_acompanhamento": 78.4,
+    "deficit_nutricional": 4.3,
+    "sobrepeso_infantil": 26.7
+  },
+  "4215109": {
+    "cobertura_acompanhamento": 67.0,
+    "deficit_nutricional": 17.7,
+    "sobrepeso_infantil": 19.4
+  },
+  "4215208": {
+    "cobertura_acompanhamento": 65.8,
+    "deficit_nutricional": 9.9,
+    "sobrepeso_infantil": 9.6
+  },
+  "4215356": {
+    "cobertura_acompanhamento": 42.8,
+    "deficit_nutricional": 18.9,
+    "sobrepeso_infantil": 16.9
+  },
+  "4215406": {
+    "cobertura_acompanhamento": 85.2,
+    "deficit_nutricional": 9.2,
+    "sobrepeso_infantil": 6.9
+  },
+  "4215455": {
+    "cobertura_acompanhamento": 74.6,
+    "deficit_nutricional": 3.0,
+    "sobrepeso_infantil": 8.7
+  },
+  "4215505": {
+    "cobertura_acompanhamento": 71.0,
+    "deficit_nutricional": 7.5,
+    "sobrepeso_infantil": 29.8
+  },
+  "4215554": {
+    "cobertura_acompanhamento": 46.5,
+    "deficit_nutricional": 15.8,
+    "sobrepeso_infantil": 20.2
+  },
+  "4215604": {
+    "cobertura_acompanhamento": 83.5,
+    "deficit_nutricional": 6.1,
+    "sobrepeso_infantil": 18.1
+  },
+  "4215653": {
+    "cobertura_acompanhamento": 64.8,
+    "deficit_nutricional": 10.0,
+    "sobrepeso_infantil": 26.5
+  },
+  "4215687": {
+    "cobertura_acompanhamento": 94.5,
+    "deficit_nutricional": 7.5,
+    "sobrepeso_infantil": 20.5
+  },
+  "4215695": {
+    "cobertura_acompanhamento": 73.5,
+    "deficit_nutricional": 15.3,
+    "sobrepeso_infantil": 28.7
+  },
+  "4215703": {
+    "cobertura_acompanhamento": 51.4,
+    "deficit_nutricional": 5.8,
+    "sobrepeso_infantil": 21.5
+  },
+  "4215752": {
+    "cobertura_acompanhamento": 48.6,
+    "deficit_nutricional": 5.1,
+    "sobrepeso_infantil": 6.9
+  },
+  "4215802": {
+    "cobertura_acompanhamento": 40.1,
+    "deficit_nutricional": 10.1,
+    "sobrepeso_infantil": 19.8
+  },
+  "4215901": {
+    "cobertura_acompanhamento": 56.0,
+    "deficit_nutricional": 6.2,
+    "sobrepeso_infantil": 22.7
+  },
+  "4216008": {
+    "cobertura_acompanhamento": 78.7,
+    "deficit_nutricional": 10.2,
+    "sobrepeso_infantil": 22.2
+  },
+  "4216057": {
+    "cobertura_acompanhamento": 90.8,
+    "deficit_nutricional": 16.2,
+    "sobrepeso_infantil": 20.6
+  },
+  "4216107": {
+    "cobertura_acompanhamento": 76.4,
+    "deficit_nutricional": 18.8,
+    "sobrepeso_infantil": 15.6
+  },
+  "4216206": {
+    "cobertura_acompanhamento": 70.0,
+    "deficit_nutricional": 13.7,
+    "sobrepeso_infantil": 27.7
+  },
+  "4216255": {
+    "cobertura_acompanhamento": 85.5,
+    "deficit_nutricional": 3.3,
+    "sobrepeso_infantil": 9.1
+  },
+  "4216305": {
+    "cobertura_acompanhamento": 56.9,
+    "deficit_nutricional": 15.5,
+    "sobrepeso_infantil": 19.2
+  },
+  "4216354": {
+    "cobertura_acompanhamento": 55.9,
+    "deficit_nutricional": 4.2,
+    "sobrepeso_infantil": 22.2
+  },
+  "4216404": {
+    "cobertura_acompanhamento": 78.5,
+    "deficit_nutricional": 19.0,
+    "sobrepeso_infantil": 17.5
+  },
+  "4216503": {
+    "cobertura_acompanhamento": 67.2,
+    "deficit_nutricional": 3.4,
+    "sobrepeso_infantil": 6.0
+  },
+  "4216602": {
+    "cobertura_acompanhamento": 63.8,
+    "deficit_nutricional": 7.8,
+    "sobrepeso_infantil": 11.3
+  },
+  "4216701": {
+    "cobertura_acompanhamento": 45.0,
+    "deficit_nutricional": 19.3,
+    "sobrepeso_infantil": 25.9
+  },
+  "4216800": {
+    "cobertura_acompanhamento": 71.6,
+    "deficit_nutricional": 19.1,
+    "sobrepeso_infantil": 30.0
+  },
+  "4216909": {
+    "cobertura_acompanhamento": 77.0,
+    "deficit_nutricional": 6.9,
+    "sobrepeso_infantil": 6.0
+  },
+  "4217006": {
+    "cobertura_acompanhamento": 81.6,
+    "deficit_nutricional": 10.5,
+    "sobrepeso_infantil": 21.3
+  },
+  "4217105": {
+    "cobertura_acompanhamento": 90.4,
+    "deficit_nutricional": 5.3,
+    "sobrepeso_infantil": 19.6
+  },
+  "4217154": {
+    "cobertura_acompanhamento": 74.9,
+    "deficit_nutricional": 10.9,
+    "sobrepeso_infantil": 7.3
+  },
+  "4217204": {
+    "cobertura_acompanhamento": 59.1,
+    "deficit_nutricional": 8.0,
+    "sobrepeso_infantil": 21.8
+  },
+  "4217253": {
+    "cobertura_acompanhamento": 87.2,
+    "deficit_nutricional": 7.9,
+    "sobrepeso_infantil": 22.3
+  },
+  "4217402": {
+    "cobertura_acompanhamento": 55.9,
+    "deficit_nutricional": 19.0,
+    "sobrepeso_infantil": 25.3
+  },
+  "4217501": {
+    "cobertura_acompanhamento": 70.3,
+    "deficit_nutricional": 10.2,
+    "sobrepeso_infantil": 12.9
+  },
+  "4217550": {
+    "cobertura_acompanhamento": 57.8,
+    "deficit_nutricional": 19.5,
+    "sobrepeso_infantil": 15.1
+  },
+  "4217600": {
+    "cobertura_acompanhamento": 68.3,
+    "deficit_nutricional": 19.8,
+    "sobrepeso_infantil": 21.4
+  },
+  "4217709": {
+    "cobertura_acompanhamento": 69.8,
+    "deficit_nutricional": 9.4,
+    "sobrepeso_infantil": 9.7
+  },
+  "4217758": {
+    "cobertura_acompanhamento": 59.9,
+    "deficit_nutricional": 15.6,
+    "sobrepeso_infantil": 20.6
+  },
+  "4217808": {
+    "cobertura_acompanhamento": 81.8,
+    "deficit_nutricional": 5.7,
+    "sobrepeso_infantil": 18.7
+  },
+  "4217956": {
+    "cobertura_acompanhamento": 91.0,
+    "deficit_nutricional": 9.9,
+    "sobrepeso_infantil": 22.5
+  },
+  "4218004": {
+    "cobertura_acompanhamento": 46.7,
+    "deficit_nutricional": 19.5,
+    "sobrepeso_infantil": 20.2
+  },
+  "4218103": {
+    "cobertura_acompanhamento": 53.2,
+    "deficit_nutricional": 4.9,
+    "sobrepeso_infantil": 18.8
+  },
+  "4218202": {
+    "cobertura_acompanhamento": 70.4,
+    "deficit_nutricional": 3.7,
+    "sobrepeso_infantil": 29.8
+  },
+  "4218251": {
+    "cobertura_acompanhamento": 90.2,
+    "deficit_nutricional": 10.3,
+    "sobrepeso_infantil": 7.9
+  },
+  "4218301": {
+    "cobertura_acompanhamento": 85.8,
+    "deficit_nutricional": 11.0,
+    "sobrepeso_infantil": 22.9
+  },
+  "4218350": {
+    "cobertura_acompanhamento": 68.0,
+    "deficit_nutricional": 6.9,
+    "sobrepeso_infantil": 25.9
+  },
+  "4218400": {
+    "cobertura_acompanhamento": 93.9,
+    "deficit_nutricional": 6.4,
+    "sobrepeso_infantil": 18.8
+  },
+  "4218509": {
+    "cobertura_acompanhamento": 61.1,
+    "deficit_nutricional": 18.6,
+    "sobrepeso_infantil": 17.7
+  },
+  "4218608": {
+    "cobertura_acompanhamento": 88.4,
+    "deficit_nutricional": 17.6,
+    "sobrepeso_infantil": 11.9
+  },
+  "4218707": {
+    "cobertura_acompanhamento": 83.5,
+    "deficit_nutricional": 9.5,
+    "sobrepeso_infantil": 28.4
+  },
+  "4218756": {
+    "cobertura_acompanhamento": 67.9,
+    "deficit_nutricional": 16.8,
+    "sobrepeso_infantil": 12.1
+  },
+  "4218806": {
+    "cobertura_acompanhamento": 56.4,
+    "deficit_nutricional": 12.6,
+    "sobrepeso_infantil": 30.0
+  },
+  "4218855": {
+    "cobertura_acompanhamento": 66.9,
+    "deficit_nutricional": 4.7,
+    "sobrepeso_infantil": 18.5
+  },
+  "4218905": {
+    "cobertura_acompanhamento": 59.0,
+    "deficit_nutricional": 11.9,
+    "sobrepeso_infantil": 18.6
+  },
+  "4218954": {
+    "cobertura_acompanhamento": 65.0,
+    "deficit_nutricional": 7.8,
+    "sobrepeso_infantil": 9.7
+  },
+  "4219002": {
+    "cobertura_acompanhamento": 78.4,
+    "deficit_nutricional": 12.3,
+    "sobrepeso_infantil": 10.8
+  },
+  "4219101": {
+    "cobertura_acompanhamento": 82.7,
+    "deficit_nutricional": 2.8,
+    "sobrepeso_infantil": 23.6
+  },
+  "4219150": {
+    "cobertura_acompanhamento": 78.8,
+    "deficit_nutricional": 16.6,
+    "sobrepeso_infantil": 14.7
+  },
+  "4219176": {
+    "cobertura_acompanhamento": 76.5,
+    "deficit_nutricional": 16.8,
+    "sobrepeso_infantil": 29.5
+  },
+  "4219200": {
+    "cobertura_acompanhamento": 67.2,
+    "deficit_nutricional": 2.7,
+    "sobrepeso_infantil": 17.6
+  },
+  "4219309": {
+    "cobertura_acompanhamento": 72.5,
+    "deficit_nutricional": 17.7,
+    "sobrepeso_infantil": 26.9
+  },
+  "4219358": {
+    "cobertura_acompanhamento": 64.2,
+    "deficit_nutricional": 11.5,
+    "sobrepeso_infantil": 16.4
+  },
+  "4219408": {
+    "cobertura_acompanhamento": 79.7,
+    "deficit_nutricional": 9.4,
+    "sobrepeso_infantil": 21.4
+  },
+  "4219507": {
+    "cobertura_acompanhamento": 48.5,
+    "deficit_nutricional": 10.5,
+    "sobrepeso_infantil": 29.2
+  },
+  "4219606": {
+    "cobertura_acompanhamento": 58.6,
+    "deficit_nutricional": 14.5,
+    "sobrepeso_infantil": 21.2
+  },
+  "4219705": {
+    "cobertura_acompanhamento": 86.8,
+    "deficit_nutricional": 17.3,
+    "sobrepeso_infantil": 26.5
+  },
+  "4219853": {
+    "cobertura_acompanhamento": 60.9,
+    "deficit_nutricional": 7.7,
+    "sobrepeso_infantil": 23.0
+  },
+  "4220000": {
+    "cobertura_acompanhamento": 81.8,
+    "deficit_nutricional": 17.7,
+    "sobrepeso_infantil": 5.9
+  }
+}

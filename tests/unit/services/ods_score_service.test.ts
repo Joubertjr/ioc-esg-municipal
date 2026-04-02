@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 
-const { mockIbgeCollect, mockSiconfiCollect, mockDatasusCollect, mockInepCollect, mockSnisCollect, mockInpeCollect, mockPncpCollect, mockTseCollect, mockAneelCollect, mockSnisRsCollect, mockAnaCollect, mockConveniosCollect } = vi.hoisted(() => ({
+const { mockIbgeCollect, mockSiconfiCollect, mockDatasusCollect, mockInepCollect, mockSnisCollect, mockInpeCollect, mockPncpCollect, mockTseCollect, mockAneelCollect, mockSnisRsCollect, mockAnaCollect, mockConveniosCollect, mockAnatelCollect, mockSisvanCollect } = vi.hoisted(() => ({
   mockIbgeCollect: vi.fn(),
   mockSiconfiCollect: vi.fn(),
   mockDatasusCollect: vi.fn(),
@@ -13,6 +13,8 @@ const { mockIbgeCollect, mockSiconfiCollect, mockDatasusCollect, mockInepCollect
   mockSnisRsCollect: vi.fn(),
   mockAnaCollect: vi.fn(),
   mockConveniosCollect: vi.fn(),
+  mockAnatelCollect: vi.fn(),
+  mockSisvanCollect: vi.fn(),
 }));
 
 vi.mock("../../../backend/agents/ibge/ibge_collector.js", () => ({
@@ -99,6 +101,20 @@ vi.mock("../../../backend/agents/convenios/convenios_collector.js", () => ({
   })),
 }));
 
+vi.mock("../../../backend/agents/anatel/anatel_collector.js", () => ({
+  AnatelCollector: vi.fn().mockImplementation(() => ({
+    collect: mockAnatelCollect,
+    collectBatch: vi.fn(),
+  })),
+}));
+
+vi.mock("../../../backend/agents/sisvan/sisvan_collector.js", () => ({
+  SisvanCollector: vi.fn().mockImplementation(() => ({
+    collect: mockSisvanCollect,
+    collectBatch: vi.fn(),
+  })),
+}));
+
 vi.mock("../../../shared/data/ideb_2023.json", () => ({ default: {} }));
 vi.mock("../../../shared/data/snis_2022.json", () => ({ default: {} }));
 vi.mock("../../../shared/data/tse_2024.json", () => ({ default: {} }));
@@ -106,6 +122,8 @@ vi.mock("../../../shared/data/aneel_gd_2023.json", () => ({ default: {} }));
 vi.mock("../../../shared/data/snis_rs_2022.json", () => ({ default: {} }));
 vi.mock("../../../shared/data/ana_2022.json", () => ({ default: {} }));
 vi.mock("../../../shared/data/convenios_2023.json", () => ({ default: {} }));
+vi.mock("../../../shared/data/anatel_2023.json", () => ({ default: {} }));
+vi.mock("../../../shared/data/sisvan_2023.json", () => ({ default: {} }));
 
 vi.mock("../../../backend/utils/cache.js", () => ({
   withCache: vi.fn(
@@ -228,6 +246,8 @@ describe("ODS Score Service", () => {
     mockSnisRsCollect.mockResolvedValue(null);
     mockAnaCollect.mockResolvedValue(null);
     mockConveniosCollect.mockResolvedValue(null);
+    mockAnatelCollect.mockResolvedValue(null);
+    mockSisvanCollect.mockResolvedValue(null);
   });
 
   it("retorna null quando nenhuma fonte tem dados", async () => {

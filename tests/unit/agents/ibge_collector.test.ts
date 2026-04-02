@@ -3,6 +3,7 @@ import { IbgeCollector } from "../../../backend/agents/ibge/ibge_collector.js";
 import {
   mapToOdsIndicators,
   scoreEmpresasPor10k,
+  scoreCoeficienteGini,
 } from "../../../backend/agents/ibge/ibge_ods_mapper.js";
 import type { IbgeMunicipalData } from "../../../shared/types/agents/ibge.types.js";
 
@@ -23,6 +24,13 @@ vi.mock("../../../backend/utils/logger.js", () => ({
     warn: vi.fn(),
     error: vi.fn(),
     debug: vi.fn(),
+  },
+}));
+
+// Mock do JSON estático do Gini para isolar os testes do arquivo de dados real
+vi.mock("../../../shared/data/gini_2022.json", () => ({
+  default: {
+    "4204202": { coeficienteGini: 0.450 }, // Blumenau — usado nos testes principais
   },
 }));
 
@@ -243,6 +251,42 @@ describe("IbgeCollector", () => {
     expect(result!.siconfiCode).toBe("420420");
     expect(result!.siconfiCode).toHaveLength(6);
   });
+
+  it("enriquece coeficienteGini a partir do JSON estático gini_2022.json", async () => {
+    setupMockCollect(MOCK_IBGE_V1_RESPONSE);
+
+    const result = await collector.collect("4204202");
+
+    expect(result).not.toBeNull();
+    // Mock do JSON retorna 0.450 para "4204202" (Blumenau)
+    expect(result!.indicators.coeficienteGini).toBe(0.450);
+  });
+
+  it("coeficienteGini é null para município sem entrada no JSON estático", async () => {
+    // 4200051 não está no mock do gini_2022.json (apenas "4204202" está mockado)
+    // Usa a resposta padrão mas com localidade "420005" (siconfiCode de 4200051)
+    const mockV1WithDifferentCode = MOCK_IBGE_V1_RESPONSE.map((item) => ({
+      ...item,
+      res: item.res.map((r) => ({ ...r, localidade: "420005" })),
+    }));
+    mockFetch
+      .mockResolvedValueOnce(mockV1WithDifferentCode)
+      .mockResolvedValueOnce(MOCK_PAM_EMPTY_RESPONSE)
+      .mockResolvedValueOnce(
+        MOCK_CEMPRE_RESPONSE.map((item) => ({
+          ...item,
+          resultados: item.resultados.map((r) => ({
+            ...r,
+            localidade: { ...r.localidade, id: "4200051" },
+          })),
+        })),
+      );
+
+    const result = await collector.collect("4200051");
+
+    expect(result).not.toBeNull();
+    expect(result!.indicators.coeficienteGini).toBeNull();
+  });
 });
 
 describe("mapToOdsIndicators", () => {
@@ -264,6 +308,7 @@ describe("mapToOdsIndicators", () => {
       areaterritorial: 1500.0,
       producaoAgricolaMilReais: null,
       empresasAtuantes: 21450, // 21450 / 282648 * 10000 ≈ 759 empresas/10k → score 100
+      coeficienteGini: 0.420, // Gini 0.42 → score 80 (verde)
     },
   };
 
@@ -358,11 +403,12 @@ describe("mapToOdsIndicators", () => {
         areaterritorial: null,
         producaoAgricolaMilReais: null,
         empresasAtuantes: null,
+        coeficienteGini: null, // ODS 10 não gerado quando Gini é null
       },
     };
 
     const indicators = mapToOdsIndicators(partialData);
-    // ODS 1 usa pctBaixaRenda. ODS 10 usa razaoDependencia (null aqui) — nao gerado.
+    // ODS 1 usa pctBaixaRenda. ODS 10 usa coeficienteGini (null aqui) — não gerado.
     expect(indicators.length).toBe(1);
     expect(indicators[0]!.odsNumber).toBe(1);
   });
@@ -409,6 +455,116 @@ describe("mapToOdsIndicators", () => {
     expect(highScore).toBe(100);
     expect(lowScore).toBe(17);
     expect(highScore).toBeGreaterThan(lowScore);
+  });
+
+  it("ODS 10 usa indicatorName 'coeficiente_gini' e source 'ibge'", () => {
+    const ods10 = mapToOdsIndicators(mockData).find((i) => i.odsNumber === 10);
+
+    expect(ods10).not.toBeUndefined();
+    expect(ods10!.indicatorName).toBe("coeficiente_gini");
+    expect(ods10!.source).toBe("ibge");
+  });
+
+  it("ODS 10 tem referenceYear fixo 2022 (Censo IBGE)", () => {
+    const ods10 = mapToOdsIndicators(mockData).find((i) => i.odsNumber === 10)!;
+    expect(ods10.referenceYear).toBe(2022);
+  });
+
+  it("ODS 10 — Gini 0.42 gera score >= 70 (verde)", () => {
+    const ods10 = mapToOdsIndicators(mockData).find((i) => i.odsNumber === 10)!;
+    // Gini 0.42: faixa 0.35–0.45 → score = 100 - ((0.42 - 0.35) / 0.10) * 50 = 65
+    // Gini 0.42 = 100 - (0.07/0.10)*50 = 100 - 35 = 65 (amarelo)
+    expect(ods10.score).toBe(65);
+    expect(ods10.status).toBe("amarelo");
+  });
+
+  it("ODS 10 — Gini baixo (0.33) gera score 100 (verde)", () => {
+    const lowGini: IbgeMunicipalData = {
+      ...mockData,
+      indicators: { ...mockData.indicators, coeficienteGini: 0.33 },
+    };
+    const ods10 = mapToOdsIndicators(lowGini).find((i) => i.odsNumber === 10)!;
+    expect(ods10.score).toBe(100);
+    expect(ods10.status).toBe("verde");
+  });
+
+  it("ODS 10 — Gini alto (0.60) gera score 0 (vermelho)", () => {
+    const highGini: IbgeMunicipalData = {
+      ...mockData,
+      indicators: { ...mockData.indicators, coeficienteGini: 0.60 },
+    };
+    const ods10 = mapToOdsIndicators(highGini).find((i) => i.odsNumber === 10)!;
+    expect(ods10.score).toBe(0);
+    expect(ods10.status).toBe("vermelho");
+  });
+
+  it("ODS 10 não é gerado quando coeficienteGini é null", () => {
+    const noGini: IbgeMunicipalData = {
+      ...mockData,
+      indicators: { ...mockData.indicators, coeficienteGini: null },
+    };
+    const odsNumbers = mapToOdsIndicators(noGini).map((i) => i.odsNumber);
+    expect(odsNumbers).not.toContain(10);
+  });
+
+  it("scoring: Gini menor = score maior (invertido)", () => {
+    const lowGini: IbgeMunicipalData = {
+      ...mockData,
+      indicators: { ...mockData.indicators, coeficienteGini: 0.35 },
+    };
+    const highGini: IbgeMunicipalData = {
+      ...mockData,
+      indicators: { ...mockData.indicators, coeficienteGini: 0.55 },
+    };
+
+    const lowScore = mapToOdsIndicators(lowGini).find((i) => i.odsNumber === 10)!.score;
+    const highScore = mapToOdsIndicators(highGini).find((i) => i.odsNumber === 10)!.score;
+
+    expect(lowScore).toBe(100);
+    expect(lowScore).toBeGreaterThan(highScore);
+  });
+});
+
+describe("scoreCoeficienteGini", () => {
+  it("retorna 100 para Gini <= 0.35 (excelente igualdade)", () => {
+    expect(scoreCoeficienteGini(0.30)).toBe(100);
+    expect(scoreCoeficienteGini(0.35)).toBe(100);
+  });
+
+  it("retorna 50 para Gini = 0.45 (ponto de inflexão)", () => {
+    expect(scoreCoeficienteGini(0.45)).toBe(50);
+  });
+
+  it("retorna 0 para Gini >= 0.60 (desigualdade extrema)", () => {
+    expect(scoreCoeficienteGini(0.60)).toBe(0);
+    expect(scoreCoeficienteGini(0.65)).toBe(0);
+  });
+
+  it("interpolação linear entre 0.35 e 0.45 — ponto médio 0.40 = score 75", () => {
+    // score = 100 - ((0.40 - 0.35) / (0.45 - 0.35)) * 50 = 100 - 0.5*50 = 75
+    expect(scoreCoeficienteGini(0.40)).toBe(75);
+  });
+
+  it("interpolação linear entre 0.45 e 0.60 — ponto médio 0.525 = score 25", () => {
+    // score = 50 - ((0.525 - 0.45) / (0.60 - 0.45)) * 50 = 50 - 0.5*50 = 25
+    expect(scoreCoeficienteGini(0.525)).toBe(25);
+  });
+
+  it("scores são monotonicamente decrescentes com aumento do Gini", () => {
+    const pontos = [0.30, 0.35, 0.40, 0.45, 0.50, 0.525, 0.60, 0.65];
+    const scores = pontos.map(scoreCoeficienteGini);
+    for (let i = 1; i < scores.length; i++) {
+      expect(scores[i]!).toBeLessThanOrEqual(scores[i - 1]!);
+    }
+  });
+
+  it("todos os scores estão no range 0-100", () => {
+    const pontos = [0.30, 0.35, 0.40, 0.42, 0.45, 0.50, 0.55, 0.60, 0.65];
+    for (const p of pontos) {
+      const score = scoreCoeficienteGini(p);
+      expect(score).toBeGreaterThanOrEqual(0);
+      expect(score).toBeLessThanOrEqual(100);
+    }
   });
 });
 

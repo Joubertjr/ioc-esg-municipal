@@ -10,6 +10,8 @@ import { AneelCollector, mapToOdsIndicators as mapAneelOds } from "../../agents/
 import { SnisRsCollector, mapToOdsIndicators as mapSnisRsOds } from "../../agents/snis_rs/index.js";
 import { AnaCollector, mapToOdsIndicators as mapAnaOds } from "../../agents/ana/index.js";
 import { ConveniosCollector, mapToOdsIndicators as mapConveniosOds } from "../../agents/convenios/index.js";
+import { AnatelCollector, mapToOdsIndicators as mapAnatelOds } from "../../agents/anatel/index.js";
+import { SisvanCollector, mapToOdsIndicators as mapSisvanOds } from "../../agents/sisvan/index.js";
 import { ODS_DEFINITIONS, getOdsDefinition } from "../../../shared/constants/ods.js";
 import { getOdsStatus, type OdsIndicator, type OdsStatus } from "../../../shared/types/domain/ods.js";
 import { logger } from "../../utils/logger.js";
@@ -67,6 +69,8 @@ const aneelCollector = new AneelCollector();
 const snisRsCollector = new SnisRsCollector();
 const anaCollector = new AnaCollector();
 const conveniosCollector = new ConveniosCollector();
+const anatelCollector = new AnatelCollector();
+const sisvanCollector = new SisvanCollector();
 
 /**
  * Serviço que orquestra todos os coletores e consolida scores ODS para um município.
@@ -83,7 +87,7 @@ export async function calculateMunicipalOds(ibgeCode: string): Promise<Municipal
   // DATASUS cai com frequência (timeout=30s x retries=3 = 93s no pior caso).
   // Budget de 10s por fonte garante resposta em ≤15s mesmo com DATASUS down.
   // INEP e SNIS são locais (JSON estático) — 1s é suficiente.
-  const [ibgeData, siconfiData, datasusData, inepData, snisData, inpeData, pncpData, tseData, aneelData, snisRsData, anaData, conveniosData] =
+  const [ibgeData, siconfiData, datasusData, inepData, snisData, inpeData, pncpData, tseData, aneelData, snisRsData, anaData, conveniosData, anatelData, sisvanData] =
     await Promise.all([
       withTimeout(ibgeCollector.collect(ibgeCode), 10_000, "ibge"),
       withTimeout(siconfiCollector.collect(ibgeCode), 15_000, "siconfi"),
@@ -97,10 +101,12 @@ export async function calculateMunicipalOds(ibgeCode: string): Promise<Municipal
       withTimeout(snisRsCollector.collect(ibgeCode), 1_000, "snis_rs"),
       withTimeout(anaCollector.collect(ibgeCode), 1_000, "ana"),
       withTimeout(conveniosCollector.collect(ibgeCode), 1_000, "convenios"),
+      withTimeout(anatelCollector.collect(ibgeCode), 1_000, "anatel"),
+      withTimeout(sisvanCollector.collect(ibgeCode), 1_000, "sisvan"),
     ]);
 
   // Se nenhuma fonte retornou dados, não há score
-  if (!ibgeData && !siconfiData && !datasusData && !inepData && !snisData && !inpeData && !pncpData && !tseData && !aneelData && !snisRsData && !anaData && !conveniosData) {
+  if (!ibgeData && !siconfiData && !datasusData && !inepData && !snisData && !inpeData && !pncpData && !tseData && !aneelData && !snisRsData && !anaData && !conveniosData && !anatelData && !sisvanData) {
     logger.warn(`No data from any source for municipality ${ibgeCode}`);
     return null;
   }
@@ -119,6 +125,8 @@ export async function calculateMunicipalOds(ibgeCode: string): Promise<Municipal
   if (snisRsData) allIndicators.push(...mapSnisRsOds(snisRsData));
   if (anaData) allIndicators.push(...mapAnaOds(anaData));
   if (conveniosData) allIndicators.push(...mapConveniosOds(conveniosData));
+  if (anatelData) allIndicators.push(...mapAnatelOds(anatelData));
+  if (sisvanData) allIndicators.push(...mapSisvanOds(sisvanData));
 
   // Determinar ano de referência mais recente
   const referenceYear = Math.max(
@@ -134,6 +142,8 @@ export async function calculateMunicipalOds(ibgeCode: string): Promise<Municipal
     snisRsData?.referenceYear ?? 0,
     anaData?.referenceYear ?? 0,
     conveniosData?.referenceYear ?? 0,
+    anatelData?.referenceYear ?? 0,
+    sisvanData?.referenceYear ?? 0,
   );
 
   // Agrupar indicadores por ODS number

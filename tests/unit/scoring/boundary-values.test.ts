@@ -6,7 +6,7 @@
  *
  * Mappers cobertos:
  * - inep_ods_mapper    → scoreIdeb (anos iniciais + anos finais, null, intermediario)
- * - ibge_ods_mapper    → scorePctBaixaRenda, scoreRazaoDependencia, scoreDensidadeDemografica
+ * - ibge_ods_mapper    → scorePctBaixaRenda, scoreCoeficienteGini, scoreDensidadeDemografica
  * - siconfi_ods_mapper → scorePctSaude, scorePctEducacao, scoreDependenciaFpm
  * - snis_ods_mapper    → scoreAtendimentoAgua, scoreAtendimentoEsgoto,
  *                        scoreEsgotoTratado, scorePerdaFaturamento
@@ -17,6 +17,10 @@ import { describe, it, expect, vi } from "vitest";
 // ─── Mocks obrigatorios ──────────────────────────────────────────────────────
 
 vi.mock("../../../shared/data/ideb_2023.json", () => ({
+  default: {},
+}));
+
+vi.mock("../../../shared/data/gini_2022.json", () => ({
   default: {},
 }));
 
@@ -79,6 +83,7 @@ function makeIbgeData(overrides: Partial<IbgeMunicipalData["indicators"]>): Ibge
       areaterritorial: null,
       producaoAgricolaMilReais: null,
       empresasAtuantes: null,
+      coeficienteGini: null,
       ...overrides,
     },
   };
@@ -223,77 +228,77 @@ describe("scorePctBaixaRenda — fronteiras", () => {
   });
 });
 
-// ─── scoreRazaoDependencia (via ibge_ods_mapper — ODS 10) ────────────────────
+// ─── scoreCoeficienteGini (via ibge_ods_mapper — ODS 10) ─────────────────────
 
-describe("scoreRazaoDependencia — fronteiras (ODS 10)", () => {
-  it("razao_40pct_deve_resultar_em_score_100", () => {
-    // Arrange: 40% = fronteira excelente (menor dependencia demografica)
-    const data = makeIbgeData({ razaoDependencia: 40 });
+describe("scoreCoeficienteGini — fronteiras (ODS 10)", () => {
+  it("gini_035_deve_resultar_em_score_100", () => {
+    // Arrange: 0.35 = fronteira excelente (Gini baixissimo — alta igualdade)
+    const data = makeIbgeData({ coeficienteGini: 0.35 });
 
     // Act
     const indicators = ibgeMapToOds(data);
-    const ind = indicators.find((i) => i.indicatorName === "razao_dependencia")!;
+    const ind = indicators.find((i) => i.indicatorName === "coeficiente_gini")!;
 
     // Assert
     expect(ind.score).toBe(100);
     expect(ind.status).toBe("verde");
   });
 
-  it("razao_70pct_deve_resultar_em_score_0", () => {
-    // Arrange: 70% = fronteira pessima (alta dependencia demografica)
-    const data = makeIbgeData({ razaoDependencia: 70 });
+  it("gini_abaixo_035_deve_resultar_em_score_100_clamped", () => {
+    // Arrange: 0.30 → abaixo do minimo excelente → score = 100
+    const data = makeIbgeData({ coeficienteGini: 0.30 });
 
     // Act
     const indicators = ibgeMapToOds(data);
-    const ind = indicators.find((i) => i.indicatorName === "razao_dependencia")!;
+    const ind = indicators.find((i) => i.indicatorName === "coeficiente_gini")!;
 
     // Assert
-    expect(ind.score).toBe(0);
-    expect(ind.status).toBe("vermelho");
+    expect(ind.score).toBe(100);
+    expect(ind.status).toBe("verde");
   });
 
-  it("razao_55pct_deve_resultar_em_score_50", () => {
-    // Arrange: 55% = ponto medio entre 40% e 70% → score 50
-    const data = makeIbgeData({ razaoDependencia: 55 });
+  it("gini_045_deve_resultar_em_score_50", () => {
+    // Arrange: 0.45 = ponto de inflexao — score 50
+    const data = makeIbgeData({ coeficienteGini: 0.45 });
 
     // Act
     const indicators = ibgeMapToOds(data);
-    const ind = indicators.find((i) => i.indicatorName === "razao_dependencia")!;
+    const ind = indicators.find((i) => i.indicatorName === "coeficiente_gini")!;
 
-    // Assert: (70 - 55) / (70 - 40) * 100 = 50
+    // Assert: 100 - ((0.45 - 0.35) / 0.10) * 50 = 50
     expect(ind.score).toBe(50);
     expect(ind.status).toBe("amarelo");
   });
 
-  it("razao_acima_70pct_deve_resultar_em_score_0_clamped", () => {
-    // Arrange: 80% → acima do teto pessimo → clamped em 0
-    const data = makeIbgeData({ razaoDependencia: 80 });
+  it("gini_060_deve_resultar_em_score_0", () => {
+    // Arrange: 0.60 = fronteira pessima (desigualdade extrema)
+    const data = makeIbgeData({ coeficienteGini: 0.60 });
 
     // Act
     const indicators = ibgeMapToOds(data);
-    const ind = indicators.find((i) => i.indicatorName === "razao_dependencia")!;
+    const ind = indicators.find((i) => i.indicatorName === "coeficiente_gini")!;
 
     // Assert
     expect(ind.score).toBe(0);
     expect(ind.status).toBe("vermelho");
   });
 
-  it("razao_abaixo_40pct_deve_resultar_em_score_100_clamped", () => {
-    // Arrange: 30% → abaixo do minimo excelente → clamped em 100
-    const data = makeIbgeData({ razaoDependencia: 30 });
+  it("gini_acima_060_deve_resultar_em_score_0_clamped", () => {
+    // Arrange: 0.65 → acima do teto pessimo → clamped em 0
+    const data = makeIbgeData({ coeficienteGini: 0.65 });
 
     // Act
     const indicators = ibgeMapToOds(data);
-    const ind = indicators.find((i) => i.indicatorName === "razao_dependencia")!;
+    const ind = indicators.find((i) => i.indicatorName === "coeficiente_gini")!;
 
     // Assert
-    expect(ind.score).toBe(100);
-    expect(ind.status).toBe("verde");
+    expect(ind.score).toBe(0);
+    expect(ind.status).toBe("vermelho");
   });
 
   it("ODS_10_nao_duplica_ODS_1_indicadores_distintos", () => {
     // Arrange: ambos os indicadores disponiveis
-    const data = makeIbgeData({ pctBaixaRenda: 40, razaoDependencia: 55 });
+    const data = makeIbgeData({ pctBaixaRenda: 40, coeficienteGini: 0.42 });
 
     // Act
     const indicators = ibgeMapToOds(data);
@@ -304,7 +309,7 @@ describe("scoreRazaoDependencia — fronteiras (ODS 10)", () => {
     expect(ods1).toHaveLength(1);
     expect(ods10).toHaveLength(1);
     expect(ods1[0]!.indicatorName).toBe("pct_baixa_renda");
-    expect(ods10[0]!.indicatorName).toBe("razao_dependencia");
+    expect(ods10[0]!.indicatorName).toBe("coeficiente_gini");
   });
 });
 

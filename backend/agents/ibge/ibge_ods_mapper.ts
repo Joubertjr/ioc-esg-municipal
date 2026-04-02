@@ -9,7 +9,7 @@ import { getOdsStatus, type OdsIndicator } from "../../../shared/types/domain/od
  * - ODS 2  (Fome Zero)   : valor da produção agrícola municipal em R$ mil (PAM tabela 5457)
  * - ODS 8  (Trabalho)    : taxa de ocupação + PIB per capita
  * - ODS 9  (Inovação)    : empresas atuantes por 10k habitantes (CEMPRE tabela 9418)
- * - ODS 10 (Desigualdade): razão de dependência demográfica — (pop 0-14 + 65+)/pop 15-64 × 100
+ * - ODS 10 (Desigualdade): Coeficiente de Gini de renda (Censo IBGE 2022) — invertido: menor = melhor
  * - ODS 11 (Cidades)     : densidade demográfica (hab/km²) — faixa ideal 50-500
  */
 export function mapToOdsIndicators(data: IbgeMunicipalData): OdsIndicator[] {
@@ -110,22 +110,22 @@ export function mapToOdsIndicators(data: IbgeMunicipalData): OdsIndicator[] {
   }
 
   // ODS 10 — Redução das Desigualdades
-  // Razão de dependência = (pop 0-14 + 65+) / pop 15-64 × 100.
-  // Menor = menor dependência demográfica = melhor.
-  // Indicador distinto de ODS 1: mede estrutura etária, não renda.
-  if (ind.razaoDependencia !== null) {
-    const score = scoreRazaoDependencia(ind.razaoDependencia);
+  // Coeficiente de Gini de renda domiciliar per capita (Censo IBGE 2022).
+  // Menor Gini = menor desigualdade de renda = melhor.
+  // Indicador direto de desigualdade econômica — mais alinhado ao ODS 10 que razão de dependência.
+  if (ind.coeficienteGini !== null) {
+    const score = scoreCoeficienteGini(ind.coeficienteGini);
     indicators.push({
       id: "",
       municipalityId: ibgeCode,
       odsNumber: 10,
-      indicatorName: "razao_dependencia",
-      value: ind.razaoDependencia,
+      indicatorName: "coeficiente_gini",
+      value: ind.coeficienteGini,
       score,
       status: getOdsStatus(score),
       source: "ibge",
-      referenceYear,
-      referenceDate,
+      referenceYear: 2022, // Censo IBGE 2022 — ano fixo para este indicador
+      referenceDate: new Date("2022-12-31"),
       dataAvailable: true,
     });
   }
@@ -220,13 +220,20 @@ export function scoreEmpresasPor10k(empresasPor10k: number): number {
 }
 
 /**
- * Razão de dependência demográfica → score 0-100 (invertido: menor = melhor).
- * Fórmula: (pop 0-14 + 65+) / pop 15-64 × 100.
- * Benchmarks SC: <= 40% = excelente (score 100), >= 70% = péssimo (score 0).
- * Interpolação linear entre 40% e 70%.
+ * Coeficiente de Gini → score 0-100 (invertido: menor Gini = melhor).
+ * Fonte: IBGE Censo Demográfico 2022.
+ *
+ * Curva de scoring (benchmarks municípios SC):
+ * - Gini <= 0.35 → 100  (excelente igualdade)
+ * - Gini 0.35–0.45 → 50–100 (interpolação linear)
+ * - Gini 0.45–0.60 → 0–50 (interpolação linear)
+ * - Gini >= 0.60 → 0  (desigualdade extrema)
  */
-function scoreRazaoDependencia(razao: number): number {
-  return clampScore(((70 - razao) / (70 - 40)) * 100);
+export function scoreCoeficienteGini(gini: number): number {
+  if (gini <= 0.35) return 100;
+  if (gini <= 0.45) return clampScore(100 - ((gini - 0.35) / (0.45 - 0.35)) * 50);
+  if (gini < 0.60) return clampScore(50 - ((gini - 0.45) / (0.60 - 0.45)) * 50);
+  return 0;
 }
 
 /**

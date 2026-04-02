@@ -11,6 +11,20 @@ import {
   type IbgeIndicators,
   type IbgeIndicatorId,
 } from "../../../shared/types/agents/ibge.types.js";
+import {
+  GiniDataFileSchema,
+  type GiniDataFile,
+} from "../../../shared/types/agents/gini.types.js";
+import giniRawData from "../../../shared/data/gini_2022.json";
+
+// Validação única na carga do módulo — falha rápida se o JSON estiver corrompido
+const giniParseResult = GiniDataFileSchema.safeParse(giniRawData);
+if (!giniParseResult.success) {
+  throw new Error(
+    `gini_2022.json validation failed: ${JSON.stringify(giniParseResult.error.errors)}`,
+  );
+}
+const GINI_DATA: GiniDataFile = giniParseResult.data;
 
 const config = API_CONFIGS["ibge"];
 
@@ -126,6 +140,14 @@ export class IbgeCollector {
           this.CEMPRE_PERIODO,
           "CEMPRE",
         );
+
+        // Enriquecer com Coeficiente de Gini do Censo 2022 (JSON estático)
+        const giniEntry = GINI_DATA[ibgeCode];
+        if (giniEntry) {
+          indicators.coeficienteGini = giniEntry.coeficienteGini;
+        } else {
+          logger.debug(`Gini: sem dados para município ${ibgeCode}`);
+        }
 
         const referenceYear = this.getMostRecentYear(validated, siconfiCode);
 
@@ -271,6 +293,8 @@ export class IbgeCollector {
       // Campos da API v3 — preenchidos após esta função no collect()
       producaoAgricolaMilReais: null,
       empresasAtuantes: null,
+      // Preenchido a partir do JSON estático após esta função no collect()
+      coeficienteGini: null,
     };
   }
 
