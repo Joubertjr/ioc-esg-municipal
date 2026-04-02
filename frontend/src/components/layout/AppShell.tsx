@@ -96,7 +96,7 @@ interface NavItem {
 const NAV_ITEMS: NavItem[] = [
   { to: "/dashboard", label: "Painel ODS", icon: <IconDashboard /> },
   { to: "/simulator", label: "Simulador", icon: <IconSimulator /> },
-  { to: "/reports", label: "Relatorios", icon: <IconReports /> },
+  { to: "/reports", label: "Relatórios", icon: <IconReports /> },
   { to: "/monitoring", label: "Monitoramento", icon: <IconMonitoring /> },
 ];
 

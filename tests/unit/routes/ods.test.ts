@@ -40,9 +40,16 @@ const municipalOdsReportFactory = (
 // ─── Mocks dos módulos ────────────────────────────────────────────────────────
 
 const mockCalculateMunicipalOds = vi.fn();
+const mockCalculateAndPersistScores = vi.fn();
+const mockGetScoreHistory = vi.fn();
 
 vi.mock("../../../backend/services/ods/index.js", () => ({
   calculateMunicipalOds: mockCalculateMunicipalOds,
+}));
+
+vi.mock("../../../backend/services/ods/ods_history_service.js", () => ({
+  calculateAndPersistScores: mockCalculateAndPersistScores,
+  getScoreHistory: mockGetScoreHistory,
 }));
 
 vi.mock("../../../backend/utils/logger.js", () => ({
@@ -71,6 +78,8 @@ describe("GET /api/ods/:ibgeCode", () => {
 
   beforeEach(async () => {
     vi.clearAllMocks();
+    // Padrão: persistência fire-and-forget resolve sem erros
+    mockCalculateAndPersistScores.mockResolvedValue(null);
     app = await buildApp();
   });
 
@@ -90,6 +99,33 @@ describe("GET /api/ods/:ibgeCode", () => {
       globalStatus: "amarelo",
     });
     expect(mockCalculateMunicipalOds).toHaveBeenCalledWith(VALID_IBGE_CODE);
+  });
+
+  it("deve chamar calculateAndPersistScores de forma fire-and-forget após retornar 200", async () => {
+    // Arrange
+    const report = municipalOdsReportFactory(VALID_IBGE_CODE);
+    mockCalculateMunicipalOds.mockResolvedValue(report);
+
+    // Act
+    const res = await request(app).get(`/api/ods/${VALID_IBGE_CODE}`);
+
+    // Assert — resposta não é bloqueada; persistência deve ser acionada
+    expect(res.status).toBe(200);
+    // Aguarda microtasks do fire-and-forget para que o mock seja registrado
+    await Promise.resolve();
+    expect(mockCalculateAndPersistScores).toHaveBeenCalledWith(VALID_IBGE_CODE);
+  });
+
+  it("não deve chamar calculateAndPersistScores quando não há dados (404)", async () => {
+    // Arrange
+    mockCalculateMunicipalOds.mockResolvedValue(null);
+
+    // Act
+    const res = await request(app).get(`/api/ods/${VALID_IBGE_CODE}`);
+
+    // Assert
+    expect(res.status).toBe(404);
+    expect(mockCalculateAndPersistScores).not.toHaveBeenCalled();
   });
 
   it("deve retornar 400 quando código IBGE tem menos de 7 dígitos", async () => {
@@ -122,6 +158,7 @@ describe("POST /api/ods/compare", () => {
 
   beforeEach(async () => {
     vi.clearAllMocks();
+    mockCalculateAndPersistScores.mockResolvedValue(null);
     app = await buildApp();
   });
 
@@ -188,5 +225,130 @@ describe("POST /api/ods/compare", () => {
     expect(res.status).toBe(400);
     expect(res.body).toMatchObject({ error: expect.stringContaining("10") });
     expect(mockCalculateMunicipalOds).not.toHaveBeenCalled();
+  });
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+
+describe("GET /api/ods/:ibgeCode/history", () => {
+  let app: express.Express;
+
+  const historyFixture = [
+    {
+      id: "rec-1",
+      municipalityId: "mun-1",
+      odsNumber: 1,
+      score: 72,
+      status: "verde",
+      indicatorCount: 3,
+      referenceYear: 2023,
+      sources: ["ibge"],
+      calculatedAt: new Date("2024-01-01").toISOString(),
+    },
+    {
+      id: "rec-2",
+      municipalityId: "mun-1",
+      odsNumber: 0,
+      score: 65,
+      status: "amarelo",
+      indicatorCount: 6,
+      referenceYear: 2023,
+      sources: ["global"],
+      calculatedAt: new Date("2024-01-01").toISOString(),
+    },
+  ];
+
+  beforeEach(async () => {
+    vi.clearAllMocks();
+    mockCalculateAndPersistScores.mockResolvedValue(null);
+    app = await buildApp();
+  });
+
+  it("deve retornar 200 com histórico completo quando ibgeCode válido", async () => {
+    // Arrange
+    mockGetScoreHistory.mockResolvedValue(historyFixture);
+
+    // Act
+    const res = await request(app).get(`/api/ods/${VALID_IBGE_CODE}/history`);
+
+    // Assert
+    expect(res.status).toBe(200);
+    expect(res.body).toMatchObject({
+      ibgeCode: VALID_IBGE_CODE,
+      total: 2,
+      history: expect.arrayContaining([
+        expect.objectContaining({ odsNumber: 1, score: 72 }),
+        expect.objectContaining({ odsNumber: 0, score: 65 }),
+      ]),
+    });
+    expect(mockGetScoreHistory).toHaveBeenCalledWith(VALID_IBGE_CODE, undefined);
+  });
+
+  it("deve filtrar por odsNumber quando query param odsNumber é fornecido", async () => {
+    // Arrange
+    const filtered = [historyFixture[0]];
+    mockGetScoreHistory.mockResolvedValue(filtered);
+
+    // Act
+    const res = await request(app).get(`/api/ods/${VALID_IBGE_CODE}/history?odsNumber=1`);
+
+    // Assert
+    expect(res.status).toBe(200);
+    expect(res.body).toMatchObject({ total: 1 });
+    expect(mockGetScoreHistory).toHaveBeenCalledWith(VALID_IBGE_CODE, 1);
+  });
+
+  it("deve retornar 200 com histórico vazio quando município não tem registros", async () => {
+    // Arrange
+    mockGetScoreHistory.mockResolvedValue([]);
+
+    // Act
+    const res = await request(app).get(`/api/ods/${VALID_IBGE_CODE}/history`);
+
+    // Assert
+    expect(res.status).toBe(200);
+    expect(res.body).toMatchObject({ ibgeCode: VALID_IBGE_CODE, total: 0, history: [] });
+  });
+
+  it("deve retornar 400 quando código IBGE tem menos de 7 dígitos", async () => {
+    // Act
+    const res = await request(app).get("/api/ods/420420/history");
+
+    // Assert
+    expect(res.status).toBe(400);
+    expect(res.body).toMatchObject({ error: expect.stringContaining("7 dígitos") });
+    expect(mockGetScoreHistory).not.toHaveBeenCalled();
+  });
+
+  it("deve retornar 400 quando odsNumber é maior que 17", async () => {
+    // Act
+    const res = await request(app).get(`/api/ods/${VALID_IBGE_CODE}/history?odsNumber=18`);
+
+    // Assert
+    expect(res.status).toBe(400);
+    expect(res.body).toMatchObject({ error: expect.stringContaining("0 e 17") });
+    expect(mockGetScoreHistory).not.toHaveBeenCalled();
+  });
+
+  it("deve retornar 400 quando odsNumber é negativo", async () => {
+    // Act
+    const res = await request(app).get(`/api/ods/${VALID_IBGE_CODE}/history?odsNumber=-1`);
+
+    // Assert
+    expect(res.status).toBe(400);
+    expect(res.body).toMatchObject({ error: expect.stringContaining("0 e 17") });
+    expect(mockGetScoreHistory).not.toHaveBeenCalled();
+  });
+
+  it("deve retornar 500 quando getScoreHistory lança exceção", async () => {
+    // Arrange
+    mockGetScoreHistory.mockRejectedValue(new Error("DB offline"));
+
+    // Act
+    const res = await request(app).get(`/api/ods/${VALID_IBGE_CODE}/history`);
+
+    // Assert
+    expect(res.status).toBe(500);
+    expect(res.body).toMatchObject({ error: expect.stringContaining("histórico") });
   });
 });

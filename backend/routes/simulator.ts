@@ -8,40 +8,33 @@ const router: RouterType = Router();
 
 // ─── Schemas de validação ─────────────────────────────────────────────────────
 
-const InvestmentAreaSchema = z.enum([
-  "education",
-  "health",
-  "sanitation",
-  "environment",
-  "security",
-  "energy",
-  "urbanization",
-  "governance",
-]);
+/** Percentual por área: número entre 0 e 100 inclusive. */
+const AllocationPercentSchema = z
+  .number()
+  .min(0, "percentual deve ser >= 0")
+  .max(100, "percentual deve ser <= 100")
+  .finite("percentual deve ser um número finito");
 
 const InvestmentAllocationSchema = z.object({
-  area: InvestmentAreaSchema,
-  amount: z
-    .number({ required_error: "amount é obrigatório" })
-    .positive("amount deve ser positivo")
-    .finite("amount deve ser um número finito"),
-  targetOds: z
-    .array(z.number().int().min(1).max(17))
-    .default([]),
+  education:    AllocationPercentSchema,
+  health:       AllocationPercentSchema,
+  sanitation:   AllocationPercentSchema,
+  environment:  AllocationPercentSchema,
+  security:     AllocationPercentSchema,
+  energy:       AllocationPercentSchema,
+  urbanization: AllocationPercentSchema,
+  governance:   AllocationPercentSchema,
 });
 
 const SimulationInputSchema = z.object({
   ibgeCode: z
     .string({ required_error: "ibgeCode é obrigatório" })
     .regex(/^\d{7}$/, "ibgeCode deve ter exatamente 7 dígitos numéricos"),
-  scenarioName: z
-    .string({ required_error: "scenarioName é obrigatório" })
-    .min(1, "scenarioName não pode ser vazio")
-    .max(100, "scenarioName deve ter no máximo 100 caracteres"),
-  allocations: z
-    .array(InvestmentAllocationSchema)
-    .min(1, "allocations deve ter ao menos 1 item")
-    .max(20, "allocations deve ter no máximo 20 itens"),
+  totalAmount: z
+    .number({ required_error: "totalAmount é obrigatório" })
+    .positive("totalAmount deve ser positivo")
+    .finite("totalAmount deve ser um número finito"),
+  allocation: InvestmentAllocationSchema,
 });
 
 /** /compare aceita array direto no body */
@@ -79,8 +72,7 @@ router.post("/simulate", async (req: Request, res: Response) => {
 
   logger.info("[route:simulator] simulate chamado", {
     ibgeCode: input.ibgeCode,
-    scenarioName: input.scenarioName,
-    allocationsCount: input.allocations.length,
+    totalAmount: input.totalAmount,
   });
 
   try {
@@ -89,7 +81,6 @@ router.post("/simulate", async (req: Request, res: Response) => {
   } catch (error) {
     logger.error("[route:simulator] erro em /simulate", {
       ibgeCode: input.ibgeCode,
-      scenarioName: input.scenarioName,
       error: error instanceof Error ? error.message : String(error),
     });
     res.status(500).json({ error: "Erro interno ao executar simulação" });
@@ -120,7 +111,6 @@ router.post("/compare", batchLimiter, async (req: Request, res: Response) => {
   logger.info("[route:simulator] compare chamado", {
     scenariosCount: scenarios.length,
     ibgeCodes: scenarios.map((s) => s.ibgeCode),
-    scenarioNames: scenarios.map((s) => s.scenarioName),
   });
 
   try {

@@ -15,40 +15,48 @@ export type InvestmentArea =
   | "urbanization"
   | "governance";
 
-export interface InvestmentAllocation {
-  area: InvestmentArea;
-  /** Valor em R$ */
-  amount: number;
-  /** Sobrescreve o mapeamento padrão de ODS quando informado. Array vazio usa mapeamento padrão. */
-  targetOds: number[];
-}
+/** Distribuição percentual por área (0–100 cada, soma deve ser 100). */
+export type InvestmentAllocationRecord = Record<InvestmentArea, number>;
 
 export interface SimulationInput {
   ibgeCode: string;
-  scenarioName: string;
-  allocations: InvestmentAllocation[];
+  /** Valor total em R$ a ser distribuído pelas áreas. */
+  totalAmount: number;
+  /** Percentual por área (0–100, soma = 100). */
+  allocation: InvestmentAllocationRecord;
 }
 
-export interface OdsProjection {
+export interface OdsSimulationResult {
   odsNumber: number;
   name: string;
+  shortName: string;
+  color: string;
   currentScore: number | null;
   projectedScore: number | null;
-  delta: number;
-  primaryInvestment: number;
-  secondaryInvestment: number;
-  status: OdsStatus | null;
+  delta: number | null;
+  currentStatus: OdsStatus | null;
   projectedStatus: OdsStatus | null;
 }
 
 export interface SimulationResult {
   ibgeCode: string;
-  scenarioName: string;
-  totalInvestment: number;
+  municipalityName: string | null;
+  totalAmount: number;
+  allocation: InvestmentAllocationRecord;
   currentGlobalScore: number | null;
   projectedGlobalScore: number | null;
-  deltaGlobalScore: number;
-  odsProjections: OdsProjection[];
+  globalDelta: number | null;
+  ods: OdsSimulationResult[];
+}
+
+// ─── Tipo interno de alocação (mantém a lógica de mapeamento existente) ────────
+
+interface InternalAllocation {
+  area: InvestmentArea;
+  /** Valor absoluto em R$ */
+  amount: number;
+  /** Array vazio usa mapeamento padrão. */
+  targetOds: number[];
 }
 
 // ─── Mapeamento padrão de área → ODS ─────────────────────────────────────────
@@ -98,7 +106,7 @@ interface OdsAccumulator {
  * Respeita override de targetOds quando fornecido pelo caller.
  */
 function buildOdsInvestmentMap(
-  allocations: InvestmentAllocation[],
+  allocations: InternalAllocation[],
 ): Map<number, OdsAccumulator> {
   const map = new Map<number, OdsAccumulator>();
 
@@ -166,36 +174,42 @@ function projectOdsScore(
  * Executa a simulação de cenário de investimento FPM para um município.
  *
  * Fluxo:
- * 1. Busca scores ODS atuais via calculateMunicipalOds
- * 2. Determina orçamento e eficiência baseados em população IBGE
- * 3. Projeta novos scores por ODS para cada alocação
- * 4. Recalcula score global projetado (média ponderada)
- * 5. Retorna current vs projected com delta
+ * 1. Converte allocation percentual → valores absolutos em R$
+ * 2. Busca scores ODS atuais via calculateMunicipalOds
+ * 3. Determina orçamento e eficiência baseados em população IBGE
+ * 4. Projeta novos scores por ODS para cada alocação
+ * 5. Recalcula score global projetado (média ponderada)
+ * 6. Retorna current vs projected com delta no formato esperado pelo frontend
  *
  * Quando nenhum dado ODS está disponível para o município, retorna resultado degenerado
- * com scores nulos e deltas zero (nunca retorna null).
+ * com scores nulos e deltas nulos (nunca retorna null).
  */
 export async function runSimulation(input: SimulationInput): Promise<SimulationResult> {
-  const { ibgeCode, scenarioName, allocations } = input;
+  const { ibgeCode, totalAmount, allocation } = input;
 
   logger.info("[simulator] iniciando simulação", {
     ibgeCode,
-    scenarioName,
-    totalAllocations: allocations.length,
+    totalAmount,
   });
 
-  const totalInvestment = allocations.reduce((sum, a) => sum + a.amount, 0);
+  // 1. Converter allocation percentual para alocações internas com valores absolutos
+  const internalAllocations: InternalAllocation[] = (Object.keys(allocation) as InvestmentArea[])
+    .filter((area) => allocation[area] > 0)
+    .map((area) => ({
+      area,
+      amount: (allocation[area] / 100) * totalAmount,
+      targetOds: [],
+    }));
 
-  // 1. Buscar estado atual dos ODS
+  // 2. Buscar estado atual dos ODS
   const report = await calculateMunicipalOds(ibgeCode);
 
   if (!report) {
     logger.warn("[simulator] nenhum dado ODS disponível para município", { ibgeCode });
-    return buildDegenerateResult(ibgeCode, scenarioName, totalInvestment);
+    return buildDegenerateResult(ibgeCode, totalAmount, allocation);
   }
 
-  // 2. Determinar população e orçamento estimado
-  // A população pode vir de indicadores IBGE no relatório — extrai se disponível.
+  // 3. Determinar população e orçamento estimado
   const population = extractPopulation(report.ods);
   const totalBudget = population > 0 ? estimateTotalBudget(population) : 10_000_000;
   const efficiencyFactor = getEfficiencyFactor(population);
@@ -205,14 +219,14 @@ export async function runSimulation(input: SimulationInput): Promise<SimulationR
     population,
     totalBudget,
     efficiencyFactor,
-    totalInvestment,
+    totalAmount,
   });
 
-  // 3. Construir mapa de investimentos por ODS
-  const investmentMap = buildOdsInvestmentMap(allocations);
+  // 4. Construir mapa de investimentos por ODS
+  const investmentMap = buildOdsInvestmentMap(internalAllocations);
 
-  // 4. Projetar scores para cada ODS
-  const odsProjections: OdsProjection[] = ODS_DEFINITIONS.map((def) => {
+  // 5. Projetar scores para cada ODS
+  const odsResults: OdsSimulationResult[] = ODS_DEFINITIONS.map((def) => {
     const summary = report.ods.find((o) => o.odsNumber === def.number);
     const currentScore = summary?.score ?? null;
 
@@ -231,45 +245,45 @@ export async function runSimulation(input: SimulationInput): Promise<SimulationR
     const delta =
       projectedScore !== null && currentScore !== null
         ? projectedScore - currentScore
-        : 0;
+        : null;
 
     return {
       odsNumber: def.number,
       name: def.name,
+      shortName: def.shortName,
+      color: def.color,
       currentScore,
       projectedScore,
       delta,
-      primaryInvestment,
-      secondaryInvestment,
-      status: currentScore !== null ? getOdsStatus(currentScore) : null,
+      currentStatus: currentScore !== null ? getOdsStatus(currentScore) : null,
       projectedStatus: projectedScore !== null ? getOdsStatus(projectedScore) : null,
     };
   });
 
-  // 5. Recalcular score global projetado (média ponderada dos ODS com dados projetados)
-  const projectedGlobalScore = calculateGlobalScore(odsProjections, "projected");
+  // 6. Recalcular score global projetado (média ponderada dos ODS com dados projetados)
+  const projectedGlobalScore = calculateGlobalScore(odsResults, "projected");
   const currentGlobalScore = report.globalScore;
-  const deltaGlobalScore =
+  const globalDelta =
     projectedGlobalScore !== null && currentGlobalScore !== null
       ? projectedGlobalScore - currentGlobalScore
-      : 0;
+      : null;
 
   logger.info("[simulator] simulação concluída", {
     ibgeCode,
-    scenarioName,
     currentGlobalScore,
     projectedGlobalScore,
-    deltaGlobalScore,
+    globalDelta,
   });
 
   return {
     ibgeCode,
-    scenarioName,
-    totalInvestment,
+    municipalityName: report.municipalityName ?? null,
+    totalAmount,
+    allocation,
     currentGlobalScore,
     projectedGlobalScore,
-    deltaGlobalScore,
-    odsProjections,
+    globalDelta,
+    ods: odsResults,
   };
 }
 
@@ -296,17 +310,17 @@ function extractPopulation(ods: Array<{ indicators: Array<{ indicatorName: strin
 
 /** Calcula score global projetado (média ponderada). */
 function calculateGlobalScore(
-  projections: OdsProjection[],
+  results: OdsSimulationResult[],
   mode: "current" | "projected",
 ): number | null {
   let weightedSum = 0;
   let weightTotal = 0;
 
-  for (const proj of projections) {
-    const score = mode === "projected" ? proj.projectedScore : proj.currentScore;
+  for (const result of results) {
+    const score = mode === "projected" ? result.projectedScore : result.currentScore;
     if (score === null) continue;
 
-    const def = getOdsDefinition(proj.odsNumber);
+    const def = getOdsDefinition(result.odsNumber);
     const weight = def?.weight ?? 1.0;
     weightedSum += score * weight;
     weightTotal += weight;
@@ -318,28 +332,29 @@ function calculateGlobalScore(
 /** Resultado degenerado quando nenhum dado ODS está disponível para o município. */
 function buildDegenerateResult(
   ibgeCode: string,
-  scenarioName: string,
-  totalInvestment: number,
+  totalAmount: number,
+  allocation: InvestmentAllocationRecord,
 ): SimulationResult {
-  const odsProjections: OdsProjection[] = ODS_DEFINITIONS.map((def) => ({
+  const ods: OdsSimulationResult[] = ODS_DEFINITIONS.map((def) => ({
     odsNumber: def.number,
     name: def.name,
+    shortName: def.shortName,
+    color: def.color,
     currentScore: null,
     projectedScore: null,
-    delta: 0,
-    primaryInvestment: 0,
-    secondaryInvestment: 0,
-    status: null,
+    delta: null,
+    currentStatus: null,
     projectedStatus: null,
   }));
 
   return {
     ibgeCode,
-    scenarioName,
-    totalInvestment,
+    municipalityName: null,
+    totalAmount,
+    allocation,
     currentGlobalScore: null,
     projectedGlobalScore: null,
-    deltaGlobalScore: 0,
-    odsProjections,
+    globalDelta: null,
+    ods,
   };
 }

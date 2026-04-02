@@ -44,6 +44,13 @@ const mockIbgeCollect = vi.fn();
 const mockIbgeCollectBatch = vi.fn();
 const mockSiconfiCollect = vi.fn();
 const mockInpeCollect = vi.fn();
+const mockTseCollect = vi.fn();
+const mockAneelCollect = vi.fn();
+const mockSnisRsCollect = vi.fn();
+const mockAnaCollect = vi.fn();
+const mockConveniosCollect = vi.fn();
+const mockAnatelCollect = vi.fn();
+const mockSisvanCollect = vi.fn();
 
 vi.mock("../../../backend/agents/ibge/index.js", () => ({
   IbgeCollector: vi.fn().mockImplementation(() => ({
@@ -88,6 +95,62 @@ vi.mock("../../../backend/agents/snis/index.js", () => ({
 vi.mock("../../../backend/agents/inpe/index.js", () => ({
   InpeCollector: vi.fn().mockImplementation(() => ({
     collect: mockInpeCollect,
+    collectBatch: vi.fn(),
+  })),
+  mapToOdsIndicators: vi.fn().mockReturnValue([]),
+}));
+
+vi.mock("../../../backend/agents/tse/index.js", () => ({
+  TseCollector: vi.fn().mockImplementation(() => ({
+    collect: mockTseCollect,
+    collectBatch: vi.fn(),
+  })),
+  mapToOdsIndicators: vi.fn().mockReturnValue([]),
+}));
+
+vi.mock("../../../backend/agents/aneel/index.js", () => ({
+  AneelCollector: vi.fn().mockImplementation(() => ({
+    collect: mockAneelCollect,
+    collectBatch: vi.fn(),
+  })),
+  mapToOdsIndicators: vi.fn().mockReturnValue([]),
+}));
+
+vi.mock("../../../backend/agents/snis_rs/index.js", () => ({
+  SnisRsCollector: vi.fn().mockImplementation(() => ({
+    collect: mockSnisRsCollect,
+    collectBatch: vi.fn(),
+  })),
+  mapToOdsIndicators: vi.fn().mockReturnValue([]),
+}));
+
+vi.mock("../../../backend/agents/ana/index.js", () => ({
+  AnaCollector: vi.fn().mockImplementation(() => ({
+    collect: mockAnaCollect,
+    collectBatch: vi.fn(),
+  })),
+  mapToOdsIndicators: vi.fn().mockReturnValue([]),
+}));
+
+vi.mock("../../../backend/agents/convenios/index.js", () => ({
+  ConveniosCollector: vi.fn().mockImplementation(() => ({
+    collect: mockConveniosCollect,
+    collectBatch: vi.fn(),
+  })),
+  mapToOdsIndicators: vi.fn().mockReturnValue([]),
+}));
+
+vi.mock("../../../backend/agents/anatel/index.js", () => ({
+  AnatelCollector: vi.fn().mockImplementation(() => ({
+    collect: mockAnatelCollect,
+    collectBatch: vi.fn(),
+  })),
+  mapToOdsIndicators: vi.fn().mockReturnValue([]),
+}));
+
+vi.mock("../../../backend/agents/sisvan/index.js", () => ({
+  SisvanCollector: vi.fn().mockImplementation(() => ({
+    collect: mockSisvanCollect,
     collectBatch: vi.fn(),
   })),
   mapToOdsIndicators: vi.fn().mockReturnValue([]),
@@ -308,5 +371,383 @@ describe("GET /inpe/:ibgeCode", () => {
     // Assert
     expect(res.status).toBe(404);
     expect(res.body).toMatchObject({ error: expect.stringContaining(VALID_IBGE_CODE) });
+  });
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+
+describe("GET /tse/:ibgeCode", () => {
+  let app: express.Express;
+
+  beforeEach(async () => {
+    vi.clearAllMocks();
+    app = await buildApp();
+  });
+
+  it("deve retornar 200 com dados eleitorais quando código IBGE válido e collector retorna dados", async () => {
+    // Arrange
+    const tseData = {
+      ibgeCode: VALID_IBGE_CODE,
+      referenceYear: 2024,
+      indicators: { totalEleitores: 250000 },
+    };
+    mockTseCollect.mockResolvedValue(tseData);
+
+    // Act
+    const res = await request(app).get(`/tse/${VALID_IBGE_CODE}`);
+
+    // Assert
+    expect(res.status).toBe(200);
+    expect(res.body).toMatchObject({
+      municipality: VALID_IBGE_CODE,
+      source: "tse",
+      referenceYear: 2024,
+    });
+    expect(mockTseCollect).toHaveBeenCalledWith(VALID_IBGE_CODE);
+  });
+
+  it("deve retornar 400 quando código IBGE é inválido", async () => {
+    const res = await request(app).get("/tse/123");
+    expect(res.status).toBe(400);
+    expect(res.body).toMatchObject({ error: expect.stringContaining("7 dígitos") });
+    expect(mockTseCollect).not.toHaveBeenCalled();
+  });
+
+  it("deve retornar 404 quando TSE collector retorna null", async () => {
+    mockTseCollect.mockResolvedValue(null);
+    const res = await request(app).get(`/tse/${VALID_IBGE_CODE}`);
+    expect(res.status).toBe(404);
+    expect(res.body).toMatchObject({ error: expect.stringContaining(VALID_IBGE_CODE) });
+  });
+
+  it("deve retornar 500 quando TSE collector lança exceção", async () => {
+    mockTseCollect.mockRejectedValue(new Error("timeout"));
+    const res = await request(app).get(`/tse/${VALID_IBGE_CODE}`);
+    expect(res.status).toBe(500);
+    expect(res.body).toMatchObject({ error: expect.stringContaining("TSE") });
+  });
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+
+describe("GET /aneel/:ibgeCode", () => {
+  let app: express.Express;
+
+  beforeEach(async () => {
+    vi.clearAllMocks();
+    app = await buildApp();
+  });
+
+  it("deve retornar 200 com dados de energia quando código IBGE válido e collector retorna dados", async () => {
+    // Arrange
+    const aneelData = {
+      ibgeCode: VALID_IBGE_CODE,
+      referenceYear: 2023,
+      indicators: { indiceDec: 8.5, indiceFec: 4.2 },
+    };
+    mockAneelCollect.mockResolvedValue(aneelData);
+
+    // Act
+    const res = await request(app).get(`/aneel/${VALID_IBGE_CODE}`);
+
+    // Assert
+    expect(res.status).toBe(200);
+    expect(res.body).toMatchObject({
+      municipality: VALID_IBGE_CODE,
+      source: "aneel",
+      referenceYear: 2023,
+    });
+    expect(mockAneelCollect).toHaveBeenCalledWith(VALID_IBGE_CODE);
+  });
+
+  it("deve retornar 400 quando código IBGE é inválido", async () => {
+    const res = await request(app).get("/aneel/123");
+    expect(res.status).toBe(400);
+    expect(res.body).toMatchObject({ error: expect.stringContaining("7 dígitos") });
+    expect(mockAneelCollect).not.toHaveBeenCalled();
+  });
+
+  it("deve retornar 404 quando ANEEL collector retorna null", async () => {
+    mockAneelCollect.mockResolvedValue(null);
+    const res = await request(app).get(`/aneel/${VALID_IBGE_CODE}`);
+    expect(res.status).toBe(404);
+    expect(res.body).toMatchObject({ error: expect.stringContaining(VALID_IBGE_CODE) });
+  });
+
+  it("deve retornar 500 quando ANEEL collector lança exceção", async () => {
+    mockAneelCollect.mockRejectedValue(new Error("network error"));
+    const res = await request(app).get(`/aneel/${VALID_IBGE_CODE}`);
+    expect(res.status).toBe(500);
+    expect(res.body).toMatchObject({ error: expect.stringContaining("ANEEL") });
+  });
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+
+describe("GET /snis-rs/:ibgeCode", () => {
+  let app: express.Express;
+
+  beforeEach(async () => {
+    vi.clearAllMocks();
+    app = await buildApp();
+  });
+
+  it("deve retornar 200 com dados de resíduos sólidos quando código IBGE válido e collector retorna dados", async () => {
+    // Arrange
+    const snisRsData = {
+      ibgeCode: VALID_IBGE_CODE,
+      referenceYear: 2022,
+      indicators: { coletaDomiciliar: 95.0, destinacaoAdequada: 80.0 },
+    };
+    mockSnisRsCollect.mockResolvedValue(snisRsData);
+
+    // Act
+    const res = await request(app).get(`/snis-rs/${VALID_IBGE_CODE}`);
+
+    // Assert
+    expect(res.status).toBe(200);
+    expect(res.body).toMatchObject({
+      municipality: VALID_IBGE_CODE,
+      source: "snis-rs",
+      referenceYear: 2022,
+    });
+    expect(mockSnisRsCollect).toHaveBeenCalledWith(VALID_IBGE_CODE);
+  });
+
+  it("deve retornar 400 quando código IBGE é inválido", async () => {
+    const res = await request(app).get("/snis-rs/123");
+    expect(res.status).toBe(400);
+    expect(res.body).toMatchObject({ error: expect.stringContaining("7 dígitos") });
+    expect(mockSnisRsCollect).not.toHaveBeenCalled();
+  });
+
+  it("deve retornar 404 quando SNIS-RS collector retorna null", async () => {
+    mockSnisRsCollect.mockResolvedValue(null);
+    const res = await request(app).get(`/snis-rs/${VALID_IBGE_CODE}`);
+    expect(res.status).toBe(404);
+    expect(res.body).toMatchObject({ error: expect.stringContaining(VALID_IBGE_CODE) });
+  });
+
+  it("deve retornar 500 quando SNIS-RS collector lança exceção", async () => {
+    mockSnisRsCollect.mockRejectedValue(new Error("parse error"));
+    const res = await request(app).get(`/snis-rs/${VALID_IBGE_CODE}`);
+    expect(res.status).toBe(500);
+    expect(res.body).toMatchObject({ error: expect.stringContaining("SNIS-RS") });
+  });
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+
+describe("GET /ana/:ibgeCode", () => {
+  let app: express.Express;
+
+  beforeEach(async () => {
+    vi.clearAllMocks();
+    app = await buildApp();
+  });
+
+  it("deve retornar 200 com dados hídricos quando código IBGE válido e collector retorna dados", async () => {
+    // Arrange
+    const anaData = {
+      ibgeCode: VALID_IBGE_CODE,
+      referenceYear: 2023,
+      indicators: { outorgasAtivas: 12, usoTotal: 5.4 },
+    };
+    mockAnaCollect.mockResolvedValue(anaData);
+
+    // Act
+    const res = await request(app).get(`/ana/${VALID_IBGE_CODE}`);
+
+    // Assert
+    expect(res.status).toBe(200);
+    expect(res.body).toMatchObject({
+      municipality: VALID_IBGE_CODE,
+      source: "ana",
+      referenceYear: 2023,
+    });
+    expect(mockAnaCollect).toHaveBeenCalledWith(VALID_IBGE_CODE);
+  });
+
+  it("deve retornar 400 quando código IBGE é inválido", async () => {
+    const res = await request(app).get("/ana/123");
+    expect(res.status).toBe(400);
+    expect(res.body).toMatchObject({ error: expect.stringContaining("7 dígitos") });
+    expect(mockAnaCollect).not.toHaveBeenCalled();
+  });
+
+  it("deve retornar 404 quando ANA collector retorna null", async () => {
+    mockAnaCollect.mockResolvedValue(null);
+    const res = await request(app).get(`/ana/${VALID_IBGE_CODE}`);
+    expect(res.status).toBe(404);
+    expect(res.body).toMatchObject({ error: expect.stringContaining(VALID_IBGE_CODE) });
+  });
+
+  it("deve retornar 500 quando ANA collector lança exceção", async () => {
+    mockAnaCollect.mockRejectedValue(new Error("service unavailable"));
+    const res = await request(app).get(`/ana/${VALID_IBGE_CODE}`);
+    expect(res.status).toBe(500);
+    expect(res.body).toMatchObject({ error: expect.stringContaining("ANA") });
+  });
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+
+describe("GET /convenios/:ibgeCode", () => {
+  let app: express.Express;
+
+  beforeEach(async () => {
+    vi.clearAllMocks();
+    app = await buildApp();
+  });
+
+  it("deve retornar 200 com dados de convênios quando código IBGE válido e collector retorna dados", async () => {
+    // Arrange
+    const conveniosData = {
+      ibgeCode: VALID_IBGE_CODE,
+      referenceYear: 2024,
+      indicators: { totalConvenios: 45, valorTotal: 12_000_000 },
+    };
+    mockConveniosCollect.mockResolvedValue(conveniosData);
+
+    // Act
+    const res = await request(app).get(`/convenios/${VALID_IBGE_CODE}`);
+
+    // Assert
+    expect(res.status).toBe(200);
+    expect(res.body).toMatchObject({
+      municipality: VALID_IBGE_CODE,
+      source: "convenios",
+      referenceYear: 2024,
+    });
+    expect(mockConveniosCollect).toHaveBeenCalledWith(VALID_IBGE_CODE);
+  });
+
+  it("deve retornar 400 quando código IBGE é inválido", async () => {
+    const res = await request(app).get("/convenios/123");
+    expect(res.status).toBe(400);
+    expect(res.body).toMatchObject({ error: expect.stringContaining("7 dígitos") });
+    expect(mockConveniosCollect).not.toHaveBeenCalled();
+  });
+
+  it("deve retornar 404 quando CONVENIOS collector retorna null", async () => {
+    mockConveniosCollect.mockResolvedValue(null);
+    const res = await request(app).get(`/convenios/${VALID_IBGE_CODE}`);
+    expect(res.status).toBe(404);
+    expect(res.body).toMatchObject({ error: expect.stringContaining(VALID_IBGE_CODE) });
+  });
+
+  it("deve retornar 500 quando CONVENIOS collector lança exceção", async () => {
+    mockConveniosCollect.mockRejectedValue(new Error("auth error"));
+    const res = await request(app).get(`/convenios/${VALID_IBGE_CODE}`);
+    expect(res.status).toBe(500);
+    expect(res.body).toMatchObject({ error: expect.stringContaining("CONVENIOS") });
+  });
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+
+describe("GET /anatel/:ibgeCode", () => {
+  let app: express.Express;
+
+  beforeEach(async () => {
+    vi.clearAllMocks();
+    app = await buildApp();
+  });
+
+  it("deve retornar 200 com dados de telecomunicações quando código IBGE válido e collector retorna dados", async () => {
+    // Arrange
+    const anatelData = {
+      ibgeCode: VALID_IBGE_CODE,
+      referenceYear: 2023,
+      indicators: { acessos4G: 180000, cobertura4G: 92.5 },
+    };
+    mockAnatelCollect.mockResolvedValue(anatelData);
+
+    // Act
+    const res = await request(app).get(`/anatel/${VALID_IBGE_CODE}`);
+
+    // Assert
+    expect(res.status).toBe(200);
+    expect(res.body).toMatchObject({
+      municipality: VALID_IBGE_CODE,
+      source: "anatel",
+      referenceYear: 2023,
+    });
+    expect(mockAnatelCollect).toHaveBeenCalledWith(VALID_IBGE_CODE);
+  });
+
+  it("deve retornar 400 quando código IBGE é inválido", async () => {
+    const res = await request(app).get("/anatel/123");
+    expect(res.status).toBe(400);
+    expect(res.body).toMatchObject({ error: expect.stringContaining("7 dígitos") });
+    expect(mockAnatelCollect).not.toHaveBeenCalled();
+  });
+
+  it("deve retornar 404 quando ANATEL collector retorna null", async () => {
+    mockAnatelCollect.mockResolvedValue(null);
+    const res = await request(app).get(`/anatel/${VALID_IBGE_CODE}`);
+    expect(res.status).toBe(404);
+    expect(res.body).toMatchObject({ error: expect.stringContaining(VALID_IBGE_CODE) });
+  });
+
+  it("deve retornar 500 quando ANATEL collector lança exceção", async () => {
+    mockAnatelCollect.mockRejectedValue(new Error("connection reset"));
+    const res = await request(app).get(`/anatel/${VALID_IBGE_CODE}`);
+    expect(res.status).toBe(500);
+    expect(res.body).toMatchObject({ error: expect.stringContaining("ANATEL") });
+  });
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+
+describe("GET /sisvan/:ibgeCode", () => {
+  let app: express.Express;
+
+  beforeEach(async () => {
+    vi.clearAllMocks();
+    app = await buildApp();
+  });
+
+  it("deve retornar 200 com dados nutricionais quando código IBGE válido e collector retorna dados", async () => {
+    // Arrange
+    const sisvanData = {
+      ibgeCode: VALID_IBGE_CODE,
+      referenceYear: 2023,
+      indicators: { pctDesnutricao: 3.2, pctObesidade: 12.5 },
+    };
+    mockSisvanCollect.mockResolvedValue(sisvanData);
+
+    // Act
+    const res = await request(app).get(`/sisvan/${VALID_IBGE_CODE}`);
+
+    // Assert
+    expect(res.status).toBe(200);
+    expect(res.body).toMatchObject({
+      municipality: VALID_IBGE_CODE,
+      source: "sisvan",
+      referenceYear: 2023,
+    });
+    expect(mockSisvanCollect).toHaveBeenCalledWith(VALID_IBGE_CODE);
+  });
+
+  it("deve retornar 400 quando código IBGE é inválido", async () => {
+    const res = await request(app).get("/sisvan/123");
+    expect(res.status).toBe(400);
+    expect(res.body).toMatchObject({ error: expect.stringContaining("7 dígitos") });
+    expect(mockSisvanCollect).not.toHaveBeenCalled();
+  });
+
+  it("deve retornar 404 quando SISVAN collector retorna null", async () => {
+    mockSisvanCollect.mockResolvedValue(null);
+    const res = await request(app).get(`/sisvan/${VALID_IBGE_CODE}`);
+    expect(res.status).toBe(404);
+    expect(res.body).toMatchObject({ error: expect.stringContaining(VALID_IBGE_CODE) });
+  });
+
+  it("deve retornar 500 quando SISVAN collector lança exceção", async () => {
+    mockSisvanCollect.mockRejectedValue(new Error("file not found"));
+    const res = await request(app).get(`/sisvan/${VALID_IBGE_CODE}`);
+    expect(res.status).toBe(500);
+    expect(res.body).toMatchObject({ error: expect.stringContaining("SISVAN") });
   });
 });

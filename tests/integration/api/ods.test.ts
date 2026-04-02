@@ -135,6 +135,42 @@ vi.mock("../../../backend/agents/pncp/index.js", () => ({
   PncpCollector: vi.fn().mockImplementation(() => ({ collect: vi.fn(), collectBatch: vi.fn() })),
   mapToOdsIndicators: vi.fn().mockReturnValue([]),
 }));
+vi.mock("../../../backend/agents/tse/index.js", () => ({
+  TseCollector: vi.fn().mockImplementation(() => ({ collect: vi.fn(), collectBatch: vi.fn() })),
+  mapToOdsIndicators: vi.fn().mockReturnValue([]),
+}));
+vi.mock("../../../backend/agents/aneel/index.js", () => ({
+  AneelCollector: vi.fn().mockImplementation(() => ({ collect: vi.fn(), collectBatch: vi.fn() })),
+  mapToOdsIndicators: vi.fn().mockReturnValue([]),
+}));
+vi.mock("../../../backend/agents/snis_rs/index.js", () => ({
+  SnisRsCollector: vi.fn().mockImplementation(() => ({ collect: vi.fn(), collectBatch: vi.fn() })),
+  mapToOdsIndicators: vi.fn().mockReturnValue([]),
+}));
+vi.mock("../../../backend/agents/ana/index.js", () => ({
+  AnaCollector: vi.fn().mockImplementation(() => ({ collect: vi.fn(), collectBatch: vi.fn() })),
+  mapToOdsIndicators: vi.fn().mockReturnValue([]),
+}));
+vi.mock("../../../backend/agents/convenios/index.js", () => ({
+  ConveniosCollector: vi.fn().mockImplementation(() => ({ collect: vi.fn(), collectBatch: vi.fn() })),
+  mapToOdsIndicators: vi.fn().mockReturnValue([]),
+}));
+vi.mock("../../../backend/agents/anatel/index.js", () => ({
+  AnatelCollector: vi.fn().mockImplementation(() => ({ collect: vi.fn(), collectBatch: vi.fn() })),
+  mapToOdsIndicators: vi.fn().mockReturnValue([]),
+}));
+vi.mock("../../../backend/agents/sisvan/index.js", () => ({
+  SisvanCollector: vi.fn().mockImplementation(() => ({ collect: vi.fn(), collectBatch: vi.fn() })),
+  mapToOdsIndicators: vi.fn().mockReturnValue([]),
+}));
+// JSON data files imported at module load time by the new collectors
+vi.mock("../../../shared/data/tse_2024.json", () => ({ default: [] }));
+vi.mock("../../../shared/data/aneel_gd_2023.json", () => ({ default: [] }));
+vi.mock("../../../shared/data/snis_rs_2022.json", () => ({ default: [] }));
+vi.mock("../../../shared/data/ana_2022.json", () => ({ default: [] }));
+vi.mock("../../../shared/data/convenios_2023.json", () => ({ default: [] }));
+vi.mock("../../../shared/data/anatel_2023.json", () => ({ default: [] }));
+vi.mock("../../../shared/data/sisvan_2023.json", () => ({ default: [] }));
 
 // ─── Setup ────────────────────────────────────────────────────────────────────
 

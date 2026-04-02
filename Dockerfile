@@ -63,8 +63,13 @@ COPY --from=deps --chown=nodeuser:nodejs /app/node_modules ./node_modules
 # Copia package.json para `node` resolver o "main"
 COPY --chown=nodeuser:nodejs package.json ./
 
-# Gera Prisma Client no contexto de produção
-RUN pnpm prisma generate
+# Gera Prisma Client no contexto de produção (antes do USER switch para ter
+# permissão de escrita em node_modules/.prisma/) e corrige ownership
+RUN pnpm prisma generate && \
+    chown -R nodeuser:nodejs /app/node_modules/.prisma
+
+# Copia arquivos JSON de shared/data — lidos em runtime pelos coletores
+COPY --from=builder --chown=nodeuser:nodejs /app/shared/data ./shared/data
 
 USER nodeuser
 

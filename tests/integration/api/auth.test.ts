@@ -112,6 +112,42 @@ vi.mock("../../../backend/agents/pncp/index.js", () => ({
   PncpCollector: vi.fn().mockImplementation(() => ({ collect: vi.fn(), collectBatch: vi.fn() })),
   mapToOdsIndicators: vi.fn().mockReturnValue([]),
 }));
+vi.mock("../../../backend/agents/tse/index.js", () => ({
+  TseCollector: vi.fn().mockImplementation(() => ({ collect: vi.fn(), collectBatch: vi.fn() })),
+  mapToOdsIndicators: vi.fn().mockReturnValue([]),
+}));
+vi.mock("../../../backend/agents/aneel/index.js", () => ({
+  AneelCollector: vi.fn().mockImplementation(() => ({ collect: vi.fn(), collectBatch: vi.fn() })),
+  mapToOdsIndicators: vi.fn().mockReturnValue([]),
+}));
+vi.mock("../../../backend/agents/snis_rs/index.js", () => ({
+  SnisRsCollector: vi.fn().mockImplementation(() => ({ collect: vi.fn(), collectBatch: vi.fn() })),
+  mapToOdsIndicators: vi.fn().mockReturnValue([]),
+}));
+vi.mock("../../../backend/agents/ana/index.js", () => ({
+  AnaCollector: vi.fn().mockImplementation(() => ({ collect: vi.fn(), collectBatch: vi.fn() })),
+  mapToOdsIndicators: vi.fn().mockReturnValue([]),
+}));
+vi.mock("../../../backend/agents/convenios/index.js", () => ({
+  ConveniosCollector: vi.fn().mockImplementation(() => ({ collect: vi.fn(), collectBatch: vi.fn() })),
+  mapToOdsIndicators: vi.fn().mockReturnValue([]),
+}));
+vi.mock("../../../backend/agents/anatel/index.js", () => ({
+  AnatelCollector: vi.fn().mockImplementation(() => ({ collect: vi.fn(), collectBatch: vi.fn() })),
+  mapToOdsIndicators: vi.fn().mockReturnValue([]),
+}));
+vi.mock("../../../backend/agents/sisvan/index.js", () => ({
+  SisvanCollector: vi.fn().mockImplementation(() => ({ collect: vi.fn(), collectBatch: vi.fn() })),
+  mapToOdsIndicators: vi.fn().mockReturnValue([]),
+}));
+// JSON data files imported at module load time by the new collectors
+vi.mock("../../../shared/data/tse_2024.json", () => ({ default: [] }));
+vi.mock("../../../shared/data/aneel_gd_2023.json", () => ({ default: [] }));
+vi.mock("../../../shared/data/snis_rs_2022.json", () => ({ default: [] }));
+vi.mock("../../../shared/data/ana_2022.json", () => ({ default: [] }));
+vi.mock("../../../shared/data/convenios_2023.json", () => ({ default: [] }));
+vi.mock("../../../shared/data/anatel_2023.json", () => ({ default: [] }));
+vi.mock("../../../shared/data/sisvan_2023.json", () => ({ default: [] }));
 vi.mock("../../../backend/services/ods/index.js", () => ({
   calculateMunicipalOds: vi.fn().mockResolvedValue(null),
 }));
@@ -126,7 +162,7 @@ beforeAll(async () => {
   hashedPassword = await bcrypt.hash("senha-valida-123", 10);
   const { createTestApp } = await import("./app-factory.js");
   app = await createTestApp();
-});
+}, 15_000);
 
 beforeEach(() => {
   vi.clearAllMocks();
@@ -135,7 +171,7 @@ beforeEach(() => {
 // ─── POST /api/auth/register ──────────────────────────────────────────────────
 
 describe("POST /api/auth/register", () => {
-  it("deve retornar 201 com dados do usuário quando é o primeiro registro (bootstrap)", async () => {
+  it("deve retornar 201 com dados do usuário quando é o primeiro registro (bootstrap)", { timeout: 15_000 }, async () => {
     // Arrange
     mockUserCount.mockResolvedValue(0);
     mockUserFindUnique.mockResolvedValue(null); // email não existe

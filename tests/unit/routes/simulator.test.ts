@@ -36,22 +36,34 @@ function buildApp() {
   return app;
 }
 
+const DEFAULT_ALLOCATION = {
+  education: 12,
+  health: 13,
+  sanitation: 12,
+  environment: 13,
+  security: 12,
+  energy: 13,
+  urbanization: 12,
+  governance: 13,
+};
+
 const MOCK_RESULT = {
   ibgeCode: "4204202",
-  scenarioName: "Test",
-  totalInvestment: 5_000_000,
+  municipalityName: "Blumenau",
+  totalAmount: 5_000_000,
+  allocation: DEFAULT_ALLOCATION,
   currentGlobalScore: 55,
   projectedGlobalScore: 62,
-  deltaGlobalScore: 7,
-  odsProjections: Array.from({ length: 17 }, (_, i) => ({
+  globalDelta: 7,
+  ods: Array.from({ length: 17 }, (_, i) => ({
     odsNumber: i + 1,
     name: `ODS ${i + 1}`,
+    shortName: `ODS${i + 1}`,
+    color: "#000000",
     currentScore: 50,
     projectedScore: 55,
     delta: 5,
-    primaryInvestment: 0,
-    secondaryInvestment: 0,
-    status: "amarelo",
+    currentStatus: "amarelo",
     projectedStatus: "amarelo",
   })),
 };
@@ -69,13 +81,13 @@ describe("POST /api/simulator/simulate", () => {
       .post("/api/simulator/simulate")
       .send({
         ibgeCode: "4204202",
-        scenarioName: "Teste saúde",
-        allocations: [{ area: "health", amount: 5000000 }],
+        totalAmount: 5000000,
+        allocation: DEFAULT_ALLOCATION,
       });
 
     expect(res.status).toBe(200);
     expect(res.body.ibgeCode).toBe("4204202");
-    expect(res.body.odsProjections).toHaveLength(17);
+    expect(res.body.ods).toHaveLength(17);
     expect(mockRunSimulation).toHaveBeenCalledTimes(1);
   });
 
@@ -86,63 +98,62 @@ describe("POST /api/simulator/simulate", () => {
       .post("/api/simulator/simulate")
       .send({
         ibgeCode: "abc",
-        scenarioName: "Teste",
-        allocations: [{ area: "health", amount: 5000000 }],
+        totalAmount: 5000000,
+        allocation: DEFAULT_ALLOCATION,
       });
 
     expect(res.status).toBe(400);
   });
 
-  it("retorna 400 quando allocations está vazia", async () => {
+  it("retorna 400 quando totalAmount está ausente", async () => {
     const app = buildApp();
 
     const res = await request(app)
       .post("/api/simulator/simulate")
       .send({
         ibgeCode: "4204202",
-        scenarioName: "Teste",
-        allocations: [],
+        allocation: DEFAULT_ALLOCATION,
       });
 
     expect(res.status).toBe(400);
   });
 
-  it("retorna 400 quando area é inválida", async () => {
+  it("retorna 400 quando allocation tem percentual negativo", async () => {
     const app = buildApp();
 
     const res = await request(app)
       .post("/api/simulator/simulate")
       .send({
         ibgeCode: "4204202",
-        scenarioName: "Teste",
-        allocations: [{ area: "invalid_area", amount: 5000000 }],
+        totalAmount: 5000000,
+        allocation: { ...DEFAULT_ALLOCATION, health: -10 },
       });
 
     expect(res.status).toBe(400);
   });
 
-  it("retorna 400 quando amount é negativo", async () => {
+  it("retorna 400 quando totalAmount é negativo", async () => {
     const app = buildApp();
 
     const res = await request(app)
       .post("/api/simulator/simulate")
       .send({
         ibgeCode: "4204202",
-        scenarioName: "Teste",
-        allocations: [{ area: "health", amount: -100 }],
+        totalAmount: -100,
+        allocation: DEFAULT_ALLOCATION,
       });
 
     expect(res.status).toBe(400);
   });
 
-  it("retorna 400 quando scenarioName está ausente", async () => {
+  it("retorna 400 quando allocation está ausente", async () => {
     const app = buildApp();
 
     const res = await request(app)
       .post("/api/simulator/simulate")
       .send({
         ibgeCode: "4204202",
-        allocations: [{ area: "health", amount: 5000000 }],
+        totalAmount: 5000000,
       });
 
     expect(res.status).toBe(400);
@@ -156,8 +167,8 @@ describe("POST /api/simulator/simulate", () => {
       .post("/api/simulator/simulate")
       .send({
         ibgeCode: "4204202",
-        scenarioName: "Falha",
-        allocations: [{ area: "health", amount: 5000000 }],
+        totalAmount: 5000000,
+        allocation: DEFAULT_ALLOCATION,
       });
 
     expect(res.status).toBe(500);
@@ -179,13 +190,13 @@ describe("POST /api/simulator/compare", () => {
       .send([
         {
           ibgeCode: "4204202",
-          scenarioName: "A",
-          allocations: [{ area: "health", amount: 5000000 }],
+          totalAmount: 5000000,
+          allocation: { ...DEFAULT_ALLOCATION, health: 50, education: 25, sanitation: 25, environment: 0 },
         },
         {
           ibgeCode: "4204202",
-          scenarioName: "B",
-          allocations: [{ area: "education", amount: 5000000 }],
+          totalAmount: 5000000,
+          allocation: { ...DEFAULT_ALLOCATION, education: 50, health: 25, sanitation: 25, environment: 0 },
         },
       ]);
 
@@ -196,10 +207,10 @@ describe("POST /api/simulator/compare", () => {
 
   it("retorna 400 quando scenarios excede limite de 5", async () => {
     const app = buildApp();
-    const scenarios = Array.from({ length: 6 }, (_, i) => ({
+    const scenarios = Array.from({ length: 6 }, () => ({
       ibgeCode: "4204202",
-      scenarioName: `Cenário ${i}`,
-      allocations: [{ area: "health" as const, amount: 1000000 }],
+      totalAmount: 1000000,
+      allocation: DEFAULT_ALLOCATION,
     }));
 
     const res = await request(app)
@@ -217,8 +228,8 @@ describe("POST /api/simulator/compare", () => {
       .send([
         {
           ibgeCode: "4204202",
-          scenarioName: "A",
-          allocations: [{ area: "health", amount: 5000000 }],
+          totalAmount: 5000000,
+          allocation: DEFAULT_ALLOCATION,
         },
       ]);
 

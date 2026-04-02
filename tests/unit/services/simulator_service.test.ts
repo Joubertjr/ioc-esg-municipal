@@ -32,6 +32,17 @@ vi.mock("../../../shared/data/convenios_2023.json", () => ({ default: {} }));
 const { runSimulation } = await import("../../../backend/services/simulator/simulator_service.js");
 type SimulationInput = import("../../../backend/services/simulator/simulator_service.js").SimulationInput;
 
+const BASE_ALLOCATION = {
+  education: 12,
+  health: 13,
+  sanitation: 12,
+  environment: 13,
+  security: 12,
+  energy: 13,
+  urbanization: 12,
+  governance: 13,
+} as const;
+
 // Mock ODS report — 3 ODS with data
 const MOCK_ODS_REPORT = {
   ibgeCode: "4204202",
@@ -71,20 +82,17 @@ describe("SimulatorService", () => {
   it("retorna projeção com deltas positivos para investimento em saúde", async () => {
     const input: SimulationInput = {
       ibgeCode: "4204202",
-      scenarioName: "Investir em saúde",
-      allocations: [
-        { area: "health", amount: 10_000_000, targetOds: [] },
-      ],
+      totalAmount: 10_000_000,
+      allocation: { ...BASE_ALLOCATION, health: 100, education: 0, sanitation: 0, environment: 0, security: 0, energy: 0, urbanization: 0, governance: 0 },
     };
 
     const result = await runSimulation(input);
 
     expect(result.ibgeCode).toBe("4204202");
-    expect(result.scenarioName).toBe("Investir em saúde");
-    expect(result.totalInvestment).toBe(10_000_000);
-    expect(result.odsProjections).toHaveLength(17);
+    expect(result.totalAmount).toBe(10_000_000);
+    expect(result.ods).toHaveLength(17);
 
-    const ods3 = result.odsProjections.find((o) => o.odsNumber === 3)!;
+    const ods3 = result.ods.find((o) => o.odsNumber === 3)!;
     expect(ods3.currentScore).toBe(80);
     expect(ods3.projectedScore).toBeGreaterThanOrEqual(80);
     expect(ods3.delta).toBeGreaterThanOrEqual(0);
@@ -95,123 +103,112 @@ describe("SimulatorService", () => {
 
     const input: SimulationInput = {
       ibgeCode: "0000000",
-      scenarioName: "Sem dados",
-      allocations: [{ area: "education", amount: 1_000_000, targetOds: [] }],
+      totalAmount: 1_000_000,
+      allocation: BASE_ALLOCATION,
     };
 
     const result = await runSimulation(input);
     expect(result.currentGlobalScore).toBeNull();
     expect(result.projectedGlobalScore).toBeNull();
-    expect(result.deltaGlobalScore).toBe(0);
-    expect(result.odsProjections.every((o) => o.currentScore === null)).toBe(true);
+    expect(result.globalDelta).toBeNull();
+    expect(result.ods.every((o) => o.currentScore === null)).toBe(true);
   });
 
   it("projectedScore nunca ultrapassa 100", async () => {
     const input: SimulationInput = {
       ibgeCode: "4204202",
-      scenarioName: "Mega investimento",
-      allocations: [{ area: "health", amount: 500_000_000, targetOds: [] }],
+      totalAmount: 500_000_000,
+      allocation: { ...BASE_ALLOCATION, health: 100, education: 0, sanitation: 0, environment: 0, security: 0, energy: 0, urbanization: 0, governance: 0 },
     };
 
     const result = await runSimulation(input);
-    const ods3 = result.odsProjections.find((o) => o.odsNumber === 3)!;
+    const ods3 = result.ods.find((o) => o.odsNumber === 3)!;
     expect(ods3.projectedScore).toBeLessThanOrEqual(100);
   });
 
   it("suporta múltiplas áreas de investimento", async () => {
     const input: SimulationInput = {
       ibgeCode: "4204202",
-      scenarioName: "Investimento diversificado",
-      allocations: [
-        { area: "health", amount: 5_000_000, targetOds: [] },
-        { area: "education", amount: 5_000_000, targetOds: [] },
-        { area: "sanitation", amount: 5_000_000, targetOds: [] },
-      ],
+      totalAmount: 15_000_000,
+      allocation: { ...BASE_ALLOCATION, health: 34, education: 33, sanitation: 33, environment: 0, security: 0, energy: 0, urbanization: 0, governance: 0 },
     };
 
     const result = await runSimulation(input);
-    expect(result.totalInvestment).toBe(15_000_000);
+    expect(result.totalAmount).toBe(15_000_000);
 
-    const ods3 = result.odsProjections.find((o) => o.odsNumber === 3)!;
+    const ods3 = result.ods.find((o) => o.odsNumber === 3)!;
     expect(ods3.delta).toBeGreaterThanOrEqual(0);
 
-    const ods4 = result.odsProjections.find((o) => o.odsNumber === 4)!;
+    const ods4 = result.ods.find((o) => o.odsNumber === 4)!;
     expect(ods4.delta).toBeGreaterThanOrEqual(0);
 
-    const ods6 = result.odsProjections.find((o) => o.odsNumber === 6)!;
+    const ods6 = result.ods.find((o) => o.odsNumber === 6)!;
     expect(ods6.delta).toBeGreaterThanOrEqual(0);
   });
 
-  it("delta é 0 para ODS sem investimento nem dados", async () => {
+  it("delta é null para ODS sem dados", async () => {
     const input: SimulationInput = {
       ibgeCode: "4204202",
-      scenarioName: "Só saúde",
-      allocations: [{ area: "health", amount: 1_000_000, targetOds: [] }],
+      totalAmount: 1_000_000,
+      allocation: { ...BASE_ALLOCATION, health: 100, education: 0, sanitation: 0, environment: 0, security: 0, energy: 0, urbanization: 0, governance: 0 },
     };
 
     const result = await runSimulation(input);
 
-    const ods7 = result.odsProjections.find((o) => o.odsNumber === 7)!;
+    const ods7 = result.ods.find((o) => o.odsNumber === 7)!;
     expect(ods7.currentScore).toBeNull();
-    expect(ods7.delta).toBe(0);
+    expect(ods7.delta).toBeNull();
   });
 
   it("projected global score é maior ou igual ao current", async () => {
     const input: SimulationInput = {
       ibgeCode: "4204202",
-      scenarioName: "Global check",
-      allocations: [
-        { area: "health", amount: 5_000_000, targetOds: [] },
-        { area: "education", amount: 5_000_000, targetOds: [] },
-      ],
+      totalAmount: 10_000_000,
+      allocation: { ...BASE_ALLOCATION, health: 50, education: 50, sanitation: 0, environment: 0, security: 0, energy: 0, urbanization: 0, governance: 0 },
     };
 
     const result = await runSimulation(input);
     expect(result.projectedGlobalScore).toBeGreaterThanOrEqual(result.currentGlobalScore!);
-    expect(result.deltaGlobalScore).toBeGreaterThanOrEqual(0);
+    expect(result.globalDelta).toBeGreaterThanOrEqual(0);
   });
 
-  it("scenarioName é preservado no resultado", async () => {
+  it("allocation é preservada no resultado", async () => {
+    const alloc = { ...BASE_ALLOCATION, education: 100, health: 0, sanitation: 0, environment: 0, security: 0, energy: 0, urbanization: 0, governance: 0 };
     const input: SimulationInput = {
       ibgeCode: "4204202",
-      scenarioName: "Cenário A - Educação Prioritária",
-      allocations: [{ area: "education", amount: 2_000_000, targetOds: [] }],
+      totalAmount: 2_000_000,
+      allocation: alloc,
     };
 
     const result = await runSimulation(input);
-    expect(result.scenarioName).toBe("Cenário A - Educação Prioritária");
+    expect(result.allocation).toEqual(alloc);
+    expect(result.totalAmount).toBe(2_000_000);
   });
 
-  it("totalInvestment é soma de todas as allocations", async () => {
+  it("totalAmount é preservado no resultado", async () => {
     const input: SimulationInput = {
       ibgeCode: "4204202",
-      scenarioName: "Multi",
-      allocations: [
-        { area: "health", amount: 3_000_000, targetOds: [] },
-        { area: "education", amount: 2_000_000, targetOds: [] },
-        { area: "governance", amount: 1_000_000, targetOds: [] },
-      ],
+      totalAmount: 6_000_000,
+      allocation: BASE_ALLOCATION,
     };
 
     const result = await runSimulation(input);
-    expect(result.totalInvestment).toBe(6_000_000);
+    expect(result.totalAmount).toBe(6_000_000);
   });
 
-  it("targetOds override distribui investimento como primary", async () => {
+  it("ods result inclui shortName e color", async () => {
     const input: SimulationInput = {
       ibgeCode: "4204202",
-      scenarioName: "Override ODS",
-      allocations: [
-        { area: "health", amount: 5_000_000, targetOds: [3, 6] },
-      ],
+      totalAmount: 1_000_000,
+      allocation: BASE_ALLOCATION,
     };
 
     const result = await runSimulation(input);
-
-    const ods3 = result.odsProjections.find((o) => o.odsNumber === 3)!;
-    const ods6 = result.odsProjections.find((o) => o.odsNumber === 6)!;
-    expect(ods3.primaryInvestment).toBe(5_000_000);
-    expect(ods6.primaryInvestment).toBe(5_000_000);
+    const ods1 = result.ods.find((o) => o.odsNumber === 1)!;
+    expect(typeof ods1.shortName).toBe("string");
+    expect(ods1.shortName.length).toBeGreaterThan(0);
+    expect(typeof ods1.color).toBe("string");
+    expect(ods1.color).toMatch(/^#/);
   });
 
   it("todas as 8 áreas de investimento são aceitas", async () => {
@@ -219,13 +216,18 @@ describe("SimulatorService", () => {
 
     for (const area of areas) {
       mockCalculateOds.mockResolvedValue(MOCK_ODS_REPORT);
+      const singleAreaAlloc = {
+        education: 0, health: 0, sanitation: 0, environment: 0,
+        security: 0, energy: 0, urbanization: 0, governance: 0,
+        [area]: 100,
+      };
       const input: SimulationInput = {
         ibgeCode: "4204202",
-        scenarioName: `Teste ${area}`,
-        allocations: [{ area, amount: 1_000_000, targetOds: [] }],
+        totalAmount: 1_000_000,
+        allocation: singleAreaAlloc,
       };
       const result = await runSimulation(input);
-      expect(result.totalInvestment).toBe(1_000_000);
+      expect(result.totalAmount).toBe(1_000_000);
     }
   });
 });

@@ -135,9 +135,13 @@ export function SimulatorPage() {
     [allocation],
   );
 
-  const { data: municipalitiesData } = useQuery<MunicipalityListItem[], Error>({
+  const { data: municipalitiesData } = useQuery<
+    { data: MunicipalityListItem[]; total: number },
+    Error
+  >({
     queryKey: ["municipalities"],
-    queryFn: () => apiGet<MunicipalityListItem[]>("/api/municipalities"),
+    queryFn: () =>
+      apiGet<{ data: MunicipalityListItem[]; total: number }>("/api/municipalities"),
     staleTime: 60 * 60 * 1000,
   });
 
@@ -163,7 +167,7 @@ export function SimulatorPage() {
     [ibgeCode, totalAmount, allocation, allocationSum, simulateMutation],
   );
 
-  const municipalities = municipalitiesData ?? [];
+  const municipalities = municipalitiesData?.data ?? [];
 
   return (
     <AppShell ibgeCode={ibgeCode} onSelect={setIbgeCode} referenceYear={null}>
