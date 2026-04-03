@@ -150,6 +150,28 @@ Atualizado: 2026-04-03 — 17/17 ODS, 14 coletores, simulador FPM, relatórios E
 
 ---
 
+## Revisao de qualidade por 5 agentes (2026-04-03)
+
+Executada revisao completa com: security-auditor, code-reviewer, database-architect, test-writer, ods-analyst.
+
+### Correcoes aplicadas (round 2)
+1. **Allocation sum validation** — `backend/routes/simulator.ts`: Zod `.refine()` valida que soma dos percentuais = 100%
+2. **deletedAt leak** — `backend/routes/municipalities.ts`: campo interno removido da resposta via destructuring
+3. **JWT_EXPIRATION default** — `backend/utils/env-validator.ts` + `.env.example`: 7d → 1d (sem refresh token, 1d e mais seguro)
+4. **Hardcoded credential** — `docker-compose.yml`: DATABASE_URL usa env vars interpoladas
+5. **Adminer localhost-only** — `docker-compose.yml`: `127.0.0.1:8080:8080`
+6. **NODE_ENV parameterizado** — `docker-compose.yml`: `${NODE_ENV:-development}`
+7. **OdsScore index** — `prisma/schema.prisma`: `@@index([municipalityId, calculatedAt])` para history query
+
+### Findings documentados (nao-bloqueantes, para futuro)
+- JWT sem revogacao server-side (aceitavel com TTL 1d)
+- Rate limiting in-memory (adicionar redis store antes de escalar horizontal)
+- ODS 10 com apenas 1 indicador (Gini); ODS 11 usa densidade como proxy inadequado
+- Faltam testes unitarios para municipalities, benchmarks, auth routes e ana_collector
+- 10/14 ODS mappers sem testes de boundary values dedicados
+
+---
+
 ## Itens concluidos nesta sessao (2026-04-03)
 
 ### Database hardening

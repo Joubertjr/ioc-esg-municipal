@@ -98,7 +98,7 @@ router.get("/:ibgeCode", async (req: Request, res: Response) => {
         state: true,
         population: true,
         fpmAnnual: true,
-        deletedAt: true,
+        deletedAt: true, // usado apenas para filtro, removido da resposta
       },
     });
 
@@ -107,9 +107,12 @@ router.get("/:ibgeCode", async (req: Request, res: Response) => {
       return;
     }
 
+    // Remove campo interno antes de enviar ao cliente
+    const { deletedAt: _, ...publicData } = municipality;
+
     logger.info("GET /api/municipalities/:ibgeCode — ok", { ibgeCode, name: municipality.name });
 
-    res.json({ data: municipality });
+    res.json({ data: publicData });
   } catch (err) {
     if (err instanceof ZodError) {
       res.status(400).json({ error: "Parâmetro inválido", details: err.flatten().fieldErrors });

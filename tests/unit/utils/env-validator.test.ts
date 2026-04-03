@@ -89,7 +89,7 @@ describe("validateEnv", () => {
     expect(result.PORT).toBe(3000);
     expect(result.DATABASE_URL).toBe("postgresql://postgres:postgres@localhost:5432/ioc_esg_municipal");
     expect(result.REDIS_URL).toBe("redis://localhost:6379");
-    expect(result.JWT_EXPIRATION).toBe("7d");
+    expect(result.JWT_EXPIRATION).toBe("1d");
   });
 
   it("em desenvolvimento emite warning quando ALLOWED_ORIGINS contém localhost", () => {

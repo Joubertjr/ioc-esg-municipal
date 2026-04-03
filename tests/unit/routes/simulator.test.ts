@@ -208,12 +208,12 @@ describe("POST /api/simulator/compare", () => {
         {
           ibgeCode: "4204202",
           totalAmount: 5000000,
-          allocation: { ...DEFAULT_ALLOCATION, health: 50, education: 25, sanitation: 25, environment: 0 },
+          allocation: { education: 25, health: 25, sanitation: 15, environment: 10, security: 5, energy: 10, urbanization: 5, governance: 5 },
         },
         {
           ibgeCode: "4204202",
           totalAmount: 5000000,
-          allocation: { ...DEFAULT_ALLOCATION, education: 50, health: 25, sanitation: 25, environment: 0 },
+          allocation: { education: 10, health: 10, sanitation: 25, environment: 25, security: 10, energy: 10, urbanization: 5, governance: 5 },
         },
       ]);
 

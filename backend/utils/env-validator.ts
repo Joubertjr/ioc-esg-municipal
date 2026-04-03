@@ -26,7 +26,7 @@ const baseSchema = z.object({
     })
     .default("postgresql://postgres:postgres@localhost:5432/ioc_esg_municipal"),
   JWT_SECRET: z.string().min(1, "JWT_SECRET é obrigatório").default("troque-por-chave-segura-em-producao"),
-  JWT_EXPIRATION: z.string().default("7d"),
+  JWT_EXPIRATION: z.string().default("1d"),
   REDIS_URL: z.string().min(1, "REDIS_URL é obrigatória").default("redis://localhost:6379"),
   REDIS_PASSWORD: z.string().optional().default(""),
   ALLOWED_ORIGINS: z.string().default("http://localhost:5173"),

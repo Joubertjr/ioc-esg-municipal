@@ -26,7 +26,13 @@ const InvestmentAllocationSchema = z.object({
   energy:       AllocationPercentSchema,
   urbanization: AllocationPercentSchema,
   governance:   AllocationPercentSchema,
-});
+}).refine(
+  (data) => {
+    const sum = Object.values(data).reduce((a, b) => a + b, 0);
+    return Math.abs(sum - 100) <= 0.01;
+  },
+  { message: "A soma dos percentuais de alocação deve ser 100%" },
+);
 
 const SimulationInputSchema = z.object({
   ibgeCode: z
