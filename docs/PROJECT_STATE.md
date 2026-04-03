@@ -1,8 +1,8 @@
 # Estado do Projeto — IOC ESG Municipal
-Atualizado: 2026-04-02 — 17/17 ODS, 14 coletores, simulador FPM, relatórios ESG, benchmarks, 5 páginas frontend, E2E CI, env-validator, Redis auth, OdsScore migration, 530 testes
+Atualizado: 2026-04-02 — 17/17 ODS, 14 coletores, simulador FPM, relatórios ESG, benchmarks, 5 páginas frontend, E2E CI, env-validator, Redis auth, OdsScore history, 601 testes
 
 ## Status geral
-14 coletores + ODS Score Service + Simulador FPM + Report Service + Benchmark Service + ODS History Service + Env Validator. Frontend com React Router, auth, 5 páginas (dashboard, simulator, reports, monitoring, login). Playwright E2E configurado com CI job. Redis auth para produção. OdsScore migration + seed. **530 testes passando em 30 arquivos**, TSC clean.
+14 coletores (todos com testes + expostos via /api/agents) + ODS Score Service + ODS History (auto-persist + /history endpoint) + Simulador FPM + Report Service + Benchmark Service + Env Validator. Frontend com React Router, auth, 5 páginas com nav completa. Playwright E2E + CI job. Redis auth. Dockerfile production-ready. **601 testes passando em 31 arquivos**, TSC clean.
 
 ---
 
@@ -17,7 +17,7 @@ Atualizado: 2026-04-02 — 17/17 ODS, 14 coletores, simulador FPM, relatórios E
 | SNIS | `snis_collector.ts` | 6 | atendimento_agua, atendimento_esgoto, esgoto_tratado, perda_faturamento | 15 |
 | INPE | `inpe_collector.ts` | 13, 15 | desmatamento_anual, desmatamento_acumulado, tendencia_climatica, tendencia_vida_terrestre | 32 |
 | PNCP | `pncp_collector.ts` | 16 | total_contratacoes, percentual_dispensas, taxa_homologacao, percentual_srp | 21 |
-| TSE | `tse_collector.ts` | 5 | pct_mulheres_eleitas, pct_candidatas_mulheres, pct_vereadoras | 12* |
+| TSE | `tse_collector.ts` | 5 | pct_mulheres_eleitas, pct_candidatas_mulheres, pct_vereadoras | 34 |
 | ANEEL | `aneel_collector.ts` | 7 | potencia_instalada_gd, unidades_gd, pct_energia_renovavel | 22 |
 | SNIS-RS | `snis_rs_collector.ts` | 12 | coleta_seletiva, reciclagem, compostagem, aterro_sanitario | 22 |
 | ANA | `ana_collector.ts` | 14 | iqa_medio, pct_corpos_bom, monitoramento_ativo | 12* |
@@ -74,7 +74,7 @@ Atualizado: 2026-04-02 — 17/17 ODS, 14 coletores, simulador FPM, relatórios E
 | Simulador FPM | `simulator_service.ts` | Projeta impacto de investimento nos ODS | 10 |
 | Relatório ESG | `report_service.ts` | Gera relatório executivo com recomendações | 10 |
 | Benchmark | `benchmark_service.ts` | Comparativo entre municípios, ranking, médias | 7 |
-| ODS History | `ods_history_service.ts` | Persistência de snapshots ODS via Prisma upsert | — |
+| ODS History | `ods_history_service.ts` | Auto-persist no GET /ods/:ibgeCode + GET /ods/:ibgeCode/history | 9 |
 | Env Validator | `env-validator.ts` | Validação Zod de variáveis de ambiente no startup | 14 |
 
 ---
@@ -93,8 +93,8 @@ Atualizado: 2026-04-02 — 17/17 ODS, 14 coletores, simulador FPM, relatórios E
 
 ## Testes
 
-- **Total:** 530 testes passando em 30 arquivos
-  - Unit: 491 testes em 27 arquivos
+- **Total:** 601 testes passando em 31 arquivos
+  - Unit: 562 testes em 28 arquivos
   - Integração: 39 testes em 3 arquivos (health, auth, ODS)
 - **Erros TypeScript:** 0 (`tsc --noEmit` limpo)
 - **E2E (Playwright):** Configurado — 4 spec files (auth, navigation, dashboard, simulator)
