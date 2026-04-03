@@ -25,6 +25,7 @@ model Municipality {
 
   @@index([state])
   @@index([deletedAt])
+  @@index([name])
 }
 
 model OdsIndicator {
@@ -43,7 +44,9 @@ model OdsIndicator {
 
   municipality Municipality @relation(fields: [municipalityId], references: [id])
 
+  @@unique([municipalityId, indicatorName, referenceYear])
   @@index([municipalityId, odsNumber])
+  @@index([municipalityId, referenceYear])
   @@index([referenceDate])
 }
 

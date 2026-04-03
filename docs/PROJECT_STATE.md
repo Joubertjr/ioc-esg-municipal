@@ -1,8 +1,8 @@
 # Estado do Projeto — IOC ESG Municipal
-Atualizado: 2026-04-02 — 17/17 ODS, 14 coletores, simulador FPM, relatórios ESG, benchmarks, 5 páginas frontend, E2E CI, env-validator, Redis auth, OdsScore history, 601 testes
+Atualizado: 2026-04-03 — 17/17 ODS, 14 coletores, simulador FPM, relatórios ESG, benchmarks, 5 páginas frontend, E2E CI, env-validator, Redis auth, OdsScore history, PrismaClient singleton, paginação, 601 testes
 
 ## Status geral
-14 coletores (todos com testes + expostos via /api/agents) + ODS Score Service + ODS History (auto-persist + /history endpoint) + Simulador FPM + Report Service + Benchmark Service + Env Validator. Frontend com React Router, auth, 5 páginas com nav completa. Playwright E2E + CI job. Redis auth. Dockerfile production-ready. **601 testes passando em 31 arquivos**, TSC clean.
+14 coletores (todos com testes + expostos via /api/agents) + ODS Score Service + ODS History (auto-persist + /history endpoint) + Simulador FPM + Report Service + Benchmark Service + Env Validator. Frontend com React Router, auth, 5 páginas com nav completa. Playwright E2E + CI job. Redis auth. Dockerfile production-ready. PrismaClient singleton. Paginação em /municipalities. **601 testes passando em 31 arquivos**, TSC clean.
 
 ---
 
@@ -130,8 +130,12 @@ Atualizado: 2026-04-02 — 17/17 ODS, 14 coletores, simulador FPM, relatórios E
 - Docker Compose: PostgreSQL + Redis + Adminer
 - Playwright: E2E config com webServer auto-start + CI job no GitHub Actions
 - Redis auth: conditional requirepass em produção (REDIS_PASSWORD validado por env-validator)
+- PrismaClient singleton: `backend/lib/prisma.ts` — pool único compartilhado por todos os módulos
 - OdsScore migration: tabela Prisma com compound unique key [municipalityId, odsNumber, referenceYear]
-- Seed: 18 scores (17 ODS + global) por top-20 municípios com perfis realistas
+- OdsIndicator: compound unique key [municipalityId, indicatorName, referenceYear] + índice [municipalityId, referenceYear]
+- Municipality: índice em [name] para ORDER BY paginado
+- Paginação: GET /municipalities com page/pageSize (default 50, max 100)
+- Seed: 18 scores (17 ODS + global) por top-20 municípios com perfis realistas, ibgeCodes verificados via IBGE
 
 ---
 
@@ -150,6 +154,16 @@ Atualizado: 2026-04-02 — 17/17 ODS, 14 coletores, simulador FPM, relatórios E
 5. ~~Frontend dashboard completo com React Query~~ ✅
 6. ~~Relatório ESG e Benchmark Service~~ ✅
 7. ~~Página de Monitoramento~~ ✅
+
+### Database hardening (revisão de arquitetura 2026-04-03)
+1. ~~Singleton PrismaClient (3 instâncias → 1)~~ ✅
+2. ~~Paginação GET /municipalities~~ ✅
+3. ~~Corrigir 5 ibgeCodes errados no seed~~ ✅
+4. ~~findFirst → findUnique em /municipalities/:ibgeCode~~ ✅
+5. ~~Limit em getScoreHistory (default 100)~~ ✅
+6. ~~OdsIndicator unique constraint~~ ✅
+7. ~~ODS_SOURCES seed atualizado para 14 coletores~~ ✅
+8. ~~Índice em Municipality.name~~ ✅
 
 ### Seguranca pendente
 1. ~~JWT_SECRET validacao em producao (nao aceitar placeholder)~~ ✅ (env-validator)
@@ -173,11 +187,11 @@ Atualizado: 2026-04-02 — 17/17 ODS, 14 coletores, simulador FPM, relatórios E
 ## Git
 
 - Branch: main
-- Ultimo commit: `feat(ods): add ANATEL, SISVAN, Gini collectors — 14 coletores, 530 testes`
+- Ultimo commit: `fix(db): singleton PrismaClient, paginação, ibgeCodes, constraints`
 
 ## Stack
 
 - Backend: Node.js 18 + TypeScript strict + Express + Prisma + PostgreSQL + Redis + Bull
 - Frontend: React 18 + Vite + Tailwind CSS + Shadcn/ui + Recharts + React Query
-- Testes: Vitest (406 unit) + Playwright (4 e2e specs)
+- Testes: Vitest (562 unit + 39 integration = 601) + Playwright (4 e2e specs)
 - Infra: Docker Compose + GitHub Actions + Dockerfile

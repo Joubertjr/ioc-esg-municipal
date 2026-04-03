@@ -1,6 +1,6 @@
 import { Router, type Request, type Response, type Router as RouterType } from "express";
-import { PrismaClient } from "@prisma/client";
 import { ZodError } from "zod";
+import { prisma } from "../lib/prisma.js";
 import {
   AuthService,
   RegisterSchema,
@@ -12,7 +12,6 @@ import { authenticateToken } from "../middleware/auth.js";
 import { logger } from "../utils/logger.js";
 
 const router: RouterType = Router();
-const prisma = new PrismaClient();
 const authService = new AuthService(prisma);
 
 // ─── POST /api/auth/register ──────────────────────────────────────────────────

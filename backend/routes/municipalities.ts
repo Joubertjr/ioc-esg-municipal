@@ -8,12 +8,11 @@
  */
 
 import { Router, type Request, type Response, type Router as RouterType } from "express";
-import { PrismaClient } from "@prisma/client";
 import { z, ZodError } from "zod";
+import { prisma } from "../lib/prisma.js";
 import { logger } from "../utils/logger.js";
 
 const router: RouterType = Router();
-const prisma = new PrismaClient();
 
 // ---------------------------------------------------------------------------
 // Schemas de validação
@@ -27,28 +26,39 @@ const IbgeCodeSchema = z
 // GET /api/municipalities
 // ---------------------------------------------------------------------------
 
+const PageSchema = z.coerce.number().int().min(1).default(1);
+const PageSizeSchema = z.coerce.number().int().min(1).max(100).default(50);
+
 /**
- * Retorna todos os municípios ordenados por nome.
- * Campos: ibgeCode, name, state, population.
+ * Retorna municípios paginados, ordenados por nome.
+ * Query params: page (default 1), pageSize (default 50, max 100).
  */
-router.get("/", async (_req: Request, res: Response) => {
-  logger.info("GET /api/municipalities");
+router.get("/", async (req: Request, res: Response) => {
+  const page = PageSchema.safeParse(req.query["page"]).data ?? 1;
+  const pageSize = PageSizeSchema.safeParse(req.query["pageSize"]).data ?? 50;
+
+  logger.info("GET /api/municipalities", { page, pageSize });
 
   try {
-    const municipalities = await prisma.municipality.findMany({
-      where: { deletedAt: null },
-      orderBy: { name: "asc" },
-      select: {
-        ibgeCode: true,
-        name: true,
-        state: true,
-        population: true,
-      },
-    });
+    const [municipalities, total] = await prisma.$transaction([
+      prisma.municipality.findMany({
+        where: { deletedAt: null },
+        orderBy: { name: "asc" },
+        skip: (page - 1) * pageSize,
+        take: pageSize,
+        select: {
+          ibgeCode: true,
+          name: true,
+          state: true,
+          population: true,
+        },
+      }),
+      prisma.municipality.count({ where: { deletedAt: null } }),
+    ]);
 
-    logger.info("GET /api/municipalities — ok", { count: municipalities.length });
+    logger.info("GET /api/municipalities — ok", { count: municipalities.length, total });
 
-    res.json({ data: municipalities, total: municipalities.length });
+    res.json({ data: municipalities, total, page, pageSize });
   } catch (err) {
     logger.error("GET /api/municipalities — erro ao consultar banco", {
       error: err instanceof Error ? err.message : String(err),
@@ -79,8 +89,8 @@ router.get("/:ibgeCode", async (req: Request, res: Response) => {
   logger.info("GET /api/municipalities/:ibgeCode", { ibgeCode });
 
   try {
-    const municipality = await prisma.municipality.findFirst({
-      where: { ibgeCode, deletedAt: null },
+    const municipality = await prisma.municipality.findUnique({
+      where: { ibgeCode },
       select: {
         ibgeCode: true,
         siconfiCode: true,
@@ -88,10 +98,11 @@ router.get("/:ibgeCode", async (req: Request, res: Response) => {
         state: true,
         population: true,
         fpmAnnual: true,
+        deletedAt: true,
       },
     });
 
-    if (!municipality) {
+    if (!municipality || municipality.deletedAt) {
       res.status(404).json({ error: `Município ${ibgeCode} não encontrado` });
       return;
     }

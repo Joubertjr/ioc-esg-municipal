@@ -1,8 +1,6 @@
-import { PrismaClient } from "@prisma/client";
+import { prisma } from "../../lib/prisma.js";
 import { calculateMunicipalOds, type MunicipalOdsReport } from "./ods_score_service.js";
 import { logger } from "../../utils/logger.js";
-
-const prisma = new PrismaClient();
 
 /**
  * Calcula e persiste scores ODS de um município no banco.
@@ -92,7 +90,11 @@ export async function calculateAndPersistScores(ibgeCode: string): Promise<Munic
 /**
  * Busca histórico de scores ODS de um município.
  */
-export async function getScoreHistory(ibgeCode: string, odsNumber?: number) {
+export async function getScoreHistory(
+  ibgeCode: string,
+  odsNumber?: number,
+  limit = 100,
+) {
   const municipality = await prisma.municipality.findUnique({
     where: { ibgeCode },
   });
@@ -105,5 +107,6 @@ export async function getScoreHistory(ibgeCode: string, odsNumber?: number) {
       ...(odsNumber !== undefined ? { odsNumber } : {}),
     },
     orderBy: [{ referenceYear: "desc" }, { odsNumber: "asc" }],
+    take: limit,
   });
 }

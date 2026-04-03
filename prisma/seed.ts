@@ -50,24 +50,24 @@ function scoreToStatus(score: number): "verde" | "amarelo" | "vermelho" {
  * Fontes de dados por ODS.
  */
 const ODS_SOURCES: Record<number, string[]> = {
-  0:  ["ibge", "siconfi", "datasus", "inep", "snis", "inpe", "pncp"],
-  1:  ["ibge", "siconfi"],
-  2:  ["ibge", "datasus"],
-  3:  ["datasus", "siconfi"],
-  4:  ["inep", "siconfi"],
-  5:  ["ibge"],
+  0:  ["ibge", "siconfi", "datasus", "inep", "snis", "inpe", "pncp", "tse", "aneel", "snis-rs", "ana", "convenios", "anatel", "sisvan"],
+  1:  ["ibge"],
+  2:  ["ibge", "sisvan"],
+  3:  ["siconfi", "datasus"],
+  4:  ["siconfi", "inep"],
+  5:  ["tse"],
   6:  ["snis"],
-  7:  ["siconfi"],
-  8:  ["ibge", "siconfi"],
-  9:  ["siconfi", "pncp"],
+  7:  ["aneel"],
+  8:  ["ibge"],
+  9:  ["ibge", "anatel"],
   10: ["ibge"],
-  11: ["ibge", "snis", "pncp"],
-  12: ["siconfi", "pncp"],
+  11: ["ibge", "siconfi"],
+  12: ["snis-rs"],
   13: ["inpe"],
-  14: ["ibge"],
-  15: ["inpe", "ibge"],
+  14: ["ana"],
+  15: ["inpe"],
   16: ["siconfi", "pncp"],
-  17: ["siconfi"],
+  17: ["siconfi", "convenios"],
 };
 
 /**
@@ -129,23 +129,23 @@ const TOP_20_PROFILES: Record<string, MunicipalityProfile> = {
   "4209102": "large",  // Joinville
   "4205407": "large",  // Florianópolis
   "4202404": "large",  // Blumenau
-  "4215802": "large",  // São José
+  "4216602": "large",  // São José
   "4208203": "medium", // Itajaí
   "4204202": "medium", // Chapecó
   "4204608": "medium", // Criciúma
-  "4214805": "medium", // Palhoça
+  "4211900": "medium", // Palhoça
   "4208906": "medium", // Jaraguá do Sul
   "4209300": "medium", // Lages
   "4201307": "medium", // Araquari
   "4218202": "medium", // Tubarão
-  "4213609": "small",  // Navegantes
+  "4211306": "small",  // Navegantes
   "4202305": "small",  // Biguaçu
   "4203006": "small",  // Caçador
   "4207502": "small",  // Indaial
   "4205902": "small",  // Gaspar
-  "4211801": "small",  // Mafra
+  "4210100": "small",  // Mafra
   "4206504": "small",  // Guaramirim
-  "4211900": "small",  // Maravilha
+  "4210506": "small",  // Maravilha
 };
 
 const BASE_SCORES_BY_PROFILE: Record<MunicipalityProfile, Record<number, number>> = {
@@ -198,23 +198,23 @@ const TOP_20: Record<string, { name: string; population: number; fpmAnnual: numb
   "4209102": { name: "Joinville",            population: 616323, fpmAnnual: 200_000_000 },
   "4205407": { name: "Florianópolis",        population: 537213, fpmAnnual: 180_000_000 },
   "4202404": { name: "Blumenau",             population: 365549, fpmAnnual: 140_000_000 },
-  "4215802": { name: "São José",             population: 256923, fpmAnnual: 115_000_000 },
+  "4216602": { name: "São José",             population: 256923, fpmAnnual: 115_000_000 },
   "4208203": { name: "Itajaí",               population: 249706, fpmAnnual: 110_000_000 },
   "4204202": { name: "Chapecó",              population: 230932, fpmAnnual: 100_000_000 },
   "4204608": { name: "Criciúma",             population: 221676, fpmAnnual:  95_000_000 },
-  "4214805": { name: "Palhoça",              population: 189671, fpmAnnual:  82_000_000 },
+  "4211900": { name: "Palhoça",              population: 189671, fpmAnnual:  82_000_000 },
   "4208906": { name: "Jaraguá do Sul",       population: 183278, fpmAnnual:  80_000_000 },
   "4209300": { name: "Lages",                population: 158732, fpmAnnual:  75_000_000 },
   "4201307": { name: "Araquari",             population: 152078, fpmAnnual:  72_000_000 },
   "4218202": { name: "Tubarão",              population: 107861, fpmAnnual:  55_000_000 },
-  "4213609": { name: "Navegantes",           population:  92798, fpmAnnual:  48_000_000 },
+  "4211306": { name: "Navegantes",           population:  92798, fpmAnnual:  48_000_000 },
   "4202305": { name: "Biguaçu",              population:  85477, fpmAnnual:  45_000_000 },
   "4203006": { name: "Caçador",              population:  79489, fpmAnnual:  40_000_000 },
   "4207502": { name: "Indaial",              population:  75651, fpmAnnual:  39_000_000 },
   "4205902": { name: "Gaspar",               population:  72842, fpmAnnual:  38_000_000 },
-  "4211801": { name: "Mafra",                population:  57706, fpmAnnual:  32_000_000 },
+  "4210100": { name: "Mafra",                population:  57706, fpmAnnual:  32_000_000 },
   "4206504": { name: "Guaramirim",           population:  49734, fpmAnnual:  28_000_000 },
-  "4211900": { name: "Maravilha",            population:  25354, fpmAnnual:  18_000_000 },
+  "4210506": { name: "Maravilha",            population:  25354, fpmAnnual:  18_000_000 },
 };
 
 // ---------------------------------------------------------------------------
