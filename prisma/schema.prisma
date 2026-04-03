@@ -65,6 +65,7 @@ model OdsScore {
 
   @@unique([municipalityId, odsNumber, referenceYear])
   @@index([municipalityId, referenceYear])
+  @@index([municipalityId, calculatedAt])
   @@index([odsNumber])
 }
 
