@@ -61,6 +61,30 @@ vi.mock("../../../backend/middleware/rate-limit.js", () => ({
   batchLimiter: (_req: unknown, _res: unknown, next: () => void) => next(),
 }));
 
+// Auth middleware passthrough — testes unitários de rota não testam auth
+vi.mock("../../../backend/middleware/auth.js", () => ({
+  authenticateToken: (_req: unknown, _res: unknown, next: () => void) => next(),
+  requireRole:
+    () =>
+    (_req: unknown, _res: unknown, next: () => void) =>
+      next(),
+}));
+
+// Prisma mock para municipalityName lookup
+vi.mock("../../../backend/lib/prisma.js", () => ({
+  prisma: {
+    municipality: {
+      findUnique: vi.fn().mockResolvedValue({ name: "Chapecó" }),
+      findMany: vi.fn().mockResolvedValue([]),
+    },
+  },
+}));
+
+// withCache mock — execute fn directly
+vi.mock("../../../backend/utils/cache.js", () => ({
+  withCache: (_key: string, _ttl: number, fn: () => unknown) => fn(),
+}));
+
 // ─── App de teste ─────────────────────────────────────────────────────────────
 
 async function buildApp() {

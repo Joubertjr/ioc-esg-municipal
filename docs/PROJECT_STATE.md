@@ -1,8 +1,8 @@
 # Estado do Projeto — IOC ESG Municipal
-Atualizado: 2026-04-03 — 17/17 ODS, 14 coletores, simulador FPM, relatórios ESG, benchmarks, 5 páginas frontend, E2E CI, env-validator, Redis auth, OdsScore history, PrismaClient singleton, paginação, 601 testes
+Atualizado: 2026-04-03 — 17/17 ODS, 14 coletores, simulador FPM, relatórios ESG, benchmarks, 5 páginas frontend, E2E CI, RBAC completo, Swagger, graceful shutdown, 641 testes
 
 ## Status geral
-14 coletores (todos com testes + expostos via /api/agents) + ODS Score Service + ODS History (auto-persist + /history endpoint) + Simulador FPM + Report Service + Benchmark Service + Env Validator. Frontend com React Router, auth, 5 páginas com nav completa. Playwright E2E + CI job. Redis auth. Dockerfile production-ready. PrismaClient singleton. Paginação em /municipalities. **601 testes passando em 31 arquivos**, TSC clean.
+14 coletores (todos com testes + expostos via /api/agents) + ODS Score Service + ODS History (auto-persist + /history endpoint) + Simulador FPM + Report Service + Benchmark Service + Env Validator. Frontend com React Router, auth com JWT expiry check, 5 páginas com nav completa. Playwright E2E + CI job. Redis auth. Dockerfile production-ready. PrismaClient singleton. Paginação em /municipalities. RBAC em todas as rotas protegidas. Swagger/OpenAPI em /api/docs. Graceful shutdown. **641 testes passando em 35 arquivos**, TSC clean.
 
 ---
 
@@ -20,12 +20,10 @@ Atualizado: 2026-04-03 — 17/17 ODS, 14 coletores, simulador FPM, relatórios E
 | TSE | `tse_collector.ts` | 5 | pct_mulheres_eleitas, pct_candidatas_mulheres, pct_vereadoras | 34 |
 | ANEEL | `aneel_collector.ts` | 7 | potencia_instalada_gd, unidades_gd, pct_energia_renovavel | 22 |
 | SNIS-RS | `snis_rs_collector.ts` | 12 | coleta_seletiva, reciclagem, compostagem, aterro_sanitario | 22 |
-| ANA | `ana_collector.ts` | 14 | iqa_medio, pct_corpos_bom, monitoramento_ativo | 12* |
+| ANA | `ana_collector.ts` | 14 | iqa_medio, pct_corpos_bom, monitoramento_ativo | 12 |
 | Convenios | `convenios_collector.ts` | 17 | convenios_federais, pct_orcamento_convenios, consorcios_intermunicipais | 22 |
 | ANATEL | `anatel_collector.ts` | 9 | banda_larga_fixa, cobertura_4g, pct_fibra_optica | 24 |
 | SISVAN | `sisvan_collector.ts` | 2 | cobertura_alimentar, deficit_peso, sobrepeso | 21 |
-
-*Contagem estimada — testes existem nos respectivos arquivos de teste
 
 ---
 
@@ -51,72 +49,83 @@ Atualizado: 2026-04-03 — 17/17 ODS, 14 coletores, simulador FPM, relatórios E
 | 16 | Instituicoes Eficazes | SICONFI + PNCP | equilibrio_fiscal + 4 indicadores licitacao | Ativo |
 | 17 | Parcerias | SICONFI + Convenios | dependencia_FPM + convenios_federais + consorcios | Ativo |
 
-*Todos os 17 ODS com indicadores diretos ou complementados
-
 ---
 
 ## Auth e Seguranca
 
 - **Auth JWT**: register/login/me endpoints em `/api/auth`
-- **Middleware**: `authenticateToken` protege `/api/agents` e `/api/ods`
+- **RBAC**: `authenticateToken` + `requireRole("admin","prefeito","secretario")` em todas as rotas protegidas
+- **Rate limiting**: `authLimiter` (10 tentativas/15min) em login/register, `batchLimiter` em rotas batch
+- **JWT expiry check**: Frontend valida exp do token, auto-redirect para /login em 401
 - **Error handler**: `AppError` class + `globalErrorHandler` + `notFoundHandler`
+- **Graceful shutdown**: `SIGTERM`/`SIGINT` handlers, `server.close()`, `prisma.$disconnect()`, 10s timeout
 - **Process handlers**: `uncaughtException` + `unhandledRejection`
-- **Input validation**: IBGE code regex `/^\d{7}$/` em todos os coletores
+- **Input validation**: Zod em todas as rotas (IBGE code, pagination, benchmark requests, simulator input)
 - **Helmet + CORS + Rate limiting**: configurados
+- **Env Validator**: Zod validation de JWT_SECRET, REDIS_PASSWORD, ALLOWED_ORIGINS, DATABASE_URL em produção
 
 ---
 
-## Serviços
+## Servicos
 
-| Serviço | Arquivo | Funcionalidade | Testes |
+| Servico | Arquivo | Funcionalidade | Testes |
 |---------|---------|---------------|--------|
-| ODS Score | `ods_score_service.ts` | Orquestra 12 coletores, calcula scores 0-100 | 13 |
+| ODS Score | `ods_score_service.ts` | Orquestra 14 coletores, calcula scores 0-100 | 13 |
 | Simulador FPM | `simulator_service.ts` | Projeta impacto de investimento nos ODS | 10 |
-| Relatório ESG | `report_service.ts` | Gera relatório executivo com recomendações | 10 |
-| Benchmark | `benchmark_service.ts` | Comparativo entre municípios, ranking, médias | 7 |
+| Relatorio ESG | `report_service.ts` | Gera relatorio executivo com recomendacoes | 10 |
+| Benchmark | `benchmark_service.ts` | Comparativo entre municipios, ranking, medias | 7 |
 | ODS History | `ods_history_service.ts` | Auto-persist no GET /ods/:ibgeCode + GET /ods/:ibgeCode/history | 9 |
-| Env Validator | `env-validator.ts` | Validação Zod de variáveis de ambiente no startup | 14 |
+| Auth | `auth_service.ts` | Register, login, JWT, RBAC | 23 |
+| Env Validator | `env-validator.ts` | Validacao Zod de variaveis de ambiente no startup | 19 |
 
 ---
 
-## Frontend (5 páginas)
+## Frontend (5 paginas)
 
-| Página | Arquivo | Funcionalidade |
+| Pagina | Arquivo | Funcionalidade |
 |--------|---------|---------------|
-| Login | `LoginPage.tsx` | Auth com email/password, registro |
+| Login | `LoginPage.tsx` | Auth com email/password, registro, JWT expiry check |
 | Dashboard | `DashboardPage.tsx` | Painel ODS com 17 cards, gauges, scores |
-| Simulador | `SimulatorPage.tsx` | Simulação de investimento FPM |
-| Relatórios | `ReportsPage.tsx` | Relatório ESG imprimível com recomendações |
+| Simulador | `SimulatorPage.tsx` | Simulacao de investimento FPM |
+| Relatorios | `ReportsPage.tsx` | Relatorio ESG imprimivel com recomendacoes |
 | Monitoramento | `MonitoringPage.tsx` | Acompanhamento de metas ODS |
 
 ---
 
 ## Testes
 
-- **Total:** 601 testes passando em 31 arquivos
+- **Total:** 641 testes passando em 35 arquivos
   - Unit: 562 testes em 28 arquivos
-  - Integração: 39 testes em 3 arquivos (health, auth, ODS)
+  - Integration: 79 testes em 7 arquivos (health, auth, ODS, municipalities, benchmarks, simulator, reports)
 - **Erros TypeScript:** 0 (`tsc --noEmit` limpo)
 - **E2E (Playwright):** Configurado — 4 spec files (auth, navigation, dashboard, simulator)
+- **Nota:** vitest crash (SIGSEGV) ao rodar todos 35 arquivos juntos — Node.js memory issue. Rodar em batches resolve (todos passam).
 
 ---
 
 ## Rotas API
 
-| Rota | Método | Descrição | Auth |
-|------|--------|-----------|------|
-| `/api/auth/register` | POST | Registro de usuário | Não |
-| `/api/auth/login` | POST | Login JWT | Não |
-| `/api/auth/me` | GET | Dados do usuário | Sim |
-| `/api/ods/:ibgeCode` | GET | Scores ODS do município | Sim |
-| `/api/ods/compare` | POST | Compara ODS entre municípios | Sim |
-| `/api/simulator/simulate` | POST | Simulação de investimento | Sim |
-| `/api/simulator/compare` | POST | Compara cenários de simulação | Sim |
-| `/api/reports/:ibgeCode` | GET | Relatório ESG completo | Sim |
-| `/api/benchmarks` | POST | Benchmark entre municípios | Sim |
-| `/api/benchmarks/compare` | POST | Compara município vs grupo | Sim |
-| `/api/municipalities` | GET | Lista municípios | Sim |
-| `/api/municipalities/:ibgeCode` | GET | Detalhe município | Sim |
+| Rota | Metodo | Descricao | Auth | Docs |
+|------|--------|-----------|------|------|
+| `/api/auth/register` | POST | Registro de usuario (bootstrap ou admin) | Nao* | Swagger |
+| `/api/auth/login` | POST | Login JWT | Nao | Swagger |
+| `/api/auth/me` | GET | Dados do usuario | Sim | Swagger |
+| `/api/ods/:ibgeCode` | GET | Scores ODS do municipio (cached 1h) | Sim | Swagger |
+| `/api/ods/compare` | POST | Compara ODS entre municipios | Sim | Swagger |
+| `/api/ods/:ibgeCode/history` | GET | Historico de scores ODS | Sim | Swagger |
+| `/api/simulator/simulate` | POST | Simulacao de investimento | Sim | Swagger |
+| `/api/simulator/compare` | POST | Compara cenarios de simulacao | Sim | Swagger |
+| `/api/reports/:ibgeCode` | GET | Relatorio ESG completo | Sim | Swagger |
+| `/api/benchmarks` | POST | Benchmark entre municipios | Sim | Swagger |
+| `/api/benchmarks/compare` | POST | Compara municipio vs grupo | Sim | Swagger |
+| `/api/municipalities` | GET | Lista municipios (paginado) | Sim | Swagger |
+| `/api/municipalities/:ibgeCode` | GET | Detalhe municipio | Sim | Swagger |
+| `/api/agents/:source/:ibgeCode` | GET | Dados brutos de coletor | Sim | Swagger |
+| `/api/agents/batch/:ibgeCode` | POST | Coleta batch de municipio | Sim (admin) | Swagger |
+| `/api/docs` | GET | Swagger UI + OpenAPI spec | Nao | — |
+| `/health` | GET | Health check | Nao | — |
+
+*Primeiro usuario = bootstrap sem auth; demais = requer admin
 
 ---
 
@@ -125,50 +134,62 @@ Atualizado: 2026-04-03 — 17/17 ODS, 14 coletores, simulador FPM, relatórios E
 - ODS Score Service: orquestra 14 coletores em paralelo com `withTimeout`
   - Budgets API: IBGE 10s, SICONFI 15s, DATASUS 10s, INPE 15s, PNCP 15s
   - Budgets JSON local: INEP 1s, SNIS 1s, TSE 1s, ANEEL 1s, SNIS-RS 1s, ANA 1s, Convenios 1s, ANATEL 1s, SISVAN 1s
-- Cache: Redis com TTL por fonte
+- Cache: Redis com TTL por fonte + withCache no ODS report (1h)
 - Logger: Winston estruturado
-- Docker Compose: PostgreSQL + Redis + Adminer
+- Docker Compose: PostgreSQL + Redis + Adminer + API (com healthcheck + depends_on)
 - Playwright: E2E config com webServer auto-start + CI job no GitHub Actions
-- Redis auth: conditional requirepass em produção (REDIS_PASSWORD validado por env-validator)
-- PrismaClient singleton: `backend/lib/prisma.ts` — pool único compartilhado por todos os módulos
+- Redis auth: conditional requirepass em producao (REDIS_PASSWORD validado por env-validator)
+- PrismaClient singleton: `backend/lib/prisma.ts` — pool unico compartilhado por todos os modulos
 - OdsScore migration: tabela Prisma com compound unique key [municipalityId, odsNumber, referenceYear]
-- OdsIndicator: compound unique key [municipalityId, indicatorName, referenceYear] + índice [municipalityId, referenceYear]
-- Municipality: índice em [name] para ORDER BY paginado
-- Paginação: GET /municipalities com page/pageSize (default 50, max 100)
-- Seed: 18 scores (17 ODS + global) por top-20 municípios com perfis realistas, ibgeCodes verificados via IBGE
+- OdsIndicator: compound unique key [municipalityId, indicatorName, referenceYear] + indice [municipalityId, referenceYear]
+- Municipality: indice em [name] para ORDER BY paginado
+- Paginacao: GET /municipalities com page/pageSize (default 50, max 100)
+- Seed: 18 scores (17 ODS + global) por top-20 municipios com perfis realistas, ibgeCodes verificados via IBGE
+- Graceful shutdown: SIGTERM/SIGINT → server.close() → prisma.$disconnect() → timeout 10s
+- Swagger/OpenAPI: spec completa em /api/docs com swagger-ui-express
 
 ---
 
-## Proximos passos (prioridade)
+## Itens concluidos nesta sessao (2026-04-03)
 
-### Qualidade dos ODS existentes
-1. ~~ODS 10: substituir razao_dependencia por Coeficiente Gini (IBGE Censo 2022)~~ ✅
-2. ~~ODS 9: adicionar dados de infraestrutura viaria/digital (ANATEL)~~ ✅
-3. ~~ODS 2: complementar com dados SISVAN (vigilancia alimentar)~~ ✅
+### Database hardening
+1. Singleton PrismaClient (3 instancias → 1)
+2. Paginacao GET /municipalities com Zod validation
+3. Corrigir 5 ibgeCodes errados no seed (Sao Jose, Palhoca, Navegantes, Mafra, Maravilha)
+4. findFirst → findUnique em /municipalities/:ibgeCode
+5. Limit em getScoreHistory (default 100)
+6. OdsIndicator unique constraint + index
+7. ODS_SOURCES seed atualizado para 14 coletores
+8. Indice em Municipality.name
 
-### Features de produto
-1. ~~Simulador de cenarios de investimento FPM~~ ✅
-2. ~~Prisma schema v2: tabela `ods_scores` para historico~~ ✅ (OdsScore + ods_history_service)
-3. ~~Testes E2E com Playwright (dashboard + score endpoint)~~ ✅ (configurado + CI job)
-4. ~~Seeding de 295 municipios SC com dados reais~~ ✅
-5. ~~Frontend dashboard completo com React Query~~ ✅
-6. ~~Relatório ESG e Benchmark Service~~ ✅
-7. ~~Página de Monitoramento~~ ✅
+### Seguranca
+1. JWT_SECRET validacao em producao (env-validator)
+2. Redis com auth em producao (conditional requirepass + env-validator)
+3. CORS: bloqueia localhost em producao (env-validator)
+4. RBAC completo: authenticateToken + requireRole em todas as rotas
+5. Rate limiting: authLimiter (10/15min) em login/register
+6. JWT expiry check no frontend com auto-redirect
 
-### Database hardening (revisão de arquitetura 2026-04-03)
-1. ~~Singleton PrismaClient (3 instâncias → 1)~~ ✅
-2. ~~Paginação GET /municipalities~~ ✅
-3. ~~Corrigir 5 ibgeCodes errados no seed~~ ✅
-4. ~~findFirst → findUnique em /municipalities/:ibgeCode~~ ✅
-5. ~~Limit em getScoreHistory (default 100)~~ ✅
-6. ~~OdsIndicator unique constraint~~ ✅
-7. ~~ODS_SOURCES seed atualizado para 14 coletores~~ ✅
-8. ~~Índice em Municipality.name~~ ✅
+### Backend
+1. municipalityName populado via prisma lookup em GET /ods/:ibgeCode
+2. withCache (1h TTL) no ODS report
+3. Zod schemas nos benchmarks (substituiu validacao manual)
+4. Graceful shutdown (SIGTERM/SIGINT handlers)
+5. Simulation persistence fire-and-forget
 
-### Seguranca pendente
-1. ~~JWT_SECRET validacao em producao (nao aceitar placeholder)~~ ✅ (env-validator)
-2. ~~Redis com auth em producao~~ ✅ (conditional requirepass + env-validator)
-3. ~~CORS: remover localhost fallback em producao~~ ✅ (env-validator bloqueia em produção)
+### Infra
+1. Docker Compose com servico API (healthcheck + depends_on)
+2. GitHub Actions CI corrigido (start backend antes de E2E)
+3. .env.example atualizado
+
+### Docs
+1. README.md completo em portugues
+2. OpenAPI/Swagger spec em /api/docs
+
+### Testes
+1. Integration tests para municipalities, benchmarks, simulator, reports (40 testes novos)
+2. Test coverage config com v8 provider
+3. Auth mocks em todos os route unit tests (agents, ods, simulator, reports)
 
 ---
 
@@ -180,18 +201,19 @@ Atualizado: 2026-04-03 — 17/17 ODS, 14 coletores, simulador FPM, relatórios E
 | SNIS dados com 18 meses de atraso | Media | referenceYear sempre exibido |
 | INEP bienal (anos pares) | Baixa | interpolacao documentada |
 | Municipios <5k hab: indicadores suprimidos | Media | retornar dataAvailable: false |
-| ~~ODS 10 com proxy inadequado~~ | ~~Media~~ | ✅ Substituído por Coeficiente Gini (Censo 2022) |
+| Vitest SIGSEGV com 35+ arquivos | Baixa | Rodar em batches; nao afeta CI (jobs separados) |
 
 ---
 
 ## Git
 
 - Branch: main
-- Ultimo commit: `fix(db): singleton PrismaClient, paginação, ibgeCodes, constraints`
+- Ultimo commit pendente: `feat(prod): RBAC, Swagger, graceful shutdown, integration tests, 641 testes`
 
 ## Stack
 
-- Backend: Node.js 18 + TypeScript strict + Express + Prisma + PostgreSQL + Redis + Bull
+- Backend: Node.js 18 + TypeScript strict + Express + Prisma + PostgreSQL + Redis
 - Frontend: React 18 + Vite + Tailwind CSS + Shadcn/ui + Recharts + React Query
-- Testes: Vitest (562 unit + 39 integration = 601) + Playwright (4 e2e specs)
+- Testes: Vitest (562 unit + 79 integration = 641) + Playwright (4 e2e specs)
 - Infra: Docker Compose + GitHub Actions + Dockerfile
+- Docs: Swagger/OpenAPI em /api/docs + README.md

@@ -60,11 +60,15 @@ const odsReportFactory = (
   },
   ods: [
     {
-      number: 1,
+      odsNumber: 1,
       name: "Erradicação da Pobreza",
+      shortName: "Pobreza",
+      color: "#E5243B",
+      weight: 1,
       score: 65,
       status: "amarelo",
       indicators: [],
+      sources: [],
     },
   ],
   ...overrides,

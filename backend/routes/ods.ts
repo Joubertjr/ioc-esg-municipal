@@ -3,6 +3,9 @@ import { calculateMunicipalOds } from "../services/ods/index.js";
 import { calculateAndPersistScores, getScoreHistory } from "../services/ods/ods_history_service.js";
 import { logger } from "../utils/logger.js";
 import { batchLimiter } from "../middleware/rate-limit.js";
+import { authenticateToken, requireRole } from "../middleware/auth.js";
+import { withCache } from "../utils/cache.js";
+import { prisma } from "../lib/prisma.js";
 
 const router: RouterType = Router();
 
@@ -10,7 +13,7 @@ const router: RouterType = Router();
  * GET /api/ods/:ibgeCode
  * Retorna score ODS consolidado (todas as fontes) para um município.
  */
-router.get("/:ibgeCode", async (req: Request, res: Response) => {
+router.get("/:ibgeCode", authenticateToken, async (req: Request, res: Response) => {
   const ibgeCode = req.params["ibgeCode"];
 
   if (!ibgeCode || !/^\d{7}$/.test(ibgeCode)) {
@@ -19,11 +22,21 @@ router.get("/:ibgeCode", async (req: Request, res: Response) => {
   }
 
   try {
-    const report = await calculateMunicipalOds(ibgeCode);
+    const report = await withCache(`ods:report:${ibgeCode}`, 3600, () => calculateMunicipalOds(ibgeCode));
 
     if (!report) {
       res.status(404).json({ error: `Nenhum dado encontrado para ${ibgeCode}` });
       return;
+    }
+
+    if (!report.municipalityName) {
+      const municipality = await prisma.municipality.findUnique({
+        where: { ibgeCode },
+        select: { name: true },
+      });
+      if (municipality) {
+        report.municipalityName = municipality.name;
+      }
     }
 
     res.json(report);
@@ -49,7 +62,7 @@ router.get("/:ibgeCode", async (req: Request, res: Response) => {
  * Retorna histórico de scores ODS persistidos para um município.
  * Query param opcional: odsNumber (filtra por ODS específico, 0-17)
  */
-router.get("/:ibgeCode/history", async (req: Request, res: Response) => {
+router.get("/:ibgeCode/history", authenticateToken, async (req: Request, res: Response) => {
   const ibgeCode = req.params["ibgeCode"];
 
   if (!ibgeCode || !/^\d{7}$/.test(ibgeCode)) {
@@ -91,7 +104,7 @@ router.get("/:ibgeCode/history", async (req: Request, res: Response) => {
  * Body: { ibgeCodes: string[] }
  * Compara scores ODS entre múltiplos municípios (máx 10).
  */
-router.post("/compare", batchLimiter, async (req: Request, res: Response) => {
+router.post("/compare", authenticateToken, requireRole("admin", "prefeito", "secretario"), batchLimiter, async (req: Request, res: Response) => {
   const { ibgeCodes } = req.body as { ibgeCodes?: string[] };
 
   if (!Array.isArray(ibgeCodes) || ibgeCodes.length < 2) {
@@ -111,13 +124,25 @@ router.post("/compare", batchLimiter, async (req: Request, res: Response) => {
 
   try {
     const results = await Promise.all(
-      ibgeCodes.map((code) => calculateMunicipalOds(code)),
+      ibgeCodes.map((code) =>
+        withCache(`ods:report:${code}`, 3600, () => calculateMunicipalOds(code)),
+      ),
     );
 
-    const comparison = ibgeCodes.map((code, idx) => ({
-      ibgeCode: code,
-      report: results[idx],
-    }));
+    // Populate municipalityName for each report that doesn't have it
+    const municipalities = await prisma.municipality.findMany({
+      where: { ibgeCode: { in: ibgeCodes } },
+      select: { ibgeCode: true, name: true },
+    });
+    const nameByCode = new Map(municipalities.map((m) => [m.ibgeCode, m.name]));
+
+    const comparison = ibgeCodes.map((code, idx) => {
+      const report = results[idx];
+      if (report && !report.municipalityName) {
+        report.municipalityName = nameByCode.get(code) ?? null;
+      }
+      return { ibgeCode: code, report };
+    });
 
     res.json({
       total: ibgeCodes.length,

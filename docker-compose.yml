@@ -44,6 +44,29 @@ services:
       timeout: 5s
       retries: 5
 
+  api:
+    build: .
+    container_name: ioc_api
+    ports:
+      - "3000:3000"
+    environment:
+      - DATABASE_URL=postgresql://ioc:ioc_secret@postgres:5432/ioc_esg?schema=public
+      - REDIS_URL=redis://redis:6379
+      - JWT_SECRET=${JWT_SECRET:-dev-secret-change-me}
+      - NODE_ENV=development
+      - PORT=3000
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+
   adminer:
     image: adminer:latest
     container_name: ioc_adminer

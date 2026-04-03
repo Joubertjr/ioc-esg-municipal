@@ -9,6 +9,7 @@ import {
   AuthCredentialsError,
 } from "../services/auth/auth_service.js";
 import { authenticateToken } from "../middleware/auth.js";
+import { authLimiter } from "../middleware/rate-limit.js";
 import { logger } from "../utils/logger.js";
 
 const router: RouterType = Router();
@@ -24,7 +25,7 @@ const authService = new AuthService(prisma);
  * Nota: A checagem de "admin only após primeiro user" é feita dinamicamente
  * para evitar dependência circular entre routes e middleware.
  */
-router.post("/register", async (req: Request, res: Response) => {
+router.post("/register", authLimiter, async (req: Request, res: Response) => {
   logger.info("POST /api/auth/register", { ip: req.ip });
 
   // Valida body com Zod
@@ -94,7 +95,7 @@ router.post("/register", async (req: Request, res: Response) => {
 /**
  * Autentica usuário e retorna JWT.
  */
-router.post("/login", async (req: Request, res: Response) => {
+router.post("/login", authLimiter, async (req: Request, res: Response) => {
   logger.info("POST /api/auth/login", { ip: req.ip });
 
   const parsed = LoginSchema.safeParse(req.body);

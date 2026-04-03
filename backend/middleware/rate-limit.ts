@@ -27,3 +27,15 @@ export const batchLimiter = rateLimit({
     error: "Muitas requisições de batch. Tente novamente em 1 minuto.",
   },
 });
+
+/**
+ * Limiter para rotas de autenticação: 10 tentativas por 15 minutos por IP.
+ * Aplicado em POST /login e POST /register — proteção contra brute force.
+ */
+export const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 10,
+  message: { error: "Muitas tentativas de login. Tente novamente em 15 minutos." },
+  standardHeaders: true,
+  legacyHeaders: false,
+});

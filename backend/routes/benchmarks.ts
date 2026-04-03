@@ -1,31 +1,34 @@
 import { Router, type Request, type Response, type Router as RouterType } from "express";
+import { z } from "zod";
 import { generateBenchmark, compareAgainstBenchmark } from "../services/benchmarks/benchmark_service.js";
 import { logger } from "../utils/logger.js";
+import { authenticateToken, requireRole } from "../middleware/auth.js";
 
 const router: RouterType = Router();
+
+const BenchmarkRequestSchema = z.object({
+  ibgeCodes: z.array(z.string().regex(/^\d{7}$/)).min(2).max(50),
+});
+
+const CompareRequestSchema = z.object({
+  ibgeCode: z.string().regex(/^\d{7}$/),
+  benchmarkCodes: z.array(z.string().regex(/^\d{7}$/)).min(1).max(49),
+});
 
 /**
  * POST /api/benchmarks
  * Body: { ibgeCodes: string[] }
- * Gera benchmark comparativo entre municípios (2-20).
+ * Gera benchmark comparativo entre municípios (2-50).
  */
-router.post("/", async (req: Request, res: Response) => {
-  const { ibgeCodes } = req.body as { ibgeCodes?: string[] };
+router.post("/", authenticateToken, requireRole("admin", "prefeito", "secretario"), async (req: Request, res: Response) => {
+  const parsed = BenchmarkRequestSchema.safeParse(req.body);
 
-  if (!Array.isArray(ibgeCodes) || ibgeCodes.length < 2) {
-    res.status(400).json({ error: "ibgeCodes deve ter ao menos 2 municípios" });
+  if (!parsed.success) {
+    res.status(400).json({ error: parsed.error.errors[0]?.message ?? "Payload inválido" });
     return;
   }
 
-  if (ibgeCodes.length > 20) {
-    res.status(400).json({ error: "Máximo 20 municípios por benchmark" });
-    return;
-  }
-
-  if (ibgeCodes.some((c) => typeof c !== "string" || !/^\d{7}$/.test(c))) {
-    res.status(400).json({ error: "Todos os ibgeCodes devem ter 7 dígitos numéricos" });
-    return;
-  }
+  const { ibgeCodes } = parsed.data;
 
   try {
     const result = await generateBenchmark(ibgeCodes);
@@ -43,31 +46,15 @@ router.post("/", async (req: Request, res: Response) => {
  * Body: { ibgeCode: string, benchmarkCodes: string[] }
  * Compara um município contra a média do grupo.
  */
-router.post("/compare", async (req: Request, res: Response) => {
-  const { ibgeCode, benchmarkCodes } = req.body as {
-    ibgeCode?: string;
-    benchmarkCodes?: string[];
-  };
+router.post("/compare", authenticateToken, requireRole("admin", "prefeito", "secretario"), async (req: Request, res: Response) => {
+  const parsed = CompareRequestSchema.safeParse(req.body);
 
-  if (!ibgeCode || !/^\d{7}$/.test(ibgeCode)) {
-    res.status(400).json({ error: "ibgeCode deve ter 7 dígitos numéricos" });
+  if (!parsed.success) {
+    res.status(400).json({ error: parsed.error.errors[0]?.message ?? "Payload inválido" });
     return;
   }
 
-  if (!Array.isArray(benchmarkCodes) || benchmarkCodes.length < 1) {
-    res.status(400).json({ error: "benchmarkCodes deve ter ao menos 1 município" });
-    return;
-  }
-
-  if (benchmarkCodes.length > 20) {
-    res.status(400).json({ error: "Máximo 20 municípios de comparação" });
-    return;
-  }
-
-  if (benchmarkCodes.some((c) => typeof c !== "string" || !/^\d{7}$/.test(c))) {
-    res.status(400).json({ error: "Todos os benchmarkCodes devem ter 7 dígitos numéricos" });
-    return;
-  }
+  const { ibgeCode, benchmarkCodes } = parsed.data;
 
   try {
     const result = await compareAgainstBenchmark(ibgeCode, benchmarkCodes);

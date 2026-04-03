@@ -14,8 +14,23 @@ export function removeToken(): void {
   localStorage.removeItem(TOKEN_KEY);
 }
 
+function isTokenExpired(token: string): boolean {
+  try {
+    const payload = JSON.parse(atob(token.split(".")[1]!));
+    return (payload as { exp: number }).exp * 1000 < Date.now();
+  } catch {
+    return true;
+  }
+}
+
 export function isAuthenticated(): boolean {
-  return getToken() !== null;
+  const token = localStorage.getItem(TOKEN_KEY);
+  if (!token) return false;
+  if (isTokenExpired(token)) {
+    localStorage.removeItem(TOKEN_KEY);
+    return false;
+  }
+  return true;
 }
 
 function buildHeaders(): Record<string, string> {
@@ -31,6 +46,11 @@ function buildHeaders(): Record<string, string> {
 
 async function handleResponse<T>(res: Response): Promise<T> {
   if (!res.ok) {
+    if (res.status === 401) {
+      localStorage.removeItem(TOKEN_KEY);
+      window.location.href = "/login";
+      throw new Error("Sessão expirada. Faça login novamente.");
+    }
     let message = `Erro HTTP ${res.status}`;
     try {
       const body = (await res.json()) as { message?: string; error?: string };

@@ -3,6 +3,8 @@ import { z, type ZodIssue } from "zod";
 import { runSimulation, type SimulationInput } from "../services/simulator/simulator_service.js";
 import { batchLimiter } from "../middleware/rate-limit.js";
 import { logger } from "../utils/logger.js";
+import { authenticateToken, requireRole } from "../middleware/auth.js";
+import { prisma } from "../lib/prisma.js";
 
 const router: RouterType = Router();
 
@@ -57,7 +59,7 @@ function formatZodErrors(issues: ZodIssue[]): string[] {
  * Body: SimulationInput
  * Response: SimulationResult
  */
-router.post("/simulate", async (req: Request, res: Response) => {
+router.post("/simulate", authenticateToken, requireRole("admin", "prefeito", "secretario"), async (req: Request, res: Response) => {
   const parsed = SimulationInputSchema.safeParse(req.body);
 
   if (!parsed.success) {
@@ -95,7 +97,7 @@ router.post("/simulate", async (req: Request, res: Response) => {
  * Body: SimulationInput[] (array direto, mín 2, máx 5)
  * Response: SimulationResult[]
  */
-router.post("/compare", batchLimiter, async (req: Request, res: Response) => {
+router.post("/compare", authenticateToken, requireRole("admin", "prefeito", "secretario"), batchLimiter, async (req: Request, res: Response) => {
   const parsed = CompareBodySchema.safeParse(req.body);
 
   if (!parsed.success) {
@@ -123,5 +125,59 @@ router.post("/compare", batchLimiter, async (req: Request, res: Response) => {
     res.status(500).json({ error: "Erro interno ao executar comparação de cenários" });
   }
 });
+
+// ─── GET /api/simulator/history/:ibgeCode ────────────────────────────────────
+
+/**
+ * Retorna simulações anteriores de um município.
+ *
+ * Params: ibgeCode (7 dígitos)
+ * Query:  limit (1-100, default 20)
+ * Response: Simulation[]
+ */
+router.get(
+  "/history/:ibgeCode",
+  authenticateToken,
+  requireRole("admin", "prefeito", "secretario"),
+  async (req: Request, res: Response) => {
+    const ibgeCode = req.params["ibgeCode"];
+
+    if (!ibgeCode || !/^\d{7}$/.test(ibgeCode)) {
+      res.status(400).json({ error: "ibgeCode deve ter exatamente 7 dígitos numéricos" });
+      return;
+    }
+
+    const rawLimit = req.query["limit"];
+    const limit = rawLimit ? Math.min(Math.max(parseInt(String(rawLimit), 10) || 20, 1), 100) : 20;
+
+    logger.info("[route:simulator] history chamado", { ibgeCode, limit });
+
+    try {
+      const municipality = await prisma.municipality.findUnique({
+        where: { ibgeCode },
+        select: { id: true },
+      });
+
+      if (!municipality) {
+        res.status(404).json({ error: "Município não encontrado" });
+        return;
+      }
+
+      const simulations = await prisma.simulation.findMany({
+        where: { municipalityId: municipality.id },
+        orderBy: { createdAt: "desc" },
+        take: limit,
+      });
+
+      res.json(simulations);
+    } catch (error) {
+      logger.error("[route:simulator] erro em /history", {
+        ibgeCode,
+        error: error instanceof Error ? error.message : String(error),
+      });
+      res.status(500).json({ error: "Erro interno ao buscar histórico de simulações" });
+    }
+  },
+);
 
 export default router;

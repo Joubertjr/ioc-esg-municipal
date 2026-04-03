@@ -2,6 +2,7 @@ import { calculateMunicipalOds } from "../ods/ods_score_service.js";
 import { ODS_DEFINITIONS, getOdsDefinition } from "../../../shared/constants/ods.js";
 import { getOdsStatus, type OdsStatus } from "../../../shared/types/domain/ods.js";
 import { logger } from "../../utils/logger.js";
+import { prisma } from "../../lib/prisma.js";
 
 // ─── Tipos públicos ────────────────────────────────────────────────────────────
 
@@ -275,7 +276,7 @@ export async function runSimulation(input: SimulationInput): Promise<SimulationR
     globalDelta,
   });
 
-  return {
+  const simulationResult: SimulationResult = {
     ibgeCode,
     municipalityName: report.municipalityName ?? null,
     totalAmount,
@@ -285,6 +286,65 @@ export async function runSimulation(input: SimulationInput): Promise<SimulationR
     globalDelta,
     ods: odsResults,
   };
+
+  // Persistência fire-and-forget — não bloqueia a resposta ao cliente
+  void persistSimulation(simulationResult, internalAllocations);
+
+  return simulationResult;
+}
+
+/**
+ * Persiste o resultado da simulação no banco de dados.
+ * Fire-and-forget: erros são logados mas não propagados ao caller.
+ */
+async function persistSimulation(
+  result: SimulationResult,
+  allocations: InternalAllocation[],
+): Promise<void> {
+  try {
+    const municipality = await prisma.municipality.findUnique({
+      where: { ibgeCode: result.ibgeCode },
+      select: { id: true },
+    });
+
+    if (!municipality) {
+      logger.warn("[simulator] município não encontrado para persistência", {
+        ibgeCode: result.ibgeCode,
+      });
+      return;
+    }
+
+    // Determina a área de maior investimento como investmentType
+    const primaryArea = allocations.reduce(
+      (max, a) => (a.amount > max.amount ? a : max),
+      allocations[0] ?? { area: "governance" as InvestmentArea, amount: 0, targetOds: [] },
+    );
+
+    // Coleta todos os ODS impactados (com delta > 0)
+    const targetOds = result.ods
+      .filter((o) => o.delta !== null && o.delta > 0)
+      .map((o) => o.odsNumber);
+
+    await prisma.simulation.create({
+      data: {
+        municipalityId: municipality.id,
+        scenarioName: `Simulação ${result.ibgeCode} — ${new Date().toISOString().slice(0, 10)}`,
+        investmentAmount: result.totalAmount,
+        investmentType: primaryArea.area,
+        targetOds,
+        projectedImpact: JSON.parse(JSON.stringify(result)),
+        status: "completed",
+        completedAt: new Date(),
+      },
+    });
+
+    logger.info("[simulator] simulação persistida", { ibgeCode: result.ibgeCode });
+  } catch (error) {
+    logger.error("[simulator] erro ao persistir simulação (non-fatal)", {
+      ibgeCode: result.ibgeCode,
+      error: error instanceof Error ? error.message : String(error),
+    });
+  }
 }
 
 // ─── Helpers privados ─────────────────────────────────────────────────────────

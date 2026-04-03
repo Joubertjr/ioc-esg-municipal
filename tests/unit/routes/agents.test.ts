@@ -165,6 +165,15 @@ vi.mock("../../../backend/middleware/rate-limit.js", () => ({
   batchLimiter: (_req: unknown, _res: unknown, next: () => void) => next(),
 }));
 
+// Auth middleware passthrough — testes unitários de rota não testam auth
+vi.mock("../../../backend/middleware/auth.js", () => ({
+  authenticateToken: (_req: unknown, _res: unknown, next: () => void) => next(),
+  requireRole:
+    () =>
+    (_req: unknown, _res: unknown, next: () => void) =>
+      next(),
+}));
+
 // ─── App de teste ─────────────────────────────────────────────────────────────
 
 async function buildApp() {

@@ -19,6 +19,23 @@ vi.mock("../../../backend/utils/logger.js", () => ({
   },
 }));
 
+// Auth middleware passthrough — testes unitários de rota não testam auth
+vi.mock("../../../backend/middleware/auth.js", () => ({
+  authenticateToken: (_req: unknown, _res: unknown, next: () => void) => next(),
+  requireRole:
+    () =>
+    (_req: unknown, _res: unknown, next: () => void) =>
+      next(),
+}));
+
+// Prisma mock
+vi.mock("../../../backend/lib/prisma.js", () => ({
+  prisma: {
+    simulation: { create: vi.fn().mockResolvedValue({ id: "sim-1" }) },
+    municipality: { findUnique: vi.fn().mockResolvedValue({ name: "Blumenau" }) },
+  },
+}));
+
 vi.mock("../../../shared/data/ideb_2023.json", () => ({ default: {} }));
 vi.mock("../../../shared/data/snis_2022.json", () => ({ default: {} }));
 vi.mock("../../../shared/data/tse_2024.json", () => ({ default: {} }));
