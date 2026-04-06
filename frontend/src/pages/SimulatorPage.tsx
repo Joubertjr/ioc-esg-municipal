@@ -1,6 +1,7 @@
 import { useState, useCallback, useMemo } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { AppShell } from "../components/layout/AppShell";
+import { useToast } from "../components/ui/Toast";
 import { apiGet, apiPost } from "../lib/api";
 import type {
   InvestmentArea,
@@ -124,6 +125,7 @@ export function SimulatorPage() {
     buildDefaultAllocation,
   );
   const [result, setResult] = useState<SimulationResult | null>(null);
+  const { showToast } = useToast();
 
   const totalAmount = useMemo(() => {
     const parsed = parseFloat(totalAmountRaw.replace(/\D/g, ""));
@@ -149,6 +151,7 @@ export function SimulatorPage() {
     mutationFn: (payload) =>
       apiPost<SimulationResult>("/api/simulator/simulate", payload),
     onSuccess: (data) => setResult(data),
+    onError: (err) => showToast(err.message ?? "Erro ao simular. Tente novamente.", "error"),
   });
 
   const handleAllocationChange = useCallback(
@@ -309,8 +312,14 @@ export function SimulatorPage() {
               allocationSum !== 100 ||
               totalAmount <= 0
             }
-            className="w-full sm:w-auto px-8 py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-300 text-white font-semibold rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+            className="inline-flex items-center gap-2 w-full sm:w-auto px-8 py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-300 text-white font-semibold rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
           >
+            {simulateMutation.isPending && (
+              <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+              </svg>
+            )}
             {simulateMutation.isPending ? "Simulando..." : "Simular impacto"}
           </button>
 

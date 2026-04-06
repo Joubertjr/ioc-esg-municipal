@@ -15,6 +15,11 @@ import { Decimal } from "decimal.js";
 
 const prisma = new PrismaClient();
 
+type TransactionClient = Omit<
+  PrismaClient,
+  "$connect" | "$disconnect" | "$on" | "$transaction" | "$use" | "$extends"
+>;
+
 // ---------------------------------------------------------------------------
 // Tipos internos para o seed
 // ---------------------------------------------------------------------------
@@ -563,7 +568,7 @@ const MUNICIPALITIES: MunicipalityRecord[] = ALL_SC_MUNICIPALITIES.map(buildReco
 // Seed principal
 // ---------------------------------------------------------------------------
 
-async function seedMunicipalities(): Promise<void> {
+async function seedMunicipalities(tx: TransactionClient): Promise<void> {
   console.log(`[seed] Iniciando seed de ${MUNICIPALITIES.length} municípios de SC...`);
 
   let upserted = 0;
@@ -571,7 +576,7 @@ async function seedMunicipalities(): Promise<void> {
 
   for (const mun of MUNICIPALITIES) {
     try {
-      await prisma.municipality.upsert({
+      await tx.municipality.upsert({
         where: { ibgeCode: mun.ibgeCode },
         update: {
           name: mun.name,
@@ -596,7 +601,7 @@ async function seedMunicipalities(): Promise<void> {
     }
   }
 
-  const total = await prisma.municipality.count();
+  const total = await tx.municipality.count();
   console.log(
     `[seed] Municípios: ${upserted} upserts, ${failed} falhas. Total no banco: ${total} municípios.`,
   );
@@ -606,7 +611,7 @@ async function seedMunicipalities(): Promise<void> {
   }
 }
 
-async function seedOdsScores(): Promise<void> {
+async function seedOdsScores(tx: TransactionClient): Promise<void> {
   const REFERENCE_YEAR = 2023;
   const top20IbgeCodes = Object.keys(TOP_20_PROFILES);
 
@@ -617,7 +622,7 @@ async function seedOdsScores(): Promise<void> {
 
   for (const ibgeCode of top20IbgeCodes) {
     // Busca o município no banco (deve existir após seedMunicipalities)
-    const municipality = await prisma.municipality.findUnique({
+    const municipality = await tx.municipality.findUnique({
       where: { ibgeCode },
       select: { id: true, name: true },
     });
@@ -631,7 +636,7 @@ async function seedOdsScores(): Promise<void> {
 
     for (const scoreInput of scores) {
       try {
-        await prisma.odsScore.upsert({
+        await tx.odsScore.upsert({
           where: {
             municipalityId_odsNumber_referenceYear: {
               municipalityId: municipality.id,
@@ -668,7 +673,7 @@ async function seedOdsScores(): Promise<void> {
     }
   }
 
-  const totalScores = await prisma.odsScore.count();
+  const totalScores = await tx.odsScore.count();
   console.log(
     `[seed] OdsScore: ${upserted} upserts, ${failed} falhas. Total no banco: ${totalScores} scores.`,
   );
@@ -679,14 +684,28 @@ async function seedOdsScores(): Promise<void> {
 }
 
 async function main(): Promise<void> {
-  await seedMunicipalities();
-  await seedOdsScores();
+  console.log("[seed] Iniciando transação atômica...");
+
+  await prisma.$transaction(
+    async (tx) => {
+      await seedMunicipalities(tx);
+      await seedOdsScores(tx);
+    },
+    {
+      maxWait: 10_000,  // aguarda até 10s para adquirir conexão
+      timeout: 60_000,  // timeout da transação: 60s (seed é lento)
+    },
+  );
+
   console.log("[seed] Seed completo.");
 }
 
 main()
   .catch((err: unknown) => {
-    console.error("[seed] Erro fatal:", err instanceof Error ? err.message : String(err));
+    console.error(
+      "[seed] Erro fatal — transação revertida:",
+      err instanceof Error ? err.message : String(err),
+    );
     process.exit(1);
   })
   .finally(() => {

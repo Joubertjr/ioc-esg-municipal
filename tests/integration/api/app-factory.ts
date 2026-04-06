@@ -12,6 +12,7 @@
 import express, { type Express } from "express";
 import cors from "cors";
 import helmet from "helmet";
+import cookieParser from "cookie-parser";
 
 export async function createTestApp(): Promise<Express> {
   const app: Express = express();
@@ -24,6 +25,9 @@ export async function createTestApp(): Promise<Express> {
       credentials: true,
     }),
   );
+
+  // cookieParser deve vir antes dos routers para que req.cookies esteja populado
+  app.use(cookieParser());
 
   // Importa o limiter já mockado (vi.mock de express-rate-limit aplica-se aqui)
   const { generalLimiter } = await import("../../../backend/middleware/rate-limit.js");

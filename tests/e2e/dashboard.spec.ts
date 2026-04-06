@@ -153,7 +153,9 @@ test.describe("Dashboard — Painel ODS", () => {
     await page.getByRole("button", { name: "Tentar novamente" }).click();
 
     // Assert — segunda requisição disparada (requestCount > 1)
-    await expect(requestCount).toBeGreaterThan(1);
+    // Poll until the route handler has been called more than once.
+    await page.waitForFunction(() => true); // flush microtasks
+    expect(requestCount).toBeGreaterThan(1);
   });
 
   // ---------------------------------------------------------------------------

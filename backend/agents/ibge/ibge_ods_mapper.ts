@@ -10,7 +10,7 @@ import { getOdsStatus, type OdsIndicator } from "../../../shared/types/domain/od
  * - ODS 8  (Trabalho)    : taxa de ocupação + PIB per capita
  * - ODS 9  (Inovação)    : empresas atuantes por 10k habitantes (CEMPRE tabela 9418)
  * - ODS 10 (Desigualdade): Coeficiente de Gini de renda (Censo IBGE 2022) — invertido: menor = melhor
- * - ODS 11 (Cidades)     : densidade demográfica (hab/km²) — faixa ideal 50-500
+ * - ODS 11 (Cidades)     : % domicílios urbanos com infraestrutura adequada (água + esgoto + lixo)
  */
 export function mapToOdsIndicators(data: IbgeMunicipalData): OdsIndicator[] {
   const indicators: OdsIndicator[] = [];
@@ -130,21 +130,41 @@ export function mapToOdsIndicators(data: IbgeMunicipalData): OdsIndicator[] {
     });
   }
 
-  // ODS 11 — Cidades Sustentáveis (densidade demográfica — faixa ideal 50-500 hab/km²)
-  if (ind.populacao !== null && ind.areaterritorial !== null && ind.areaterritorial > 0) {
-    const densidade = ind.populacao / ind.areaterritorial;
-    const score = scoreDensidadeDemografica(densidade);
+  // ODS 10 — Razão 20/20 (renda dos 20% mais ricos / 20% mais pobres)
+  // Menor razão = menor desigualdade = melhor (indicador invertido).
+  if (ind.razao2020 !== null) {
+    const score = scoreRazao2020(ind.razao2020);
+    indicators.push({
+      id: "",
+      municipalityId: ibgeCode,
+      odsNumber: 10,
+      indicatorName: "razao_20_20",
+      value: ind.razao2020,
+      score,
+      status: getOdsStatus(score),
+      source: "ibge",
+      referenceYear: 2022, // Censo IBGE 2022 — ano fixo para este indicador
+      referenceDate: new Date("2022-12-31"),
+      dataAvailable: true,
+    });
+  }
+
+  // ODS 11 — Cidades Sustentáveis (% domicílios urbanos com infraestrutura adequada)
+  // Infraestrutura adequada = acesso simultâneo a água tratada + esgoto + coleta de lixo.
+  // Fonte: IBGE Censo Demográfico 2022 (JSON estático shared/data/ibge_2022.json).
+  if (ind.urbanizacaoAdequada !== null) {
+    const score = scoreUrbanizacaoAdequada(ind.urbanizacaoAdequada);
     indicators.push({
       id: "",
       municipalityId: ibgeCode,
       odsNumber: 11,
-      indicatorName: "densidade_demografica",
-      value: Math.round(densidade * 100) / 100,
+      indicatorName: "urbanizacao_adequada",
+      value: ind.urbanizacaoAdequada,
       score,
       status: getOdsStatus(score),
       source: "ibge",
-      referenceYear,
-      referenceDate,
+      referenceYear: 2022, // Censo IBGE 2022 — ano fixo para este indicador
+      referenceDate: new Date("2022-12-31"),
       dataAvailable: true,
     });
   }
@@ -220,6 +240,23 @@ export function scoreEmpresasPor10k(empresasPor10k: number): number {
 }
 
 /**
+ * Razão 20/20 (renda top 20% / bottom 20%) → score 0-100 (invertido: menor razão = melhor).
+ * Fonte: derivado do Censo IBGE 2022 (correlacionado com Gini).
+ *
+ * Curva de scoring (benchmarks municípios SC):
+ * - razão <= 8  → 100 (muito igualitário)
+ * - razão 8–15  → 50–100 (interpolação linear)
+ * - razão 15–25 → 0–50  (interpolação linear)
+ * - razão >= 25 → 0  (desigualdade extrema)
+ */
+export function scoreRazao2020(razao: number): number {
+  if (razao <= 8) return 100;
+  if (razao <= 15) return clampScore(100 - ((razao - 8) / (15 - 8)) * 50);
+  if (razao < 25) return clampScore(50 - ((razao - 15) / (25 - 15)) * 50);
+  return 0;
+}
+
+/**
  * Coeficiente de Gini → score 0-100 (invertido: menor Gini = melhor).
  * Fonte: IBGE Censo Demográfico 2022.
  *
@@ -237,19 +274,20 @@ export function scoreCoeficienteGini(gini: number): number {
 }
 
 /**
- * Densidade demográfica (hab/km²) → score 0-100.
- * Faixa ideal para municípios SC: 50-500 hab/km² → score 100.
- * - Abaixo de 10 hab/km²: isolamento extremo → score fixo 50 (amarelo)
- * - Acima de 2000 hab/km²: superlotação → score fixo 30 (vermelho)
- * - Demais faixas: interpolação linear até a faixa ideal.
+ * % domicílios urbanos com infraestrutura adequada → score 0-100.
+ * Infraestrutura adequada = acesso simultâneo a água tratada + esgoto + coleta de lixo.
+ * Fonte: IBGE Censo Demográfico 2022.
+ *
+ * Curva de scoring (benchmarks municípios SC):
+ * - >= 90% → 100 (excelente cobertura universal)
+ * - >= 70% → 50–100 (interpolação linear)
+ * - < 70%  → 0–50 (interpolação linear, 0 abaixo de 20%)
  */
-function scoreDensidadeDemografica(densidade: number): number {
-  if (densidade >= 50 && densidade <= 500) return 100;
-  if (densidade > 2000) return 30;
-  if (densidade < 10) return 50;
-  if (densidade < 50) return clampScore(50 + ((densidade - 10) / (50 - 10)) * 50);
-  // densidade > 500 && <= 2000
-  return clampScore(100 - ((densidade - 500) / (2000 - 500)) * 70);
+export function scoreUrbanizacaoAdequada(pct: number): number {
+  if (pct >= 90) return 100;
+  if (pct >= 70) return clampScore(50 + ((pct - 70) / (90 - 70)) * 50);
+  if (pct >= 20) return clampScore(((pct - 20) / (70 - 20)) * 50);
+  return 0;
 }
 
 function clampScore(score: number): number {

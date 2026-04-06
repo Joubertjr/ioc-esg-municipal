@@ -1,54 +1,78 @@
 const BASE_URL = import.meta.env.VITE_API_URL ?? "http://localhost:3000";
 
-const TOKEN_KEY = "ioc_esg_token";
-
-export function getToken(): string | null {
-  return localStorage.getItem(TOKEN_KEY);
+if (import.meta.env.PROD && !import.meta.env.VITE_API_URL) {
+  console.warn("[api] VITE_API_URL não definida — usando fallback localhost. Configure a variável em produção.");
 }
 
-export function setToken(token: string): void {
-  localStorage.setItem(TOKEN_KEY, token);
+// In-memory refresh token — not persisted to localStorage (XSS protection).
+// Populated on login, cleared on logout or failed refresh.
+let refreshToken: string | null = null;
+
+export function setRefreshToken(token: string | null): void {
+  refreshToken = token;
 }
 
-export function removeToken(): void {
-  localStorage.removeItem(TOKEN_KEY);
-}
+// Promise lock: prevents multiple concurrent refresh attempts.
+let refreshPromise: Promise<boolean> | null = null;
 
-function isTokenExpired(token: string): boolean {
+async function attemptRefresh(): Promise<boolean> {
+  if (!refreshToken) return false;
+
   try {
-    const payload = JSON.parse(atob(token.split(".")[1]!));
-    return (payload as { exp: number }).exp * 1000 < Date.now();
-  } catch {
-    return true;
-  }
-}
+    const res = await fetch(`${BASE_URL}/api/auth/refresh`, {
+      method: "POST",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ refreshToken }),
+    });
 
-export function isAuthenticated(): boolean {
-  const token = localStorage.getItem(TOKEN_KEY);
-  if (!token) return false;
-  if (isTokenExpired(token)) {
-    localStorage.removeItem(TOKEN_KEY);
+    if (!res.ok) {
+      refreshToken = null;
+      return false;
+    }
+
+    const data = (await res.json()) as { token: string; refreshToken: string };
+    refreshToken = data.refreshToken;
+    return true;
+  } catch {
+    refreshToken = null;
     return false;
   }
-  return true;
 }
 
-function buildHeaders(): Record<string, string> {
-  const headers: Record<string, string> = {
-    "Content-Type": "application/json",
-  };
-  const token = getToken();
-  if (token) {
-    headers["Authorization"] = `Bearer ${token}`;
+function triggerRefresh(): Promise<boolean> {
+  if (!refreshPromise) {
+    refreshPromise = attemptRefresh().finally(() => {
+      refreshPromise = null;
+    });
   }
-  return headers;
+  return refreshPromise;
+}
+
+async function fetchWithRefresh(
+  path: string,
+  init: RequestInit,
+): Promise<Response> {
+  const url = `${BASE_URL}${path}`;
+  const res = await fetch(url, init);
+
+  if (res.status !== 401) return res;
+
+  // 401 — try to refresh once
+  const refreshed = await triggerRefresh();
+  if (!refreshed) {
+    window.location.href = "/login";
+    return res;
+  }
+
+  // Retry the original request with the new session cookie
+  return fetch(url, init);
 }
 
 async function handleResponse<T>(res: Response): Promise<T> {
   if (!res.ok) {
     if (res.status === 401) {
-      localStorage.removeItem(TOKEN_KEY);
-      window.location.href = "/login";
+      // Reached here only when refresh also failed (redirect already triggered)
       throw new Error("Sessão expirada. Faça login novamente.");
     }
     let message = `Erro HTTP ${res.status}`;
@@ -64,18 +88,33 @@ async function handleResponse<T>(res: Response): Promise<T> {
 }
 
 export async function apiGet<T>(path: string): Promise<T> {
-  const res = await fetch(`${BASE_URL}${path}`, {
+  const res = await fetchWithRefresh(path, {
     method: "GET",
-    headers: buildHeaders(),
+    credentials: "include",
+    headers: { "Content-Type": "application/json" },
   });
   return handleResponse<T>(res);
 }
 
 export async function apiPost<T>(path: string, body: unknown): Promise<T> {
-  const res = await fetch(`${BASE_URL}${path}`, {
+  const res = await fetchWithRefresh(path, {
     method: "POST",
-    headers: buildHeaders(),
+    credentials: "include",
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify(body),
   });
   return handleResponse<T>(res);
+}
+
+export async function checkSession(): Promise<boolean> {
+  try {
+    const res = await fetch(`${BASE_URL}/api/auth/me`, {
+      method: "GET",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+    });
+    return res.ok;
+  } catch {
+    return false;
+  }
 }

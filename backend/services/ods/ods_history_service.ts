@@ -4,10 +4,14 @@ import { logger } from "../../utils/logger.js";
 
 /**
  * Calcula e persiste scores ODS de um município no banco.
- * Cria um snapshot histórico que pode ser consultado depois.
+ * Aceita um report já calculado para evitar chamada dupla à calculateMunicipalOds
+ * (o caller normalmente já tem o report em cache).
  */
-export async function calculateAndPersistScores(ibgeCode: string): Promise<MunicipalOdsReport | null> {
-  const report = await calculateMunicipalOds(ibgeCode);
+export async function calculateAndPersistScores(
+  ibgeCode: string,
+  existingReport?: MunicipalOdsReport,
+): Promise<MunicipalOdsReport | null> {
+  const report = existingReport ?? await calculateMunicipalOds(ibgeCode);
   if (!report) return null;
 
   const municipality = await prisma.municipality.findUnique({
@@ -95,18 +99,17 @@ export async function getScoreHistory(
   odsNumber?: number,
   limit = 100,
 ) {
+  // Single query via nested select — evita round-trip extra de findUnique
   const municipality = await prisma.municipality.findUnique({
     where: { ibgeCode },
-  });
-
-  if (!municipality) return [];
-
-  return prisma.odsScore.findMany({
-    where: {
-      municipalityId: municipality.id,
-      ...(odsNumber !== undefined ? { odsNumber } : {}),
+    select: {
+      odsScores: {
+        where: odsNumber !== undefined ? { odsNumber } : undefined,
+        orderBy: [{ referenceYear: "desc" }, { odsNumber: "asc" }],
+        take: limit,
+      },
     },
-    orderBy: [{ referenceYear: "desc" }, { odsNumber: "asc" }],
-    take: limit,
   });
+
+  return municipality?.odsScores ?? [];
 }

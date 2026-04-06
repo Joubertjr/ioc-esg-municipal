@@ -1,887 +1,1182 @@
 {
   "4200051": {
-    "coeficienteGini": 0.513
+    "coeficienteGini": 0.513,
+    "razao2020": 15.9
   },
   "4200101": {
-    "coeficienteGini": 0.507
+    "coeficienteGini": 0.507,
+    "razao2020": 15.9
   },
   "4200200": {
-    "coeficienteGini": 0.393
+    "coeficienteGini": 0.393,
+    "razao2020": 10.1
   },
   "4200309": {
-    "coeficienteGini": 0.399
+    "coeficienteGini": 0.399,
+    "razao2020": 10.6
   },
   "4200408": {
-    "coeficienteGini": 0.47
+    "coeficienteGini": 0.47,
+    "razao2020": 13.6
   },
   "4200507": {
-    "coeficienteGini": 0.462
+    "coeficienteGini": 0.462,
+    "razao2020": 13.3
   },
   "4200556": {
-    "coeficienteGini": 0.453
+    "coeficienteGini": 0.453,
+    "razao2020": 12.8
   },
   "4200606": {
-    "coeficienteGini": 0.407
+    "coeficienteGini": 0.407,
+    "razao2020": 10.4
   },
   "4200705": {
-    "coeficienteGini": 0.368
+    "coeficienteGini": 0.368,
+    "razao2020": 8.7
   },
   "4200754": {
-    "coeficienteGini": 0.454
+    "coeficienteGini": 0.454,
+    "razao2020": 12.7
   },
   "4200804": {
-    "coeficienteGini": 0.432
+    "coeficienteGini": 0.432,
+    "razao2020": 11.4
   },
   "4200903": {
-    "coeficienteGini": 0.463
+    "coeficienteGini": 0.463,
+    "razao2020": 13.7
   },
   "4201000": {
-    "coeficienteGini": 0.381
+    "coeficienteGini": 0.381,
+    "razao2020": 9.2
   },
   "4201109": {
-    "coeficienteGini": 0.369
+    "coeficienteGini": 0.369,
+    "razao2020": 9
   },
   "4201208": {
-    "coeficienteGini": 0.482
+    "coeficienteGini": 0.482,
+    "razao2020": 14.4
   },
   "4201257": {
-    "coeficienteGini": 0.456
+    "coeficienteGini": 0.456,
+    "razao2020": 13.1
   },
   "4201273": {
-    "coeficienteGini": 0.382
+    "coeficienteGini": 0.382,
+    "razao2020": 9.4
   },
   "4201307": {
-    "coeficienteGini": 0.439
+    "coeficienteGini": 0.439,
+    "razao2020": 12.1
   },
   "4201406": {
-    "coeficienteGini": 0.438
+    "coeficienteGini": 0.438,
+    "razao2020": 12.6
   },
   "4201505": {
-    "coeficienteGini": 0.412
+    "coeficienteGini": 0.412,
+    "razao2020": 11.1
   },
   "4201604": {
-    "coeficienteGini": 0.32
+    "coeficienteGini": 0.32,
+    "razao2020": 6.4
   },
   "4201653": {
-    "coeficienteGini": 0.472
+    "coeficienteGini": 0.472,
+    "razao2020": 13.6
   },
   "4201703": {
-    "coeficienteGini": 0.478
+    "coeficienteGini": 0.478,
+    "razao2020": 13.9
   },
   "4201802": {
-    "coeficienteGini": 0.445
+    "coeficienteGini": 0.445,
+    "razao2020": 12.9
   },
   "4201901": {
-    "coeficienteGini": 0.344
+    "coeficienteGini": 0.344,
+    "razao2020": 7.7
   },
   "4201950": {
-    "coeficienteGini": 0.447
+    "coeficienteGini": 0.447,
+    "razao2020": 13
   },
   "4202008": {
-    "coeficienteGini": 0.496
+    "coeficienteGini": 0.496,
+    "razao2020": 15.5
   },
   "4202057": {
-    "coeficienteGini": 0.475
+    "coeficienteGini": 0.475,
+    "razao2020": 14.4
   },
   "4202073": {
-    "coeficienteGini": 0.376
+    "coeficienteGini": 0.376,
+    "razao2020": 9
   },
   "4202081": {
-    "coeficienteGini": 0.391
+    "coeficienteGini": 0.391,
+    "razao2020": 9.8
   },
   "4202099": {
-    "coeficienteGini": 0.453
+    "coeficienteGini": 0.453,
+    "razao2020": 12.4
   },
   "4202107": {
-    "coeficienteGini": 0.385
+    "coeficienteGini": 0.385,
+    "razao2020": 9.6
   },
   "4202131": {
-    "coeficienteGini": 0.522
+    "coeficienteGini": 0.522,
+    "razao2020": 16.9
   },
   "4202156": {
-    "coeficienteGini": 0.466
+    "coeficienteGini": 0.466,
+    "razao2020": 13.8
   },
   "4202206": {
-    "coeficienteGini": 0.518
+    "coeficienteGini": 0.518,
+    "razao2020": 16.5
   },
   "4202305": {
-    "coeficienteGini": 0.487
+    "coeficienteGini": 0.487,
+    "razao2020": 14.2
   },
   "4202404": {
-    "coeficienteGini": 0.45
+    "coeficienteGini": 0.45,
+    "razao2020": 12.6
   },
   "4202438": {
-    "coeficienteGini": 0.442
+    "coeficienteGini": 0.442,
+    "razao2020": 11.9
   },
   "4202453": {
-    "coeficienteGini": 0.396
+    "coeficienteGini": 0.396,
+    "razao2020": 9.5
   },
   "4202503": {
-    "coeficienteGini": 0.431
+    "coeficienteGini": 0.431,
+    "razao2020": 11.6
   },
   "4202537": {
-    "coeficienteGini": 0.442
+    "coeficienteGini": 0.442,
+    "razao2020": 12.7
   },
   "4202578": {
-    "coeficienteGini": 0.527
+    "coeficienteGini": 0.527,
+    "razao2020": 17.2
   },
   "4202602": {
-    "coeficienteGini": 0.451
+    "coeficienteGini": 0.451,
+    "razao2020": 12.6
   },
   "4202701": {
-    "coeficienteGini": 0.447
+    "coeficienteGini": 0.447,
+    "razao2020": 12.3
   },
   "4202800": {
-    "coeficienteGini": 0.479
+    "coeficienteGini": 0.479,
+    "razao2020": 14.7
   },
   "4202859": {
-    "coeficienteGini": 0.407
+    "coeficienteGini": 0.407,
+    "razao2020": 10.6
   },
   "4202875": {
-    "coeficienteGini": 0.487
+    "coeficienteGini": 0.487,
+    "razao2020": 15
   },
   "4202909": {
-    "coeficienteGini": 0.47
+    "coeficienteGini": 0.47,
+    "razao2020": 13.7
   },
   "4203006": {
-    "coeficienteGini": 0.5
+    "coeficienteGini": 0.5,
+    "razao2020": 15.5
   },
   "4203105": {
-    "coeficienteGini": 0.435
+    "coeficienteGini": 0.435,
+    "razao2020": 12
   },
   "4203154": {
-    "coeficienteGini": 0.421
+    "coeficienteGini": 0.421,
+    "razao2020": 11
   },
   "4203204": {
-    "coeficienteGini": 0.439
+    "coeficienteGini": 0.439,
+    "razao2020": 12.5
   },
   "4203253": {
-    "coeficienteGini": 0.351
+    "coeficienteGini": 0.351,
+    "razao2020": 7.5
   },
   "4203303": {
-    "coeficienteGini": 0.534
+    "coeficienteGini": 0.534,
+    "razao2020": 17.3
   },
   "4203402": {
-    "coeficienteGini": 0.44
+    "coeficienteGini": 0.44,
+    "razao2020": 12.3
   },
   "4203501": {
-    "coeficienteGini": 0.397
+    "coeficienteGini": 0.397,
+    "razao2020": 10.3
   },
   "4203600": {
-    "coeficienteGini": 0.422
+    "coeficienteGini": 0.422,
+    "razao2020": 11.7
   },
   "4203709": {
-    "coeficienteGini": 0.376
+    "coeficienteGini": 0.376,
+    "razao2020": 9.2
   },
   "4203808": {
-    "coeficienteGini": 0.409
+    "coeficienteGini": 0.409,
+    "razao2020": 11.1
   },
   "4203907": {
-    "coeficienteGini": 0.461
+    "coeficienteGini": 0.461,
+    "razao2020": 13.6
   },
   "4203956": {
-    "coeficienteGini": 0.503
+    "coeficienteGini": 0.503,
+    "razao2020": 15.8
   },
   "4204004": {
-    "coeficienteGini": 0.35
+    "coeficienteGini": 0.35,
+    "razao2020": 7.2
   },
   "4204103": {
-    "coeficienteGini": 0.41
+    "coeficienteGini": 0.41,
+    "razao2020": 10.3
   },
   "4204152": {
-    "coeficienteGini": 0.402
+    "coeficienteGini": 0.402,
+    "razao2020": 10.2
   },
   "4204178": {
-    "coeficienteGini": 0.441
+    "coeficienteGini": 0.441,
+    "razao2020": 12.2
   },
   "4204194": {
-    "coeficienteGini": 0.464
+    "coeficienteGini": 0.464,
+    "razao2020": 13.6
   },
   "4204202": {
-    "coeficienteGini": 0.45
+    "coeficienteGini": 0.45,
+    "razao2020": 12.7
   },
   "4204251": {
-    "coeficienteGini": 0.429
+    "coeficienteGini": 0.429,
+    "razao2020": 11.6
   },
   "4204301": {
-    "coeficienteGini": 0.42
+    "coeficienteGini": 0.42,
+    "razao2020": 11.1
   },
   "4204350": {
-    "coeficienteGini": 0.423
+    "coeficienteGini": 0.423,
+    "razao2020": 11
   },
   "4204400": {
-    "coeficienteGini": 0.418
+    "coeficienteGini": 0.418,
+    "razao2020": 11.4
   },
   "4204459": {
-    "coeficienteGini": 0.483
+    "coeficienteGini": 0.483,
+    "razao2020": 14.8
   },
   "4204509": {
-    "coeficienteGini": 0.429
+    "coeficienteGini": 0.429,
+    "razao2020": 11.9
   },
   "4204558": {
-    "coeficienteGini": 0.32
+    "coeficienteGini": 0.32,
+    "razao2020": 5.7
   },
   "4204608": {
-    "coeficienteGini": 0.422
+    "coeficienteGini": 0.422,
+    "razao2020": 11
   },
   "4204707": {
-    "coeficienteGini": 0.448
+    "coeficienteGini": 0.448,
+    "razao2020": 12.3
   },
   "4204756": {
-    "coeficienteGini": 0.402
+    "coeficienteGini": 0.402,
+    "razao2020": 10
   },
   "4204806": {
-    "coeficienteGini": 0.438
+    "coeficienteGini": 0.438,
+    "razao2020": 12.2
   },
   "4204905": {
-    "coeficienteGini": 0.386
+    "coeficienteGini": 0.386,
+    "razao2020": 9.9
   },
   "4205001": {
-    "coeficienteGini": 0.483
+    "coeficienteGini": 0.483,
+    "razao2020": 14.4
   },
   "4205100": {
-    "coeficienteGini": 0.503
+    "coeficienteGini": 0.503,
+    "razao2020": 15.1
   },
   "4205159": {
-    "coeficienteGini": 0.51
+    "coeficienteGini": 0.51,
+    "razao2020": 16.1
   },
   "4205175": {
-    "coeficienteGini": 0.404
+    "coeficienteGini": 0.404,
+    "razao2020": 10.3
   },
   "4205191": {
-    "coeficienteGini": 0.429
+    "coeficienteGini": 0.429,
+    "razao2020": 12.1
   },
   "4205209": {
-    "coeficienteGini": 0.492
+    "coeficienteGini": 0.492,
+    "razao2020": 15.4
   },
   "4205308": {
-    "coeficienteGini": 0.403
+    "coeficienteGini": 0.403,
+    "razao2020": 10
   },
   "4205357": {
-    "coeficienteGini": 0.387
+    "coeficienteGini": 0.387,
+    "razao2020": 9.4
   },
   "4205407": {
-    "coeficienteGini": 0.396
+    "coeficienteGini": 0.396,
+    "razao2020": 10.1
   },
   "4205431": {
-    "coeficienteGini": 0.439
+    "coeficienteGini": 0.439,
+    "razao2020": 12.1
   },
   "4205456": {
-    "coeficienteGini": 0.451
+    "coeficienteGini": 0.451,
+    "razao2020": 12.8
   },
   "4205506": {
-    "coeficienteGini": 0.468
+    "coeficienteGini": 0.468,
+    "razao2020": 13.8
   },
   "4205555": {
-    "coeficienteGini": 0.439
+    "coeficienteGini": 0.439,
+    "razao2020": 12.4
   },
   "4205605": {
-    "coeficienteGini": 0.376
+    "coeficienteGini": 0.376,
+    "razao2020": 8.7
   },
   "4205704": {
-    "coeficienteGini": 0.45
+    "coeficienteGini": 0.45,
+    "razao2020": 12.7
   },
   "4205803": {
-    "coeficienteGini": 0.451
+    "coeficienteGini": 0.451,
+    "razao2020": 12.8
   },
   "4205902": {
-    "coeficienteGini": 0.413
+    "coeficienteGini": 0.413,
+    "razao2020": 10.9
   },
   "4206009": {
-    "coeficienteGini": 0.426
+    "coeficienteGini": 0.426,
+    "razao2020": 11.2
   },
   "4206108": {
-    "coeficienteGini": 0.36
+    "coeficienteGini": 0.36,
+    "razao2020": 8
   },
   "4206207": {
-    "coeficienteGini": 0.404
+    "coeficienteGini": 0.404,
+    "razao2020": 10.2
   },
   "4206306": {
-    "coeficienteGini": 0.53
+    "coeficienteGini": 0.53,
+    "razao2020": 17
   },
   "4206405": {
-    "coeficienteGini": 0.336
+    "coeficienteGini": 0.336,
+    "razao2020": 6.8
   },
   "4206504": {
-    "coeficienteGini": 0.373
+    "coeficienteGini": 0.373,
+    "razao2020": 8.6
   },
   "4206603": {
-    "coeficienteGini": 0.426
+    "coeficienteGini": 0.426,
+    "razao2020": 12
   },
   "4206652": {
-    "coeficienteGini": 0.402
+    "coeficienteGini": 0.402,
+    "razao2020": 10.7
   },
   "4206702": {
-    "coeficienteGini": 0.484
+    "coeficienteGini": 0.484,
+    "razao2020": 14.1
   },
   "4206751": {
-    "coeficienteGini": 0.482
+    "coeficienteGini": 0.482,
+    "razao2020": 14.9
   },
   "4206801": {
-    "coeficienteGini": 0.417
+    "coeficienteGini": 0.417,
+    "razao2020": 10.8
   },
   "4206900": {
-    "coeficienteGini": 0.34
+    "coeficienteGini": 0.34,
+    "razao2020": 6.7
   },
   "4207007": {
-    "coeficienteGini": 0.437
+    "coeficienteGini": 0.437,
+    "razao2020": 12.5
   },
   "4207106": {
-    "coeficienteGini": 0.444
+    "coeficienteGini": 0.444,
+    "razao2020": 12.9
   },
   "4207205": {
-    "coeficienteGini": 0.498
+    "coeficienteGini": 0.498,
+    "razao2020": 15.7
   },
   "4207304": {
-    "coeficienteGini": 0.43
+    "coeficienteGini": 0.43,
+    "razao2020": 11.6
   },
   "4207403": {
-    "coeficienteGini": 0.496
+    "coeficienteGini": 0.496,
+    "razao2020": 14.8
   },
   "4207502": {
-    "coeficienteGini": 0.429
+    "coeficienteGini": 0.429,
+    "razao2020": 11.8
   },
   "4207577": {
-    "coeficienteGini": 0.452
+    "coeficienteGini": 0.452,
+    "razao2020": 12.8
   },
   "4207601": {
-    "coeficienteGini": 0.369
+    "coeficienteGini": 0.369,
+    "razao2020": 8.8
   },
   "4207650": {
-    "coeficienteGini": 0.457
+    "coeficienteGini": 0.457,
+    "razao2020": 13.1
   },
   "4207684": {
-    "coeficienteGini": 0.419
+    "coeficienteGini": 0.419,
+    "razao2020": 10.9
   },
   "4207700": {
-    "coeficienteGini": 0.343
+    "coeficienteGini": 0.343,
+    "razao2020": 7.1
   },
   "4207759": {
-    "coeficienteGini": 0.503
+    "coeficienteGini": 0.503,
+    "razao2020": 16
   },
   "4207809": {
-    "coeficienteGini": 0.407
+    "coeficienteGini": 0.407,
+    "razao2020": 10.2
   },
   "4207858": {
-    "coeficienteGini": 0.435
+    "coeficienteGini": 0.435,
+    "razao2020": 11.7
   },
   "4207908": {
-    "coeficienteGini": 0.433
+    "coeficienteGini": 0.433,
+    "razao2020": 12.3
   },
   "4208005": {
-    "coeficienteGini": 0.484
+    "coeficienteGini": 0.484,
+    "razao2020": 14.3
   },
   "4208104": {
-    "coeficienteGini": 0.419
+    "coeficienteGini": 0.419,
+    "razao2020": 11.1
   },
   "4208203": {
-    "coeficienteGini": 0.345
+    "coeficienteGini": 0.345,
+    "razao2020": 7.3
   },
   "4208302": {
-    "coeficienteGini": 0.45
+    "coeficienteGini": 0.45,
+    "razao2020": 12.7
   },
   "4208401": {
-    "coeficienteGini": 0.373
+    "coeficienteGini": 0.373,
+    "razao2020": 9.2
   },
   "4208450": {
-    "coeficienteGini": 0.546
+    "coeficienteGini": 0.546,
+    "razao2020": 17.3
   },
   "4208500": {
-    "coeficienteGini": 0.41
+    "coeficienteGini": 0.41,
+    "razao2020": 10.4
   },
   "4208609": {
-    "coeficienteGini": 0.362
+    "coeficienteGini": 0.362,
+    "razao2020": 8
   },
   "4208708": {
-    "coeficienteGini": 0.441
+    "coeficienteGini": 0.441,
+    "razao2020": 12.8
   },
   "4208807": {
-    "coeficienteGini": 0.397
+    "coeficienteGini": 0.397,
+    "razao2020": 10.1
   },
   "4208906": {
-    "coeficienteGini": 0.39
+    "coeficienteGini": 0.39,
+    "razao2020": 9.5
   },
   "4208955": {
-    "coeficienteGini": 0.39
+    "coeficienteGini": 0.39,
+    "razao2020": 9.3
   },
   "4209003": {
-    "coeficienteGini": 0.37
+    "coeficienteGini": 0.37,
+    "razao2020": 9
   },
   "4209102": {
-    "coeficienteGini": 0.48
+    "coeficienteGini": 0.48,
+    "razao2020": 14.4
   },
   "4209151": {
-    "coeficienteGini": 0.419
+    "coeficienteGini": 0.419,
+    "razao2020": 11.3
   },
   "4209177": {
-    "coeficienteGini": 0.372
+    "coeficienteGini": 0.372,
+    "razao2020": 9.2
   },
   "4209201": {
-    "coeficienteGini": 0.424
+    "coeficienteGini": 0.424,
+    "razao2020": 10.9
   },
   "4209300": {
-    "coeficienteGini": 0.32
+    "coeficienteGini": 0.32,
+    "razao2020": 6
   },
   "4209409": {
-    "coeficienteGini": 0.447
+    "coeficienteGini": 0.447,
+    "razao2020": 12.4
   },
   "4209458": {
-    "coeficienteGini": 0.43
+    "coeficienteGini": 0.43,
+    "razao2020": 12.1
   },
   "4209508": {
-    "coeficienteGini": 0.493
+    "coeficienteGini": 0.493,
+    "razao2020": 14.9
   },
   "4209607": {
-    "coeficienteGini": 0.498
+    "coeficienteGini": 0.498,
+    "razao2020": 15.3
   },
   "4209706": {
-    "coeficienteGini": 0.521
+    "coeficienteGini": 0.521,
+    "razao2020": 16.2
   },
   "4209805": {
-    "coeficienteGini": 0.476
+    "coeficienteGini": 0.476,
+    "razao2020": 14.3
   },
   "4209854": {
-    "coeficienteGini": 0.457
+    "coeficienteGini": 0.457,
+    "razao2020": 12.9
   },
   "4209904": {
-    "coeficienteGini": 0.409
+    "coeficienteGini": 0.409,
+    "razao2020": 10.2
   },
   "4210001": {
-    "coeficienteGini": 0.384
+    "coeficienteGini": 0.384,
+    "razao2020": 9.6
   },
   "4210035": {
-    "coeficienteGini": 0.455
+    "coeficienteGini": 0.455,
+    "razao2020": 12.8
   },
   "4210050": {
-    "coeficienteGini": 0.441
+    "coeficienteGini": 0.441,
+    "razao2020": 12.4
   },
   "4210100": {
-    "coeficienteGini": 0.369
+    "coeficienteGini": 0.369,
+    "razao2020": 8.7
   },
   "4210209": {
-    "coeficienteGini": 0.581
+    "coeficienteGini": 0.581,
+    "razao2020": 19.6
   },
   "4210308": {
-    "coeficienteGini": 0.505
+    "coeficienteGini": 0.505,
+    "razao2020": 15.9
   },
   "4210407": {
-    "coeficienteGini": 0.468
+    "coeficienteGini": 0.468,
+    "razao2020": 14.2
   },
   "4210506": {
-    "coeficienteGini": 0.354
+    "coeficienteGini": 0.354,
+    "razao2020": 7.4
   },
   "4210555": {
-    "coeficienteGini": 0.349
+    "coeficienteGini": 0.349,
+    "razao2020": 7.9
   },
   "4210605": {
-    "coeficienteGini": 0.401
+    "coeficienteGini": 0.401,
+    "razao2020": 10.5
   },
   "4210704": {
-    "coeficienteGini": 0.426
+    "coeficienteGini": 0.426,
+    "razao2020": 11.8
   },
   "4210803": {
-    "coeficienteGini": 0.351
+    "coeficienteGini": 0.351,
+    "razao2020": 7.4
   },
   "4210852": {
-    "coeficienteGini": 0.456
+    "coeficienteGini": 0.456,
+    "razao2020": 13.5
   },
   "4210902": {
-    "coeficienteGini": 0.447
+    "coeficienteGini": 0.447,
+    "razao2020": 13.1
   },
   "4211009": {
-    "coeficienteGini": 0.453
+    "coeficienteGini": 0.453,
+    "razao2020": 12.5
   },
   "4211058": {
-    "coeficienteGini": 0.365
+    "coeficienteGini": 0.365,
+    "razao2020": 8.7
   },
   "4211108": {
-    "coeficienteGini": 0.346
+    "coeficienteGini": 0.346,
+    "razao2020": 7
   },
   "4211207": {
-    "coeficienteGini": 0.43
+    "coeficienteGini": 0.43,
+    "razao2020": 11.8
   },
   "4211256": {
-    "coeficienteGini": 0.406
+    "coeficienteGini": 0.406,
+    "razao2020": 10.2
   },
   "4211306": {
-    "coeficienteGini": 0.525
+    "coeficienteGini": 0.525,
+    "razao2020": 17.1
   },
   "4211405": {
-    "coeficienteGini": 0.345
+    "coeficienteGini": 0.345,
+    "razao2020": 7.5
   },
   "4211454": {
-    "coeficienteGini": 0.469
+    "coeficienteGini": 0.469,
+    "razao2020": 14.1
   },
   "4211504": {
-    "coeficienteGini": 0.393
+    "coeficienteGini": 0.393,
+    "razao2020": 9.6
   },
   "4211603": {
-    "coeficienteGini": 0.41
+    "coeficienteGini": 0.41,
+    "razao2020": 10.7
   },
   "4211652": {
-    "coeficienteGini": 0.421
+    "coeficienteGini": 0.421,
+    "razao2020": 11
   },
   "4211702": {
-    "coeficienteGini": 0.379
+    "coeficienteGini": 0.379,
+    "razao2020": 8.7
   },
   "4211751": {
-    "coeficienteGini": 0.447
+    "coeficienteGini": 0.447,
+    "razao2020": 12.7
   },
   "4211801": {
-    "coeficienteGini": 0.355
+    "coeficienteGini": 0.355,
+    "razao2020": 7.6
   },
   "4211850": {
-    "coeficienteGini": 0.437
+    "coeficienteGini": 0.437,
+    "razao2020": 12.3
   },
   "4211876": {
-    "coeficienteGini": 0.37
+    "coeficienteGini": 0.37,
+    "razao2020": 8.7
   },
   "4211892": {
-    "coeficienteGini": 0.35
+    "coeficienteGini": 0.35,
+    "razao2020": 7.3
   },
   "4211900": {
-    "coeficienteGini": 0.404
+    "coeficienteGini": 0.404,
+    "razao2020": 10.2
   },
   "4212007": {
-    "coeficienteGini": 0.409
+    "coeficienteGini": 0.409,
+    "razao2020": 10.2
   },
   "4212056": {
-    "coeficienteGini": 0.339
+    "coeficienteGini": 0.339,
+    "razao2020": 7
   },
   "4212106": {
-    "coeficienteGini": 0.352
+    "coeficienteGini": 0.352,
+    "razao2020": 7.2
   },
   "4212205": {
-    "coeficienteGini": 0.419
+    "coeficienteGini": 0.419,
+    "razao2020": 10.7
   },
   "4212239": {
-    "coeficienteGini": 0.511
+    "coeficienteGini": 0.511,
+    "razao2020": 16.4
   },
   "4212254": {
-    "coeficienteGini": 0.494
+    "coeficienteGini": 0.494,
+    "razao2020": 15
   },
   "4212270": {
-    "coeficienteGini": 0.542
+    "coeficienteGini": 0.542,
+    "razao2020": 17.7
   },
   "4212304": {
-    "coeficienteGini": 0.449
+    "coeficienteGini": 0.449,
+    "razao2020": 12.3
   },
   "4212403": {
-    "coeficienteGini": 0.438
+    "coeficienteGini": 0.438,
+    "razao2020": 12.4
   },
   "4212502": {
-    "coeficienteGini": 0.48
+    "coeficienteGini": 0.48,
+    "razao2020": 13.8
   },
   "4212601": {
-    "coeficienteGini": 0.369
+    "coeficienteGini": 0.369,
+    "razao2020": 8.3
   },
   "4212650": {
-    "coeficienteGini": 0.379
+    "coeficienteGini": 0.379,
+    "razao2020": 9.2
   },
   "4212700": {
-    "coeficienteGini": 0.455
+    "coeficienteGini": 0.455,
+    "razao2020": 13.2
   },
   "4212809": {
-    "coeficienteGini": 0.501
+    "coeficienteGini": 0.501,
+    "razao2020": 15.5
   },
   "4212908": {
-    "coeficienteGini": 0.507
+    "coeficienteGini": 0.507,
+    "razao2020": 15.4
   },
   "4213005": {
-    "coeficienteGini": 0.435
+    "coeficienteGini": 0.435,
+    "razao2020": 12.2
   },
   "4213104": {
-    "coeficienteGini": 0.38
+    "coeficienteGini": 0.38,
+    "razao2020": 8.8
   },
   "4213153": {
-    "coeficienteGini": 0.481
+    "coeficienteGini": 0.481,
+    "razao2020": 14.9
   },
   "4213203": {
-    "coeficienteGini": 0.447
+    "coeficienteGini": 0.447,
+    "razao2020": 12.2
   },
   "4213302": {
-    "coeficienteGini": 0.376
+    "coeficienteGini": 0.376,
+    "razao2020": 8.4
   },
   "4213351": {
-    "coeficienteGini": 0.54
+    "coeficienteGini": 0.54,
+    "razao2020": 17.2
   },
   "4213401": {
-    "coeficienteGini": 0.395
+    "coeficienteGini": 0.395,
+    "razao2020": 10.1
   },
   "4213500": {
-    "coeficienteGini": 0.412
+    "coeficienteGini": 0.412,
+    "razao2020": 10.8
   },
   "4213609": {
-    "coeficienteGini": 0.446
+    "coeficienteGini": 0.446,
+    "razao2020": 12.5
   },
   "4213708": {
-    "coeficienteGini": 0.384
+    "coeficienteGini": 0.384,
+    "razao2020": 9.3
   },
   "4213807": {
-    "coeficienteGini": 0.43
+    "coeficienteGini": 0.43,
+    "razao2020": 12.2
   },
   "4213906": {
-    "coeficienteGini": 0.405
+    "coeficienteGini": 0.405,
+    "razao2020": 10.2
   },
   "4214003": {
-    "coeficienteGini": 0.47
+    "coeficienteGini": 0.47,
+    "razao2020": 13.4
   },
   "4214102": {
-    "coeficienteGini": 0.344
+    "coeficienteGini": 0.344,
+    "razao2020": 7.1
   },
   "4214151": {
-    "coeficienteGini": 0.45
+    "coeficienteGini": 0.45,
+    "razao2020": 12.6
   },
   "4214201": {
-    "coeficienteGini": 0.446
+    "coeficienteGini": 0.446,
+    "razao2020": 12.8
   },
   "4214300": {
-    "coeficienteGini": 0.412
+    "coeficienteGini": 0.412,
+    "razao2020": 10.8
   },
   "4214409": {
-    "coeficienteGini": 0.32
+    "coeficienteGini": 0.32,
+    "razao2020": 6.2
   },
   "4214508": {
-    "coeficienteGini": 0.436
+    "coeficienteGini": 0.436,
+    "razao2020": 12.2
   },
   "4214607": {
-    "coeficienteGini": 0.408
+    "coeficienteGini": 0.408,
+    "razao2020": 10.2
   },
   "4214706": {
-    "coeficienteGini": 0.475
+    "coeficienteGini": 0.475,
+    "razao2020": 14
   },
   "4214805": {
-    "coeficienteGini": 0.445
+    "coeficienteGini": 0.445,
+    "razao2020": 12.5
   },
   "4214904": {
-    "coeficienteGini": 0.377
+    "coeficienteGini": 0.377,
+    "razao2020": 8.6
   },
   "4215000": {
-    "coeficienteGini": 0.403
+    "coeficienteGini": 0.403,
+    "razao2020": 10.4
   },
   "4215059": {
-    "coeficienteGini": 0.38
+    "coeficienteGini": 0.38,
+    "razao2020": 9.6
   },
   "4215075": {
-    "coeficienteGini": 0.476
+    "coeficienteGini": 0.476,
+    "razao2020": 14.3
   },
   "4215109": {
-    "coeficienteGini": 0.532
+    "coeficienteGini": 0.532,
+    "razao2020": 17.4
   },
   "4215208": {
-    "coeficienteGini": 0.432
+    "coeficienteGini": 0.432,
+    "razao2020": 11.8
   },
   "4215307": {
-    "coeficienteGini": 0.455
+    "coeficienteGini": 0.455,
+    "razao2020": 12.8
   },
   "4215356": {
-    "coeficienteGini": 0.418
+    "coeficienteGini": 0.418,
+    "razao2020": 11.3
   },
   "4215406": {
-    "coeficienteGini": 0.489
+    "coeficienteGini": 0.489,
+    "razao2020": 14.4
   },
   "4215455": {
-    "coeficienteGini": 0.514
+    "coeficienteGini": 0.514,
+    "razao2020": 16.6
   },
   "4215505": {
-    "coeficienteGini": 0.413
+    "coeficienteGini": 0.413,
+    "razao2020": 11
   },
   "4215554": {
-    "coeficienteGini": 0.509
+    "coeficienteGini": 0.509,
+    "razao2020": 16
   },
   "4215604": {
-    "coeficienteGini": 0.435
+    "coeficienteGini": 0.435,
+    "razao2020": 11.7
   },
   "4215653": {
-    "coeficienteGini": 0.422
+    "coeficienteGini": 0.422,
+    "razao2020": 11.3
   },
   "4215679": {
-    "coeficienteGini": 0.408
+    "coeficienteGini": 0.408,
+    "razao2020": 11
   },
   "4215687": {
-    "coeficienteGini": 0.339
+    "coeficienteGini": 0.339,
+    "razao2020": 7.1
   },
   "4215695": {
-    "coeficienteGini": 0.43
+    "coeficienteGini": 0.43,
+    "razao2020": 11.3
   },
   "4215703": {
-    "coeficienteGini": 0.402
+    "coeficienteGini": 0.402,
+    "razao2020": 10.4
   },
   "4215752": {
-    "coeficienteGini": 0.495
+    "coeficienteGini": 0.495,
+    "razao2020": 15.1
   },
   "4215802": {
-    "coeficienteGini": 0.41
+    "coeficienteGini": 0.41,
+    "razao2020": 11
   },
   "4215901": {
-    "coeficienteGini": 0.437
+    "coeficienteGini": 0.437,
+    "razao2020": 12.1
   },
   "4216008": {
-    "coeficienteGini": 0.497
+    "coeficienteGini": 0.497,
+    "razao2020": 15.2
   },
   "4216057": {
-    "coeficienteGini": 0.406
+    "coeficienteGini": 0.406,
+    "razao2020": 10.9
   },
   "4216107": {
-    "coeficienteGini": 0.32
+    "coeficienteGini": 0.32,
+    "razao2020": 6.3
   },
   "4216206": {
-    "coeficienteGini": 0.387
+    "coeficienteGini": 0.387,
+    "razao2020": 9.5
   },
   "4216255": {
-    "coeficienteGini": 0.401
+    "coeficienteGini": 0.401,
+    "razao2020": 10.7
   },
   "4216305": {
-    "coeficienteGini": 0.32
+    "coeficienteGini": 0.32,
+    "razao2020": 5.9
   },
   "4216354": {
-    "coeficienteGini": 0.427
+    "coeficienteGini": 0.427,
+    "razao2020": 11.6
   },
   "4216404": {
-    "coeficienteGini": 0.519
+    "coeficienteGini": 0.519,
+    "razao2020": 16
   },
   "4216503": {
-    "coeficienteGini": 0.462
+    "coeficienteGini": 0.462,
+    "razao2020": 13.3
   },
   "4216602": {
-    "coeficienteGini": 0.445
+    "coeficienteGini": 0.445,
+    "razao2020": 13
   },
   "4216701": {
-    "coeficienteGini": 0.364
+    "coeficienteGini": 0.364,
+    "razao2020": 7.9
   },
   "4216800": {
-    "coeficienteGini": 0.394
+    "coeficienteGini": 0.394,
+    "razao2020": 10.2
   },
   "4216909": {
-    "coeficienteGini": 0.44
+    "coeficienteGini": 0.44,
+    "razao2020": 12
   },
   "4217006": {
-    "coeficienteGini": 0.48
+    "coeficienteGini": 0.48,
+    "razao2020": 14.2
   },
   "4217105": {
-    "coeficienteGini": 0.427
+    "coeficienteGini": 0.427,
+    "razao2020": 11.8
   },
   "4217154": {
-    "coeficienteGini": 0.483
+    "coeficienteGini": 0.483,
+    "razao2020": 14.9
   },
   "4217204": {
-    "coeficienteGini": 0.407
+    "coeficienteGini": 0.407,
+    "razao2020": 10.7
   },
   "4217253": {
-    "coeficienteGini": 0.465
+    "coeficienteGini": 0.465,
+    "razao2020": 13.9
   },
   "4217303": {
-    "coeficienteGini": 0.423
+    "coeficienteGini": 0.423,
+    "razao2020": 11.2
   },
   "4217402": {
-    "coeficienteGini": 0.407
+    "coeficienteGini": 0.407,
+    "razao2020": 10.6
   },
   "4217501": {
-    "coeficienteGini": 0.466
+    "coeficienteGini": 0.466,
+    "razao2020": 13.5
   },
   "4217550": {
-    "coeficienteGini": 0.458
+    "coeficienteGini": 0.458,
+    "razao2020": 13.3
   },
   "4217600": {
-    "coeficienteGini": 0.46
+    "coeficienteGini": 0.46,
+    "razao2020": 13.4
   },
   "4217709": {
-    "coeficienteGini": 0.459
+    "coeficienteGini": 0.459,
+    "razao2020": 13.6
   },
   "4217758": {
-    "coeficienteGini": 0.449
+    "coeficienteGini": 0.449,
+    "razao2020": 12.8
   },
   "4217808": {
-    "coeficienteGini": 0.484
+    "coeficienteGini": 0.484,
+    "razao2020": 14.6
   },
   "4217907": {
-    "coeficienteGini": 0.422
+    "coeficienteGini": 0.422,
+    "razao2020": 11.2
   },
   "4217956": {
-    "coeficienteGini": 0.413
+    "coeficienteGini": 0.413,
+    "razao2020": 10.7
   },
   "4218004": {
-    "coeficienteGini": 0.541
+    "coeficienteGini": 0.541,
+    "razao2020": 17.4
   },
   "4218103": {
-    "coeficienteGini": 0.463
+    "coeficienteGini": 0.463,
+    "razao2020": 13.2
   },
   "4218202": {
-    "coeficienteGini": 0.455
+    "coeficienteGini": 0.455,
+    "razao2020": 13
   },
   "4218251": {
-    "coeficienteGini": 0.448
+    "coeficienteGini": 0.448,
+    "razao2020": 12.3
   },
   "4218301": {
-    "coeficienteGini": 0.402
+    "coeficienteGini": 0.402,
+    "razao2020": 10.7
   },
   "4218350": {
-    "coeficienteGini": 0.442
+    "coeficienteGini": 0.442,
+    "razao2020": 12
   },
   "4218400": {
-    "coeficienteGini": 0.417
+    "coeficienteGini": 0.417,
+    "razao2020": 10.8
   },
   "4218509": {
-    "coeficienteGini": 0.428
+    "coeficienteGini": 0.428,
+    "razao2020": 11.7
   },
   "4218608": {
-    "coeficienteGini": 0.589
+    "coeficienteGini": 0.589,
+    "razao2020": 19.6
   },
   "4218707": {
-    "coeficienteGini": 0.574
+    "coeficienteGini": 0.574,
+    "razao2020": 18.9
   },
   "4218756": {
-    "coeficienteGini": 0.385
+    "coeficienteGini": 0.385,
+    "razao2020": 8.9
   },
   "4218806": {
-    "coeficienteGini": 0.421
+    "coeficienteGini": 0.421,
+    "razao2020": 11.1
   },
   "4218855": {
-    "coeficienteGini": 0.464
+    "coeficienteGini": 0.464,
+    "razao2020": 13.6
   },
   "4218905": {
-    "coeficienteGini": 0.484
+    "coeficienteGini": 0.484,
+    "razao2020": 14
   },
   "4218954": {
-    "coeficienteGini": 0.42
+    "coeficienteGini": 0.42,
+    "razao2020": 10.9
   },
   "4219002": {
-    "coeficienteGini": 0.413
+    "coeficienteGini": 0.413,
+    "razao2020": 10.8
   },
   "4219101": {
-    "coeficienteGini": 0.527
+    "coeficienteGini": 0.527,
+    "razao2020": 16.8
   },
   "4219150": {
-    "coeficienteGini": 0.389
+    "coeficienteGini": 0.389,
+    "razao2020": 9.1
   },
   "4219176": {
-    "coeficienteGini": 0.377
+    "coeficienteGini": 0.377,
+    "razao2020": 9
   },
   "4219200": {
-    "coeficienteGini": 0.351
+    "coeficienteGini": 0.351,
+    "razao2020": 7.6
   },
   "4219309": {
-    "coeficienteGini": 0.474
+    "coeficienteGini": 0.474,
+    "razao2020": 14.3
   },
   "4219358": {
-    "coeficienteGini": 0.457
+    "coeficienteGini": 0.457,
+    "razao2020": 12.8
   },
   "4219408": {
-    "coeficienteGini": 0.457
+    "coeficienteGini": 0.457,
+    "razao2020": 13.2
   },
   "4219507": {
-    "coeficienteGini": 0.453
+    "coeficienteGini": 0.453,
+    "razao2020": 13
   },
   "4219606": {
-    "coeficienteGini": 0.443
+    "coeficienteGini": 0.443,
+    "razao2020": 12.4
   },
   "4219705": {
-    "coeficienteGini": 0.447
+    "coeficienteGini": 0.447,
+    "razao2020": 12.7
   },
   "4219853": {
-    "coeficienteGini": 0.491
+    "coeficienteGini": 0.491,
+    "razao2020": 15.4
   },
   "4220000": {
-    "coeficienteGini": 0.467
+    "coeficienteGini": 0.467,
+    "razao2020": 13.6
   }
 }

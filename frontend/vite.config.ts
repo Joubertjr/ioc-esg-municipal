@@ -18,4 +18,9 @@ export default defineConfig({
       },
     },
   },
+  preview: {
+    // Keep the same port for `vite preview` so E2E tests don't need reconfiguration.
+    port: 5173,
+    host: true,
+  },
 });

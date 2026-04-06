@@ -137,7 +137,7 @@ describe("GET /api/ods/:ibgeCode", () => {
     expect(res.status).toBe(200);
     // Aguarda microtasks do fire-and-forget para que o mock seja registrado
     await Promise.resolve();
-    expect(mockCalculateAndPersistScores).toHaveBeenCalledWith(VALID_IBGE_CODE);
+    expect(mockCalculateAndPersistScores).toHaveBeenCalledWith(VALID_IBGE_CODE, expect.objectContaining({ ibgeCode: VALID_IBGE_CODE }));
   });
 
   it("não deve chamar calculateAndPersistScores quando não há dados (404)", async () => {

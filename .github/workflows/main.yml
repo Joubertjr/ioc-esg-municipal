@@ -98,8 +98,10 @@ jobs:
     env:
       DATABASE_URL: postgresql://test:test@localhost:5432/ioc_esg_test
       REDIS_URL: redis://localhost:6379
-      JWT_SECRET: ${{ secrets.JWT_SECRET }}
+      # Fallback secret for CI — never used in production (production value lives in secrets).
+      JWT_SECRET: ${{ secrets.JWT_SECRET || 'ci-test-jwt-secret-do-not-use-in-prod' }}
       NODE_ENV: test
+      PORT: 3000
       ALLOWED_ORIGINS: http://localhost:5173
 
     steps:
@@ -113,27 +115,51 @@ jobs:
         run: npx playwright install --with-deps chromium
       - name: Setup database
         run: pnpm prisma migrate deploy && pnpm db:seed
-      - name: Build frontend
-        run: pnpm build:frontend
+      - name: Build backend and frontend
+        run: pnpm build
       - name: Start backend server
-        run: nohup pnpm start &
+        run: nohup node dist/backend/index.js &
       - name: Wait for backend to be ready
         run: |
           echo "Waiting for backend on http://localhost:3000/health..."
-          for i in $(seq 1 15); do
+          for i in $(seq 1 20); do
             if curl -sf http://localhost:3000/health; then
+              echo ""
               echo "Backend is ready"
+              exit 0
+            fi
+            echo "Attempt $i/20 — retrying in 2s..."
+            sleep 2
+          done
+          echo "Backend did not start in time" >&2
+          exit 1
+      - name: Start frontend preview server
+        # Serve the pre-built frontend on port 5173 so Playwright can reach it.
+        # `vite preview` reads the `preview.port` from vite.config.ts (5173).
+        run: nohup pnpm --filter ioc-esg-municipal-frontend run preview &
+      - name: Wait for frontend to be ready
+        run: |
+          echo "Waiting for frontend on http://localhost:5173..."
+          for i in $(seq 1 15); do
+            if curl -sf http://localhost:5173; then
+              echo ""
+              echo "Frontend is ready"
               exit 0
             fi
             echo "Attempt $i/15 — retrying in 2s..."
             sleep 2
           done
-          echo "Backend did not start in time" >&2
+          echo "Frontend did not start in time" >&2
           exit 1
       - name: Run E2E tests
+        # PLAYWRIGHT_SKIP_WEBSERVER=1 tells playwright.config.ts not to spawn extra
+        # dev servers — backend and frontend are already running from the steps above.
+        env:
+          PLAYWRIGHT_SKIP_WEBSERVER: "1"
         run: pnpm test:e2e
-      - name: Upload Playwright report on failure
-        if: failure()
+      - name: Upload Playwright report
+        # Always upload so failures can be investigated; keep for 7 days.
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: playwright-report

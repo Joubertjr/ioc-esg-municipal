@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import { apiPost, getToken, setToken, removeToken, isAuthenticated } from "../lib/api";
+import { apiPost, setRefreshToken } from "../lib/api";
 
 interface LoginPayload {
   email: string;
@@ -15,6 +15,7 @@ interface RegisterPayload {
 
 interface AuthResponse {
   token: string;
+  refreshToken: string;
 }
 
 export function useAuth() {
@@ -23,8 +24,8 @@ export function useAuth() {
   const login = useCallback(
     async (email: string, password: string): Promise<void> => {
       const payload: LoginPayload = { email, password };
-      const data = await apiPost<AuthResponse>("/api/auth/login", payload);
-      setToken(data.token);
+      const result = await apiPost<AuthResponse>("/api/auth/login", payload);
+      setRefreshToken(result.refreshToken);
       navigate("/dashboard");
     },
     [navigate],
@@ -33,23 +34,21 @@ export function useAuth() {
   const register = useCallback(
     async (name: string, email: string, password: string): Promise<void> => {
       const payload: RegisterPayload = { name, email, password };
-      const data = await apiPost<AuthResponse>("/api/auth/register", payload);
-      setToken(data.token);
+      const result = await apiPost<AuthResponse>("/api/auth/register", payload);
+      setRefreshToken(result.refreshToken);
       navigate("/dashboard");
     },
     [navigate],
   );
 
-  const logout = useCallback((): void => {
-    removeToken();
-    navigate("/login");
+  const logout = useCallback(async (): Promise<void> => {
+    try {
+      await apiPost<unknown>("/api/auth/logout", {});
+    } finally {
+      setRefreshToken(null);
+      navigate("/login");
+    }
   }, [navigate]);
 
-  return {
-    login,
-    register,
-    logout,
-    isAuthenticated: isAuthenticated(),
-    getToken,
-  };
+  return { login, register, logout };
 }

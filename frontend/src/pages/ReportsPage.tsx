@@ -1,6 +1,7 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { useOdsReport } from "../hooks/useOdsReport";
 import { AppShell } from "../components/layout/AppShell";
+import { useToast } from "../components/ui/Toast";
 import type { OdsSummary, OdsStatus } from "../types/api";
 
 const DEFAULT_IBGE_CODE = "4205407"; // Florianopolis
@@ -239,6 +240,13 @@ function AccordionRow({ ods }: AccordionRowProps) {
 export function ReportsPage() {
   const [ibgeCode, setIbgeCode] = useState(DEFAULT_IBGE_CODE);
   const { data: report, isLoading, isError, error, refetch } = useOdsReport(ibgeCode);
+  const { showToast } = useToast();
+
+  useEffect(() => {
+    if (isError && error) {
+      showToast(error.message ?? "Erro ao carregar dados ODS.", "error");
+    }
+  }, [isError, error, showToast]);
 
   const handlePrint = useCallback(() => {
     window.print();
@@ -305,6 +313,16 @@ export function ReportsPage() {
             {Array.from({ length: 4 }, (_, i) => (
               <div key={i} className="h-24 bg-gray-100 rounded-xl animate-pulse" />
             ))}
+          </div>
+        )}
+
+        {!isLoading && !report && !isError && (
+          <div className="text-center py-20 text-gray-400">
+            <svg className="w-12 h-12 mx-auto mb-3 opacity-40" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+            <p className="text-sm">Nenhum relatorio gerado ainda</p>
+            <p className="text-xs mt-1">Selecione um municipio para gerar o relatorio ESG.</p>
           </div>
         )}
 

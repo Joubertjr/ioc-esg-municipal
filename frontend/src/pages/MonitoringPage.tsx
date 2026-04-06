@@ -1,6 +1,7 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useOdsReport } from "../hooks/useOdsReport";
 import { AppShell } from "../components/layout/AppShell";
+import { useToast } from "../components/ui/Toast";
 import type { OdsSummary, OdsStatus } from "../types/api";
 
 const DEFAULT_IBGE_CODE = "4205407"; // Florianopolis
@@ -190,6 +191,13 @@ export function MonitoringPage() {
   const [sortKey, setSortKey] = useState<SortKey>("odsNumber");
 
   const { data: report, isLoading, isError, error, refetch } = useOdsReport(ibgeCode);
+  const { showToast } = useToast();
+
+  useEffect(() => {
+    if (isError && error) {
+      showToast(error.message ?? "Erro ao carregar dados ODS.", "error");
+    }
+  }, [isError, error, showToast]);
 
   const { verde, amarelo, vermelho, noData } = useMemo(() => {
     if (!report) return { verde: 0, amarelo: 0, vermelho: 0, noData: 0 };
@@ -373,7 +381,15 @@ export function MonitoringPage() {
             <svg className="w-12 h-12 mx-auto mb-3 opacity-40" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
             </svg>
-            <p className="text-sm">Nenhum ODS encontrado com o filtro selecionado.</p>
+            {report
+              ? <p className="text-sm">Nenhum ODS encontrado com o filtro selecionado.</p>
+              : (
+                <>
+                  <p className="text-sm">Nenhuma meta cadastrada</p>
+                  <p className="text-xs mt-1">Selecione um municipio para ver o monitoramento de metas ODS.</p>
+                </>
+              )
+            }
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">

@@ -1,5 +1,6 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import { randomBytes } from "crypto";
 import { z } from "zod";
 import { PrismaClient } from "@prisma/client";
 import { logger } from "../../utils/logger.js";
@@ -38,7 +39,20 @@ export interface SafeUser {
 
 export interface LoginResult {
   token: string;
+  refreshToken: string;
   user: SafeUser;
+}
+
+export interface RefreshResult {
+  token: string;
+  refreshToken: string;
+}
+
+export class AuthRefreshTokenError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "AuthRefreshTokenError";
+  }
 }
 
 // ─── Erros específicos ────────────────────────────────────────────────────────
@@ -68,6 +82,7 @@ export class AuthCredentialsError extends Error {
 
 const SALT_ROUNDS = 12;
 const DEFAULT_JWT_EXPIRATION = "1d";
+const REFRESH_TOKEN_EXPIRY_DAYS = 30;
 
 // ─── AuthService ──────────────────────────────────────────────────────────────
 
@@ -130,13 +145,88 @@ export class AuthService {
     }
 
     const token = this.generateToken(user);
+    const refreshToken = await this.createRefreshToken(user.id);
 
     logger.info("Login realizado com sucesso", { userId: user.id, role: user.role });
 
     return {
       token,
+      refreshToken: refreshToken.token,
       user: this.toSafeUser(user),
     };
+  }
+
+  /**
+   * Valida refresh token, revoga o antigo, emite novos access + refresh tokens (rotação).
+   */
+  async refreshAccessToken(refreshTokenValue: string): Promise<RefreshResult> {
+    logger.info("Tentativa de refresh de token");
+
+    const stored = await this.prisma.refreshToken.findUnique({
+      where: { token: refreshTokenValue },
+      include: { user: true },
+    });
+
+    if (!stored) {
+      throw new AuthRefreshTokenError("Refresh token inválido");
+    }
+
+    if (stored.revokedAt !== null) {
+      // Possible token reuse attack — revoke all tokens for this user
+      logger.warn("Refresh token já revogado detectado — possível reuso", { userId: stored.userId });
+      await this.revokeAllUserTokens(stored.userId);
+      throw new AuthRefreshTokenError("Refresh token já foi utilizado");
+    }
+
+    if (stored.expiresAt < new Date()) {
+      throw new AuthRefreshTokenError("Refresh token expirado");
+    }
+
+    // Rotate: revoke old, issue new
+    await this.prisma.refreshToken.update({
+      where: { id: stored.id },
+      data: { revokedAt: new Date() },
+    });
+
+    const newToken = this.generateToken(stored.user);
+    const newRefreshToken = await this.createRefreshToken(stored.userId);
+
+    logger.info("Tokens renovados com sucesso", { userId: stored.userId });
+
+    return {
+      token: newToken,
+      refreshToken: newRefreshToken.token,
+    };
+  }
+
+  /**
+   * Revoga um refresh token específico (logout).
+   */
+  async revokeRefreshToken(refreshTokenValue: string): Promise<void> {
+    const stored = await this.prisma.refreshToken.findUnique({
+      where: { token: refreshTokenValue },
+    });
+
+    if (!stored || stored.revokedAt !== null) return;
+
+    await this.prisma.refreshToken.update({
+      where: { id: stored.id },
+      data: { revokedAt: new Date() },
+    });
+
+    logger.info("Refresh token revogado", { userId: stored.userId });
+  }
+
+  /**
+   * Revoga todos os refresh tokens de um usuário (logout global / segurança).
+   */
+  async revokeAllUserTokens(userId: string): Promise<void> {
+    await this.prisma.refreshToken.updateMany({
+      where: { userId, revokedAt: null },
+      data: { revokedAt: new Date() },
+    });
+
+    logger.info("Todos os refresh tokens revogados para o usuário", { userId });
   }
 
   /**
@@ -160,6 +250,16 @@ export class AuthService {
   }
 
   // ─── Privado ───────────────────────────────────────────────────────────────
+
+  private async createRefreshToken(userId: string) {
+    const token = randomBytes(48).toString("hex");
+    const expiresAt = new Date();
+    expiresAt.setDate(expiresAt.getDate() + REFRESH_TOKEN_EXPIRY_DAYS);
+
+    return this.prisma.refreshToken.create({
+      data: { token, userId, expiresAt },
+    });
+  }
 
   private generateToken(user: {
     id: string;

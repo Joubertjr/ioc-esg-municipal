@@ -58,6 +58,7 @@ export function globalErrorHandler(
 
   // Log estruturado — erros 5xx como error, 4xx como warn
   const logPayload = {
+    requestId: req.requestId,
     statusCode,
     method: req.method,
     path: req.path,
@@ -103,6 +104,7 @@ export function globalErrorHandler(
  */
 export function notFoundHandler(req: Request, res: Response): void {
   logger.warn("[not-found] Rota não encontrada", {
+    requestId: req.requestId,
     method: req.method,
     path: req.path,
   });

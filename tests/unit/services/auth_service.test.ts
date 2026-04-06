@@ -21,10 +21,18 @@ const {
   mockPrismaUserFindUnique,
   mockPrismaUserCreate,
   mockPrismaUserCount,
+  mockPrismaRefreshTokenCreate,
+  mockPrismaRefreshTokenFindUnique,
+  mockPrismaRefreshTokenUpdate,
+  mockPrismaRefreshTokenUpdateMany,
 } = vi.hoisted(() => ({
   mockPrismaUserFindUnique: vi.fn(),
   mockPrismaUserCreate: vi.fn(),
   mockPrismaUserCount: vi.fn(),
+  mockPrismaRefreshTokenCreate: vi.fn(),
+  mockPrismaRefreshTokenFindUnique: vi.fn(),
+  mockPrismaRefreshTokenUpdate: vi.fn(),
+  mockPrismaRefreshTokenUpdateMany: vi.fn(),
 }));
 
 const { mockBcryptHash, mockBcryptCompare } = vi.hoisted(() => ({
@@ -42,6 +50,12 @@ vi.mock("@prisma/client", () => ({
       findUnique: mockPrismaUserFindUnique,
       create: mockPrismaUserCreate,
       count: mockPrismaUserCount,
+    },
+    refreshToken: {
+      create: mockPrismaRefreshTokenCreate,
+      findUnique: mockPrismaRefreshTokenFindUnique,
+      update: mockPrismaRefreshTokenUpdate,
+      updateMany: mockPrismaRefreshTokenUpdateMany,
     },
   })),
 }));
@@ -76,6 +90,7 @@ import {
   AuthService,
   AuthConflictError,
   AuthCredentialsError,
+  AuthRefreshTokenError,
   RegisterSchema,
   LoginSchema,
 } from "../../../backend/services/auth/auth_service.js";
@@ -91,6 +106,16 @@ const MOCK_USER = {
   municipalityId: "muni-123",
   createdAt: new Date("2026-01-01"),
   updatedAt: new Date("2026-01-01"),
+};
+
+const MOCK_REFRESH_TOKEN = {
+  id: "rt-uuid-1",
+  token: "aabbccddeeff112233445566778899aabbccddeeff112233445566778899aabbccdd",
+  userId: MOCK_USER.id,
+  expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+  createdAt: new Date("2026-01-01"),
+  revokedAt: null,
+  user: MOCK_USER,
 };
 
 // ─── Testes ───────────────────────────────────────────────────────────────────
@@ -197,9 +222,10 @@ describe("AuthService.login", () => {
     process.env["JWT_EXPIRATION"] = "1d";
     const prisma = new PrismaClient();
     service = new AuthService(prisma);
+    mockPrismaRefreshTokenCreate.mockResolvedValue(MOCK_REFRESH_TOKEN);
   });
 
-  it("retorna token e user quando credenciais são válidas", async () => {
+  it("retorna token, refreshToken e user quando credenciais são válidas", async () => {
     mockPrismaUserFindUnique.mockResolvedValueOnce(MOCK_USER);
     mockBcryptCompare.mockResolvedValueOnce(true);
     mockJwtSign.mockReturnValueOnce("jwt.token.aqui");
@@ -210,6 +236,7 @@ describe("AuthService.login", () => {
     });
 
     expect(result.token).toBe("jwt.token.aqui");
+    expect(result.refreshToken).toBe(MOCK_REFRESH_TOKEN.token);
     expect(result.user).toMatchObject({
       id: MOCK_USER.id,
       email: MOCK_USER.email,
@@ -268,6 +295,20 @@ describe("AuthService.login", () => {
       expect.objectContaining({ sub: MOCK_USER.id }),
       "test-secret-para-testes",
       expect.objectContaining({ expiresIn: "7d" }),
+    );
+  });
+
+  it("cria refresh token no banco ao fazer login", async () => {
+    mockPrismaUserFindUnique.mockResolvedValueOnce(MOCK_USER);
+    mockBcryptCompare.mockResolvedValueOnce(true);
+    mockJwtSign.mockReturnValueOnce("jwt.token.aqui");
+
+    await service.login({ email: MOCK_USER.email, password: "SenhaCorreta" });
+
+    expect(mockPrismaRefreshTokenCreate).toHaveBeenCalledWith(
+      expect.objectContaining({
+        data: expect.objectContaining({ userId: MOCK_USER.id }),
+      }),
     );
   });
 });
@@ -400,5 +441,129 @@ describe("LoginSchema (Zod validation)", () => {
       password: "",
     });
     expect(result.success).toBe(false);
+  });
+});
+
+describe("AuthService.refreshAccessToken", () => {
+  let service: AuthService;
+
+  beforeEach(() => {
+    vi.clearAllMocks();
+    process.env["JWT_SECRET"] = "test-secret-para-testes";
+    process.env["JWT_EXPIRATION"] = "1d";
+    const prisma = new PrismaClient();
+    service = new AuthService(prisma);
+    mockPrismaRefreshTokenCreate.mockResolvedValue(MOCK_REFRESH_TOKEN);
+  });
+
+  it("retorna novos tokens quando refresh token é válido", async () => {
+    mockPrismaRefreshTokenFindUnique.mockResolvedValueOnce(MOCK_REFRESH_TOKEN);
+    mockPrismaRefreshTokenUpdate.mockResolvedValueOnce({ ...MOCK_REFRESH_TOKEN, revokedAt: new Date() });
+    mockJwtSign.mockReturnValueOnce("novo.jwt.token");
+
+    const result = await service.refreshAccessToken(MOCK_REFRESH_TOKEN.token);
+
+    expect(result.token).toBe("novo.jwt.token");
+    expect(result.refreshToken).toBe(MOCK_REFRESH_TOKEN.token);
+    expect(mockPrismaRefreshTokenUpdate).toHaveBeenCalledWith(
+      expect.objectContaining({ data: expect.objectContaining({ revokedAt: expect.any(Date) }) }),
+    );
+  });
+
+  it("lança AuthRefreshTokenError quando token não existe", async () => {
+    mockPrismaRefreshTokenFindUnique.mockResolvedValueOnce(null);
+
+    await expect(service.refreshAccessToken("token-inexistente")).rejects.toThrow(AuthRefreshTokenError);
+  });
+
+  it("lança AuthRefreshTokenError quando token já foi revogado", async () => {
+    const revokedToken = { ...MOCK_REFRESH_TOKEN, revokedAt: new Date("2026-01-02") };
+    mockPrismaRefreshTokenFindUnique.mockResolvedValueOnce(revokedToken);
+    mockPrismaRefreshTokenUpdateMany.mockResolvedValueOnce({ count: 1 });
+
+    await expect(service.refreshAccessToken(revokedToken.token)).rejects.toThrow(AuthRefreshTokenError);
+  });
+
+  it("lança AuthRefreshTokenError quando token expirado", async () => {
+    const expiredToken = {
+      ...MOCK_REFRESH_TOKEN,
+      expiresAt: new Date("2025-01-01"),
+    };
+    mockPrismaRefreshTokenFindUnique.mockResolvedValueOnce(expiredToken);
+
+    await expect(service.refreshAccessToken(expiredToken.token)).rejects.toThrow(AuthRefreshTokenError);
+  });
+
+  it("revoga todos os tokens do usuário quando token reutilizado detectado", async () => {
+    const revokedToken = { ...MOCK_REFRESH_TOKEN, revokedAt: new Date() };
+    mockPrismaRefreshTokenFindUnique.mockResolvedValueOnce(revokedToken);
+    mockPrismaRefreshTokenUpdateMany.mockResolvedValueOnce({ count: 2 });
+
+    await expect(service.refreshAccessToken(revokedToken.token)).rejects.toThrow(AuthRefreshTokenError);
+
+    expect(mockPrismaRefreshTokenUpdateMany).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: expect.objectContaining({ userId: MOCK_USER.id, revokedAt: null }),
+      }),
+    );
+  });
+});
+
+describe("AuthService.revokeRefreshToken", () => {
+  let service: AuthService;
+
+  beforeEach(() => {
+    vi.clearAllMocks();
+    const prisma = new PrismaClient();
+    service = new AuthService(prisma);
+  });
+
+  it("revoga token existente", async () => {
+    mockPrismaRefreshTokenFindUnique.mockResolvedValueOnce(MOCK_REFRESH_TOKEN);
+    mockPrismaRefreshTokenUpdate.mockResolvedValueOnce({ ...MOCK_REFRESH_TOKEN, revokedAt: new Date() });
+
+    await service.revokeRefreshToken(MOCK_REFRESH_TOKEN.token);
+
+    expect(mockPrismaRefreshTokenUpdate).toHaveBeenCalledWith(
+      expect.objectContaining({ data: expect.objectContaining({ revokedAt: expect.any(Date) }) }),
+    );
+  });
+
+  it("não faz nada quando token não existe", async () => {
+    mockPrismaRefreshTokenFindUnique.mockResolvedValueOnce(null);
+
+    await service.revokeRefreshToken("token-inexistente");
+
+    expect(mockPrismaRefreshTokenUpdate).not.toHaveBeenCalled();
+  });
+
+  it("não faz nada quando token já foi revogado", async () => {
+    const revokedToken = { ...MOCK_REFRESH_TOKEN, revokedAt: new Date() };
+    mockPrismaRefreshTokenFindUnique.mockResolvedValueOnce(revokedToken);
+
+    await service.revokeRefreshToken(revokedToken.token);
+
+    expect(mockPrismaRefreshTokenUpdate).not.toHaveBeenCalled();
+  });
+});
+
+describe("AuthService.revokeAllUserTokens", () => {
+  let service: AuthService;
+
+  beforeEach(() => {
+    vi.clearAllMocks();
+    const prisma = new PrismaClient();
+    service = new AuthService(prisma);
+  });
+
+  it("revoga todos os tokens ativos do usuário", async () => {
+    mockPrismaRefreshTokenUpdateMany.mockResolvedValueOnce({ count: 3 });
+
+    await service.revokeAllUserTokens(MOCK_USER.id);
+
+    expect(mockPrismaRefreshTokenUpdateMany).toHaveBeenCalledWith({
+      where: { userId: MOCK_USER.id, revokedAt: null },
+      data: { revokedAt: expect.any(Date) },
+    });
   });
 });

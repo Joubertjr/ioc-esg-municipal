@@ -18,6 +18,12 @@ const options: swaggerJsdoc.Options = {
           scheme: "bearer",
           bearerFormat: "JWT",
         },
+        cookieAuth: {
+          type: "apiKey",
+          in: "cookie",
+          name: "token",
+          description: "Cookie httpOnly definido no login. Requer CSRF check via Origin/Referer para métodos não-GET.",
+        },
       },
       schemas: {
         OdsScore: {
@@ -163,13 +169,20 @@ const options: swaggerJsdoc.Options = {
           },
           responses: {
             "200": {
-              description: "Login bem-sucedido",
+              description: "Login bem-sucedido. Cookie httpOnly 'token' é definido automaticamente.",
+              headers: {
+                "Set-Cookie": {
+                  description: "Cookie httpOnly 'token' com o JWT de acesso (validade 1 dia)",
+                  schema: { type: "string" },
+                },
+              },
               content: {
                 "application/json": {
                   schema: {
                     type: "object",
                     properties: {
-                      token: { type: "string", description: "JWT — inclua como Authorization: Bearer <token>" },
+                      token: { type: "string", description: "JWT de acesso — inclua como Authorization: Bearer <token> ou use o cookie httpOnly" },
+                      refreshToken: { type: "string", description: "Token opaco para renovar o access token via POST /auth/refresh" },
                       user: {
                         type: "object",
                         properties: {
@@ -191,7 +204,7 @@ const options: swaggerJsdoc.Options = {
         get: {
           tags: ["Auth"],
           summary: "Retorna dados do usuário autenticado",
-          security: [{ bearerAuth: [] }],
+          security: [{ bearerAuth: [] }, { cookieAuth: [] }],
           responses: {
             "200": {
               description: "Dados do usuário",
@@ -209,6 +222,80 @@ const options: swaggerJsdoc.Options = {
               },
             },
             "401": { description: "Token ausente ou inválido", content: { "application/json": { schema: { $ref: "#/components/schemas/Error" } } } },
+          },
+        },
+      },
+      "/auth/refresh": {
+        post: {
+          tags: ["Auth"],
+          summary: "Renova o access token usando um refresh token válido",
+          description: "Troca um refresh token por novos access token + refresh token (rotação). O refresh token antigo é revogado imediatamente após o uso.",
+          requestBody: {
+            required: true,
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  required: ["refreshToken"],
+                  properties: {
+                    refreshToken: { type: "string", description: "Refresh token obtido no login ou em uma renovação anterior", example: "eyJhbGciOiJIUzI1NiJ9..." },
+                  },
+                },
+              },
+            },
+          },
+          responses: {
+            "200": {
+              description: "Tokens renovados com sucesso",
+              content: {
+                "application/json": {
+                  schema: {
+                    type: "object",
+                    properties: {
+                      token: { type: "string", description: "Novo JWT de acesso" },
+                      refreshToken: { type: "string", description: "Novo refresh token (o anterior foi revogado)" },
+                    },
+                  },
+                },
+              },
+            },
+            "400": { description: "refreshToken ausente ou inválido no body", content: { "application/json": { schema: { $ref: "#/components/schemas/Error" } } } },
+            "401": { description: "Refresh token expirado, revogado ou inválido", content: { "application/json": { schema: { $ref: "#/components/schemas/Error" } } } },
+          },
+        },
+      },
+      "/auth/logout": {
+        post: {
+          tags: ["Auth"],
+          summary: "Encerra a sessão do usuário",
+          description: "Revoga o refresh token (se fornecido) e limpa o cookie httpOnly 'token'. O logout é bem-sucedido mesmo se o refresh token não puder ser revogado.",
+          requestBody: {
+            required: false,
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    refreshToken: { type: "string", description: "Refresh token a ser revogado (opcional, mas recomendado para invalidar sessão completamente)" },
+                  },
+                },
+              },
+            },
+          },
+          responses: {
+            "200": {
+              description: "Logout realizado com sucesso. Cookie 'token' removido.",
+              content: {
+                "application/json": {
+                  schema: {
+                    type: "object",
+                    properties: {
+                      message: { type: "string", example: "Logout realizado com sucesso" },
+                    },
+                  },
+                },
+              },
+            },
           },
         },
       },
@@ -309,22 +396,32 @@ const options: swaggerJsdoc.Options = {
         post: {
           tags: ["Simulador"],
           summary: "Simular impacto de investimento FPM nos ODS",
-          description: "Projeta o impacto de um investimento em políticas públicas nos scores ODS do município.",
-          security: [{ bearerAuth: [] }],
+          description: "Projeta o impacto de um investimento em políticas públicas nos scores ODS do município. A alocação deve somar exatamente 100%.",
+          security: [{ bearerAuth: [] }, { cookieAuth: [] }],
           requestBody: {
             required: true,
             content: {
               "application/json": {
                 schema: {
                   type: "object",
-                  required: ["ibgeCode", "investmentAmount", "targetOds"],
+                  required: ["ibgeCode", "totalAmount", "allocation"],
                   properties: {
                     ibgeCode: { type: "string", pattern: "^\\d{7}$", example: "4204202" },
-                    investmentAmount: { type: "number", description: "Valor em reais", example: 5000000 },
-                    targetOds: {
-                      type: "array",
-                      items: { type: "integer", minimum: 1, maximum: 17 },
-                      example: [3, 4, 6],
+                    totalAmount: { type: "number", description: "Valor total a investir em reais", example: 5000000 },
+                    allocation: {
+                      type: "object",
+                      description: "Percentual por área de investimento. A soma de todos os campos DEVE ser exatamente 100 (tolerância ±0.01).",
+                      required: ["education", "health", "sanitation", "environment", "security", "energy", "urbanization", "governance"],
+                      properties: {
+                        education:    { type: "number", minimum: 0, maximum: 100, example: 30 },
+                        health:       { type: "number", minimum: 0, maximum: 100, example: 20 },
+                        sanitation:   { type: "number", minimum: 0, maximum: 100, example: 15 },
+                        environment:  { type: "number", minimum: 0, maximum: 100, example: 10 },
+                        security:     { type: "number", minimum: 0, maximum: 100, example: 5 },
+                        energy:       { type: "number", minimum: 0, maximum: 100, example: 5 },
+                        urbanization: { type: "number", minimum: 0, maximum: 100, example: 10 },
+                        governance:   { type: "number", minimum: 0, maximum: 100, example: 5 },
+                      },
                     },
                   },
                 },
@@ -350,26 +447,35 @@ const options: swaggerJsdoc.Options = {
         post: {
           tags: ["Simulador"],
           summary: "Compara cenários de simulação de investimento",
-          security: [{ bearerAuth: [] }],
+          description: "Executa múltiplos cenários em paralelo. Body é um array direto de SimulationInput (mín 2, máx 5). Cada cenário deve ter allocation somando 100%.",
+          security: [{ bearerAuth: [] }, { cookieAuth: [] }],
           requestBody: {
             required: true,
             content: {
               "application/json": {
                 schema: {
-                  type: "object",
-                  required: ["ibgeCode", "scenarios"],
-                  properties: {
-                    ibgeCode: { type: "string", pattern: "^\\d{7}$", example: "4204202" },
-                    scenarios: {
-                      type: "array",
-                      minItems: 2,
-                      items: {
+                  type: "array",
+                  minItems: 2,
+                  maxItems: 5,
+                  items: {
+                    type: "object",
+                    required: ["ibgeCode", "totalAmount", "allocation"],
+                    properties: {
+                      ibgeCode: { type: "string", pattern: "^\\d{7}$", example: "4204202" },
+                      totalAmount: { type: "number", example: 3000000 },
+                      allocation: {
                         type: "object",
-                        required: ["label", "investmentAmount", "targetOds"],
+                        description: "Percentual por área — soma deve ser 100%",
+                        required: ["education", "health", "sanitation", "environment", "security", "energy", "urbanization", "governance"],
                         properties: {
-                          label: { type: "string", example: "Foco em Saúde" },
-                          investmentAmount: { type: "number", example: 3000000 },
-                          targetOds: { type: "array", items: { type: "integer" }, example: [3] },
+                          education:    { type: "number", minimum: 0, maximum: 100 },
+                          health:       { type: "number", minimum: 0, maximum: 100 },
+                          sanitation:   { type: "number", minimum: 0, maximum: 100 },
+                          environment:  { type: "number", minimum: 0, maximum: 100 },
+                          security:     { type: "number", minimum: 0, maximum: 100 },
+                          energy:       { type: "number", minimum: 0, maximum: 100 },
+                          urbanization: { type: "number", minimum: 0, maximum: 100 },
+                          governance:   { type: "number", minimum: 0, maximum: 100 },
                         },
                       },
                     },

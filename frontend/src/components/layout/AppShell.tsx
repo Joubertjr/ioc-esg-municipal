@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from "react";
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import { SC_MUNICIPALITIES } from "../../../../shared/constants/municipalities-sc";
-import { removeToken } from "../../lib/api";
+import { useAuth } from "../../hooks/useAuth";
 
 interface AppShellProps {
   ibgeCode: string;
@@ -120,12 +120,11 @@ export function AppShell({
   referenceYear,
   children,
 }: AppShellProps) {
-  const navigate = useNavigate();
+  const { logout } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const handleLogout = () => {
-    removeToken();
-    navigate("/login");
+    void logout();
   };
 
   return (

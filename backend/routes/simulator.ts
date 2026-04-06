@@ -159,9 +159,16 @@ router.get(
     logger.info("[route:simulator] history chamado", { ibgeCode, limit });
 
     try {
+      // Single query: join Municipality → Simulation via nested select
       const municipality = await prisma.municipality.findUnique({
         where: { ibgeCode },
-        select: { id: true },
+        select: {
+          id: true,
+          simulations: {
+            orderBy: { createdAt: "desc" },
+            take: limit,
+          },
+        },
       });
 
       if (!municipality) {
@@ -169,13 +176,13 @@ router.get(
         return;
       }
 
-      const simulations = await prisma.simulation.findMany({
-        where: { municipalityId: municipality.id },
-        orderBy: { createdAt: "desc" },
-        take: limit,
-      });
+      // IDOR protection: non-admin users can only see their own municipality
+      if (req.user!.role !== "admin" && req.user!.municipalityId !== municipality.id) {
+        res.status(403).json({ error: "Acesso negado. Você só pode consultar o histórico do seu município." });
+        return;
+      }
 
-      res.json(simulations);
+      res.json(municipality.simulations);
     } catch (error) {
       logger.error("[route:simulator] erro em /history", {
         ibgeCode,

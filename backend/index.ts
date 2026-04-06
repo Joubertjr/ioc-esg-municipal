@@ -1,6 +1,8 @@
 import express, { type Express } from "express";
+import compression from "compression";
 import cors from "cors";
 import helmet from "helmet";
+import cookieParser from "cookie-parser";
 import swaggerUi from "swagger-ui-express";
 import agentsRouter from "./routes/agents.js";
 import municipalitiesRouter from "./routes/municipalities.js";
@@ -12,6 +14,8 @@ import benchmarksRouter from "./routes/benchmarks.js";
 import { generalLimiter } from "./middleware/rate-limit.js";
 import { authenticateToken } from "./middleware/auth.js";
 import { globalErrorHandler, notFoundHandler } from "./middleware/error-handler.js";
+import { requestIdMiddleware } from "./middleware/request-id.js";
+import { requestLoggerMiddleware } from "./middleware/request-logger.js";
 import { logger } from "./utils/logger.js";
 import { env } from "./utils/env-validator.js";
 import { prisma } from "./lib/prisma.js";
@@ -22,7 +26,50 @@ const PORT = env.PORT;
 
 // ─── Middlewares globais ──────────────────────────────────────────────────────
 
-app.use(helmet());
+// Request ID deve ser o primeiro para garantir rastreabilidade em todos os logs
+app.use(requestIdMiddleware);
+app.use(requestLoggerMiddleware);
+
+// Compressão gzip — reduz payload ~70-80% em respostas JSON grandes (ex: 17 ODS)
+app.use(compression());
+
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        scriptSrc: ["'self'"],
+        styleSrc: ["'self'", "'unsafe-inline'"],
+        imgSrc: ["'self'", "data:", "https:"],
+        fontSrc: ["'self'"],
+        connectSrc: ["'self'"],
+        frameSrc: ["'none'"],
+        objectSrc: ["'none'"],
+        baseUri: ["'self'"],
+        formAction: ["'self'"],
+      },
+    },
+    hsts: {
+      maxAge: 31_536_000, // 1 ano em segundos
+      includeSubDomains: true,
+      preload: true,
+    },
+    noSniff: true,           // X-Content-Type-Options: nosniff
+    frameguard: { action: "deny" }, // X-Frame-Options: DENY
+    referrerPolicy: { policy: "strict-origin-when-cross-origin" },
+    permittedCrossDomainPolicies: false,
+    crossOriginEmbedderPolicy: true,
+    crossOriginOpenerPolicy: { policy: "same-origin" },
+    crossOriginResourcePolicy: { policy: "same-origin" },
+  }),
+);
+
+// Permissions-Policy não é suportado nativamente pelo helmet — adiciona manualmente
+app.use((_req, res, next) => {
+  res.setHeader("Permissions-Policy", "camera=(), microphone=(), geolocation=()");
+  next();
+});
+
 app.use(
   cors({
     origin: env.ALLOWED_ORIGINS.split(",").map((o) => o.trim()),
@@ -30,6 +77,7 @@ app.use(
   }),
 );
 app.use(generalLimiter);
+app.use(cookieParser());
 app.use(express.json({ limit: "10kb" }));
 
 // ─── Rotas ────────────────────────────────────────────────────────────────────

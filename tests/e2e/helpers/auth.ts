@@ -4,7 +4,6 @@
  * Pré-requisito de execução:
  *  - Backend rodando em http://localhost:3000
  *  - Banco de dados com migrations aplicadas (`pnpm db:migrate`)
- *  - Usuário de teste criado via registro (primeiro usuário do banco não precisa de auth admin)
  *
  * A estratégia de autenticação injeta o JWT diretamente em localStorage
  * para evitar repetir o fluxo de login em todos os testes que precisam
@@ -23,12 +22,37 @@ export const TEST_USER = {
 /** Código IBGE de Florianópolis — usado como município padrão nos testes. */
 export const DEFAULT_IBGE_CODE = "4205407";
 
+const BACKEND_URL = "http://localhost:3000";
+
+/**
+ * Aguarda o backend estar saudável antes de prosseguir.
+ * Útil em test.beforeAll quando o servidor acabou de iniciar.
+ */
+async function waitForBackend(maxAttempts = 15, delayMs = 2_000): Promise<void> {
+  for (let i = 1; i <= maxAttempts; i++) {
+    try {
+      const res = await fetch(`${BACKEND_URL}/health`, { signal: AbortSignal.timeout(5_000) });
+      if (res.ok) return;
+    } catch {
+      // server not ready yet — fall through to sleep
+    }
+    if (i < maxAttempts) {
+      await new Promise((resolve) => setTimeout(resolve, delayMs));
+    }
+  }
+  throw new Error(`Backend did not become healthy after ${maxAttempts} attempts`);
+}
+
 /**
  * Cria o usuário de teste via API de registro (bootstrap — sem auth necessária
  * para o primeiro usuário). Ignora 409 caso o usuário já exista.
+ *
+ * Aguarda automaticamente o backend iniciar antes de tentar o registro.
  */
 export async function ensureTestUser(): Promise<void> {
-  const res = await fetch("http://localhost:3000/api/auth/register", {
+  await waitForBackend();
+
+  const res = await fetch(`${BACKEND_URL}/api/auth/register`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -36,6 +60,7 @@ export async function ensureTestUser(): Promise<void> {
       email: TEST_USER.email,
       password: TEST_USER.password,
     }),
+    signal: AbortSignal.timeout(10_000),
   });
 
   if (!res.ok && res.status !== 409) {
@@ -54,7 +79,7 @@ export async function ensureTestUser(): Promise<void> {
  */
 export async function loginViaApi(page: Page): Promise<void> {
   const res = await page.request.post(
-    "http://localhost:3000/api/auth/login",
+    `${BACKEND_URL}/api/auth/login`,
     {
       data: { email: TEST_USER.email, password: TEST_USER.password },
     },

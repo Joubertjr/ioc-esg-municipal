@@ -2,6 +2,7 @@ import { createClient, type RedisClientType } from "redis";
 import { logger } from "./logger.js";
 
 let client: RedisClientType | null = null;
+let connectingPromise: Promise<RedisClientType> | null = null;
 
 /**
  * Constrói a URL de conexão Redis incluindo a senha quando:
@@ -24,18 +25,27 @@ export function buildRedisUrl(baseUrl: string, password: string): string {
 export async function getRedisClient(): Promise<RedisClientType> {
   if (client?.isReady) return client;
 
-  const rawUrl = process.env["REDIS_URL"] ?? "redis://localhost:6379";
-  const password = process.env["REDIS_PASSWORD"] ?? "";
-  const url = buildRedisUrl(rawUrl, password);
+  // Evita race condition: múltiplos callers concorrentes compartilham a mesma promise de connect
+  if (connectingPromise) return connectingPromise;
 
-  client = createClient({ url });
+  connectingPromise = (async () => {
+    const rawUrl = process.env["REDIS_URL"] ?? "redis://localhost:6379";
+    const password = process.env["REDIS_PASSWORD"] ?? "";
+    const url = buildRedisUrl(rawUrl, password);
 
-  client.on("error", (err) => {
-    logger.error("Redis error", { error: String(err) });
-  });
+    const newClient = createClient({ url }) as RedisClientType;
 
-  await client.connect();
-  return client;
+    newClient.on("error", (err) => {
+      logger.error("Redis error", { error: String(err) });
+    });
+
+    await newClient.connect();
+    client = newClient;
+    connectingPromise = null;
+    return client;
+  })();
+
+  return connectingPromise;
 }
 
 /**
@@ -66,5 +76,19 @@ export async function withCache<T>(
       error: String(error),
     });
     return fn();
+  }
+}
+
+/**
+ * Verifica se uma chave existe no Redis sem executar o fn.
+ * Retorna false se Redis estiver indisponível (graceful degradation).
+ */
+export async function isCached(key: string): Promise<boolean> {
+  try {
+    const redis = await getRedisClient();
+    const exists = await redis.exists(key);
+    return exists > 0;
+  } catch {
+    return false;
   }
 }

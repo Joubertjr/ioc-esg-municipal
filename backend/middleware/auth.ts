@@ -47,10 +47,43 @@ function extractBearerToken(authHeader: string | undefined): string | null {
   return token.length > 0 ? token : null;
 }
 
+function getAllowedOrigins(): string[] {
+  const raw = process.env["ALLOWED_ORIGINS"] ?? "http://localhost:5173";
+  return raw.split(",").map((o) => o.trim()).filter(Boolean);
+}
+
+/**
+ * Verifica proteção CSRF para requisições que chegam via cookie.
+ * Para métodos que alteram estado (POST/PUT/PATCH/DELETE), valida que
+ * Origin ou Referer pertence à lista de origens permitidas.
+ * GET/HEAD/OPTIONS são seguros por definição (não modificam estado).
+ */
+function verifyCsrf(req: Request): boolean {
+  const safeMethods = ["GET", "HEAD", "OPTIONS"];
+  if (safeMethods.includes(req.method)) return true;
+
+  const allowedOrigins = getAllowedOrigins();
+  const origin = req.headers["origin"];
+  const referer = req.headers["referer"];
+
+  let candidate: string | undefined = origin ?? undefined;
+  if (!candidate && referer) {
+    try {
+      candidate = new URL(referer).origin;
+    } catch {
+      return false;
+    }
+  }
+  if (!candidate) return false;
+
+  return allowedOrigins.some((allowed) => allowed === candidate);
+}
+
 // ─── Middleware authenticateToken ─────────────────────────────────────────────
 
 /**
- * Verifica o Bearer token JWT e popula req.user.
+ * Verifica JWT via cookie httpOnly (prioritário) ou Authorization header (fallback).
+ * Para autenticação via cookie em métodos não-GET, valida CSRF via Origin/Referer.
  * Retorna 401 se token ausente, inválido ou expirado.
  */
 export function authenticateToken(
@@ -58,7 +91,17 @@ export function authenticateToken(
   res: Response,
   next: NextFunction,
 ): void {
-  const token = extractBearerToken(req.headers.authorization);
+  const cookieToken = (req as Request & { cookies?: Record<string, string> }).cookies?.["token"];
+  const headerToken = extractBearerToken(req.headers.authorization);
+  const usingCookie = Boolean(cookieToken) && !headerToken;
+  const token = cookieToken ?? headerToken;
+
+  // CSRF check: apenas para auth via cookie (não via Authorization header)
+  if (usingCookie && !verifyCsrf(req)) {
+    logger.warn("CSRF check falhou", { path: req.path, method: req.method, origin: req.headers["origin"] });
+    res.status(403).json({ error: "Requisição rejeitada: CSRF check falhou" });
+    return;
+  }
 
   if (!token) {
     res.status(401).json({ error: "Token de autenticação ausente" });

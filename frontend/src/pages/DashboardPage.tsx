@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { useOdsReport } from "../hooks/useOdsReport";
 import { AppShell } from "../components/layout/AppShell";
 import { GlobalScore } from "../components/ods/GlobalScore";
@@ -6,6 +6,7 @@ import { CoverageSummary } from "../components/ods/CoverageSummary";
 import { OdsCard, OdsCardSkeleton } from "../components/ods/OdsCard";
 import { OdsDetailDrawer } from "../components/ods/OdsDetailDrawer";
 import { OdsRadarChart } from "../components/charts/OdsRadarChart";
+import { useToast } from "../components/ui/Toast";
 import type { OdsSummary } from "../types/api";
 
 const DEFAULT_IBGE_CODE = "4205407"; // Florianopolis
@@ -14,6 +15,13 @@ export function DashboardPage() {
   const [ibgeCode, setIbgeCode] = useState(DEFAULT_IBGE_CODE);
   const [selectedOds, setSelectedOds] = useState<OdsSummary | null>(null);
   const { data: report, isLoading, isError, error, refetch } = useOdsReport(ibgeCode);
+  const { showToast } = useToast();
+
+  useEffect(() => {
+    if (isError && error) {
+      showToast(error.message ?? "Erro ao carregar dados ODS.", "error");
+    }
+  }, [isError, error, showToast]);
 
   const handleCloseDrawer = useCallback(() => setSelectedOds(null), []);
 
@@ -74,6 +82,15 @@ export function DashboardPage() {
           <h2 className="text-lg font-semibold text-gray-900 mb-4">
             Objetivos de Desenvolvimento Sustentavel
           </h2>
+          {!isLoading && !report && !isError && (
+            <div className="text-center py-16 text-gray-400">
+              <svg className="w-12 h-12 mx-auto mb-3 opacity-40" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
+              <p className="text-sm">Selecione um municipio para ver os scores ODS</p>
+            </div>
+          )}
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
             {isLoading
               ? Array.from({ length: 17 }, (_, i) => (

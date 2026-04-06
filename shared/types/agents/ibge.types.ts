@@ -110,6 +110,12 @@ export interface IbgeIndicators {
    */
   coeficienteGini: number | null;
   /**
+   * Razão de renda entre os 20% mais ricos e os 20% mais pobres (Censo IBGE 2022).
+   * Range típico: 5–22 para municípios SC. Menor = menor desigualdade = melhor para ODS 10.
+   * Preenchido a partir do JSON estático shared/data/gini_2022.json.
+   */
+  razao2020: number | null;
+  /**
    * Área territorial (km²). Usada junto com populacao para calcular
    * densidade demográfica (hab/km²) no ODS 11.
    */
@@ -124,4 +130,11 @@ export interface IbgeIndicators {
    * Proxy para industrialização e inovação (ODS 9). null quando sem dados.
    */
   empresasAtuantes: number | null;
+  /**
+   * % de domicílios urbanos com infraestrutura adequada (água + esgoto + coleta de lixo).
+   * Fonte: IBGE Censo Demográfico 2022 (JSON estático shared/data/ibge_2022.json).
+   * Range 0-100. Maior = melhor infraestrutura urbana = melhor para ODS 11.
+   * null quando município não tem entrada no JSON estático.
+   */
+  urbanizacaoAdequada: number | null;
 }

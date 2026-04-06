@@ -41,8 +41,9 @@ router.get("/:ibgeCode", authenticateToken, async (req: Request, res: Response) 
 
     res.json(report);
 
-    // Fire-and-forget: persiste snapshot histórico sem bloquear a resposta
-    calculateAndPersistScores(ibgeCode).catch((err: unknown) =>
+    // Fire-and-forget: persiste snapshot histórico sem bloquear a resposta.
+    // Passa o report já calculado para evitar segunda chamada às APIs externas.
+    calculateAndPersistScores(ibgeCode, report).catch((err: unknown) =>
       logger.error("[ods-history] falha ao persistir scores", {
         ibgeCode,
         error: err instanceof Error ? err.message : String(err),

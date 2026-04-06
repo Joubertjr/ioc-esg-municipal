@@ -4,6 +4,8 @@ import {
   mapToOdsIndicators,
   scoreEmpresasPor10k,
   scoreCoeficienteGini,
+  scoreRazao2020,
+  scoreUrbanizacaoAdequada,
 } from "../../../backend/agents/ibge/ibge_ods_mapper.js";
 import type { IbgeMunicipalData } from "../../../shared/types/agents/ibge.types.js";
 
@@ -30,8 +32,12 @@ vi.mock("../../../backend/utils/logger.js", () => ({
 // Mock do JSON estático do Gini para isolar os testes do arquivo de dados real
 vi.mock("../../../shared/data/gini_2022.json", () => ({
   default: {
-    "4204202": { coeficienteGini: 0.450 }, // Blumenau — usado nos testes principais
+    "4204202": { coeficienteGini: 0.450, razao2020: 13.5 }, // Blumenau — usado nos testes principais
   },
+}));
+
+vi.mock("../../../shared/data/ibge_2022.json", () => ({
+  default: {},
 }));
 
 const { fetchWithRetry } = await import(
@@ -308,7 +314,9 @@ describe("mapToOdsIndicators", () => {
       areaterritorial: 1500.0,
       producaoAgricolaMilReais: null,
       empresasAtuantes: 21450, // 21450 / 282648 * 10000 ≈ 759 empresas/10k → score 100
-      coeficienteGini: 0.420, // Gini 0.42 → score 80 (verde)
+      coeficienteGini: 0.420, // Gini 0.42 → score 65 (amarelo)
+      razao2020: 11.0, // razão 20/20 = 11 → score 64 (amarelo)
+      urbanizacaoAdequada: 85, // 85% → score 88 (verde)
     },
   };
 
@@ -403,12 +411,14 @@ describe("mapToOdsIndicators", () => {
         areaterritorial: null,
         producaoAgricolaMilReais: null,
         empresasAtuantes: null,
-        coeficienteGini: null, // ODS 10 não gerado quando Gini é null
+        coeficienteGini: null, // ODS 10 coeficiente_gini não gerado quando null
+        razao2020: null, // ODS 10 razao_20_20 não gerado quando null
+        urbanizacaoAdequada: null, // ODS 11 não gerado quando null
       },
     };
 
     const indicators = mapToOdsIndicators(partialData);
-    // ODS 1 usa pctBaixaRenda. ODS 10 usa coeficienteGini (null aqui) — não gerado.
+    // ODS 1 usa pctBaixaRenda. ODS 10 e 11 requerem dados (todos null) — não gerados.
     expect(indicators.length).toBe(1);
     expect(indicators[0]!.odsNumber).toBe(1);
   });
@@ -498,12 +508,24 @@ describe("mapToOdsIndicators", () => {
     expect(ods10.status).toBe("vermelho");
   });
 
-  it("ODS 10 não é gerado quando coeficienteGini é null", () => {
+  it("ODS 10 coeficiente_gini não é gerado quando coeficienteGini é null", () => {
     const noGini: IbgeMunicipalData = {
       ...mockData,
       indicators: { ...mockData.indicators, coeficienteGini: null },
     };
-    const odsNumbers = mapToOdsIndicators(noGini).map((i) => i.odsNumber);
+    const ods10Indicators = mapToOdsIndicators(noGini).filter((i) => i.odsNumber === 10);
+    const names = ods10Indicators.map((i) => i.indicatorName);
+    expect(names).not.toContain("coeficiente_gini");
+    // razao_20_20 ainda gerado pois mockData tem razao2020 disponível
+    expect(names).toContain("razao_20_20");
+  });
+
+  it("ODS 10 não é gerado quando ambos coeficienteGini e razao2020 são null", () => {
+    const noBothOds10: IbgeMunicipalData = {
+      ...mockData,
+      indicators: { ...mockData.indicators, coeficienteGini: null, razao2020: null },
+    };
+    const odsNumbers = mapToOdsIndicators(noBothOds10).map((i) => i.odsNumber);
     expect(odsNumbers).not.toContain(10);
   });
 
@@ -522,6 +544,71 @@ describe("mapToOdsIndicators", () => {
 
     expect(lowScore).toBe(100);
     expect(lowScore).toBeGreaterThan(highScore);
+  });
+
+  it("ODS 11 usa indicatorName 'urbanizacao_adequada' e source 'ibge'", () => {
+    const ods11 = mapToOdsIndicators(mockData).find((i) => i.odsNumber === 11);
+
+    expect(ods11).not.toBeUndefined();
+    expect(ods11!.indicatorName).toBe("urbanizacao_adequada");
+    expect(ods11!.source).toBe("ibge");
+  });
+
+  it("ODS 11 tem referenceYear fixo 2022 (Censo IBGE)", () => {
+    const ods11 = mapToOdsIndicators(mockData).find((i) => i.odsNumber === 11)!;
+    expect(ods11.referenceYear).toBe(2022);
+  });
+
+  it("ODS 11 — urbanizacaoAdequada 85% gera score verde (>= 70)", () => {
+    // 85%: faixa 70-90 → score = 50 + ((85 - 70) / 20) * 50 = 50 + 37.5 = 87 (verde)
+    const ods11 = mapToOdsIndicators(mockData).find((i) => i.odsNumber === 11)!;
+    expect(ods11.value).toBe(85);
+    expect(ods11.score).toBe(88);
+    expect(ods11.status).toBe("verde");
+  });
+
+  it("ODS 11 — urbanizacaoAdequada >= 90% gera score 100", () => {
+    const highUrb: IbgeMunicipalData = {
+      ...mockData,
+      indicators: { ...mockData.indicators, urbanizacaoAdequada: 95 },
+    };
+    const ods11 = mapToOdsIndicators(highUrb).find((i) => i.odsNumber === 11)!;
+    expect(ods11.score).toBe(100);
+    expect(ods11.status).toBe("verde");
+  });
+
+  it("ODS 11 — urbanizacaoAdequada < 70% gera score amarelo/vermelho", () => {
+    const lowUrb: IbgeMunicipalData = {
+      ...mockData,
+      indicators: { ...mockData.indicators, urbanizacaoAdequada: 50 },
+    };
+    const ods11 = mapToOdsIndicators(lowUrb).find((i) => i.odsNumber === 11)!;
+    // 50%: faixa 20-70 → score = ((50 - 20) / 50) * 50 = 30 (vermelho)
+    expect(ods11.score).toBe(30);
+    expect(ods11.status).toBe("vermelho");
+  });
+
+  it("ODS 11 não é gerado quando urbanizacaoAdequada é null", () => {
+    const noUrb: IbgeMunicipalData = {
+      ...mockData,
+      indicators: { ...mockData.indicators, urbanizacaoAdequada: null },
+    };
+    const odsNumbers = mapToOdsIndicators(noUrb).map((i) => i.odsNumber);
+    expect(odsNumbers).not.toContain(11);
+  });
+
+  it("ODS 11 — urbanizacaoAdequada maior = score maior", () => {
+    const high: IbgeMunicipalData = {
+      ...mockData,
+      indicators: { ...mockData.indicators, urbanizacaoAdequada: 90 },
+    };
+    const low: IbgeMunicipalData = {
+      ...mockData,
+      indicators: { ...mockData.indicators, urbanizacaoAdequada: 40 },
+    };
+    const highScore = mapToOdsIndicators(high).find((i) => i.odsNumber === 11)!.score;
+    const lowScore = mapToOdsIndicators(low).find((i) => i.odsNumber === 11)!.score;
+    expect(highScore).toBeGreaterThan(lowScore);
   });
 });
 
@@ -602,6 +689,94 @@ describe("scoreEmpresasPor10k", () => {
     const scores = pontos.map(scoreEmpresasPor10k);
     for (let i = 1; i < scores.length; i++) {
       expect(scores[i]!).toBeGreaterThanOrEqual(scores[i - 1]!);
+    }
+  });
+});
+
+describe("scoreRazao2020", () => {
+  it("retorna 100 para razão <= 8 (muito igualitário)", () => {
+    expect(scoreRazao2020(5)).toBe(100);
+    expect(scoreRazao2020(8)).toBe(100);
+  });
+
+  it("retorna 50 para razão = 15 (ponto de inflexão)", () => {
+    // score = 100 - ((15 - 8) / (15 - 8)) * 50 = 50
+    expect(scoreRazao2020(15)).toBe(50);
+  });
+
+  it("retorna 0 para razão >= 25 (desigualdade extrema)", () => {
+    expect(scoreRazao2020(25)).toBe(0);
+    expect(scoreRazao2020(30)).toBe(0);
+  });
+
+  it("interpolação linear entre 8 e 15 — ponto médio 11.5 = score 75", () => {
+    // score = 100 - ((11.5 - 8) / (15 - 8)) * 50 = 100 - (3.5/7)*50 = 100 - 25 = 75
+    expect(scoreRazao2020(11.5)).toBe(75);
+  });
+
+  it("interpolação linear entre 15 e 25 — ponto médio 20 = score 25", () => {
+    // score = 50 - ((20 - 15) / (25 - 15)) * 50 = 50 - 0.5*50 = 25
+    expect(scoreRazao2020(20)).toBe(25);
+  });
+
+  it("scores são monotonicamente decrescentes com aumento da razão", () => {
+    const pontos = [5, 8, 10, 15, 18, 20, 25, 30];
+    const scores = pontos.map(scoreRazao2020);
+    for (let i = 1; i < scores.length; i++) {
+      expect(scores[i]!).toBeLessThanOrEqual(scores[i - 1]!);
+    }
+  });
+
+  it("todos os scores estão no range 0-100", () => {
+    const pontos = [5, 8, 10, 11.5, 15, 18, 20, 25, 30];
+    for (const p of pontos) {
+      const score = scoreRazao2020(p);
+      expect(score).toBeGreaterThanOrEqual(0);
+      expect(score).toBeLessThanOrEqual(100);
+    }
+  });
+});
+
+describe("scoreUrbanizacaoAdequada", () => {
+  it("retorna 100 para >= 90% (cobertura universal)", () => {
+    expect(scoreUrbanizacaoAdequada(90)).toBe(100);
+    expect(scoreUrbanizacaoAdequada(95)).toBe(100);
+    expect(scoreUrbanizacaoAdequada(100)).toBe(100);
+  });
+
+  it("retorna 50 para exatamente 70% (ponto de inflexão)", () => {
+    expect(scoreUrbanizacaoAdequada(70)).toBe(50);
+  });
+
+  it("retorna 0 para <= 20% (infraestrutura inexistente)", () => {
+    expect(scoreUrbanizacaoAdequada(20)).toBe(0);
+    expect(scoreUrbanizacaoAdequada(0)).toBe(0);
+  });
+
+  it("interpolação linear entre 70% e 90% — ponto médio 80% = score 75", () => {
+    // score = 50 + ((80 - 70) / (90 - 70)) * 50 = 50 + 25 = 75
+    expect(scoreUrbanizacaoAdequada(80)).toBe(75);
+  });
+
+  it("interpolação linear entre 20% e 70% — ponto médio 45% = score 25", () => {
+    // score = ((45 - 20) / (70 - 20)) * 50 = (25/50) * 50 = 25
+    expect(scoreUrbanizacaoAdequada(45)).toBe(25);
+  });
+
+  it("scores são monotonicamente crescentes", () => {
+    const pontos = [0, 20, 40, 50, 60, 70, 80, 90, 95, 100];
+    const scores = pontos.map(scoreUrbanizacaoAdequada);
+    for (let i = 1; i < scores.length; i++) {
+      expect(scores[i]!).toBeGreaterThanOrEqual(scores[i - 1]!);
+    }
+  });
+
+  it("todos os scores estão no range 0-100", () => {
+    const pontos = [0, 20, 30, 50, 60, 70, 80, 85, 90, 95, 100];
+    for (const p of pontos) {
+      const score = scoreUrbanizacaoAdequada(p);
+      expect(score).toBeGreaterThanOrEqual(0);
+      expect(score).toBeLessThanOrEqual(100);
     }
   });
 });

@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { fetchWithRetry } from "../../utils/http-client.js";
-import { withCache } from "../../utils/cache.js";
+import { withCache, isCached } from "../../utils/cache.js";
 import { logger } from "../../utils/logger.js";
 import { API_CONFIGS, ibgeToSiconfi } from "../../../shared/constants/apis.js";
 import {
@@ -15,7 +15,12 @@ import {
   GiniDataFileSchema,
   type GiniDataFile,
 } from "../../../shared/types/agents/gini.types.js";
+import {
+  Ibge2022DataFileSchema,
+  type Ibge2022DataFile,
+} from "../../../shared/types/agents/ibge_2022.types.js";
 import giniRawData from "../../../shared/data/gini_2022.json";
+import ibge2022RawData from "../../../shared/data/ibge_2022.json";
 
 // Validação única na carga do módulo — falha rápida se o JSON estiver corrompido
 const giniParseResult = GiniDataFileSchema.safeParse(giniRawData);
@@ -25,6 +30,14 @@ if (!giniParseResult.success) {
   );
 }
 const GINI_DATA: GiniDataFile = giniParseResult.data;
+
+const ibge2022ParseResult = Ibge2022DataFileSchema.safeParse(ibge2022RawData);
+if (!ibge2022ParseResult.success) {
+  throw new Error(
+    `ibge_2022.json validation failed: ${JSON.stringify(ibge2022ParseResult.error.errors)}`,
+  );
+}
+const IBGE_2022_DATA: Ibge2022DataFile = ibge2022ParseResult.data;
 
 const config = API_CONFIGS["ibge"];
 
@@ -141,12 +154,21 @@ export class IbgeCollector {
           "CEMPRE",
         );
 
-        // Enriquecer com Coeficiente de Gini do Censo 2022 (JSON estático)
+        // Enriquecer com Coeficiente de Gini e Razão 20/20 do Censo 2022 (JSON estático)
         const giniEntry = GINI_DATA[ibgeCode];
         if (giniEntry) {
           indicators.coeficienteGini = giniEntry.coeficienteGini;
+          indicators.razao2020 = giniEntry.razao2020;
         } else {
           logger.debug(`Gini: sem dados para município ${ibgeCode}`);
+        }
+
+        // Enriquecer com % domicílios urbanos com infraestrutura adequada (ODS 11)
+        const ibge2022Entry = IBGE_2022_DATA[ibgeCode];
+        if (ibge2022Entry) {
+          indicators.urbanizacaoAdequada = ibge2022Entry.urbanizacaoAdequada;
+        } else {
+          logger.debug(`IBGE 2022: sem dados de urbanizacaoAdequada para município ${ibgeCode}`);
         }
 
         const referenceYear = this.getMostRecentYear(validated, siconfiCode);
@@ -181,13 +203,19 @@ export class IbgeCollector {
     const results = new Map<string, IbgeMunicipalData>();
 
     for (const code of ibgeCodes) {
+      const cacheKey = `ibge:indicators:${code}`;
+      const cached = await isCached(cacheKey);
+
       const data = await this.collect(code);
       if (data) {
         results.set(code, data);
       }
 
-      // Throttle incondicional — protege contra flood se Redis estiver down
-      await new Promise((resolve) => setTimeout(resolve, 500));
+      // Throttle apenas em cache miss — evita flood nas APIs governamentais
+      // mas não adiciona latência quando o Redis já tem os dados.
+      if (!cached) {
+        await new Promise((resolve) => setTimeout(resolve, 500));
+      }
     }
 
     logger.info(
@@ -295,6 +323,8 @@ export class IbgeCollector {
       empresasAtuantes: null,
       // Preenchido a partir do JSON estático após esta função no collect()
       coeficienteGini: null,
+      razao2020: null,
+      urbanizacaoAdequada: null,
     };
   }
 
