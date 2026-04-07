@@ -4,20 +4,27 @@ import {
   SnisRsDataFileSchema,
   type SnisRsMunicipalData,
 } from "../../../shared/types/agents/snis_rs.types.js";
-import snisRsRawData from "../../../shared/data/snis_rs_2022.json";
+import snisRsRawData from "../../../shared/data/snis_rs_2022.json" with { type: "json" };
 
-// Validação única na carga do módulo
-const parseResult = SnisRsDataFileSchema.safeParse(snisRsRawData);
-if (!parseResult.success) {
-  throw new Error(`snis_rs_2022.json validation failed: ${JSON.stringify(parseResult.error.errors)}`);
+// Validação na carga do módulo — falha graceful para não crashar o Express
+const _snisRsParseResult = SnisRsDataFileSchema.safeParse(snisRsRawData);
+if (!_snisRsParseResult.success) {
+  logger.error(
+    "snis_rs_2022.json validation failed — collector will return null for all municipalities",
+    {
+      errors: _snisRsParseResult.error.errors.slice(0, 3),
+    },
+  );
 }
-const SNIS_RS_DATA = parseResult.data;
+const SNIS_RS_DATA = _snisRsParseResult.success ? _snisRsParseResult.data : null;
 
 const REFERENCE_YEAR = 2022;
 const REFERENCE_DATE = new Date("2022-12-31");
 
 export class SnisRsCollector {
   async collect(ibgeCode: string): Promise<SnisRsMunicipalData | null> {
+    if (!SNIS_RS_DATA) return null;
+
     const entry = SNIS_RS_DATA[ibgeCode];
     if (!entry) {
       logger.debug(`No SNIS-RS data for ${ibgeCode}`);

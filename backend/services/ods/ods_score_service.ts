@@ -1,6 +1,12 @@
 import { IbgeCollector, mapToOdsIndicators as mapIbgeOds } from "../../agents/ibge/index.js";
-import { SiconfiCollector, mapToOdsIndicators as mapSiconfiOds } from "../../agents/siconfi/index.js";
-import { DatasusCollector, mapToOdsIndicators as mapDatasusOds } from "../../agents/datasus/index.js";
+import {
+  SiconfiCollector,
+  mapToOdsIndicators as mapSiconfiOds,
+} from "../../agents/siconfi/index.js";
+import {
+  DatasusCollector,
+  mapToOdsIndicators as mapDatasusOds,
+} from "../../agents/datasus/index.js";
 import { InepCollector, mapToOdsIndicators as mapInepOds } from "../../agents/inep/index.js";
 import { SnisCollector, mapToOdsIndicators as mapSnisOds } from "../../agents/snis/index.js";
 import { InpeCollector, mapToOdsIndicators as mapInpeOds } from "../../agents/inpe/index.js";
@@ -9,12 +15,20 @@ import { TseCollector, mapToOdsIndicators as mapTseOds } from "../../agents/tse/
 import { AneelCollector, mapToOdsIndicators as mapAneelOds } from "../../agents/aneel/index.js";
 import { SnisRsCollector, mapToOdsIndicators as mapSnisRsOds } from "../../agents/snis_rs/index.js";
 import { AnaCollector, mapToOdsIndicators as mapAnaOds } from "../../agents/ana/index.js";
-import { ConveniosCollector, mapToOdsIndicators as mapConveniosOds } from "../../agents/convenios/index.js";
+import {
+  ConveniosCollector,
+  mapToOdsIndicators as mapConveniosOds,
+} from "../../agents/convenios/index.js";
 import { AnatelCollector, mapToOdsIndicators as mapAnatelOds } from "../../agents/anatel/index.js";
 import { SisvanCollector, mapToOdsIndicators as mapSisvanOds } from "../../agents/sisvan/index.js";
 import { ODS_DEFINITIONS, getOdsDefinition } from "../../../shared/constants/ods.js";
-import { getOdsStatus, type OdsIndicator, type OdsStatus } from "../../../shared/types/domain/ods.js";
+import {
+  getOdsStatus,
+  type OdsIndicator,
+  type OdsStatus,
+} from "../../../shared/types/domain/ods.js";
 import { logger } from "../../utils/logger.js";
+import { withCache } from "../../utils/cache.js";
 
 /**
  * Envolve uma promise com timeout independente.
@@ -82,31 +96,73 @@ const sisvanCollector = new SisvanCollector();
  * 4. Calcula score por ODS (média dos indicadores)
  * 5. Calcula score global (média ponderada dos ODS com dados)
  */
+/**
+ * TTL do cache do score ODS por município: 1 hora.
+ * Compartilhado com a rota /api/ods/:ibgeCode (mesma chave).
+ * Benchmark, compare e history service se beneficiam automaticamente.
+ */
+const ODS_REPORT_CACHE_TTL = 3_600;
+
 export async function calculateMunicipalOds(ibgeCode: string): Promise<MunicipalOdsReport | null> {
+  return withCache(`ods:report:${ibgeCode}`, ODS_REPORT_CACHE_TTL, () =>
+    _fetchAndCalculate(ibgeCode),
+  );
+}
+
+async function _fetchAndCalculate(ibgeCode: string): Promise<MunicipalOdsReport | null> {
   // Buscar dados de todas as fontes em paralelo com budget de tempo por fonte.
   // DATASUS cai com frequência (timeout=30s x retries=3 = 93s no pior caso).
   // Budget de 10s por fonte garante resposta em ≤15s mesmo com DATASUS down.
   // INEP e SNIS são locais (JSON estático) — 1s é suficiente.
-  const [ibgeData, siconfiData, datasusData, inepData, snisData, inpeData, pncpData, tseData, aneelData, snisRsData, anaData, conveniosData, anatelData, sisvanData] =
-    await Promise.all([
-      withTimeout(ibgeCollector.collect(ibgeCode), 10_000, "ibge"),
-      withTimeout(siconfiCollector.collect(ibgeCode), 15_000, "siconfi"),
-      withTimeout(datasusCollector.collect(ibgeCode), 10_000, "datasus"),
-      withTimeout(inepCollector.collect(ibgeCode), 1_000, "inep"),
-      withTimeout(snisCollector.collect(ibgeCode), 1_000, "snis"),
-      withTimeout(inpeCollector.collect(ibgeCode), 15_000, "inpe"),
-      withTimeout(pncpCollector.collect(ibgeCode), 15_000, "pncp"),
-      withTimeout(tseCollector.collect(ibgeCode), 1_000, "tse"),
-      withTimeout(aneelCollector.collect(ibgeCode), 1_000, "aneel"),
-      withTimeout(snisRsCollector.collect(ibgeCode), 1_000, "snis_rs"),
-      withTimeout(anaCollector.collect(ibgeCode), 1_000, "ana"),
-      withTimeout(conveniosCollector.collect(ibgeCode), 1_000, "convenios"),
-      withTimeout(anatelCollector.collect(ibgeCode), 1_000, "anatel"),
-      withTimeout(sisvanCollector.collect(ibgeCode), 1_000, "sisvan"),
-    ]);
+  const [
+    ibgeData,
+    siconfiData,
+    datasusData,
+    inepData,
+    snisData,
+    inpeData,
+    pncpData,
+    tseData,
+    aneelData,
+    snisRsData,
+    anaData,
+    conveniosData,
+    anatelData,
+    sisvanData,
+  ] = await Promise.all([
+    withTimeout(ibgeCollector.collect(ibgeCode), 10_000, "ibge"),
+    withTimeout(siconfiCollector.collect(ibgeCode), 15_000, "siconfi"),
+    withTimeout(datasusCollector.collect(ibgeCode), 10_000, "datasus"),
+    withTimeout(inepCollector.collect(ibgeCode), 1_000, "inep"),
+    withTimeout(snisCollector.collect(ibgeCode), 1_000, "snis"),
+    withTimeout(inpeCollector.collect(ibgeCode), 15_000, "inpe"),
+    withTimeout(pncpCollector.collect(ibgeCode), 15_000, "pncp"),
+    withTimeout(tseCollector.collect(ibgeCode), 1_000, "tse"),
+    withTimeout(aneelCollector.collect(ibgeCode), 1_000, "aneel"),
+    withTimeout(snisRsCollector.collect(ibgeCode), 1_000, "snis_rs"),
+    withTimeout(anaCollector.collect(ibgeCode), 1_000, "ana"),
+    withTimeout(conveniosCollector.collect(ibgeCode), 1_000, "convenios"),
+    withTimeout(anatelCollector.collect(ibgeCode), 1_000, "anatel"),
+    withTimeout(sisvanCollector.collect(ibgeCode), 1_000, "sisvan"),
+  ]);
 
   // Se nenhuma fonte retornou dados, não há score
-  if (!ibgeData && !siconfiData && !datasusData && !inepData && !snisData && !inpeData && !pncpData && !tseData && !aneelData && !snisRsData && !anaData && !conveniosData && !anatelData && !sisvanData) {
+  if (
+    !ibgeData &&
+    !siconfiData &&
+    !datasusData &&
+    !inepData &&
+    !snisData &&
+    !inpeData &&
+    !pncpData &&
+    !tseData &&
+    !aneelData &&
+    !snisRsData &&
+    !anaData &&
+    !conveniosData &&
+    !anatelData &&
+    !sisvanData
+  ) {
     logger.warn(`No data from any source for municipality ${ibgeCode}`);
     return null;
   }
@@ -163,9 +219,7 @@ export async function calculateMunicipalOds(ibgeCode: string): Promise<Municipal
     let status: OdsStatus | null = null;
 
     if (indicators.length > 0) {
-      const validScores = indicators
-        .map((i) => i.score)
-        .filter((s): s is number => s !== null);
+      const validScores = indicators.map((i) => i.score).filter((s): s is number => s !== null);
 
       if (validScores.length > 0) {
         score = Math.round(validScores.reduce((a, b) => a + b, 0) / validScores.length);

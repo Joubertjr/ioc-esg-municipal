@@ -3,7 +3,7 @@ import { z, type ZodIssue } from "zod";
 import { runSimulation, type SimulationInput } from "../services/simulator/simulator_service.js";
 import { batchLimiter } from "../middleware/rate-limit.js";
 import { logger } from "../utils/logger.js";
-import { authenticateToken, requireRole } from "../middleware/auth.js";
+import { requireRole } from "../middleware/auth.js";
 import { prisma } from "../lib/prisma.js";
 
 const router: RouterType = Router();
@@ -17,22 +17,24 @@ const AllocationPercentSchema = z
   .max(100, "percentual deve ser <= 100")
   .finite("percentual deve ser um número finito");
 
-const InvestmentAllocationSchema = z.object({
-  education:    AllocationPercentSchema,
-  health:       AllocationPercentSchema,
-  sanitation:   AllocationPercentSchema,
-  environment:  AllocationPercentSchema,
-  security:     AllocationPercentSchema,
-  energy:       AllocationPercentSchema,
-  urbanization: AllocationPercentSchema,
-  governance:   AllocationPercentSchema,
-}).refine(
-  (data) => {
-    const sum = Object.values(data).reduce((a, b) => a + b, 0);
-    return Math.abs(sum - 100) <= 0.01;
-  },
-  { message: "A soma dos percentuais de alocação deve ser 100%" },
-);
+const InvestmentAllocationSchema = z
+  .object({
+    education: AllocationPercentSchema,
+    health: AllocationPercentSchema,
+    sanitation: AllocationPercentSchema,
+    environment: AllocationPercentSchema,
+    security: AllocationPercentSchema,
+    energy: AllocationPercentSchema,
+    urbanization: AllocationPercentSchema,
+    governance: AllocationPercentSchema,
+  })
+  .refine(
+    (data) => {
+      const sum = Object.values(data).reduce((a, b) => a + b, 0);
+      return Math.abs(sum - 100) <= 0.01;
+    },
+    { message: "A soma dos percentuais de alocação deve ser 100%" },
+  );
 
 const SimulationInputSchema = z.object({
   ibgeCode: z
@@ -65,35 +67,39 @@ function formatZodErrors(issues: ZodIssue[]): string[] {
  * Body: SimulationInput
  * Response: SimulationResult
  */
-router.post("/simulate", authenticateToken, requireRole("admin", "prefeito", "secretario"), async (req: Request, res: Response) => {
-  const parsed = SimulationInputSchema.safeParse(req.body);
+router.post(
+  "/simulate",
+  requireRole("admin", "prefeito", "secretario"),
+  async (req: Request, res: Response) => {
+    const parsed = SimulationInputSchema.safeParse(req.body);
 
-  if (!parsed.success) {
-    res.status(400).json({
-      error: "Dados de entrada inválidos",
-      details: formatZodErrors(parsed.error.issues),
-    });
-    return;
-  }
+    if (!parsed.success) {
+      res.status(400).json({
+        error: "Dados de entrada inválidos",
+        details: formatZodErrors(parsed.error.issues),
+      });
+      return;
+    }
 
-  const input: SimulationInput = parsed.data;
+    const input: SimulationInput = parsed.data;
 
-  logger.info("[route:simulator] simulate chamado", {
-    ibgeCode: input.ibgeCode,
-    totalAmount: input.totalAmount,
-  });
-
-  try {
-    const result = await runSimulation(input);
-    res.json(result);
-  } catch (error) {
-    logger.error("[route:simulator] erro em /simulate", {
+    logger.info("[route:simulator] simulate chamado", {
       ibgeCode: input.ibgeCode,
-      error: error instanceof Error ? error.message : String(error),
+      totalAmount: input.totalAmount,
     });
-    res.status(500).json({ error: "Erro interno ao executar simulação" });
-  }
-});
+
+    try {
+      const result = await runSimulation(input);
+      res.json(result);
+    } catch (error) {
+      logger.error("[route:simulator] erro em /simulate", {
+        ibgeCode: input.ibgeCode,
+        error: error instanceof Error ? error.message : String(error),
+      });
+      res.status(500).json({ error: "Erro interno ao executar simulação" });
+    }
+  },
+);
 
 // ─── POST /api/simulator/compare ─────────────────────────────────────────────
 
@@ -103,34 +109,39 @@ router.post("/simulate", authenticateToken, requireRole("admin", "prefeito", "se
  * Body: SimulationInput[] (array direto, mín 2, máx 5)
  * Response: SimulationResult[]
  */
-router.post("/compare", authenticateToken, requireRole("admin", "prefeito", "secretario"), batchLimiter, async (req: Request, res: Response) => {
-  const parsed = CompareBodySchema.safeParse(req.body);
+router.post(
+  "/compare",
+  requireRole("admin", "prefeito", "secretario"),
+  batchLimiter,
+  async (req: Request, res: Response) => {
+    const parsed = CompareBodySchema.safeParse(req.body);
 
-  if (!parsed.success) {
-    res.status(400).json({
-      error: "Dados de entrada inválidos",
-      details: formatZodErrors(parsed.error.issues),
+    if (!parsed.success) {
+      res.status(400).json({
+        error: "Dados de entrada inválidos",
+        details: formatZodErrors(parsed.error.issues),
+      });
+      return;
+    }
+
+    const scenarios: SimulationInput[] = parsed.data;
+
+    logger.info("[route:simulator] compare chamado", {
+      scenariosCount: scenarios.length,
+      ibgeCodes: scenarios.map((s) => s.ibgeCode),
     });
-    return;
-  }
 
-  const scenarios: SimulationInput[] = parsed.data;
-
-  logger.info("[route:simulator] compare chamado", {
-    scenariosCount: scenarios.length,
-    ibgeCodes: scenarios.map((s) => s.ibgeCode),
-  });
-
-  try {
-    const results = await Promise.all(scenarios.map((s) => runSimulation(s)));
-    res.json(results);
-  } catch (error) {
-    logger.error("[route:simulator] erro em /compare", {
-      error: error instanceof Error ? error.message : String(error),
-    });
-    res.status(500).json({ error: "Erro interno ao executar comparação de cenários" });
-  }
-});
+    try {
+      const results = await Promise.all(scenarios.map((s) => runSimulation(s)));
+      res.json(results);
+    } catch (error) {
+      logger.error("[route:simulator] erro em /compare", {
+        error: error instanceof Error ? error.message : String(error),
+      });
+      res.status(500).json({ error: "Erro interno ao executar comparação de cenários" });
+    }
+  },
+);
 
 // ─── GET /api/simulator/history/:ibgeCode ────────────────────────────────────
 
@@ -143,7 +154,6 @@ router.post("/compare", authenticateToken, requireRole("admin", "prefeito", "sec
  */
 router.get(
   "/history/:ibgeCode",
-  authenticateToken,
   requireRole("admin", "prefeito", "secretario"),
   async (req: Request, res: Response) => {
     const ibgeCode = req.params["ibgeCode"];
@@ -178,7 +188,9 @@ router.get(
 
       // IDOR protection: non-admin users can only see their own municipality
       if (req.user!.role !== "admin" && req.user!.municipalityId !== municipality.id) {
-        res.status(403).json({ error: "Acesso negado. Você só pode consultar o histórico do seu município." });
+        res
+          .status(403)
+          .json({ error: "Acesso negado. Você só pode consultar o histórico do seu município." });
         return;
       }
 

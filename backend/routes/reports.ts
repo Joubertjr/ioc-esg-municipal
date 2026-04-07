@@ -1,15 +1,13 @@
 import { Router, type Request, type Response, type Router as RouterType } from "express";
 import { generateEsgReport } from "../services/reports/report_service.js";
 import { logger } from "../utils/logger.js";
-import { authenticateToken } from "../middleware/auth.js";
-
 const router: RouterType = Router();
 
 /**
  * GET /api/reports/:ibgeCode
  * Gera relatório ESG completo para um município.
  */
-router.get("/:ibgeCode", authenticateToken, async (req: Request, res: Response) => {
+router.get("/:ibgeCode", async (req: Request, res: Response) => {
   const ibgeCode = req.params["ibgeCode"];
 
   if (!ibgeCode || !/^\d{7}$/.test(ibgeCode)) {

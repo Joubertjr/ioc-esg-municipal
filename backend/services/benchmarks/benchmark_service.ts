@@ -1,5 +1,6 @@
 import { calculateMunicipalOds, type MunicipalOdsReport } from "../ods/ods_score_service.js";
 import { logger } from "../../utils/logger.js";
+import { withCache } from "../../utils/cache.js";
 
 // ─── Tipos ────────────────────────────────────────────────────────────────────
 
@@ -36,11 +37,30 @@ export interface OdsAverage {
   count: number;
 }
 
+// ─── Constantes ───────────────────────────────────────────────────────────────
+
+/**
+ * TTL do cache de benchmark: 1 hora.
+ * A chave inclui os códigos ordenados para que a mesma lista em ordens
+ * diferentes retorne o cache existente.
+ */
+const BENCHMARK_CACHE_TTL = 3_600;
+
+function buildBenchmarkCacheKey(ibgeCodes: string[]): string {
+  const sorted = [...ibgeCodes].sort();
+  return `benchmark:${sorted.join(",")}`;
+}
+
 // ─── Serviço ──────────────────────────────────────────────────────────────────
 
 export async function generateBenchmark(ibgeCodes: string[]): Promise<BenchmarkResult> {
-  logger.info("[benchmarks] gerando benchmark", { count: ibgeCodes.length });
+  const cacheKey = buildBenchmarkCacheKey(ibgeCodes);
+  logger.info("[benchmarks] gerando benchmark", { count: ibgeCodes.length, cacheKey });
 
+  return withCache(cacheKey, BENCHMARK_CACHE_TTL, () => _computeBenchmark(ibgeCodes));
+}
+
+async function _computeBenchmark(ibgeCodes: string[]): Promise<BenchmarkResult> {
   const reports = await Promise.all(
     ibgeCodes.map(async (code) => {
       try {
@@ -92,10 +112,14 @@ export async function compareAgainstBenchmark(
     aboveAverage: boolean | null;
   }>;
 }> {
-  const allCodes = [...new Set([ibgeCode, ...benchmarkCodes])];
-  const benchmark = await generateBenchmark(allCodes);
+  // Benchmark calculado apenas sobre os municípios de comparação (exclui o alvo para evitar self-reference bias)
+  const peerCodes = benchmarkCodes.filter((c) => c !== ibgeCode);
+  const allCodes = [...new Set([ibgeCode, ...peerCodes])];
+  const fullBenchmark = await generateBenchmark(allCodes);
+  // Recalcular benchmark apenas com peers (sem o município alvo)
+  const benchmark = peerCodes.length > 0 ? await generateBenchmark(peerCodes) : fullBenchmark;
 
-  const municipality = benchmark.municipalities.find((m) => m.ibgeCode === ibgeCode) ?? null;
+  const municipality = fullBenchmark.municipalities.find((m) => m.ibgeCode === ibgeCode) ?? null;
 
   const comparison = benchmark.averages.map((avg) => {
     const score = municipality?.odsScores[avg.odsNumber] ?? null;
@@ -174,9 +198,7 @@ function buildOdsAverages(reports: MunicipalOdsReport[]): OdsAverage[] {
 }
 
 function computeGlobalAverage(reports: MunicipalOdsReport[]): number | null {
-  const globals = reports
-    .map((r) => r.globalScore)
-    .filter((s): s is number => s !== null);
+  const globals = reports.map((r) => r.globalScore).filter((s): s is number => s !== null);
 
   if (globals.length === 0) return null;
 

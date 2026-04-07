@@ -160,7 +160,9 @@ vi.mock("../../../backend/agents/ana/index.js", () => ({
   mapToOdsIndicators: vi.fn().mockReturnValue([]),
 }));
 vi.mock("../../../backend/agents/convenios/index.js", () => ({
-  ConveniosCollector: vi.fn().mockImplementation(() => ({ collect: vi.fn(), collectBatch: vi.fn() })),
+  ConveniosCollector: vi
+    .fn()
+    .mockImplementation(() => ({ collect: vi.fn(), collectBatch: vi.fn() })),
   mapToOdsIndicators: vi.fn().mockReturnValue([]),
 }));
 vi.mock("../../../backend/agents/anatel/index.js", () => ({
@@ -220,30 +222,37 @@ beforeEach(() => {
 // ─── POST /api/auth/register ──────────────────────────────────────────────────
 
 describe("POST /api/auth/register", () => {
-  it("deve retornar 201 com dados do usuário quando é o primeiro registro (bootstrap)", { timeout: 15_000 }, async () => {
-    // Arrange
-    mockUserCount.mockResolvedValue(0);
-    mockUserFindUnique.mockResolvedValue(null); // email não existe
-    mockUserCreate.mockResolvedValue({ ...userFixture, passwordHash: hashedPassword });
+  it(
+    "deve retornar 201 com dados do usuário quando é o primeiro registro (bootstrap)",
+    { timeout: 15_000 },
+    async () => {
+      // Arrange
+      const userWithHash = { ...userFixture, passwordHash: hashedPassword };
+      mockUserCount.mockResolvedValue(0);
+      // Primeira chamada: findUnique verifica se email já existe → null (não existe)
+      // Segunda chamada: login auto após registro busca o usuário pelo email → retorna user
+      mockUserFindUnique.mockResolvedValueOnce(null).mockResolvedValueOnce(userWithHash);
+      mockUserCreate.mockResolvedValue(userWithHash);
 
-    // Act
-    const res = await request(app).post("/api/auth/register").send({
-      email: userFixture.email,
-      password: "senha-valida-123",
-      name: userFixture.name,
-      role: "admin",
-    });
+      // Act
+      const res = await request(app).post("/api/auth/register").send({
+        email: userFixture.email,
+        password: "senha-valida-123",
+        name: userFixture.name,
+        role: "admin",
+      });
 
-    // Assert
-    expect(res.status).toBe(201);
-    expect(res.body.user).toMatchObject({
-      email: userFixture.email,
-      name: userFixture.name,
-      role: "admin",
-    });
-    // Nunca expõe o hash da senha
-    expect(res.body.user.passwordHash).toBeUndefined();
-  });
+      // Assert
+      expect(res.status).toBe(201);
+      expect(res.body.user).toMatchObject({
+        email: userFixture.email,
+        name: userFixture.name,
+        role: "admin",
+      });
+      // Nunca expõe o hash da senha
+      expect(res.body.user.passwordHash).toBeUndefined();
+    },
+  );
 
   it("deve retornar 400 quando email tem formato inválido", async () => {
     // Arrange
@@ -279,21 +288,34 @@ describe("POST /api/auth/register", () => {
     expect(res.body.error).toBeDefined();
   });
 
-  it("deve retornar 400 quando role tem valor fora do enum permitido", async () => {
-    // Arrange
+  it("deve ignorar role no body — campo removido do schema por segurança", async () => {
+    // Arrange — role no body deve ser ignorada (Zod strip)
+    const testPassword = "senha-valida-123";
+    const testHash = await bcrypt.hash(testPassword, 4);
+    const createdUser = {
+      ...userFixture,
+      email: "novo@municipio.sc.gov.br",
+      name: "Teste",
+      passwordHash: testHash,
+    };
+
     mockUserCount.mockResolvedValue(0);
+    // 1st call: register checks existing user → null
+    // 2nd call: login finds user → returns with hash
+    mockUserFindUnique.mockResolvedValueOnce(null).mockResolvedValueOnce(createdUser);
+    mockUserCreate.mockResolvedValue(createdUser);
+    mockRefreshTokenCreate.mockResolvedValue({ id: "rt-001", token: "refresh-token" });
 
     // Act
     const res = await request(app).post("/api/auth/register").send({
       email: "novo@municipio.sc.gov.br",
-      password: "senha-valida-123",
+      password: testPassword,
       name: "Teste",
-      role: "superadmin", // inválido
+      role: "superadmin", // campo ignorado pelo schema
     });
 
-    // Assert
-    expect(res.status).toBe(400);
-    expect(res.body.error).toBeDefined();
+    // Assert — registro funciona normalmente, role do body descartada
+    expect(res.status).toBe(201);
   });
 
   it("deve retornar 409 quando email já está cadastrado", async () => {
@@ -443,9 +465,7 @@ describe("GET /api/auth/me", () => {
 
   it("deve retornar 401 quando Authorization header não usa prefixo Bearer", async () => {
     // Act
-    const res = await request(app)
-      .get("/api/auth/me")
-      .set("Authorization", "Basic dXNlcjpwYXNz");
+    const res = await request(app).get("/api/auth/me").set("Authorization", "Basic dXNlcjpwYXNz");
 
     // Assert
     expect(res.status).toBe(401);
@@ -466,9 +486,7 @@ describe("GET /api/auth/me", () => {
     mockUserFindUnique.mockResolvedValue({ ...userFixture, passwordHash: hashedPassword });
 
     // Act
-    const res = await request(app)
-      .get("/api/auth/me")
-      .set("Authorization", `Bearer ${token}`);
+    const res = await request(app).get("/api/auth/me").set("Authorization", `Bearer ${token}`);
 
     // Assert
     expect(res.status).toBe(200);
@@ -495,9 +513,7 @@ describe("GET /api/auth/me", () => {
     mockUserFindUnique.mockResolvedValue(null);
 
     // Act
-    const res = await request(app)
-      .get("/api/auth/me")
-      .set("Authorization", `Bearer ${token}`);
+    const res = await request(app).get("/api/auth/me").set("Authorization", `Bearer ${token}`);
 
     // Assert
     expect(res.status).toBe(404);
@@ -518,9 +534,7 @@ describe("GET /api/auth/me", () => {
     mockUserFindUnique.mockResolvedValue({ ...userFixture, passwordHash: hashedPassword });
 
     // Act — GET é safe method, CSRF não se aplica
-    const res = await request(app)
-      .get("/api/auth/me")
-      .set("Cookie", `token=${token}`);
+    const res = await request(app).get("/api/auth/me").set("Cookie", `token=${token}`);
 
     // Assert
     expect(res.status).toBe(200);
@@ -652,9 +666,7 @@ describe("POST /api/auth/refresh", () => {
     });
 
     // Act
-    await request(app)
-      .post("/api/auth/refresh")
-      .send({ refreshToken: refreshTokenFixture.token });
+    await request(app).post("/api/auth/refresh").send({ refreshToken: refreshTokenFixture.token });
 
     // Assert — o update deve ter sido chamado para revogar o token antigo
     expect(mockRefreshTokenUpdate).toHaveBeenCalledWith(
@@ -727,9 +739,7 @@ describe("POST /api/auth/logout", () => {
     mockRefreshTokenFindUnique.mockResolvedValue(refreshTokenFixture);
 
     // Act
-    await request(app)
-      .post("/api/auth/logout")
-      .send({ refreshToken: refreshTokenFixture.token });
+    await request(app).post("/api/auth/logout").send({ refreshToken: refreshTokenFixture.token });
 
     // Assert — update chamado para marcar revokedAt
     expect(mockRefreshTokenUpdate).toHaveBeenCalledWith(

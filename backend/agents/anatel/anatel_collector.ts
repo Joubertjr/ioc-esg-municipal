@@ -4,22 +4,27 @@ import {
   AnatelDataFileSchema,
   type AnatelMunicipalData,
 } from "../../../shared/types/agents/anatel.types.js";
-import anatelRawData from "../../../shared/data/anatel_2023.json";
+import anatelRawData from "../../../shared/data/anatel_2023.json" with { type: "json" };
 
-// Validação única na carga do módulo
-const parseResult = AnatelDataFileSchema.safeParse(anatelRawData);
-if (!parseResult.success) {
-  throw new Error(
-    `anatel_2023.json validation failed: ${JSON.stringify(parseResult.error.errors)}`
+// Validação na carga do módulo — falha graceful para não crashar o Express
+const _anatelParseResult = AnatelDataFileSchema.safeParse(anatelRawData);
+if (!_anatelParseResult.success) {
+  logger.error(
+    "anatel_2023.json validation failed — collector will return null for all municipalities",
+    {
+      errors: _anatelParseResult.error.errors.slice(0, 3),
+    },
   );
 }
-const ANATEL_DATA = parseResult.data;
+const ANATEL_DATA = _anatelParseResult.success ? _anatelParseResult.data : null;
 
 const REFERENCE_YEAR = 2023;
 const REFERENCE_DATE = new Date("2023-12-31");
 
 export class AnatelCollector {
   async collect(ibgeCode: string): Promise<AnatelMunicipalData | null> {
+    if (!ANATEL_DATA) return null;
+
     const entry = ANATEL_DATA[ibgeCode];
     if (!entry) {
       logger.debug(`No ANATEL data for ${ibgeCode}`);

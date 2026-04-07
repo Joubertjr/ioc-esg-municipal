@@ -4,20 +4,27 @@ import {
   AnaDataFileSchema,
   type AnaMunicipalData,
 } from "../../../shared/types/agents/ana.types.js";
-import anaRawData from "../../../shared/data/ana_2022.json";
+import anaRawData from "../../../shared/data/ana_2022.json" with { type: "json" };
 
-// Validação única na carga do módulo
-const parseResult = AnaDataFileSchema.safeParse(anaRawData);
-if (!parseResult.success) {
-  throw new Error(`ana_2022.json validation failed: ${JSON.stringify(parseResult.error.errors)}`);
+// Validação na carga do módulo — falha graceful para não crashar o Express
+const _anaParseResult = AnaDataFileSchema.safeParse(anaRawData);
+if (!_anaParseResult.success) {
+  logger.error(
+    "ana_2022.json validation failed — collector will return null for all municipalities",
+    {
+      errors: _anaParseResult.error.errors.slice(0, 3),
+    },
+  );
 }
-const ANA_DATA = parseResult.data;
+const ANA_DATA = _anaParseResult.success ? _anaParseResult.data : null;
 
 const REFERENCE_YEAR = 2022;
 const REFERENCE_DATE = new Date("2022-12-31");
 
 export class AnaCollector {
   async collect(ibgeCode: string): Promise<AnaMunicipalData | null> {
+    if (!ANA_DATA) return null;
+
     const entry = ANA_DATA[ibgeCode];
     if (!entry) {
       logger.debug(`No ANA data for ${ibgeCode}`);

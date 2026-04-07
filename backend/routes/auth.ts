@@ -20,17 +20,15 @@ const authService = new AuthService(prisma);
 // ─── POST /api/auth/register ──────────────────────────────────────────────────
 
 /**
- * Cria novo usuário.
- * - O primeiro usuário pode se registrar sem autenticação (bootstrap).
- * - Os demais requerem que o solicitante seja admin (authenticateToken + requireRole).
- *
- * Nota: A checagem de "admin only após primeiro user" é feita dinamicamente
- * para evitar dependência circular entre routes e middleware.
+ * Cria novo usuário com registro aberto.
+ * - O primeiro usuário recebe role "admin" (bootstrap).
+ * - Os demais recebem role "prefeito" — nunca aceita role do body.
+ * - Retorna token + refreshToken para auto-login após registro.
  */
 router.post("/register", authLimiter, async (req: Request, res: Response) => {
   logger.info("POST /api/auth/register", { ip: req.ip });
 
-  // Valida body com Zod
+  // Valida body com Zod — role é deliberadamente excluída do schema
   const parsed = RegisterSchema.safeParse(req.body);
   if (!parsed.success) {
     const errors = parsed.error.flatten().fieldErrors;
@@ -40,40 +38,30 @@ router.post("/register", authLimiter, async (req: Request, res: Response) => {
 
   const input = parsed.data;
 
-  // Verifica se é o primeiro usuário (bootstrap) ou requer autenticação admin
   try {
+    // Role determinada pelo servidor: admin apenas para o primeiro usuário (bootstrap)
     const userCount = await authService.countUsers();
+    const role = userCount === 0 ? "admin" : "prefeito";
 
-    if (userCount > 0) {
-      // Após o primeiro usuário: requer autenticação como admin
-      const authHeader = req.headers.authorization;
-      if (!authHeader || !authHeader.startsWith("Bearer ")) {
-        res.status(401).json({ error: "Registro de novos usuários requer autenticação de admin" });
-        return;
-      }
+    const user = await authService.register(input, role);
 
-      // Usa authenticateToken como função auxiliar inline
-      await new Promise<void>((resolve, reject) => {
-        authenticateToken(req, res, (err?: unknown) => {
-          if (err) reject(err);
-          else resolve();
-        });
-      }).catch(() => {
-        // authenticateToken já enviou resposta
-      });
+    // Auto-login: gera tokens para o usuário recém-criado
+    const result = await authService.login({ email: input.email, password: input.password });
 
-      if (!req.user) return; // resposta já enviada pelo middleware
-
-      if (req.user.role !== "admin") {
-        res.status(403).json({ error: "Apenas administradores podem registrar novos usuários" });
-        return;
-      }
-    }
-
-    const user = await authService.register(input);
+    res.cookie("token", result.token, {
+      httpOnly: true,
+      secure: process.env["NODE_ENV"] === "production",
+      sameSite: "lax",
+      maxAge: 24 * 60 * 60 * 1000,
+      path: "/",
+    });
 
     logger.info("Usuário registrado via API", { userId: user.id });
-    res.status(201).json({ user });
+    res.status(201).json({
+      user,
+      token: result.token,
+      refreshToken: result.refreshToken,
+    });
   } catch (err) {
     if (err instanceof ZodError) {
       res.status(400).json({ error: "Dados inválidos", details: err.flatten().fieldErrors });

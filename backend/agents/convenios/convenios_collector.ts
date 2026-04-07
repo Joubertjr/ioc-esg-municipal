@@ -4,22 +4,27 @@ import {
   ConveniosDataFileSchema,
   type ConveniosMunicipalData,
 } from "../../../shared/types/agents/convenios.types.js";
-import conveniosRawData from "../../../shared/data/convenios_2023.json";
+import conveniosRawData from "../../../shared/data/convenios_2023.json" with { type: "json" };
 
-// Validação única na carga do módulo
-const parseResult = ConveniosDataFileSchema.safeParse(conveniosRawData);
-if (!parseResult.success) {
-  throw new Error(
-    `convenios_2023.json validation failed: ${JSON.stringify(parseResult.error.errors)}`
+// Validação na carga do módulo — falha graceful para não crashar o Express
+const _conveniosParseResult = ConveniosDataFileSchema.safeParse(conveniosRawData);
+if (!_conveniosParseResult.success) {
+  logger.error(
+    "convenios_2023.json validation failed — collector will return null for all municipalities",
+    {
+      errors: _conveniosParseResult.error.errors.slice(0, 3),
+    },
   );
 }
-const CONVENIOS_DATA = parseResult.data;
+const CONVENIOS_DATA = _conveniosParseResult.success ? _conveniosParseResult.data : null;
 
 const REFERENCE_YEAR = 2023;
 const REFERENCE_DATE = new Date("2023-12-31");
 
 export class ConveniosCollector {
   async collect(ibgeCode: string): Promise<ConveniosMunicipalData | null> {
+    if (!CONVENIOS_DATA) return null;
+
     const entry = CONVENIOS_DATA[ibgeCode];
     if (!entry) {
       logger.debug(`No convenios data for ${ibgeCode}`);
@@ -50,17 +55,13 @@ export class ConveniosCollector {
     };
   }
 
-  async collectBatch(
-    ibgeCodes: string[]
-  ): Promise<Map<string, ConveniosMunicipalData>> {
+  async collectBatch(ibgeCodes: string[]): Promise<Map<string, ConveniosMunicipalData>> {
     const results = new Map<string, ConveniosMunicipalData>();
     for (const code of ibgeCodes) {
       const data = await this.collect(code);
       if (data) results.set(code, data);
     }
-    logger.info(
-      `Convenios batch: ${results.size}/${ibgeCodes.length} municípios com dados`
-    );
+    logger.info(`Convenios batch: ${results.size}/${ibgeCodes.length} municípios com dados`);
     return results;
   }
 }

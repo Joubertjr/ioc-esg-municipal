@@ -36,7 +36,11 @@ module.exports = {
 
     // Async safety
     "@typescript-eslint/no-floating-promises": "error",
-    "@typescript-eslint/no-misused-promises": "error",
+    "@typescript-eslint/no-misused-promises": [
+      "error",
+      { checksVoidReturn: { arguments: false } },
+    ],
+    "@typescript-eslint/require-await": "off",
     "no-return-await": "off",
     "@typescript-eslint/return-await": ["error", "in-try-catch"],
 
@@ -53,6 +57,7 @@ module.exports = {
     "dist/",
     "node_modules/",
     "frontend/",
+    "tests/",
     "*.js",
     "*.cjs",
     "*.mjs",

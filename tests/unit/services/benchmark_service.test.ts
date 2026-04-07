@@ -8,6 +8,11 @@ vi.mock("../../../backend/services/ods/ods_score_service.js", () => ({
   calculateMunicipalOds: mockCalculateOds,
 }));
 
+// withCache mock — executa fn diretamente sem Redis para testes unitários
+vi.mock("../../../backend/utils/cache.js", () => ({
+  withCache: (_key: string, _ttl: number, fn: () => unknown) => fn(),
+}));
+
 vi.mock("../../../backend/utils/logger.js", () => ({
   logger: {
     info: vi.fn(),
@@ -25,11 +30,16 @@ vi.mock("../../../shared/data/snis_rs_2022.json", () => ({ default: {} }));
 vi.mock("../../../shared/data/ana_2022.json", () => ({ default: {} }));
 vi.mock("../../../shared/data/convenios_2023.json", () => ({ default: {} }));
 
-const { generateBenchmark, compareAgainstBenchmark } = await import(
-  "../../../backend/services/benchmarks/benchmark_service.js"
-);
+const { generateBenchmark, compareAgainstBenchmark } =
+  await import("../../../backend/services/benchmarks/benchmark_service.js");
 
-function makeMockReport(ibgeCode: string, name: string, globalScore: number, ods3Score: number, ods4Score: number) {
+function makeMockReport(
+  ibgeCode: string,
+  name: string,
+  globalScore: number,
+  ods3Score: number,
+  ods4Score: number,
+) {
   return {
     ibgeCode,
     municipalityName: name,
@@ -41,12 +51,45 @@ function makeMockReport(ibgeCode: string, name: string, globalScore: number, ods
       const num = i + 1;
       let score: number | null = null;
       let status: string | null = null;
-      const indicators: Array<{ indicatorName: string; value: number | null; odsNumber: number; score: number | null; source: string }> = [];
-      if (num === 3) { score = ods3Score; status = score >= 70 ? "verde" : "amarelo"; indicators.push({ indicatorName: "despesa_saude", value: 1, odsNumber: 3, score, source: "siconfi" }); }
-      if (num === 4) { score = ods4Score; status = score >= 70 ? "verde" : "amarelo"; indicators.push({ indicatorName: "despesa_educacao", value: 1, odsNumber: 4, score, source: "siconfi" }); }
+      const indicators: Array<{
+        indicatorName: string;
+        value: number | null;
+        odsNumber: number;
+        score: number | null;
+        source: string;
+      }> = [];
+      if (num === 3) {
+        score = ods3Score;
+        status = score >= 70 ? "verde" : "amarelo";
+        indicators.push({
+          indicatorName: "despesa_saude",
+          value: 1,
+          odsNumber: 3,
+          score,
+          source: "siconfi",
+        });
+      }
+      if (num === 4) {
+        score = ods4Score;
+        status = score >= 70 ? "verde" : "amarelo";
+        indicators.push({
+          indicatorName: "despesa_educacao",
+          value: 1,
+          odsNumber: 4,
+          score,
+          source: "siconfi",
+        });
+      }
       return {
-        odsNumber: num, name: `ODS ${num}`, shortName: `ODS${num}`, color: "#000",
-        weight: 1.0, score, status, indicators, sources: score !== null ? ["test"] : [],
+        odsNumber: num,
+        name: `ODS ${num}`,
+        shortName: `ODS${num}`,
+        color: "#000",
+        weight: 1.0,
+        score,
+        status,
+        indicators,
+        sources: score !== null ? ["test"] : [],
       };
     }),
   };
@@ -78,9 +121,7 @@ describe("BenchmarkService", () => {
     });
 
     it("calcula médias ODS corretamente", async () => {
-      mockCalculateOds
-        .mockResolvedValueOnce(REPORT_A)
-        .mockResolvedValueOnce(REPORT_B);
+      mockCalculateOds.mockResolvedValueOnce(REPORT_A).mockResolvedValueOnce(REPORT_B);
 
       const result = await generateBenchmark(["4204202", "4205407"]);
 
@@ -96,9 +137,7 @@ describe("BenchmarkService", () => {
     });
 
     it("lida com falhas de coletores graciosamente", async () => {
-      mockCalculateOds
-        .mockResolvedValueOnce(REPORT_A)
-        .mockRejectedValueOnce(new Error("timeout"));
+      mockCalculateOds.mockResolvedValueOnce(REPORT_A).mockRejectedValueOnce(new Error("timeout"));
 
       const result = await generateBenchmark(["4204202", "0000000"]);
 
@@ -108,9 +147,7 @@ describe("BenchmarkService", () => {
     });
 
     it("calcula globalAverage corretamente", async () => {
-      mockCalculateOds
-        .mockResolvedValueOnce(REPORT_A)
-        .mockResolvedValueOnce(REPORT_B);
+      mockCalculateOds.mockResolvedValueOnce(REPORT_A).mockResolvedValueOnce(REPORT_B);
 
       const result = await generateBenchmark(["4204202", "4205407"]);
       expect(result.globalAverage).toBe(77.5);
@@ -128,7 +165,11 @@ describe("BenchmarkService", () => {
   describe("compareAgainstBenchmark", () => {
     it("retorna comparison com delta e aboveAverage", async () => {
       mockCalculateOds
+        // fullBenchmark call (alvo + peers)
         .mockResolvedValueOnce(REPORT_A)
+        .mockResolvedValueOnce(REPORT_B)
+        .mockResolvedValueOnce(REPORT_C)
+        // peers-only benchmark call
         .mockResolvedValueOnce(REPORT_B)
         .mockResolvedValueOnce(REPORT_C);
 
@@ -145,15 +186,17 @@ describe("BenchmarkService", () => {
       expect(typeof ods3Comp.aboveAverage).toBe("boolean");
     });
 
-    it("inclui município alvo no benchmark", async () => {
+    it("exclui município alvo do benchmark para evitar self-reference bias", async () => {
       mockCalculateOds
-        .mockResolvedValueOnce(REPORT_A)
-        .mockResolvedValueOnce(REPORT_B);
+        .mockResolvedValueOnce(REPORT_A) // fullBenchmark: alvo
+        .mockResolvedValueOnce(REPORT_B) // fullBenchmark: peer
+        .mockResolvedValueOnce(REPORT_B); // benchmark peers-only
 
       const result = await compareAgainstBenchmark("4204202", ["4205407"]);
 
+      // Benchmark deve conter apenas os peers, não o município alvo
       const codes = result.benchmark.municipalities.map((m: { ibgeCode: string }) => m.ibgeCode);
-      expect(codes).toContain("4204202");
+      expect(codes).not.toContain("4204202");
       expect(codes).toContain("4205407");
     });
   });

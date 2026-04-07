@@ -394,27 +394,19 @@ describe("RegisterSchema (Zod validation)", () => {
     expect(result.success).toBe(false);
   });
 
-  it("rejeita role inválida", () => {
+  it("ignora role no body — campo removido do schema por segurança", () => {
     const result = RegisterSchema.safeParse({
       email: "user@test.com",
       password: "Senha1234",
       name: "Nome",
-      role: "superadmin",
+      role: "admin",
     });
-    expect(result.success).toBe(false);
-  });
-
-  it("aceita todas as roles válidas", () => {
-    const roles = ["admin", "prefeito", "secretario", "viewer"];
-    for (const role of roles) {
-      const result = RegisterSchema.safeParse({
-        email: "user@test.com",
-        password: "Senha1234",
-        name: "Nome",
-        role,
-      });
-      expect(result.success).toBe(true);
-    }
+    // safeParse passa pois Zod strip() remove campos extras
+    expect(result.success).toBe(true);
+    // role NÃO deve existir no resultado — servidor decide a role
+    expect((result as { success: true; data: Record<string, unknown> }).data).not.toHaveProperty(
+      "role",
+    );
   });
 });
 
@@ -458,7 +450,10 @@ describe("AuthService.refreshAccessToken", () => {
 
   it("retorna novos tokens quando refresh token é válido", async () => {
     mockPrismaRefreshTokenFindUnique.mockResolvedValueOnce(MOCK_REFRESH_TOKEN);
-    mockPrismaRefreshTokenUpdate.mockResolvedValueOnce({ ...MOCK_REFRESH_TOKEN, revokedAt: new Date() });
+    mockPrismaRefreshTokenUpdate.mockResolvedValueOnce({
+      ...MOCK_REFRESH_TOKEN,
+      revokedAt: new Date(),
+    });
     mockJwtSign.mockReturnValueOnce("novo.jwt.token");
 
     const result = await service.refreshAccessToken(MOCK_REFRESH_TOKEN.token);
@@ -473,7 +468,9 @@ describe("AuthService.refreshAccessToken", () => {
   it("lança AuthRefreshTokenError quando token não existe", async () => {
     mockPrismaRefreshTokenFindUnique.mockResolvedValueOnce(null);
 
-    await expect(service.refreshAccessToken("token-inexistente")).rejects.toThrow(AuthRefreshTokenError);
+    await expect(service.refreshAccessToken("token-inexistente")).rejects.toThrow(
+      AuthRefreshTokenError,
+    );
   });
 
   it("lança AuthRefreshTokenError quando token já foi revogado", async () => {
@@ -481,7 +478,9 @@ describe("AuthService.refreshAccessToken", () => {
     mockPrismaRefreshTokenFindUnique.mockResolvedValueOnce(revokedToken);
     mockPrismaRefreshTokenUpdateMany.mockResolvedValueOnce({ count: 1 });
 
-    await expect(service.refreshAccessToken(revokedToken.token)).rejects.toThrow(AuthRefreshTokenError);
+    await expect(service.refreshAccessToken(revokedToken.token)).rejects.toThrow(
+      AuthRefreshTokenError,
+    );
   });
 
   it("lança AuthRefreshTokenError quando token expirado", async () => {
@@ -491,7 +490,9 @@ describe("AuthService.refreshAccessToken", () => {
     };
     mockPrismaRefreshTokenFindUnique.mockResolvedValueOnce(expiredToken);
 
-    await expect(service.refreshAccessToken(expiredToken.token)).rejects.toThrow(AuthRefreshTokenError);
+    await expect(service.refreshAccessToken(expiredToken.token)).rejects.toThrow(
+      AuthRefreshTokenError,
+    );
   });
 
   it("revoga todos os tokens do usuário quando token reutilizado detectado", async () => {
@@ -499,7 +500,9 @@ describe("AuthService.refreshAccessToken", () => {
     mockPrismaRefreshTokenFindUnique.mockResolvedValueOnce(revokedToken);
     mockPrismaRefreshTokenUpdateMany.mockResolvedValueOnce({ count: 2 });
 
-    await expect(service.refreshAccessToken(revokedToken.token)).rejects.toThrow(AuthRefreshTokenError);
+    await expect(service.refreshAccessToken(revokedToken.token)).rejects.toThrow(
+      AuthRefreshTokenError,
+    );
 
     expect(mockPrismaRefreshTokenUpdateMany).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -520,7 +523,10 @@ describe("AuthService.revokeRefreshToken", () => {
 
   it("revoga token existente", async () => {
     mockPrismaRefreshTokenFindUnique.mockResolvedValueOnce(MOCK_REFRESH_TOKEN);
-    mockPrismaRefreshTokenUpdate.mockResolvedValueOnce({ ...MOCK_REFRESH_TOKEN, revokedAt: new Date() });
+    mockPrismaRefreshTokenUpdate.mockResolvedValueOnce({
+      ...MOCK_REFRESH_TOKEN,
+      revokedAt: new Date(),
+    });
 
     await service.revokeRefreshToken(MOCK_REFRESH_TOKEN.token);
 

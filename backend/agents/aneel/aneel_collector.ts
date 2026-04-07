@@ -4,22 +4,27 @@ import {
   AneelDataFileSchema,
   type AneelMunicipalData,
 } from "../../../shared/types/agents/aneel.types.js";
-import aneelRawData from "../../../shared/data/aneel_gd_2023.json";
+import aneelRawData from "../../../shared/data/aneel_gd_2023.json" with { type: "json" };
 
-// Validação única na carga do módulo
-const parseResult = AneelDataFileSchema.safeParse(aneelRawData);
-if (!parseResult.success) {
-  throw new Error(
-    `aneel_gd_2023.json validation failed: ${JSON.stringify(parseResult.error.errors)}`
+// Validação na carga do módulo — falha graceful para não crashar o Express
+const _aneelParseResult = AneelDataFileSchema.safeParse(aneelRawData);
+if (!_aneelParseResult.success) {
+  logger.error(
+    "aneel_gd_2023.json validation failed — collector will return null for all municipalities",
+    {
+      errors: _aneelParseResult.error.errors.slice(0, 3),
+    },
   );
 }
-const ANEEL_DATA = parseResult.data;
+const ANEEL_DATA = _aneelParseResult.success ? _aneelParseResult.data : null;
 
 const REFERENCE_YEAR = 2023;
 const REFERENCE_DATE = new Date("2023-12-31");
 
 export class AneelCollector {
   async collect(ibgeCode: string): Promise<AneelMunicipalData | null> {
+    if (!ANEEL_DATA) return null;
+
     const entry = ANEEL_DATA[ibgeCode];
     if (!entry) {
       logger.debug(`No ANEEL GD data for ${ibgeCode}`);

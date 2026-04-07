@@ -12,9 +12,6 @@ export const RegisterSchema = z.object({
   email: z.string().email("Formato de e-mail inválido"),
   password: z.string().min(8, "Senha deve ter no mínimo 8 caracteres"),
   name: z.string().min(1, "Nome é obrigatório"),
-  role: z.enum(["admin", "prefeito", "secretario", "viewer"], {
-    errorMap: () => ({ message: "Role inválida. Use: admin, prefeito, secretario ou viewer" }),
-  }),
   municipalityId: z.string().optional().nullable(),
 });
 
@@ -91,11 +88,12 @@ export class AuthService {
 
   /**
    * Registra novo usuário.
-   * Regra: apenas admins podem registrar novos usuários após o primeiro cadastro.
-   * O primeiro usuário cadastrado recebe role admin automaticamente.
+   * A role NUNCA é aceita do body da requisição — é determinada pelo servidor:
+   *   - Primeiro usuário → "admin" (bootstrap único)
+   *   - Demais → "prefeito" (default seguro)
    */
-  async register(input: RegisterInput): Promise<SafeUser> {
-    logger.info("Tentativa de registro de usuário", { email: input.email, role: input.role });
+  async register(input: RegisterInput, role: UserRole = "prefeito"): Promise<SafeUser> {
+    logger.info("Tentativa de registro de usuário", { email: input.email, role });
 
     const existingUser = await this.prisma.user.findUnique({
       where: { email: input.email },
@@ -112,7 +110,7 @@ export class AuthService {
         email: input.email,
         passwordHash,
         name: input.name,
-        role: input.role,
+        role,
         municipalityId: input.municipalityId ?? null,
       },
     });
@@ -173,7 +171,9 @@ export class AuthService {
 
     if (stored.revokedAt !== null) {
       // Possible token reuse attack — revoke all tokens for this user
-      logger.warn("Refresh token já revogado detectado — possível reuso", { userId: stored.userId });
+      logger.warn("Refresh token já revogado detectado — possível reuso", {
+        userId: stored.userId,
+      });
       await this.revokeAllUserTokens(stored.userId);
       throw new AuthRefreshTokenError("Refresh token já foi utilizado");
     }

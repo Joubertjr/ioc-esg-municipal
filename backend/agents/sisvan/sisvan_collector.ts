@@ -4,20 +4,27 @@ import {
   SisvanDataFileSchema,
   type SisvanMunicipalData,
 } from "../../../shared/types/agents/sisvan.types.js";
-import sisvanRawData from "../../../shared/data/sisvan_2023.json";
+import sisvanRawData from "../../../shared/data/sisvan_2023.json" with { type: "json" };
 
-// Validação única na carga do módulo
-const parseResult = SisvanDataFileSchema.safeParse(sisvanRawData);
-if (!parseResult.success) {
-  throw new Error(`sisvan_2023.json validation failed: ${JSON.stringify(parseResult.error.errors)}`);
+// Validação na carga do módulo — falha graceful para não crashar o Express
+const _sisvanParseResult = SisvanDataFileSchema.safeParse(sisvanRawData);
+if (!_sisvanParseResult.success) {
+  logger.error(
+    "sisvan_2023.json validation failed — collector will return null for all municipalities",
+    {
+      errors: _sisvanParseResult.error.errors.slice(0, 3),
+    },
+  );
 }
-const SISVAN_DATA = parseResult.data;
+const SISVAN_DATA = _sisvanParseResult.success ? _sisvanParseResult.data : null;
 
 const REFERENCE_YEAR = 2023;
 const REFERENCE_DATE = new Date("2023-12-31");
 
 export class SisvanCollector {
   async collect(ibgeCode: string): Promise<SisvanMunicipalData | null> {
+    if (!SISVAN_DATA) return null;
+
     const entry = SISVAN_DATA[ibgeCode];
     if (!entry) {
       logger.debug(`No SISVAN data for ${ibgeCode}`);

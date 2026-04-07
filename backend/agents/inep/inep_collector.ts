@@ -4,20 +4,27 @@ import {
   IdebDataFileSchema,
   type InepMunicipalData,
 } from "../../../shared/types/agents/inep.types.js";
-import idebRawData from "../../../shared/data/ideb_2023.json";
+import idebRawData from "../../../shared/data/ideb_2023.json" with { type: "json" };
 
-// Validação única na carga do módulo
-const parseResult = IdebDataFileSchema.safeParse(idebRawData);
-if (!parseResult.success) {
-  throw new Error(`ideb_2023.json validation failed: ${JSON.stringify(parseResult.error.errors)}`);
+// Validação na carga do módulo — falha graceful para não crashar o Express
+const _inepParseResult = IdebDataFileSchema.safeParse(idebRawData);
+if (!_inepParseResult.success) {
+  logger.error(
+    "ideb_2023.json validation failed — collector will return null for all municipalities",
+    {
+      errors: _inepParseResult.error.errors.slice(0, 3),
+    },
+  );
 }
-const IDEB_DATA = parseResult.data;
+const IDEB_DATA = _inepParseResult.success ? _inepParseResult.data : null;
 
 const REFERENCE_YEAR = 2023;
 const REFERENCE_DATE = new Date("2023-12-31");
 
 export class InepCollector {
   async collect(ibgeCode: string): Promise<InepMunicipalData | null> {
+    if (!IDEB_DATA) return null;
+
     const entry = IDEB_DATA[ibgeCode];
     if (!entry) {
       logger.debug(`No IDEB data for ${ibgeCode}`);

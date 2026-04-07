@@ -10,12 +10,15 @@ import { TseCollector, mapToOdsIndicators as mapTseOds } from "../agents/tse/ind
 import { AneelCollector, mapToOdsIndicators as mapAneelOds } from "../agents/aneel/index.js";
 import { SnisRsCollector, mapToOdsIndicators as mapSnisRsOds } from "../agents/snis_rs/index.js";
 import { AnaCollector, mapToOdsIndicators as mapAnaOds } from "../agents/ana/index.js";
-import { ConveniosCollector, mapToOdsIndicators as mapConveniosOds } from "../agents/convenios/index.js";
+import {
+  ConveniosCollector,
+  mapToOdsIndicators as mapConveniosOds,
+} from "../agents/convenios/index.js";
 import { AnatelCollector, mapToOdsIndicators as mapAnatelOds } from "../agents/anatel/index.js";
 import { SisvanCollector, mapToOdsIndicators as mapSisvanOds } from "../agents/sisvan/index.js";
 import { logger } from "../utils/logger.js";
 import { batchLimiter } from "../middleware/rate-limit.js";
-import { authenticateToken, requireRole } from "../middleware/auth.js";
+import { requireRole } from "../middleware/auth.js";
 
 const router: RouterType = Router();
 const ibgeCollector = new IbgeCollector();
@@ -53,7 +56,7 @@ function validateBatchBody(body: unknown): string[] | null {
 
 // ─── IBGE Routes ────────────────────────────────────────────────────────────
 
-router.get("/ibge/:ibgeCode", authenticateToken, async (req: Request, res: Response) => {
+router.get("/ibge/:ibgeCode", async (req: Request, res: Response) => {
   const ibgeCode = validateIbgeCode(req.params["ibgeCode"]);
   if (!ibgeCode) {
     res.status(400).json({ error: "ibgeCode deve ter 7 dígitos numéricos" });
@@ -82,35 +85,40 @@ router.get("/ibge/:ibgeCode", authenticateToken, async (req: Request, res: Respo
   }
 });
 
-router.post("/ibge/batch", authenticateToken, requireRole("admin", "prefeito", "secretario"), batchLimiter, async (req: Request, res: Response) => {
-  const ibgeCodes = validateBatchBody(req.body);
-  if (!ibgeCodes) {
-    res.status(400).json({ error: "ibgeCodes deve ser array não vazio (máx 50)" });
-    return;
-  }
-
-  try {
-    const results = await ibgeCollector.collectBatch(ibgeCodes);
-    const response: Record<string, unknown> = {};
-    for (const [code, data] of results) {
-      response[code] = {
-        referenceYear: data.referenceYear,
-        indicators: data.indicators,
-        ods: mapIbgeOds(data),
-      };
+router.post(
+  "/ibge/batch",
+  requireRole("admin", "prefeito", "secretario"),
+  batchLimiter,
+  async (req: Request, res: Response) => {
+    const ibgeCodes = validateBatchBody(req.body);
+    if (!ibgeCodes) {
+      res.status(400).json({ error: "ibgeCodes deve ser array não vazio (máx 50)" });
+      return;
     }
-    res.json({ total: ibgeCodes.length, found: results.size, data: response });
-  } catch (error) {
-    logger.error("Error in IBGE batch route", {
-      error: error instanceof Error ? error.message : String(error),
-    });
-    res.status(500).json({ error: "Erro interno no batch IBGE" });
-  }
-});
+
+    try {
+      const results = await ibgeCollector.collectBatch(ibgeCodes);
+      const response: Record<string, unknown> = {};
+      for (const [code, data] of results) {
+        response[code] = {
+          referenceYear: data.referenceYear,
+          indicators: data.indicators,
+          ods: mapIbgeOds(data),
+        };
+      }
+      res.json({ total: ibgeCodes.length, found: results.size, data: response });
+    } catch (error) {
+      logger.error("Error in IBGE batch route", {
+        error: error instanceof Error ? error.message : String(error),
+      });
+      res.status(500).json({ error: "Erro interno no batch IBGE" });
+    }
+  },
+);
 
 // ─── SICONFI Routes ─────────────────────────────────────────────────────────
 
-router.get("/siconfi/:ibgeCode", authenticateToken, async (req: Request, res: Response) => {
+router.get("/siconfi/:ibgeCode", async (req: Request, res: Response) => {
   const ibgeCode = validateIbgeCode(req.params["ibgeCode"]);
   if (!ibgeCode) {
     res.status(400).json({ error: "ibgeCode deve ter 7 dígitos numéricos" });
@@ -139,35 +147,40 @@ router.get("/siconfi/:ibgeCode", authenticateToken, async (req: Request, res: Re
   }
 });
 
-router.post("/siconfi/batch", authenticateToken, requireRole("admin", "prefeito", "secretario"), batchLimiter, async (req: Request, res: Response) => {
-  const ibgeCodes = validateBatchBody(req.body);
-  if (!ibgeCodes) {
-    res.status(400).json({ error: "ibgeCodes deve ser array não vazio (máx 50)" });
-    return;
-  }
-
-  try {
-    const results = await siconfiCollector.collectBatch(ibgeCodes);
-    const response: Record<string, unknown> = {};
-    for (const [code, data] of results) {
-      response[code] = {
-        referenceYear: data.referenceYear,
-        indicators: data.indicators,
-        ods: mapSiconfiOds(data),
-      };
+router.post(
+  "/siconfi/batch",
+  requireRole("admin", "prefeito", "secretario"),
+  batchLimiter,
+  async (req: Request, res: Response) => {
+    const ibgeCodes = validateBatchBody(req.body);
+    if (!ibgeCodes) {
+      res.status(400).json({ error: "ibgeCodes deve ser array não vazio (máx 50)" });
+      return;
     }
-    res.json({ total: ibgeCodes.length, found: results.size, data: response });
-  } catch (error) {
-    logger.error("Error in SICONFI batch route", {
-      error: error instanceof Error ? error.message : String(error),
-    });
-    res.status(500).json({ error: "Erro interno no batch SICONFI" });
-  }
-});
+
+    try {
+      const results = await siconfiCollector.collectBatch(ibgeCodes);
+      const response: Record<string, unknown> = {};
+      for (const [code, data] of results) {
+        response[code] = {
+          referenceYear: data.referenceYear,
+          indicators: data.indicators,
+          ods: mapSiconfiOds(data),
+        };
+      }
+      res.json({ total: ibgeCodes.length, found: results.size, data: response });
+    } catch (error) {
+      logger.error("Error in SICONFI batch route", {
+        error: error instanceof Error ? error.message : String(error),
+      });
+      res.status(500).json({ error: "Erro interno no batch SICONFI" });
+    }
+  },
+);
 
 // ─── DATASUS Routes ────────────────────────────────────────────────────────
 
-router.get("/datasus/:ibgeCode", authenticateToken, async (req: Request, res: Response) => {
+router.get("/datasus/:ibgeCode", async (req: Request, res: Response) => {
   const ibgeCode = validateIbgeCode(req.params["ibgeCode"]);
   if (!ibgeCode) {
     res.status(400).json({ error: "ibgeCode deve ter 7 dígitos numéricos" });
@@ -198,7 +211,7 @@ router.get("/datasus/:ibgeCode", authenticateToken, async (req: Request, res: Re
 
 // ─── INEP Routes ─────────────────────────────────────────────────────────────
 
-router.get("/inep/:ibgeCode", authenticateToken, async (req: Request, res: Response) => {
+router.get("/inep/:ibgeCode", async (req: Request, res: Response) => {
   const ibgeCode = validateIbgeCode(req.params["ibgeCode"]);
   if (!ibgeCode) {
     res.status(400).json({ error: "ibgeCode deve ter 7 dígitos numéricos" });
@@ -229,7 +242,7 @@ router.get("/inep/:ibgeCode", authenticateToken, async (req: Request, res: Respo
 
 // ─── SNIS Routes ─────────────────────────────────────────────────────────────
 
-router.get("/snis/:ibgeCode", authenticateToken, async (req: Request, res: Response) => {
+router.get("/snis/:ibgeCode", async (req: Request, res: Response) => {
   const ibgeCode = validateIbgeCode(req.params["ibgeCode"]);
   if (!ibgeCode) {
     res.status(400).json({ error: "ibgeCode deve ter 7 dígitos numéricos" });
@@ -260,7 +273,7 @@ router.get("/snis/:ibgeCode", authenticateToken, async (req: Request, res: Respo
 
 // ─── INPE Routes ─────────────────────────────────────────────────────────────
 
-router.get("/inpe/:ibgeCode", authenticateToken, async (req: Request, res: Response) => {
+router.get("/inpe/:ibgeCode", async (req: Request, res: Response) => {
   const ibgeCode = validateIbgeCode(req.params["ibgeCode"]);
   if (!ibgeCode) {
     res.status(400).json({ error: "ibgeCode deve ter 7 dígitos numéricos" });
@@ -291,7 +304,7 @@ router.get("/inpe/:ibgeCode", authenticateToken, async (req: Request, res: Respo
 
 // ─── PNCP Routes ──────────────────────────────────────────────────────────────
 
-router.get("/pncp/:ibgeCode", authenticateToken, async (req: Request, res: Response) => {
+router.get("/pncp/:ibgeCode", async (req: Request, res: Response) => {
   const ibgeCode = validateIbgeCode(req.params["ibgeCode"]);
   if (!ibgeCode) {
     res.status(400).json({ error: "ibgeCode deve ter 7 dígitos numéricos" });
@@ -322,7 +335,7 @@ router.get("/pncp/:ibgeCode", authenticateToken, async (req: Request, res: Respo
 
 // ─── TSE Routes ───────────────────────────────────────────────────────────────
 
-router.get("/tse/:ibgeCode", authenticateToken, async (req: Request, res: Response) => {
+router.get("/tse/:ibgeCode", async (req: Request, res: Response) => {
   const ibgeCode = validateIbgeCode(req.params["ibgeCode"]);
   if (!ibgeCode) {
     res.status(400).json({ error: "ibgeCode deve ter 7 dígitos numéricos" });
@@ -353,7 +366,7 @@ router.get("/tse/:ibgeCode", authenticateToken, async (req: Request, res: Respon
 
 // ─── ANEEL Routes ─────────────────────────────────────────────────────────────
 
-router.get("/aneel/:ibgeCode", authenticateToken, async (req: Request, res: Response) => {
+router.get("/aneel/:ibgeCode", async (req: Request, res: Response) => {
   const ibgeCode = validateIbgeCode(req.params["ibgeCode"]);
   if (!ibgeCode) {
     res.status(400).json({ error: "ibgeCode deve ter 7 dígitos numéricos" });
@@ -384,7 +397,7 @@ router.get("/aneel/:ibgeCode", authenticateToken, async (req: Request, res: Resp
 
 // ─── SNIS-RS Routes ───────────────────────────────────────────────────────────
 
-router.get("/snis-rs/:ibgeCode", authenticateToken, async (req: Request, res: Response) => {
+router.get("/snis-rs/:ibgeCode", async (req: Request, res: Response) => {
   const ibgeCode = validateIbgeCode(req.params["ibgeCode"]);
   if (!ibgeCode) {
     res.status(400).json({ error: "ibgeCode deve ter 7 dígitos numéricos" });
@@ -415,7 +428,7 @@ router.get("/snis-rs/:ibgeCode", authenticateToken, async (req: Request, res: Re
 
 // ─── ANA Routes ───────────────────────────────────────────────────────────────
 
-router.get("/ana/:ibgeCode", authenticateToken, async (req: Request, res: Response) => {
+router.get("/ana/:ibgeCode", async (req: Request, res: Response) => {
   const ibgeCode = validateIbgeCode(req.params["ibgeCode"]);
   if (!ibgeCode) {
     res.status(400).json({ error: "ibgeCode deve ter 7 dígitos numéricos" });
@@ -446,7 +459,7 @@ router.get("/ana/:ibgeCode", authenticateToken, async (req: Request, res: Respon
 
 // ─── CONVENIOS Routes ─────────────────────────────────────────────────────────
 
-router.get("/convenios/:ibgeCode", authenticateToken, async (req: Request, res: Response) => {
+router.get("/convenios/:ibgeCode", async (req: Request, res: Response) => {
   const ibgeCode = validateIbgeCode(req.params["ibgeCode"]);
   if (!ibgeCode) {
     res.status(400).json({ error: "ibgeCode deve ter 7 dígitos numéricos" });
@@ -477,7 +490,7 @@ router.get("/convenios/:ibgeCode", authenticateToken, async (req: Request, res: 
 
 // ─── ANATEL Routes ────────────────────────────────────────────────────────────
 
-router.get("/anatel/:ibgeCode", authenticateToken, async (req: Request, res: Response) => {
+router.get("/anatel/:ibgeCode", async (req: Request, res: Response) => {
   const ibgeCode = validateIbgeCode(req.params["ibgeCode"]);
   if (!ibgeCode) {
     res.status(400).json({ error: "ibgeCode deve ter 7 dígitos numéricos" });
@@ -508,7 +521,7 @@ router.get("/anatel/:ibgeCode", authenticateToken, async (req: Request, res: Res
 
 // ─── SISVAN Routes ────────────────────────────────────────────────────────────
 
-router.get("/sisvan/:ibgeCode", authenticateToken, async (req: Request, res: Response) => {
+router.get("/sisvan/:ibgeCode", async (req: Request, res: Response) => {
   const ibgeCode = validateIbgeCode(req.params["ibgeCode"]);
   if (!ibgeCode) {
     res.status(400).json({ error: "ibgeCode deve ter 7 dígitos numéricos" });

@@ -4,20 +4,27 @@ import {
   TseDataFileSchema,
   type TseMunicipalData,
 } from "../../../shared/types/agents/tse.types.js";
-import tseRawData from "../../../shared/data/tse_2024.json";
+import tseRawData from "../../../shared/data/tse_2024.json" with { type: "json" };
 
-// Validação única na carga do módulo
-const parseResult = TseDataFileSchema.safeParse(tseRawData);
-if (!parseResult.success) {
-  throw new Error(`tse_2024.json validation failed: ${JSON.stringify(parseResult.error.errors)}`);
+// Validação na carga do módulo — falha graceful para não crashar o Express
+const _tseParseResult = TseDataFileSchema.safeParse(tseRawData);
+if (!_tseParseResult.success) {
+  logger.error(
+    "tse_2024.json validation failed — collector will return null for all municipalities",
+    {
+      errors: _tseParseResult.error.errors.slice(0, 3),
+    },
+  );
 }
-const TSE_DATA = parseResult.data;
+const TSE_DATA = _tseParseResult.success ? _tseParseResult.data : null;
 
 const REFERENCE_YEAR = 2024;
 const REFERENCE_DATE = new Date("2024-10-06"); // 1º turno eleições municipais 2024
 
 export class TseCollector {
   async collect(ibgeCode: string): Promise<TseMunicipalData | null> {
+    if (!TSE_DATA) return null;
+
     const entry = TSE_DATA[ibgeCode];
     if (!entry) {
       logger.debug(`No TSE data for ${ibgeCode}`);

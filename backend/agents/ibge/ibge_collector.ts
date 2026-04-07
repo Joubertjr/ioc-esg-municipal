@@ -11,33 +11,35 @@ import {
   type IbgeIndicators,
   type IbgeIndicatorId,
 } from "../../../shared/types/agents/ibge.types.js";
-import {
-  GiniDataFileSchema,
-  type GiniDataFile,
-} from "../../../shared/types/agents/gini.types.js";
+import { GiniDataFileSchema, type GiniDataFile } from "../../../shared/types/agents/gini.types.js";
 import {
   Ibge2022DataFileSchema,
   type Ibge2022DataFile,
 } from "../../../shared/types/agents/ibge_2022.types.js";
-import giniRawData from "../../../shared/data/gini_2022.json";
-import ibge2022RawData from "../../../shared/data/ibge_2022.json";
+import giniRawData from "../../../shared/data/gini_2022.json" with { type: "json" };
+import ibge2022RawData from "../../../shared/data/ibge_2022.json" with { type: "json" };
 
-// Validação única na carga do módulo — falha rápida se o JSON estiver corrompido
+// Validação na carga do módulo — falha graceful para não crashar o Express
 const giniParseResult = GiniDataFileSchema.safeParse(giniRawData);
 if (!giniParseResult.success) {
-  throw new Error(
-    `gini_2022.json validation failed: ${JSON.stringify(giniParseResult.error.errors)}`,
-  );
+  logger.error("gini_2022.json validation failed — Gini/razao2020 indicators will be unavailable", {
+    errors: giniParseResult.error.errors.slice(0, 3),
+  });
 }
-const GINI_DATA: GiniDataFile = giniParseResult.data;
+const GINI_DATA: GiniDataFile | null = giniParseResult.success ? giniParseResult.data : null;
 
 const ibge2022ParseResult = Ibge2022DataFileSchema.safeParse(ibge2022RawData);
 if (!ibge2022ParseResult.success) {
-  throw new Error(
-    `ibge_2022.json validation failed: ${JSON.stringify(ibge2022ParseResult.error.errors)}`,
+  logger.error(
+    "ibge_2022.json validation failed — urbanizacaoAdequada indicator will be unavailable",
+    {
+      errors: ibge2022ParseResult.error.errors.slice(0, 3),
+    },
   );
 }
-const IBGE_2022_DATA: Ibge2022DataFile = ibge2022ParseResult.data;
+const IBGE_2022_DATA: Ibge2022DataFile | null = ibge2022ParseResult.success
+  ? ibge2022ParseResult.data
+  : null;
 
 const config = API_CONFIGS["ibge"];
 
@@ -111,10 +113,9 @@ export class IbgeCollector {
             timeoutMs: this.timeout,
             maxRetries: config.retryCount,
           }).catch((err: unknown) => {
-            logger.warn(
-              `PAM fetch failed for ${ibgeCode}, continuing without producaoAgricola`,
-              { error: err instanceof Error ? err.message : String(err) },
-            );
+            logger.warn(`PAM fetch failed for ${ibgeCode}, continuing without producaoAgricola`, {
+              error: err instanceof Error ? err.message : String(err),
+            });
             return null;
           }),
           fetchWithRetry<unknown[]>(cempreUrl, {
@@ -129,8 +130,15 @@ export class IbgeCollector {
           }),
         ]);
 
-        // Validar indicadores principais com Zod
-        const validated = z.array(IbgeIndicatorResponseSchema).parse(rawData);
+        // Validar indicadores principais com Zod (safeParse para não propagar ZodError)
+        const parseResult = z.array(IbgeIndicatorResponseSchema).safeParse(rawData);
+        if (!parseResult.success) {
+          logger.warn(`IBGE: falha na validação dos indicadores para ${ibgeCode}`, {
+            errors: parseResult.error.errors.slice(0, 3),
+          });
+          return null;
+        }
+        const validated = parseResult.data;
 
         const siconfiCode = ibgeToSiconfi(ibgeCode);
         const indicators = this.parseIndicators(validated, siconfiCode);
@@ -155,7 +163,7 @@ export class IbgeCollector {
         );
 
         // Enriquecer com Coeficiente de Gini e Razão 20/20 do Censo 2022 (JSON estático)
-        const giniEntry = GINI_DATA[ibgeCode];
+        const giniEntry = GINI_DATA ? GINI_DATA[ibgeCode] : null;
         if (giniEntry) {
           indicators.coeficienteGini = giniEntry.coeficienteGini;
           indicators.razao2020 = giniEntry.razao2020;
@@ -164,7 +172,7 @@ export class IbgeCollector {
         }
 
         // Enriquecer com % domicílios urbanos com infraestrutura adequada (ODS 11)
-        const ibge2022Entry = IBGE_2022_DATA[ibgeCode];
+        const ibge2022Entry = IBGE_2022_DATA ? IBGE_2022_DATA[ibgeCode] : null;
         if (ibge2022Entry) {
           indicators.urbanizacaoAdequada = ibge2022Entry.urbanizacaoAdequada;
         } else {
@@ -197,9 +205,7 @@ export class IbgeCollector {
    * dentro do `collect()` via `withCache`, então o throttle não adiciona latência
    * significativa em cache hits, mas garante proteção contra flood se Redis estiver down.
    */
-  async collectBatch(
-    ibgeCodes: string[],
-  ): Promise<Map<string, IbgeMunicipalData>> {
+  async collectBatch(ibgeCodes: string[]): Promise<Map<string, IbgeMunicipalData>> {
     const results = new Map<string, IbgeMunicipalData>();
 
     for (const code of ibgeCodes) {
@@ -218,9 +224,7 @@ export class IbgeCollector {
       }
     }
 
-    logger.info(
-      `IBGE batch collected: ${results.size}/${ibgeCodes.length} municipalities`,
-    );
+    logger.info(`IBGE batch collected: ${results.size}/${ibgeCodes.length} municipalities`);
     return results;
   }
 
@@ -245,7 +249,7 @@ export class IbgeCollector {
 
     if (years.length === 0) return null;
 
-    const value = result.res[years[0]!];
+    const value = result.res[years[0]];
     if (value === null || value === undefined) return null;
 
     const parsed = Number(value);
@@ -259,26 +263,10 @@ export class IbgeCollector {
     // IBGE usa código de 6 dígitos (sem verificador) na API de pesquisas
     const loc = siconfiCode;
 
-    const populacao = this.getLatestValue(
-      data,
-      IBGE_INDICATORS.POPULACAO_ESTIMADA,
-      loc,
-    );
-    const pibPerCapita = this.getLatestValue(
-      data,
-      IBGE_INDICATORS.PIB_PER_CAPITA,
-      loc,
-    );
-    const pctBaixaRenda = this.getLatestValue(
-      data,
-      IBGE_INDICATORS.PCT_BAIXA_RENDA,
-      loc,
-    );
-    const taxaOcupacao = this.getLatestValue(
-      data,
-      IBGE_INDICATORS.TAXA_OCUPACAO,
-      loc,
-    );
+    const populacao = this.getLatestValue(data, IBGE_INDICATORS.POPULACAO_ESTIMADA, loc);
+    const pibPerCapita = this.getLatestValue(data, IBGE_INDICATORS.PIB_PER_CAPITA, loc);
+    const pctBaixaRenda = this.getLatestValue(data, IBGE_INDICATORS.PCT_BAIXA_RENDA, loc);
+    const taxaOcupacao = this.getLatestValue(data, IBGE_INDICATORS.TAXA_OCUPACAO, loc);
     const receitasOrcamentarias = this.getLatestValue(
       data,
       IBGE_INDICATORS.RECEITAS_ORCAMENTARIAS,
@@ -289,23 +277,11 @@ export class IbgeCollector {
       IBGE_INDICATORS.DESPESAS_ORCAMENTARIAS,
       loc,
     );
-    const razaoDependencia = this.getLatestValue(
-      data,
-      IBGE_INDICATORS.RAZAO_DEPENDENCIA,
-      loc,
-    );
-    const areaterritorial = this.getLatestValue(
-      data,
-      IBGE_INDICATORS.AREA_TERRITORIAL,
-      loc,
-    );
+    const razaoDependencia = this.getLatestValue(data, IBGE_INDICATORS.RAZAO_DEPENDENCIA, loc);
+    const areaterritorial = this.getLatestValue(data, IBGE_INDICATORS.AREA_TERRITORIAL, loc);
 
     // Se nenhum dado disponível, retorna null
-    if (
-      populacao === null &&
-      pibPerCapita === null &&
-      pctBaixaRenda === null
-    ) {
+    if (populacao === null && pibPerCapita === null && pctBaixaRenda === null) {
       return null;
     }
 
@@ -352,9 +328,7 @@ export class IbgeCollector {
       if (!variavel) return null;
 
       // API v3 retorna localidade com código de 7 dígitos (ibgeCode completo)
-      const resultado = variavel.resultados.find(
-        (r) => r.localidade.id === ibgeCode,
-      );
+      const resultado = variavel.resultados.find((r) => r.localidade.id === ibgeCode);
       if (!resultado) return null;
 
       const valor = resultado.serie[periodo];
