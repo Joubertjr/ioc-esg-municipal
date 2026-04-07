@@ -1,4 +1,5 @@
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback, useMemo, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { AppShell } from "../components/layout/AppShell";
 import { useToast } from "../components/ui/Toast";
@@ -216,13 +217,33 @@ function EmptyResultsPlaceholder() {
 }
 
 export function SimulatorPage() {
+  const location = useLocation();
   const [ibgeCode, setIbgeCode] = useState(DEFAULT_IBGE_CODE);
   const [totalAmountRaw, setTotalAmountRaw] = useState("1000000");
   const [displayValue, setDisplayValue] = useState("1.000.000");
   const [isFocused, setIsFocused] = useState(false);
   const [allocation, setAllocation] = useState<InvestmentAllocation>(buildDefaultAllocation);
   const [result, setResult] = useState<SimulationResult | null>(null);
+  const [showScenarioBanner, setShowScenarioBanner] = useState(false);
   const { showToast } = useToast();
+
+  // Ler cenário pré-preenchido das recomendações (via navigate state)
+  useEffect(() => {
+    const state = location.state as {
+      scenarioAllocation?: InvestmentAllocation;
+      ibgeCode?: string;
+      allOdsGreen?: boolean;
+    } | null;
+    if (state?.scenarioAllocation) {
+      setAllocation(state.scenarioAllocation);
+      if (state.ibgeCode) {
+        setIbgeCode(state.ibgeCode);
+      }
+      setShowScenarioBanner(true);
+      // Limpar state para que refresh não re-aplique
+      window.history.replaceState({}, document.title);
+    }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const totalAmount = useMemo(() => {
     const parsed = parseFloat(totalAmountRaw.replace(/\D/g, ""));
@@ -300,6 +321,51 @@ export function SimulatorPage() {
             Simule o impacto de diferentes alocações de FPM nos índices ODS do município.
           </p>
         </div>
+
+        {/* Banner de cenário pré-preenchido */}
+        {showScenarioBanner && (
+          <div className="rounded-lg border border-indigo-200 bg-indigo-50 p-4">
+            <div className="flex items-start justify-between">
+              <div className="flex items-start gap-3">
+                <svg
+                  className="h-5 w-5 text-indigo-600 mt-0.5 flex-shrink-0"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth="1.5"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.455 2.456L21.75 6l-1.036.259a3.375 3.375 0 00-2.455 2.456z"
+                  />
+                </svg>
+                <div>
+                  <p className="text-sm font-medium text-indigo-900">
+                    Cenário pré-preenchido a partir das recomendações
+                  </p>
+                  <p className="text-sm text-indigo-700 mt-1">
+                    Os sliders foram ajustados para priorizar as áreas com maior necessidade de
+                    investimento. Revise e clique em &ldquo;Simular impacto&rdquo;.
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowScenarioBanner(false)}
+                className="text-indigo-400 hover:text-indigo-600 ml-4"
+              >
+                <svg className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                  <path
+                    fillRule="evenodd"
+                    d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              </button>
+            </div>
+          </div>
+        )}
 
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Município + Valor */}

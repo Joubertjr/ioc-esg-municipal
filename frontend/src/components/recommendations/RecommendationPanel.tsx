@@ -1,4 +1,6 @@
+import { useNavigate } from "react-router-dom";
 import { useRecommendations } from "../../hooks/useRecommendations";
+import { useRecommendedScenario } from "../../hooks/useRecommendedScenario";
 import { ODS_DEFINITIONS } from "../../../../shared/constants/ods";
 import { RecommendationCard } from "./RecommendationCard";
 import type { SmartRecommendation } from "../../types/api";
@@ -42,6 +44,23 @@ function SkeletonCard() {
 
 export function RecommendationPanel({ ibgeCode }: RecommendationPanelProps) {
   const { data: report, isLoading, isError, error } = useRecommendations(ibgeCode);
+  const { fetchScenario, isPending } = useRecommendedScenario();
+  const navigate = useNavigate();
+
+  const handleSimulateScenario = async () => {
+    try {
+      const scenario = await fetchScenario(ibgeCode);
+      navigate("/simulator", {
+        state: {
+          scenarioAllocation: scenario.allocation,
+          ibgeCode: scenario.ibgeCode,
+          allOdsGreen: scenario.allOdsGreen,
+        },
+      });
+    } catch {
+      // Error handled by mutation state
+    }
+  };
 
   const sortedRecommendations = report?.recommendations
     ? [...report.recommendations].sort(
@@ -109,6 +128,56 @@ export function RecommendationPanel({ ibgeCode }: RecommendationPanelProps) {
           <p className="text-sm font-medium text-gray-700">
             Nenhuma recomendação — todos os ODS estão acima da meta
           </p>
+        </div>
+      )}
+
+      {/* Botão simular cenário */}
+      {!isLoading && report && sortedRecommendations.length > 0 && (
+        <div className="flex justify-end">
+          <button
+            onClick={handleSimulateScenario}
+            disabled={isPending}
+            className="inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          >
+            {isPending ? (
+              <>
+                <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                    fill="none"
+                  />
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                  />
+                </svg>
+                Calculando...
+              </>
+            ) : (
+              <>
+                <svg
+                  className="h-4 w-4"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth="1.5"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M15.75 15.75V18m-7.5-6.75h.008v.008H8.25v-.008Zm0 2.25h.008v.008H8.25V13.5Zm0 2.25h.008v.008H8.25v-.008Zm0 2.25h.008v.008H8.25V18Zm2.498-6.75h.007v.008h-.007v-.008Zm0 2.25h.007v.008h-.007V13.5Zm0 2.25h.007v.008h-.007v-.008Zm0 2.25h.007v.008h-.007V18Zm2.504-6.75h.008v.008h-.008v-.008Zm0 2.25h.008v.008h-.008V13.5Zm0 2.25h.008v.008h-.008v-.008Zm0 2.25h.008v.008h-.008V18Zm2.498-6.75h.008v.008h-.008v-.008Zm0 2.25h.008v.008h-.008V13.5ZM8.25 6h7.5v2.25h-7.5V6ZM12 2.25c-1.892 0-3.758.11-5.593.322C5.307 2.7 4.5 3.65 4.5 4.757V19.5a2.25 2.25 0 002.25 2.25h10.5a2.25 2.25 0 002.25-2.25V4.757c0-1.108-.806-2.057-1.907-2.185A48.507 48.507 0 0012 2.25Z"
+                  />
+                </svg>
+                Simular cenário recomendado
+              </>
+            )}
+          </button>
         </div>
       )}
 

@@ -1,6 +1,6 @@
 # Backlog — IOC ESG Municipal
 
-Atualizado: 2026-04-07
+Atualizado: 2026-04-07 — itens 1-3 concluidos, proximo: item 4 (simulador <-> recomendacoes)
 
 **Escopo:** Santa Catarina (295 municípios). Escala nacional adiada.
 **Escala de agentes:** Maximizar paralelismo com múltiplos agentes Claude em cada fase.
@@ -116,7 +116,7 @@ Atualizado: 2026-04-07
 | 1   | Testes para fases 3-6 (recommendations, onboarding, history)    | Qualidade   | Alto    | Concluido |
 | 2   | Fix debitos tecnicos (ProtectedRoute cache, simulator tsc)      | Tech debt   | Medio   | Concluido |
 | 3   | Memoria longo prazo (Obsidian vault + MCP filesystem server)    | Infra       | Alto    | Concluido |
-| 4   | Integracao simulador <-> recomendacoes (auto-preencher cenario) | Feature     | Alto    | Planejado |
+| 4   | Integracao simulador <-> recomendacoes (auto-preencher cenario) | Feature     | Alto    | Concluido |
 | 5   | Multi-tenant: isolamento de dados por municipio                 | Seguranca   | Alto    | Planejado |
 | 6   | Exportar relatorio PDF                                          | Feature     | Medio   | Backlog   |
 | 7   | Dashboard admin (gestao de usuarios, metricas uso)              | Feature     | Medio   | Backlog   |
@@ -127,8 +127,8 @@ Atualizado: 2026-04-07
 
 ## Bugs e Debitos Tecnicos
 
-| Item                                              | Severidade | Status                      |
-| ------------------------------------------------- | ---------- | --------------------------- |
-| Vitest SIGSEGV com 41+ arquivos                   | Baixa      | Workaround (batches)        |
-| ProtectedRoute round-trip a cada mount            | Media      | Pendente (cache em context) |
-| simulator_service.ts tsc error (Prisma JSON type) | Baixa      | Pendente                    |
+| Item                                              | Severidade | Status                                        |
+| ------------------------------------------------- | ---------- | --------------------------------------------- |
+| Vitest SIGSEGV com 41+ arquivos                   | Baixa      | Workaround (batches)                          |
+| ProtectedRoute round-trip a cada mount            | Media      | Corrigido (AuthContext centralizado — item 2) |
+| simulator_service.ts tsc error (Prisma JSON type) | Baixa      | Corrigido (item 2)                            |

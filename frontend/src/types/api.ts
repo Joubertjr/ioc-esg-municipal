@@ -227,3 +227,20 @@ export interface RecommendationReport {
   recommendations: SmartRecommendation[];
   strengths: Array<{ odsNumber: number; odsName: string; score: number }>;
 }
+
+export interface ScenarioReasoning {
+  area: InvestmentArea;
+  percentage: number;
+  odsNumbers: number[];
+  justification: string;
+}
+
+export interface RecommendedScenario {
+  ibgeCode: string;
+  municipalityName: string | null;
+  totalAmount: null;
+  allocation: InvestmentAllocation;
+  reasoning: ScenarioReasoning[];
+  basedOnRecommendations: number;
+  allOdsGreen: boolean;
+}

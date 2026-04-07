@@ -1,6 +1,6 @@
 # Estado do Projeto — IOC ESG Municipal
 
-Atualizado: 2026-04-07 — 6 fases completas, 7 paginas frontend, 17/17 ODS, 14 coletores, recomendacoes inteligentes, onboarding, deploy-ready, 918+ testes, Obsidian vault integrado
+Atualizado: 2026-04-07 — 6 fases completas, 7 paginas frontend, 17/17 ODS, 14 coletores, recomendacoes inteligentes, onboarding, deploy-ready, 918+ testes, Obsidian vault integrado, 21 agentes especializados
 
 ## Status geral
 
@@ -100,9 +100,33 @@ Atualizado: 2026-04-07 — 6 fases completas, 7 paginas frontend, 17/17 ODS, 14 
 
 ---
 
+## Agentes Claude (21 especializados)
+
+| Tier   | Agente             | Responsabilidade                          |
+| ------ | ------------------ | ----------------------------------------- |
+| Opus   | orchestrator       | Feature multi-camada — coordena todos     |
+| Opus   | backend-architect  | Design de API ou servico                  |
+| Opus   | database-architect | Schema ou migration                       |
+| Opus   | frontend-architect | UI complexa                               |
+| Opus   | security-auditor   | Antes de deploy, auth, dados sensiveis    |
+| Opus   | code-reviewer      | Apos qualquer feature — contexto limpo    |
+| Opus   | project-monitor    | Monitoramento continuo, KPIs, coerencia   |
+| Sonnet | data-collector     | Implementar/debugar coletor de API gov    |
+| Sonnet | ods-analyst        | Scores e indicadores dos 17 ODS           |
+| Sonnet | api-developer      | Implementar endpoints a partir de specs   |
+| Sonnet | test-writer        | Cobertura de testes                       |
+| Sonnet | debugger           | Bug persistente                           |
+| Sonnet | docs-writer        | README, documentacao de API               |
+| Sonnet | memory-manager     | Sincroniza decisoes/aprendizados no vault |
+| Haiku  | devops-engineer    | Docker, CI/CD, infra                      |
+
+**Nota:** `memory-manager` adicionado para manter o Obsidian vault sincronizado com decisoes arquiteturais, gotchas e lessons-learned da sessao.
+
+---
+
 ## Testes
 
-- 885+ testes passando
+- 918+ testes passando (885 originais + 33 novos para fases 3-6)
 - TSC clean (frontend e backend)
 - Playwright E2E configurado
 
@@ -110,13 +134,15 @@ Atualizado: 2026-04-07 — 6 fases completas, 7 paginas frontend, 17/17 ODS, 14 
 
 ## Proximos passos (ver docs/BACKLOG.md)
 
-1. ~~Testes para fases 3-6~~ — Concluido (33 novos testes)
-2. ~~Fix debitos tecnicos~~ — Concluido (AuthContext + simulator tsc)
-3. ~~Memoria longo prazo (Obsidian)~~ — Concluido
-4. Integracao simulador <-> recomendacoes
-5. Multi-tenant
-6. Exportar PDF
-7. Dashboard admin
+| #   | Item                                                            | Status    |
+| --- | --------------------------------------------------------------- | --------- |
+| 1   | Testes para fases 3-6 (33 novos testes)                         | Concluido |
+| 2   | Fix debitos tecnicos (AuthContext + simulator tsc)              | Concluido |
+| 3   | Memoria longo prazo (Obsidian vault + MCP + memory-manager)     | Concluido |
+| 4   | Integracao simulador <-> recomendacoes (auto-preencher cenario) | Proximo   |
+| 5   | Multi-tenant: isolamento de dados por municipio                 | Planejado |
+| 6   | Exportar relatorio PDF                                          | Backlog   |
+| 7   | Dashboard admin (gestao de usuarios, metricas uso)              | Backlog   |
 
 ---
 
@@ -124,4 +150,4 @@ Atualizado: 2026-04-07 — 6 fases completas, 7 paginas frontend, 17/17 ODS, 14 
 
 - Branch: main
 - Remote: https://github.com/Joubertjr/ioc-esg-municipal (publico)
-- Ultimo commit: feat: fases 3-6 completas
+- Ultimo commit: feat: memoria longo prazo — Obsidian vault + memory-manager agent
