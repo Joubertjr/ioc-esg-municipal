@@ -37,7 +37,7 @@ export function RecommendationCard({ recommendation }: RecommendationCardProps) 
   const deltaValue = gap !== null ? -gap : null;
 
   return (
-    <div className="bg-white border border-gray-200 rounded-xl shadow-sm p-5 flex flex-col gap-4">
+    <div className="bg-card border border-border rounded-xl shadow-sm p-5 flex flex-col gap-4">
       {/* Header */}
       <div className="flex items-start justify-between gap-3">
         <div className="flex items-center gap-3">
@@ -48,8 +48,8 @@ export function RecommendationCard({ recommendation }: RecommendationCardProps) 
             {odsNumber}
           </span>
           <div>
-            <p className="text-sm font-semibold text-gray-900 leading-tight">{odsName}</p>
-            <p className="text-xs text-gray-500 mt-0.5">{ranking}</p>
+            <p className="text-sm font-semibold text-foreground leading-tight">{odsName}</p>
+            <p className="text-xs text-muted-foreground mt-0.5">{ranking}</p>
           </div>
         </div>
         <span
@@ -62,20 +62,20 @@ export function RecommendationCard({ recommendation }: RecommendationCardProps) 
       {/* Scores */}
       <div className="flex flex-wrap gap-3 text-sm">
         <div className="flex flex-col">
-          <span className="text-xs text-gray-500">Score atual</span>
-          <span className="font-semibold text-gray-800">{currentScore}/100</span>
+          <span className="text-xs text-muted-foreground">Score atual</span>
+          <span className="font-semibold text-foreground">{currentScore}/100</span>
         </div>
 
         {stateAverage !== null && (
           <div className="flex flex-col">
-            <span className="text-xs text-gray-500">Média SC</span>
-            <span className="font-semibold text-gray-800">{stateAverage}/100</span>
+            <span className="text-xs text-muted-foreground">Média SC</span>
+            <span className="font-semibold text-foreground">{stateAverage}/100</span>
           </div>
         )}
 
         {deltaValue !== null && (
           <div className="flex flex-col">
-            <span className="text-xs text-gray-500">Diferença</span>
+            <span className="text-xs text-muted-foreground">Diferença</span>
             <span
               className={`font-semibold ${deltaValue >= 0 ? "text-green-600" : "text-red-600"}`}
             >
@@ -103,11 +103,11 @@ export function RecommendationCard({ recommendation }: RecommendationCardProps) 
 
       {/* Ações recomendadas */}
       <div>
-        <p className="text-xs font-semibold text-gray-700 mb-1.5">Ações recomendadas</p>
+        <p className="text-xs font-semibold text-foreground mb-1.5">Ações recomendadas</p>
         <ul className="space-y-1">
           {actions.map((action, index) => (
-            <li key={index} className="flex items-start gap-2 text-xs text-gray-600">
-              <span className="mt-1 w-1.5 h-1.5 rounded-full bg-gray-400 shrink-0" />
+            <li key={index} className="flex items-start gap-2 text-xs text-muted-foreground">
+              <span className="mt-1 w-1.5 h-1.5 rounded-full bg-muted-foreground/60 shrink-0" />
               {action}
             </li>
           ))}
@@ -116,7 +116,7 @@ export function RecommendationCard({ recommendation }: RecommendationCardProps) 
 
       {/* Área de investimento */}
       <div>
-        <span className="inline-block text-xs bg-gray-100 text-gray-600 rounded-md px-2.5 py-1 font-medium">
+        <span className="inline-block text-xs bg-muted text-muted-foreground rounded-md px-2.5 py-1 font-medium">
           {investmentArea}
         </span>
       </div>

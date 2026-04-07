@@ -34,28 +34,36 @@ export class ErrorBoundary extends Component<Props, State> {
       if (this.props.fallback) return this.props.fallback;
 
       return (
-        <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
-          <div className="max-w-md w-full bg-white rounded-xl border border-gray-200 shadow-sm p-8 text-center">
-            <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <svg className="w-6 h-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+        <div className="min-h-screen bg-background flex items-center justify-center px-4">
+          <div className="max-w-md w-full bg-card rounded-xl border border-border shadow-sm p-8 text-center">
+            <div className="w-12 h-12 bg-destructive/10 rounded-full flex items-center justify-center mx-auto mb-4">
+              <svg
+                className="w-6 h-6 text-destructive"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                />
               </svg>
             </div>
-            <h2 className="text-lg font-semibold text-gray-900 mb-2">
-              Algo deu errado
-            </h2>
-            <p className="text-sm text-gray-500 mb-6">
+            <h2 className="text-lg font-semibold text-foreground mb-2">Algo deu errado</h2>
+            <p className="text-sm text-muted-foreground mb-6">
               Ocorreu um erro inesperado nesta pagina. Tente novamente ou recarregue o navegador.
             </p>
             {this.state.error && (
-              <p className="text-xs text-gray-400 bg-gray-50 rounded p-3 mb-6 text-left font-mono break-all">
+              <p className="text-xs text-muted-foreground/60 bg-muted rounded p-3 mb-6 text-left font-mono break-all">
                 {this.state.error.message}
               </p>
             )}
             <button
               type="button"
               onClick={this.handleRetry}
-              className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors"
+              className="px-4 py-2 bg-primary hover:bg-primary/90 text-white text-sm font-medium rounded-lg transition-colors"
             >
               Tentar novamente
             </button>

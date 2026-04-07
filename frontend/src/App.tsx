@@ -5,6 +5,7 @@ import { queryClient } from "./lib/queryClient";
 import { AuthProvider, useAuthContext } from "./contexts/AuthContext";
 import { ErrorBoundary } from "./components/ui/ErrorBoundary";
 import { ToastProvider } from "./components/ui/Toast";
+import { PageTransition } from "./components/layout/PageTransition";
 
 const DashboardPage = lazy(() =>
   import("./pages/DashboardPage").then((m) => ({ default: m.DashboardPage })),
@@ -28,8 +29,8 @@ const OnboardingPage = lazy(() =>
 
 function PageLoader() {
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-      <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin" />
+    <div className="min-h-screen bg-background flex items-center justify-center">
+      <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin" />
     </div>
   );
 }
@@ -69,7 +70,9 @@ export function App() {
                     path="/dashboard"
                     element={
                       <ProtectedRoute>
-                        <DashboardPage />
+                        <PageTransition>
+                          <DashboardPage />
+                        </PageTransition>
                       </ProtectedRoute>
                     }
                   />
@@ -77,7 +80,9 @@ export function App() {
                     path="/simulator"
                     element={
                       <ProtectedRoute>
-                        <SimulatorPage />
+                        <PageTransition>
+                          <SimulatorPage />
+                        </PageTransition>
                       </ProtectedRoute>
                     }
                   />
@@ -85,7 +90,9 @@ export function App() {
                     path="/reports"
                     element={
                       <ProtectedRoute>
-                        <ReportsPage />
+                        <PageTransition>
+                          <ReportsPage />
+                        </PageTransition>
                       </ProtectedRoute>
                     }
                   />
@@ -93,7 +100,9 @@ export function App() {
                     path="/monitoring"
                     element={
                       <ProtectedRoute>
-                        <MonitoringPage />
+                        <PageTransition>
+                          <MonitoringPage />
+                        </PageTransition>
                       </ProtectedRoute>
                     }
                   />
@@ -101,7 +110,9 @@ export function App() {
                     path="/benchmark"
                     element={
                       <ProtectedRoute>
-                        <BenchmarkPage />
+                        <PageTransition>
+                          <BenchmarkPage />
+                        </PageTransition>
                       </ProtectedRoute>
                     }
                   />

@@ -61,28 +61,28 @@ function StatusCell({ score }: { score: number }) {
 function TableHead() {
   return (
     <thead>
-      <tr className="bg-gray-50 border-b border-gray-200">
+      <tr className="bg-muted border-b border-border">
         <th
           scope="col"
-          className="sticky top-0 bg-gray-50 px-4 py-3 text-center text-xs font-semibold text-gray-500 uppercase tracking-wide w-12 z-10"
+          className="sticky top-0 bg-muted px-4 py-3 text-center text-xs font-semibold text-muted-foreground uppercase tracking-wide w-12 z-10"
         >
           #
         </th>
         <th
           scope="col"
-          className="sticky top-0 bg-gray-50 px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide z-10"
+          className="sticky top-0 bg-muted px-4 py-3 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wide z-10"
         >
           Município
         </th>
         <th
           scope="col"
-          className="sticky top-0 bg-gray-50 px-4 py-3 text-right text-xs font-semibold text-gray-500 uppercase tracking-wide z-10"
+          className="sticky top-0 bg-muted px-4 py-3 text-right text-xs font-semibold text-muted-foreground uppercase tracking-wide z-10"
         >
           Score Global
         </th>
         <th
           scope="col"
-          className="sticky top-0 bg-gray-50 px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide w-36 z-10"
+          className="sticky top-0 bg-muted px-4 py-3 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wide w-36 z-10"
         >
           Status
         </th>
@@ -96,18 +96,18 @@ function TableHead() {
 export function RankingTable({ ranking, highlightCode, globalAverage }: RankingTableProps) {
   if (ranking.length === 0) {
     return (
-      <div className="rounded-lg border border-gray-200 p-8 text-center">
-        <p className="text-sm text-gray-500">Nenhum dado de ranking disponível.</p>
+      <div className="rounded-lg border border-border p-8 text-center">
+        <p className="text-sm text-muted-foreground">Nenhum dado de ranking disponível.</p>
       </div>
     );
   }
 
   return (
-    <div className="rounded-lg border border-gray-200 overflow-hidden">
+    <div className="rounded-lg border border-border overflow-hidden">
       <div className="max-h-[600px] overflow-y-auto">
         <table className="w-full text-sm" aria-label="Ranking de municípios">
           <TableHead />
-          <tbody className="divide-y divide-gray-100 bg-white">
+          <tbody className="divide-y divide-border bg-card">
             {ranking.map((entry) => {
               const isHighlighted = entry.ibgeCode === highlightCode;
               const status = scoreToStatus(entry.globalScore);
@@ -118,7 +118,7 @@ export function RankingTable({ ranking, highlightCode, globalAverage }: RankingT
                 <tr
                   key={entry.ibgeCode}
                   className={`transition-colors ${
-                    isHighlighted ? "bg-blue-50 border-l-4 border-l-blue-500" : "hover:bg-gray-50"
+                    isHighlighted ? "bg-primary/10 border-l-4 border-l-primary" : "hover:bg-accent"
                   }`}
                   aria-selected={isHighlighted}
                 >
@@ -132,14 +132,14 @@ export function RankingTable({ ranking, highlightCode, globalAverage }: RankingT
                         {medal.text}
                       </span>
                     ) : (
-                      <span className="text-gray-500 font-medium">{entry.position}</span>
+                      <span className="text-muted-foreground font-medium">{entry.position}</span>
                     )}
                   </td>
 
                   {/* Município */}
                   <td className="px-4 py-3">
                     <span
-                      className={`font-medium ${isHighlighted ? "text-blue-800" : "text-gray-900"}`}
+                      className={`font-medium ${isHighlighted ? "text-primary" : "text-foreground"}`}
                     >
                       {entry.municipalityName ?? entry.ibgeCode}
                     </span>
@@ -158,14 +158,14 @@ export function RankingTable({ ranking, highlightCode, globalAverage }: RankingT
                     >
                       {entry.globalScore}
                     </span>
-                    <span className="text-gray-400 text-xs">/100</span>
+                    <span className="text-muted-foreground/60 text-xs">/100</span>
                   </td>
 
                   {/* Status */}
                   <td className="px-4 py-3 w-36">
                     <StatusCell score={entry.globalScore} />
                     {/* Mini progress bar */}
-                    <div className="mt-1 h-1 w-full bg-gray-100 rounded-full overflow-hidden">
+                    <div className="mt-1 h-1 w-full bg-muted rounded-full overflow-hidden">
                       <div
                         className={`h-full rounded-full ${config.barColor}`}
                         style={{
@@ -186,16 +186,16 @@ export function RankingTable({ ranking, highlightCode, globalAverage }: RankingT
       </div>
 
       {/* Footer: média global */}
-      <div className="bg-gray-50 border-t border-gray-200 px-4 py-2 flex items-center justify-between">
-        <span className="text-xs text-gray-500">
+      <div className="bg-muted border-t border-border px-4 py-2 flex items-center justify-between">
+        <span className="text-xs text-muted-foreground">
           {ranking.length} município{ranking.length !== 1 ? "s" : ""}
         </span>
         {globalAverage !== null ? (
-          <span className="text-xs font-medium text-gray-700">
+          <span className="text-xs font-medium text-foreground">
             Média: <span className="font-bold">{globalAverage}/100</span>
           </span>
         ) : (
-          <span className="text-xs text-gray-400">Média: —</span>
+          <span className="text-xs text-muted-foreground/60">Média: —</span>
         )}
       </div>
     </div>

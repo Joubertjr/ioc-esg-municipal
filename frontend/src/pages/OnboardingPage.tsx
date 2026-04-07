@@ -78,22 +78,24 @@ export function OnboardingPage() {
   const showDropdown = query.trim().length > 0 || !selected;
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center px-4">
+    <div className="min-h-screen bg-background flex flex-col items-center justify-center px-4">
       {/* Branding */}
       <div className="mb-8 text-center">
         <div className="inline-flex items-center gap-2 mb-2">
-          <span className="text-2xl font-bold text-gray-900">IOC ESG Municipal</span>
-          <span className="px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-700">
+          <span className="text-2xl font-bold text-foreground">IOC ESG Municipal</span>
+          <span className="px-2 py-0.5 rounded text-xs font-medium bg-primary/10 text-primary">
             SC
           </span>
         </div>
-        <p className="text-sm text-gray-500">Plataforma de Gestão ESG para Municípios</p>
+        <p className="text-sm text-muted-foreground">Plataforma de Gestão ESG para Municípios</p>
       </div>
 
       {/* Card */}
-      <div className="w-full max-w-lg bg-white rounded-xl shadow-md border border-gray-200 p-8">
-        <h1 className="text-xl font-semibold text-gray-900 mb-2">Bem-vindo ao IOC ESG Municipal</h1>
-        <p className="text-sm text-gray-500 mb-6">
+      <div className="w-full max-w-lg bg-card rounded-xl shadow-md border border-border p-8">
+        <h1 className="text-xl font-semibold text-foreground mb-2">
+          Bem-vindo ao IOC ESG Municipal
+        </h1>
+        <p className="text-sm text-muted-foreground mb-6">
           Para começar, selecione o município que você administra.
         </p>
 
@@ -107,7 +109,7 @@ export function OnboardingPage() {
         <div className="mb-6">
           <label
             htmlFor="municipality-search"
-            className="block text-sm font-medium text-gray-700 mb-1"
+            className="block text-sm font-medium text-foreground mb-1"
           >
             Município
           </label>
@@ -120,14 +122,14 @@ export function OnboardingPage() {
               value={query}
               onChange={handleQueryChange}
               placeholder="Buscar município..."
-              className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-3 py-2 border border-border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
             />
 
             {/* Dropdown de resultados */}
             {showDropdown && filteredOptions.length > 0 && (
-              <ul className="absolute z-10 mt-1 w-full bg-white border border-gray-200 rounded-md shadow-lg max-h-60 overflow-y-auto">
+              <ul className="absolute z-10 mt-1 w-full bg-card border border-border rounded-md shadow-lg max-h-60 overflow-y-auto">
                 {!query.trim() && (
-                  <li className="px-3 py-1.5 text-xs font-medium text-gray-400 uppercase tracking-wide">
+                  <li className="px-3 py-1.5 text-xs font-medium text-muted-foreground/60 uppercase tracking-wide">
                     Municípios populares
                   </li>
                 )}
@@ -136,10 +138,10 @@ export function OnboardingPage() {
                     <button
                       type="button"
                       onClick={() => handleSelect(option)}
-                      className={`w-full text-left px-3 py-2 text-sm hover:bg-blue-50 transition-colors ${
+                      className={`w-full text-left px-3 py-2 text-sm hover:bg-accent transition-colors ${
                         selected?.ibgeCode === option.ibgeCode
-                          ? "bg-blue-50 text-blue-700 font-medium"
-                          : "text-gray-700"
+                          ? "bg-accent text-primary font-medium"
+                          : "text-foreground"
                       }`}
                     >
                       {option.name}
@@ -151,8 +153,10 @@ export function OnboardingPage() {
 
             {/* Sem resultados */}
             {query.trim().length > 0 && filteredOptions.length === 0 && (
-              <div className="absolute z-10 mt-1 w-full bg-white border border-gray-200 rounded-md shadow-lg px-3 py-3">
-                <p className="text-sm text-gray-500">Nenhum município encontrado para "{query}".</p>
+              <div className="absolute z-10 mt-1 w-full bg-card border border-border rounded-md shadow-lg px-3 py-3">
+                <p className="text-sm text-muted-foreground">
+                  Nenhum município encontrado para "{query}".
+                </p>
               </div>
             )}
           </div>
@@ -169,7 +173,7 @@ export function OnboardingPage() {
           type="button"
           onClick={handleContinue}
           disabled={!selected || isSaving}
-          className="inline-flex items-center justify-center gap-2 w-full py-2.5 px-4 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-300 text-white font-medium text-sm rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+          className="inline-flex items-center justify-center gap-2 w-full py-2.5 px-4 bg-primary hover:bg-primary/90 disabled:bg-primary/40 text-white font-medium text-sm rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
         >
           {isSaving && (
             <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
@@ -193,7 +197,7 @@ export function OnboardingPage() {
       </div>
 
       {/* Footer */}
-      <p className="mt-8 text-xs text-gray-400 text-center">
+      <p className="mt-8 text-xs text-muted-foreground/60 text-center">
         Dados públicos. Transparência total. Conforme Lei 14.133/2021.
       </p>
     </div>

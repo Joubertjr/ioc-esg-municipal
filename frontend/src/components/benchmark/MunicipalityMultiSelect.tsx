@@ -83,14 +83,14 @@ export function MunicipalityMultiSelect({
           {selected.map((code) => (
             <span
               key={code}
-              className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 border border-blue-200"
+              className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-primary/10 text-primary border border-primary/10"
             >
               {getMunicipalityName(code)}
               <button
                 type="button"
                 onClick={() => handleRemove(code)}
                 aria-label={`Remover ${getMunicipalityName(code)}`}
-                className="ml-0.5 text-blue-500 hover:text-blue-800 transition-colors leading-none"
+                className="ml-0.5 text-primary/60 hover:text-primary transition-colors leading-none"
               >
                 ×
               </button>
@@ -99,7 +99,7 @@ export function MunicipalityMultiSelect({
           <button
             type="button"
             onClick={handleClear}
-            className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium text-gray-500 hover:text-gray-800 hover:bg-gray-100 transition-colors border border-gray-200"
+            className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-accent transition-colors border border-border"
           >
             Limpar
           </button>
@@ -118,7 +118,7 @@ export function MunicipalityMultiSelect({
               : "Buscar município..."
           }
           disabled={selected.length >= maxItems}
-          className="w-full px-3 py-1.5 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-50 disabled:text-gray-400 disabled:cursor-not-allowed"
+          className="w-full px-3 py-1.5 text-sm border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent disabled:bg-muted disabled:text-muted-foreground/60 disabled:cursor-not-allowed"
           onFocus={() => {
             setIsOpen(true);
           }}
@@ -130,7 +130,7 @@ export function MunicipalityMultiSelect({
 
         {/* Dropdown */}
         {isOpen && filtered.length > 0 && (
-          <ul className="absolute top-full left-0 mt-1 w-full bg-white border border-gray-200 rounded-md shadow-lg max-h-60 overflow-y-auto z-50">
+          <ul className="absolute top-full left-0 mt-1 w-full bg-card border border-border rounded-md shadow-lg max-h-60 overflow-y-auto z-50">
             {filtered.map((m) => {
               const isSelected = selected.includes(m.ibgeCode);
               return (
@@ -140,14 +140,14 @@ export function MunicipalityMultiSelect({
                     disabled={isSelected}
                     className={`w-full text-left px-3 py-2 text-sm transition-colors ${
                       isSelected
-                        ? "bg-blue-50 text-blue-700 cursor-default"
-                        : "hover:bg-blue-50 text-gray-900"
+                        ? "bg-accent text-primary cursor-default"
+                        : "hover:bg-accent text-foreground"
                     }`}
                     onClick={() => handleSelect(m.ibgeCode)}
                   >
                     <span className="font-medium">{m.name}</span>
-                    <span className="text-gray-400 ml-2 text-xs">{m.ibgeCode}</span>
-                    {isSelected && <span className="ml-1 text-blue-500 text-xs">selecionado</span>}
+                    <span className="text-muted-foreground/60 ml-2 text-xs">{m.ibgeCode}</span>
+                    {isSelected && <span className="ml-1 text-primary text-xs">selecionado</span>}
                   </button>
                 </li>
               );
@@ -163,7 +163,7 @@ export function MunicipalityMultiSelect({
         </p>
       )}
       {selected.length === 0 && (
-        <p className="mt-1.5 text-xs text-gray-400">
+        <p className="mt-1.5 text-xs text-muted-foreground/60">
           Selecione pelo menos 2 municípios para habilitar a comparação.
         </p>
       )}

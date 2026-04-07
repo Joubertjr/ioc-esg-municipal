@@ -46,7 +46,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash .claude/hooks/session_start.sh",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/session_start.sh\"",
             "async": false
           }
         ]
@@ -58,7 +58,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 .claude/hooks/pre_bash_guard.py",
+            "command": "python3 \"$CLAUDE_PROJECT_DIR/.claude/hooks/pre_bash_guard.py\"",
             "timeout": 5
           }
         ]
@@ -68,7 +68,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 .claude/hooks/pre_write_guard.py",
+            "command": "python3 \"$CLAUDE_PROJECT_DIR/.claude/hooks/pre_write_guard.py\"",
             "timeout": 3
           }
         ]
@@ -80,7 +80,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash .claude/hooks/post_format.sh",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/post_format.sh\"",
             "async": false,
             "timeout": 15
           }
@@ -92,7 +92,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 .claude/hooks/pre_compact_save.py",
+            "command": "python3 \"$CLAUDE_PROJECT_DIR/.claude/hooks/pre_compact_save.py\"",
             "timeout": 30
           }
         ]
@@ -103,7 +103,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash .claude/hooks/stop_activity_log.sh",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/stop_activity_log.sh\"",
             "async": true
           }
         ]

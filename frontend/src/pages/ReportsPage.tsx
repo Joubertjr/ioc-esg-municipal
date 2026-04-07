@@ -51,7 +51,7 @@ const RECOMMENDATIONS: Record<number, string> = {
 function statusBadge(status: OdsStatus | null): JSX.Element {
   if (!status) {
     return (
-      <span className="px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-500 print:border print:border-gray-300">
+      <span className="px-2 py-0.5 rounded text-xs font-medium bg-muted text-muted-foreground print:border print:border-border">
         Sem dados
       </span>
     );
@@ -74,7 +74,7 @@ function statusBadge(status: OdsStatus | null): JSX.Element {
 }
 
 function scoreColor(score: number | null): string {
-  if (score === null) return "text-gray-400";
+  if (score === null) return "text-muted-foreground/60";
   if (score >= 70) return "text-green-700";
   if (score >= 40) return "text-amber-600";
   return "text-red-600";
@@ -108,7 +108,7 @@ function GlobalGauge({ score }: { score: number | null }) {
         <span className={`text-3xl font-bold tabular-nums ${scoreColor(score)}`}>
           {score !== null ? score.toFixed(1) : "—"}
         </span>
-        <span className="text-xs text-gray-500 mt-0.5">Score ESG</span>
+        <span className="text-xs text-muted-foreground mt-0.5">Score ESG</span>
       </div>
     </div>
   );
@@ -139,7 +139,7 @@ function ExecutiveSummary({
           : `apresenta desempenho crítico com score ESG de ${score.toFixed(1)}, demandando ações imediatas`;
 
   return (
-    <div className="space-y-2 text-sm text-gray-700 leading-relaxed">
+    <div className="space-y-2 text-sm text-foreground leading-relaxed">
       <p>
         O município de <strong>{name}</strong> {performance} no ano de referência{" "}
         {report.referenceYear}.
@@ -176,15 +176,15 @@ function AccordionRow({ ods }: AccordionRowProps) {
   const [open, setOpen] = useState(false);
 
   return (
-    <div className="border border-gray-200 rounded-lg overflow-hidden print:break-inside-avoid">
+    <div className="border border-border rounded-lg overflow-hidden print:break-inside-avoid">
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className="w-full flex items-center justify-between px-4 py-3 bg-white hover:bg-gray-50 transition-colors text-left print:hidden"
+        className="w-full flex items-center justify-between px-4 py-3 bg-card hover:bg-accent transition-colors text-left print:hidden"
       >
         <div className="flex items-center gap-3">
           <div className="w-3 h-3 rounded-full shrink-0" style={{ backgroundColor: ods.color }} />
-          <span className="text-sm font-medium text-gray-900">
+          <span className="text-sm font-medium text-foreground">
             ODS {ods.odsNumber} — {ODS_FULL_NAMES[ods.odsNumber] ?? ods.name}
           </span>
         </div>
@@ -193,7 +193,7 @@ function AccordionRow({ ods }: AccordionRowProps) {
             {ods.score !== null ? ods.score.toFixed(1) : "—"}
           </span>
           <svg
-            className={`w-4 h-4 text-gray-400 transition-transform ${open ? "rotate-180" : ""}`}
+            className={`w-4 h-4 text-muted-foreground/60 transition-transform ${open ? "rotate-180" : ""}`}
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -206,33 +206,33 @@ function AccordionRow({ ods }: AccordionRowProps) {
       {/* Print: always show */}
       <div className={`${open ? "block" : "hidden"} print:block`}>
         {ods.indicators.length === 0 ? (
-          <div className="px-4 py-3 text-sm text-gray-400 italic bg-gray-50">
+          <div className="px-4 py-3 text-sm text-muted-foreground/60 italic bg-muted">
             Nenhum indicador disponível para este ODS.
           </div>
         ) : (
           <table className="w-full text-sm">
             <thead>
-              <tr className="bg-gray-50 border-t border-gray-200">
-                <th className="text-left px-4 py-2 font-medium text-gray-600">Indicador</th>
-                <th className="text-right px-4 py-2 font-medium text-gray-600">Valor</th>
-                <th className="text-right px-4 py-2 font-medium text-gray-600">Score</th>
-                <th className="text-center px-4 py-2 font-medium text-gray-600">Status</th>
-                <th className="text-right px-4 py-2 font-medium text-gray-600">Fonte</th>
-                <th className="text-right px-4 py-2 font-medium text-gray-600">Ano</th>
+              <tr className="bg-muted border-t border-border">
+                <th className="text-left px-4 py-2 font-medium text-muted-foreground">Indicador</th>
+                <th className="text-right px-4 py-2 font-medium text-muted-foreground">Valor</th>
+                <th className="text-right px-4 py-2 font-medium text-muted-foreground">Score</th>
+                <th className="text-center px-4 py-2 font-medium text-muted-foreground">Status</th>
+                <th className="text-right px-4 py-2 font-medium text-muted-foreground">Fonte</th>
+                <th className="text-right px-4 py-2 font-medium text-muted-foreground">Ano</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-100">
+            <tbody className="divide-y divide-border">
               {ods.indicators.map((ind) => {
                 const meta = getIndicatorMeta(ods.odsNumber, ind.indicatorName);
                 return (
-                  <tr key={ind.id} className="hover:bg-gray-50">
-                    <td className="px-4 py-2 text-gray-800">{ind.indicatorName}</td>
-                    <td className="px-4 py-2 text-right tabular-nums text-gray-600">
+                  <tr key={ind.id} className="hover:bg-accent">
+                    <td className="px-4 py-2 text-foreground">{ind.indicatorName}</td>
+                    <td className="px-4 py-2 text-right tabular-nums text-muted-foreground">
                       {ind.value !== null
                         ? ind.value.toLocaleString("pt-BR", { maximumFractionDigits: 2 })
                         : "—"}
                       {ind.value !== null && meta?.unit ? (
-                        <span className="ml-1 text-xs text-gray-400">{meta.unit}</span>
+                        <span className="ml-1 text-xs text-muted-foreground/60">{meta.unit}</span>
                       ) : null}
                     </td>
                     <td
@@ -241,8 +241,10 @@ function AccordionRow({ ods }: AccordionRowProps) {
                       {ind.score !== null ? ind.score.toFixed(1) : "—"}
                     </td>
                     <td className="px-4 py-2 text-center">{statusBadge(ind.status)}</td>
-                    <td className="px-4 py-2 text-right text-gray-500 text-xs">{ind.source}</td>
-                    <td className="px-4 py-2 text-right text-gray-500 text-xs">
+                    <td className="px-4 py-2 text-right text-muted-foreground text-xs">
+                      {ind.source}
+                    </td>
+                    <td className="px-4 py-2 text-right text-muted-foreground text-xs">
                       {ind.referenceYear}
                     </td>
                   </tr>
@@ -293,15 +295,15 @@ export function ReportsPage() {
         {/* Page header actions */}
         <div className="flex items-center justify-between mb-6 no-print">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Relatório ESG Municipal</h1>
-            <p className="text-sm text-gray-500 mt-1">
+            <h1 className="text-2xl font-bold text-foreground">Relatório ESG Municipal</h1>
+            <p className="text-sm text-muted-foreground mt-1">
               Relatório completo de desempenho nos 17 ODS da Agenda 2030.
             </p>
           </div>
           <button
             type="button"
             onClick={handlePrint}
-            className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+            className="flex items-center gap-2 px-4 py-2 bg-primary hover:bg-primary/90 text-white text-sm font-medium rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
           >
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path
@@ -316,16 +318,16 @@ export function ReportsPage() {
         </div>
 
         {isError && (
-          <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg flex items-center justify-between">
+          <div className="mb-6 p-4 bg-destructive/10 border border-destructive/20 rounded-lg flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-red-800">Erro ao carregar dados ODS</p>
-              <p className="text-xs text-red-600 mt-1">
+              <p className="text-sm font-medium text-destructive">Erro ao carregar dados ODS</p>
+              <p className="text-xs text-destructive mt-1">
                 {error?.message ?? "Verifique se o servidor está rodando."}
               </p>
             </div>
             <button
               onClick={() => refetch()}
-              className="px-3 py-1.5 text-sm font-medium text-red-700 bg-red-100 rounded-md hover:bg-red-200 transition-colors"
+              className="px-3 py-1.5 text-sm font-medium text-destructive bg-destructive/10 rounded-md hover:bg-destructive/20 transition-colors"
             >
               Tentar novamente
             </button>
@@ -335,13 +337,13 @@ export function ReportsPage() {
         {isLoading && (
           <div className="space-y-4">
             {Array.from({ length: 4 }, (_, i) => (
-              <div key={i} className="h-24 bg-gray-100 rounded-xl animate-pulse" />
+              <div key={i} className="h-24 bg-muted rounded-xl animate-pulse" />
             ))}
           </div>
         )}
 
         {!isLoading && !report && !isError && (
-          <div className="text-center py-20 text-gray-400">
+          <div className="text-center py-20 text-muted-foreground/60">
             <svg
               className="w-12 h-12 mx-auto mb-3 opacity-40"
               fill="none"
@@ -355,32 +357,34 @@ export function ReportsPage() {
                 d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
               />
             </svg>
-            <p className="text-sm">Nenhum relatório gerado ainda</p>
-            <p className="text-xs mt-1">Selecione um município para gerar o relatório ESG.</p>
+            <p className="text-sm text-muted-foreground">Nenhum relatório gerado ainda</p>
+            <p className="text-xs mt-1 text-muted-foreground">
+              Selecione um município para gerar o relatório ESG.
+            </p>
           </div>
         )}
 
         {report && (
-          <div className="space-y-10 bg-white rounded-xl border border-gray-200 p-8 print:border-0 print:shadow-none print:p-0">
+          <div className="space-y-10 bg-card rounded-xl border border-border p-8 print:border-0 print:shadow-none print:p-0">
             {/* Report Header */}
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 pb-8 border-b border-gray-200">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 pb-8 border-b border-border">
               <div>
                 <div className="flex items-center gap-2 mb-1">
-                  <span className="text-xs font-semibold uppercase tracking-widest text-blue-600">
+                  <span className="text-xs font-semibold uppercase tracking-widest text-primary">
                     IOC ESG Municipal
                   </span>
-                  <span className="px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-700">
+                  <span className="px-2 py-0.5 rounded text-xs font-medium bg-primary/10 text-primary">
                     SC
                   </span>
                 </div>
-                <h2 className="text-2xl font-bold text-gray-900">
+                <h2 className="text-2xl font-bold text-foreground">
                   {report.municipalityName ?? report.ibgeCode}
                 </h2>
-                <p className="text-sm text-gray-500 mt-1">
+                <p className="text-sm text-muted-foreground mt-1">
                   Relatório ESG — Ano de Referência {report.referenceYear} &nbsp;|&nbsp; IBGE{" "}
                   {report.ibgeCode}
                 </p>
-                <p className="text-xs text-gray-400 mt-0.5">
+                <p className="text-xs text-muted-foreground/60 mt-0.5">
                   Gerado em {new Date().toLocaleDateString("pt-BR", { dateStyle: "long" })}
                 </p>
               </div>
@@ -389,61 +393,63 @@ export function ReportsPage() {
 
             {/* Section 1: Resumo Executivo */}
             <section>
-              <h3 className="text-base font-semibold text-gray-900 mb-3 flex items-center gap-2">
-                <span className="w-6 h-6 rounded-full bg-blue-600 text-white text-xs flex items-center justify-center font-bold">
+              <h3 className="text-base font-semibold text-foreground mb-3 flex items-center gap-2">
+                <span className="w-6 h-6 rounded-full bg-primary text-white text-xs flex items-center justify-center font-bold">
                   1
                 </span>
                 Resumo Executivo
               </h3>
-              <div className="bg-blue-50 rounded-lg p-5 border border-blue-100">
+              <div className="bg-primary/10 rounded-lg p-5 border border-primary/10">
                 <ExecutiveSummary report={report} />
               </div>
             </section>
 
             {/* Section 2: Desempenho por ODS */}
             <section>
-              <h3 className="text-base font-semibold text-gray-900 mb-3 flex items-center gap-2">
-                <span className="w-6 h-6 rounded-full bg-blue-600 text-white text-xs flex items-center justify-center font-bold">
+              <h3 className="text-base font-semibold text-foreground mb-3 flex items-center gap-2">
+                <span className="w-6 h-6 rounded-full bg-primary text-white text-xs flex items-center justify-center font-bold">
                   2
                 </span>
                 Desempenho por ODS
               </h3>
-              <div className="overflow-x-auto rounded-lg border border-gray-200">
+              <div className="overflow-x-auto rounded-lg border border-border">
                 <table className="w-full text-sm">
                   <thead>
-                    <tr className="bg-gray-50 border-b border-gray-200">
-                      <th className="text-left px-4 py-3 font-semibold text-gray-700 w-12">Nº</th>
-                      <th className="text-left px-4 py-3 font-semibold text-gray-700">Objetivo</th>
-                      <th className="text-right px-4 py-3 font-semibold text-gray-700 w-20">
+                    <tr className="bg-muted border-b border-border">
+                      <th className="text-left px-4 py-3 font-semibold text-foreground w-12">Nº</th>
+                      <th className="text-left px-4 py-3 font-semibold text-foreground">
+                        Objetivo
+                      </th>
+                      <th className="text-right px-4 py-3 font-semibold text-foreground w-20">
                         Score
                       </th>
-                      <th className="text-left px-4 py-3 font-semibold text-gray-700 w-36 hidden sm:table-cell">
+                      <th className="text-left px-4 py-3 font-semibold text-foreground w-36 hidden sm:table-cell">
                         Progresso
                       </th>
-                      <th className="text-center px-4 py-3 font-semibold text-gray-700 w-24">
+                      <th className="text-center px-4 py-3 font-semibold text-foreground w-24">
                         Status
                       </th>
-                      <th className="text-center px-4 py-3 font-semibold text-gray-700 w-16 hidden md:table-cell">
+                      <th className="text-center px-4 py-3 font-semibold text-foreground w-16 hidden md:table-cell">
                         Peso
                       </th>
-                      <th className="text-left px-4 py-3 font-semibold text-gray-700 hidden md:table-cell">
+                      <th className="text-left px-4 py-3 font-semibold text-foreground hidden md:table-cell">
                         Fontes
                       </th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-gray-100">
+                  <tbody className="divide-y divide-border">
                     {report.ods.map((ods) => {
                       const pct = ods.score !== null ? Math.min(100, Math.max(0, ods.score)) : 0;
                       const barColor =
                         ods.score === null
-                          ? "bg-gray-200"
+                          ? "bg-muted"
                           : ods.score >= 70
                             ? "bg-green-500"
                             : ods.score >= 40
                               ? "bg-amber-400"
                               : "bg-red-500";
                       return (
-                        <tr key={ods.odsNumber} className="hover:bg-gray-50 transition-colors">
+                        <tr key={ods.odsNumber} className="hover:bg-accent transition-colors">
                           <td className="px-4 py-3">
                             <div
                               className="w-7 h-7 rounded-full flex items-center justify-center text-white text-xs font-bold shrink-0"
@@ -452,7 +458,7 @@ export function ReportsPage() {
                               {ods.odsNumber}
                             </div>
                           </td>
-                          <td className="px-4 py-3 text-gray-800 font-medium">
+                          <td className="px-4 py-3 text-foreground font-medium">
                             {ODS_FULL_NAMES[ods.odsNumber] ?? ods.name}
                           </td>
                           <td
@@ -461,7 +467,7 @@ export function ReportsPage() {
                             {ods.score !== null ? ods.score.toFixed(1) : "—"}
                           </td>
                           <td className="px-4 py-3 hidden sm:table-cell">
-                            <div className="h-2 w-full bg-gray-100 rounded-full overflow-hidden">
+                            <div className="h-2 w-full bg-muted rounded-full overflow-hidden">
                               <div
                                 className={`h-full rounded-full transition-all duration-500 ${barColor}`}
                                 style={{ width: `${pct}%` }}
@@ -469,10 +475,10 @@ export function ReportsPage() {
                             </div>
                           </td>
                           <td className="px-4 py-3 text-center">{statusBadge(ods.status)}</td>
-                          <td className="px-4 py-3 text-center text-xs font-medium text-gray-500 hidden md:table-cell">
+                          <td className="px-4 py-3 text-center text-xs font-medium text-muted-foreground hidden md:table-cell">
                             {ods.weight.toFixed(1)}×
                           </td>
-                          <td className="px-4 py-3 text-gray-500 text-xs hidden md:table-cell">
+                          <td className="px-4 py-3 text-muted-foreground text-xs hidden md:table-cell">
                             {ods.sources.length > 0 ? ods.sources.join(", ") : "—"}
                           </td>
                         </tr>
@@ -485,8 +491,8 @@ export function ReportsPage() {
 
             {/* Section 3: Indicadores Detalhados */}
             <section>
-              <h3 className="text-base font-semibold text-gray-900 mb-3 flex items-center gap-2">
-                <span className="w-6 h-6 rounded-full bg-blue-600 text-white text-xs flex items-center justify-center font-bold">
+              <h3 className="text-base font-semibold text-foreground mb-3 flex items-center gap-2">
+                <span className="w-6 h-6 rounded-full bg-primary text-white text-xs flex items-center justify-center font-bold">
                   3
                 </span>
                 Indicadores Detalhados
@@ -501,20 +507,20 @@ export function ReportsPage() {
             {/* Section 4: Recomendações */}
             {belowThreshold.length > 0 && (
               <section>
-                <h3 className="text-base font-semibold text-gray-900 mb-3 flex items-center gap-2">
-                  <span className="w-6 h-6 rounded-full bg-blue-600 text-white text-xs flex items-center justify-center font-bold">
+                <h3 className="text-base font-semibold text-foreground mb-3 flex items-center gap-2">
+                  <span className="w-6 h-6 rounded-full bg-primary text-white text-xs flex items-center justify-center font-bold">
                     4
                   </span>
                   Recomendações de Investimento
                 </h3>
-                <p className="text-xs text-gray-500 mb-4">
+                <p className="text-xs text-muted-foreground mb-4">
                   Os ODS abaixo obtiveram score inferior a 70 e requerem investimento prioritário.
                 </p>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {belowThreshold.map((ods) => (
                     <div
                       key={ods.odsNumber}
-                      className="rounded-lg border border-l-4 p-4 bg-white print:break-inside-avoid"
+                      className="rounded-lg border border-l-4 p-4 bg-card print:break-inside-avoid"
                       style={{ borderLeftColor: ods.color }}
                     >
                       <div className="flex items-center gap-2 mb-2">
@@ -524,7 +530,7 @@ export function ReportsPage() {
                         >
                           {ods.odsNumber}
                         </div>
-                        <span className="text-sm font-semibold text-gray-900">
+                        <span className="text-sm font-semibold text-foreground">
                           ODS {ods.odsNumber} — {ods.shortName}
                         </span>
                         <span
@@ -533,7 +539,7 @@ export function ReportsPage() {
                           {ods.score?.toFixed(1)}
                         </span>
                       </div>
-                      <p className="text-sm text-gray-600 leading-relaxed">
+                      <p className="text-sm text-muted-foreground leading-relaxed">
                         {RECOMMENDATIONS[ods.odsNumber] ??
                           "Consulte especialistas para definir ações de melhoria para este ODS."}
                       </p>
@@ -544,8 +550,8 @@ export function ReportsPage() {
             )}
 
             {/* Legenda de cores — visível na impressão */}
-            <div className="flex items-center justify-center gap-6 py-3 rounded-lg bg-gray-50 border border-gray-200 text-xs text-gray-600 print:border print:border-gray-300">
-              <span className="font-medium text-gray-700">Legenda:</span>
+            <div className="flex items-center justify-center gap-6 py-3 rounded-lg bg-muted border border-border text-xs text-muted-foreground print:border print:border-border">
+              <span className="font-medium text-foreground">Legenda:</span>
               <span className="flex items-center gap-1.5">
                 <span className="w-3 h-3 rounded-full bg-green-500 shrink-0" />
                 Verde (score ≥ 70)
@@ -561,7 +567,7 @@ export function ReportsPage() {
             </div>
 
             {/* Footer */}
-            <div className="pt-6 border-t border-gray-200 text-xs text-gray-400 text-center">
+            <div className="pt-6 border-t border-border text-xs text-muted-foreground/60 text-center">
               <p>
                 Dados públicos obtidos via IBGE, SICONFI, DATASUS, INEP, SNIS, INPE e PNCP. Este
                 relatório é de caráter informativo e não substitui análise técnica especializada.

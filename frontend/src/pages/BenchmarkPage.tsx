@@ -19,10 +19,10 @@ const DEFAULT_SELECTED_CODES = [
 
 function SummaryCardSkeleton() {
   return (
-    <div className="bg-white rounded-xl border border-gray-200 p-5 animate-pulse">
-      <div className="h-3 w-24 bg-gray-200 rounded mb-3" />
-      <div className="h-8 w-16 bg-gray-200 rounded mb-1" />
-      <div className="h-3 w-32 bg-gray-200 rounded" />
+    <div className="bg-card rounded-xl border border-border p-5 animate-pulse">
+      <div className="h-3 w-24 bg-muted rounded mb-3" />
+      <div className="h-8 w-16 bg-muted rounded mb-1" />
+      <div className="h-3 w-32 bg-muted rounded" />
     </div>
   );
 }
@@ -30,9 +30,9 @@ function SummaryCardSkeleton() {
 function RankingSkeleton() {
   return (
     <div className="space-y-2 animate-pulse">
-      <div className="h-10 bg-gray-100 rounded-lg" />
+      <div className="h-10 bg-muted rounded-lg" />
       {Array.from({ length: 5 }, (_, i) => (
-        <div key={i} className="h-14 bg-gray-50 rounded-lg border border-gray-100" />
+        <div key={i} className="h-14 bg-background rounded-lg border border-border" />
       ))}
     </div>
   );
@@ -40,19 +40,19 @@ function RankingSkeleton() {
 
 function RadarSkeleton() {
   return (
-    <div className="bg-white rounded-xl border border-gray-200 p-5 animate-pulse">
-      <div className="h-4 w-32 bg-gray-200 rounded mb-4" />
-      <div className="h-64 bg-gray-100 rounded-lg" />
+    <div className="bg-card rounded-xl border border-border p-5 animate-pulse">
+      <div className="h-4 w-32 bg-muted rounded mb-4" />
+      <div className="h-64 bg-muted rounded-lg" />
     </div>
   );
 }
 
 function TableSkeleton() {
   return (
-    <div className="bg-white rounded-xl border border-gray-200 p-5 animate-pulse space-y-2">
-      <div className="h-4 w-40 bg-gray-200 rounded mb-4" />
+    <div className="bg-card rounded-xl border border-border p-5 animate-pulse space-y-2">
+      <div className="h-4 w-40 bg-muted rounded mb-4" />
       {Array.from({ length: 8 }, (_, i) => (
-        <div key={i} className="h-8 bg-gray-100 rounded" />
+        <div key={i} className="h-8 bg-muted rounded" />
       ))}
     </div>
   );
@@ -73,13 +73,15 @@ function SummaryCard({ label, value, sub, highlight = "neutral" }: SummaryCardPr
       ? "text-green-700"
       : highlight === "negative"
         ? "text-red-600"
-        : "text-gray-900";
+        : "text-foreground";
 
   return (
-    <div className="bg-white rounded-xl border border-gray-200 p-5">
-      <p className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">{label}</p>
+    <div className="bg-card rounded-xl border border-border p-5">
+      <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-1">
+        {label}
+      </p>
       <p className={`text-2xl font-bold tabular-nums ${valueColor}`}>{value}</p>
-      {sub && <p className="text-xs text-gray-400 mt-0.5">{sub}</p>}
+      {sub && <p className="text-xs text-muted-foreground/60 mt-0.5">{sub}</p>}
     </div>
   );
 }
@@ -141,17 +143,17 @@ export function BenchmarkPage() {
       <div className="space-y-8">
         {/* Page header */}
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Comparativo Municipal</h1>
-          <p className="text-sm text-gray-500 mt-1">
+          <h1 className="text-2xl font-bold text-foreground">Comparativo Municipal</h1>
+          <p className="text-sm text-muted-foreground mt-1">
             Compare o desempenho ESG do seu município com outros de Santa Catarina.
           </p>
         </div>
 
         {/* Municipality selection */}
-        <div className="bg-white rounded-xl border border-gray-200 p-5 space-y-3">
+        <div className="bg-card rounded-xl border border-border p-5 space-y-3">
           <div className="flex items-center justify-between">
-            <h2 className="text-sm font-semibold text-gray-700">Municípios para comparação</h2>
-            <span className="text-xs text-gray-500">
+            <h2 className="text-sm font-semibold text-foreground">Municípios para comparação</h2>
+            <span className="text-xs text-muted-foreground">
               {selectedCodes.length}{" "}
               {selectedCodes.length === 1 ? "município selecionado" : "municípios selecionados"}
             </span>
@@ -170,7 +172,7 @@ export function BenchmarkPage() {
 
         {/* Empty state */}
         {!canCompare && (
-          <div className="text-center py-16 text-gray-400">
+          <div className="text-center py-16 text-muted-foreground/60">
             <svg
               className="w-12 h-12 mx-auto mb-3 opacity-40"
               fill="none"
@@ -184,8 +186,10 @@ export function BenchmarkPage() {
                 d="M3 10h4v11H3zM10 3h4v18h-4zM17 7h4v14h-4z"
               />
             </svg>
-            <p className="text-sm font-medium">Selecione pelo menos 2 municípios para comparar</p>
-            <p className="text-xs mt-1">
+            <p className="text-sm font-medium text-foreground">
+              Selecione pelo menos 2 municípios para comparar
+            </p>
+            <p className="text-xs mt-1 text-muted-foreground/60">
               Use o campo acima para adicionar municípios ao comparativo.
             </p>
           </div>
@@ -264,7 +268,7 @@ export function BenchmarkPage() {
         {/* Ranking table */}
         {canCompare && (
           <section>
-            <h2 className="text-base font-semibold text-gray-900 mb-3">Ranking do grupo</h2>
+            <h2 className="text-base font-semibold text-foreground mb-3">Ranking do grupo</h2>
             {isLoading ? (
               <RankingSkeleton />
             ) : benchmark ? (
@@ -280,7 +284,7 @@ export function BenchmarkPage() {
         {/* Comparison: radar + ODS table */}
         {canCompare && (
           <section>
-            <h2 className="text-base font-semibold text-gray-900 mb-3">Análise por ODS</h2>
+            <h2 className="text-base font-semibold text-foreground mb-3">Análise por ODS</h2>
             <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
               {/* Left: radar */}
               {isLoading ? (
@@ -311,7 +315,7 @@ export function BenchmarkPage() {
 
         {/* Footer */}
         {referenceYear !== null && generatedAt !== null && (
-          <div className="text-center text-xs text-gray-400 pt-4 border-t border-gray-100">
+          <div className="text-center text-xs text-muted-foreground/60 pt-4 border-t border-border">
             Dados de {referenceYear} — Gerado em {generatedAt}
           </div>
         )}

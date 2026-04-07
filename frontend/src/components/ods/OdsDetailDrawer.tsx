@@ -89,7 +89,7 @@ export function OdsDetailDrawer({ ods, onClose }: OdsDetailDrawerProps) {
         role="dialog"
         aria-modal="true"
         aria-labelledby="drawer-title"
-        className={`fixed inset-y-0 right-0 w-96 max-w-full bg-white shadow-2xl z-50 transition-transform duration-300 flex flex-col ${
+        className={`fixed inset-y-0 right-0 w-96 max-w-full bg-card shadow-2xl z-50 transition-transform duration-300 flex flex-col ${
           isOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
@@ -131,20 +131,20 @@ export function OdsDetailDrawer({ ods, onClose }: OdsDetailDrawerProps) {
 
             {/* Chamada de destaque: Meta 2030 */}
             {desc && (
-              <div className="mx-6 mt-4 p-3 bg-blue-50 rounded-lg border border-blue-100 shrink-0">
-                <p className="text-xs font-semibold text-blue-700 mb-1">Meta 2030</p>
-                <p className="text-xs text-blue-600 leading-relaxed">{desc.meta2030}</p>
+              <div className="mx-6 mt-4 p-3 bg-primary/10 rounded-lg border border-primary/10 shrink-0">
+                <p className="text-xs font-semibold text-primary mb-1">Meta 2030</p>
+                <p className="text-xs text-primary leading-relaxed">{desc.meta2030}</p>
               </div>
             )}
 
             {/* Lista de indicadores */}
             <div className="px-6 py-4 overflow-y-auto flex-1">
-              <h3 className="text-sm font-semibold text-gray-700 mb-3">
+              <h3 className="text-sm font-semibold text-foreground mb-3">
                 Indicadores ({ods.indicators.length})
               </h3>
 
               {ods.indicators.length === 0 ? (
-                <p className="text-gray-500 text-sm italic">
+                <p className="text-muted-foreground text-sm italic">
                   Nenhum indicador disponível para este ODS neste município.
                 </p>
               ) : (
@@ -155,7 +155,7 @@ export function OdsDetailDrawer({ ods, onClose }: OdsDetailDrawerProps) {
             </div>
 
             {/* Rodapé: fontes e data de atualização */}
-            <div className="px-6 py-3 border-t border-gray-100 text-xs text-gray-400 shrink-0">
+            <div className="px-6 py-3 border-t border-border text-xs text-muted-foreground/60 shrink-0">
               {ods.sources.length > 0 && (
                 <p>Fontes: {ods.sources.map((s) => s.toUpperCase()).join(", ")}</p>
               )}

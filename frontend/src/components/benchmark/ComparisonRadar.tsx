@@ -51,20 +51,20 @@ function ComparisonTooltip({ active, payload }: CustomTooltipProps) {
   const delta = point.delta;
 
   return (
-    <div className="bg-white px-3 py-2 rounded-lg shadow-lg border border-gray-200 text-xs min-w-[180px]">
-      <p className="font-semibold text-gray-900 mb-1.5">{point.odsName}</p>
+    <div className="bg-card px-3 py-2 rounded-lg shadow-lg border border-border text-xs min-w-[180px]">
+      <p className="font-semibold text-foreground mb-1.5">{point.odsName}</p>
       <div className="space-y-1">
         <div className="flex justify-between gap-4">
-          <span className="text-blue-600">Município</span>
-          <span className="font-bold text-gray-900">
+          <span className="text-primary">Município</span>
+          <span className="font-bold text-foreground">
             {point.municipalityScoreRaw !== null
               ? `${point.municipalityScoreRaw.toFixed(1)}/100`
               : "sem dados"}
           </span>
         </div>
         <div className="flex justify-between gap-4">
-          <span className="text-gray-500">Média do grupo</span>
-          <span className="font-bold text-gray-900">
+          <span className="text-muted-foreground">Média do grupo</span>
+          <span className="font-bold text-foreground">
             {point.benchmarkAverageRaw !== null
               ? `${point.benchmarkAverageRaw.toFixed(1)}/100`
               : "sem dados"}
@@ -72,14 +72,14 @@ function ComparisonTooltip({ active, payload }: CustomTooltipProps) {
         </div>
       </div>
       {delta !== null && (
-        <div className="mt-1.5 pt-1.5 border-t border-gray-100">
+        <div className="mt-1.5 pt-1.5 border-t border-border">
           <span
             className={
               delta > 0
                 ? "text-green-600 font-semibold"
                 : delta < 0
                   ? "text-red-600 font-semibold"
-                  : "text-gray-400"
+                  : "text-muted-foreground/60"
             }
           >
             {delta > 0 ? `+${delta.toFixed(1)}` : delta.toFixed(1)} pts vs. média
@@ -98,8 +98,8 @@ export function ComparisonRadar({ comparison, municipalityName }: ComparisonRada
 
   if (validItems.length === 0) {
     return (
-      <div className="bg-white rounded-lg border border-gray-200 p-4 flex items-center justify-center h-80">
-        <p className="text-sm text-gray-400 italic text-center">
+      <div className="bg-card rounded-lg border border-border p-4 flex items-center justify-center h-80">
+        <p className="text-sm text-muted-foreground/60 italic text-center">
           Selecione municípios para comparar
         </p>
       </div>
@@ -121,9 +121,9 @@ export function ComparisonRadar({ comparison, municipalityName }: ComparisonRada
   });
 
   return (
-    <div className="bg-white rounded-lg border border-gray-200 p-4">
-      <h3 className="text-sm font-semibold text-gray-800 mb-1">Radar Comparativo ODS</h3>
-      <p className="text-xs text-gray-500 mb-3">{municipalityName} vs. média do grupo</p>
+    <div className="bg-card rounded-lg border border-border p-4">
+      <h3 className="text-sm font-semibold text-foreground mb-1">Radar Comparativo ODS</h3>
+      <p className="text-xs text-muted-foreground mb-3">{municipalityName} vs. média do grupo</p>
 
       <ResponsiveContainer width="100%" height={340}>
         <RadarChart data={data} outerRadius={110}>
@@ -161,7 +161,7 @@ export function ComparisonRadar({ comparison, municipalityName }: ComparisonRada
         </RadarChart>
       </ResponsiveContainer>
 
-      <p className="text-[10px] text-gray-400 text-center mt-1">
+      <p className="text-[10px] text-muted-foreground/60 text-center mt-1">
         ODS plotados como 0 podem indicar ausência de dados — consulte a tabela abaixo.
       </p>
     </div>

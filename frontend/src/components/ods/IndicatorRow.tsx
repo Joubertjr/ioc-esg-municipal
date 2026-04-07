@@ -50,15 +50,15 @@ export function IndicatorRow({ indicator, odsNumber }: IndicatorRowProps) {
       : "—";
 
   return (
-    <div className="group py-3 border-b border-gray-100 last:border-0">
+    <div className="group py-3 border-b border-border last:border-0">
       <div className="flex items-start justify-between gap-2">
         {/* Coluna esquerda: nome, valor e fonte */}
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-1.5">
-            <span className="text-sm font-medium text-gray-900">{displayName}</span>
+            <span className="text-sm font-medium text-foreground">{displayName}</span>
             {directionIcon && (
               <span
-                className="text-[10px] text-gray-400"
+                className="text-[10px] text-muted-foreground/60"
                 title={meta?.goodDirection === "up" ? "Maior é melhor" : "Menor é melhor"}
                 aria-label={meta?.goodDirection === "up" ? "Maior é melhor" : "Menor é melhor"}
               >
@@ -69,21 +69,21 @@ export function IndicatorRow({ indicator, odsNumber }: IndicatorRowProps) {
 
           {/* Valor + unidade */}
           <div className="flex items-baseline gap-1 mt-0.5">
-            <span className="text-sm font-semibold text-gray-700 tabular-nums">
+            <span className="text-sm font-semibold text-foreground tabular-nums">
               {formattedValue}
             </span>
-            {unit && <span className="text-xs text-gray-400">{unit}</span>}
+            {unit && <span className="text-xs text-muted-foreground/60">{unit}</span>}
           </div>
 
           {/* Fonte e ano */}
-          <div className="text-[10px] text-gray-400 mt-0.5">
+          <div className="text-[10px] text-muted-foreground/60 mt-0.5">
             {indicator.source.toUpperCase()} · {indicator.referenceYear}
           </div>
         </div>
 
         {/* Coluna direita: score + status */}
         <div className="flex flex-col items-end gap-1 shrink-0">
-          <span className="text-lg font-bold tabular-nums text-gray-900">
+          <span className="text-lg font-bold tabular-nums text-foreground">
             {indicator.score !== null ? indicator.score : "—"}
           </span>
           {config && (
@@ -100,7 +100,7 @@ export function IndicatorRow({ indicator, odsNumber }: IndicatorRowProps) {
       {/* Barra de progresso */}
       {indicator.score !== null && (
         <div
-          className="h-1 bg-gray-100 rounded-full overflow-hidden mt-2"
+          className="h-1 bg-muted rounded-full overflow-hidden mt-2"
           role="progressbar"
           aria-valuenow={indicator.score}
           aria-valuemin={0}
@@ -116,9 +116,9 @@ export function IndicatorRow({ indicator, odsNumber }: IndicatorRowProps) {
 
       {/* Tooltip ao passar o mouse: explicação */}
       {meta?.explanation && (
-        <div className="hidden group-hover:block mt-2 p-2 bg-gray-50 rounded text-[10px] text-gray-500 leading-relaxed">
+        <div className="hidden group-hover:block mt-2 p-2 bg-muted rounded text-[10px] text-muted-foreground leading-relaxed">
           {meta.explanation}
-          <span className="block mt-0.5 text-gray-400">Fonte: {meta.source}</span>
+          <span className="block mt-0.5 text-muted-foreground/60">Fonte: {meta.source}</span>
         </div>
       )}
     </div>

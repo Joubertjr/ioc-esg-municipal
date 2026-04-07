@@ -20,7 +20,7 @@ export interface OdsComparisonTableProps {
 /** Renders a score cell or a "—" placeholder when data is absent. */
 function ScoreCell({ score }: { score: number | null }) {
   if (score === null) {
-    return <span className="text-gray-400 text-xs">—</span>;
+    return <span className="text-muted-foreground/60 text-xs">—</span>;
   }
 
   const color =
@@ -42,7 +42,7 @@ function DeltaBadge({
   aboveAverage: boolean | null;
 }) {
   if (delta === null || aboveAverage === null) {
-    return <span className="text-gray-400 text-xs">—</span>;
+    return <span className="text-muted-foreground/60 text-xs">—</span>;
   }
 
   const isPositive = aboveAverage;
@@ -64,28 +64,36 @@ export function OdsComparisonTable({ comparison, averages }: OdsComparisonTableP
   const averagesMap = new Map(averages.map((a) => [a.odsNumber, a]));
 
   return (
-    <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
-      <div className="px-4 py-3 border-b border-gray-100">
-        <h3 className="text-sm font-semibold text-gray-800">Tabela Comparativa por ODS</h3>
-        <p className="text-xs text-gray-500 mt-0.5">Município vs. média do grupo</p>
+    <div className="bg-card rounded-lg border border-border overflow-hidden">
+      <div className="px-4 py-3 border-b border-border">
+        <h3 className="text-sm font-semibold text-foreground">Tabela Comparativa por ODS</h3>
+        <p className="text-xs text-muted-foreground mt-0.5">Município vs. média do grupo</p>
       </div>
 
       {/* overflow-x-auto provides horizontal scroll on mobile */}
       <div className="overflow-x-auto">
         <table className="w-full text-sm min-w-[640px]">
           <thead>
-            <tr className="bg-gray-50 border-b border-gray-100">
-              <th className="text-left py-2 px-3 text-xs font-medium text-gray-500 w-8">ODS</th>
-              <th className="text-left py-2 px-3 text-xs font-medium text-gray-500">Nome</th>
-              <th className="text-center py-2 px-3 text-xs font-medium text-gray-500 w-28">
+            <tr className="bg-muted border-b border-border">
+              <th className="text-left py-2 px-3 text-xs font-medium text-muted-foreground w-8">
+                ODS
+              </th>
+              <th className="text-left py-2 px-3 text-xs font-medium text-muted-foreground">
+                Nome
+              </th>
+              <th className="text-center py-2 px-3 text-xs font-medium text-muted-foreground w-28">
                 Município
               </th>
-              <th className="text-center py-2 px-3 text-xs font-medium text-gray-500 w-28">
+              <th className="text-center py-2 px-3 text-xs font-medium text-muted-foreground w-28">
                 Média
               </th>
-              <th className="text-center py-2 px-3 text-xs font-medium text-gray-500 w-14">Mín</th>
-              <th className="text-center py-2 px-3 text-xs font-medium text-gray-500 w-14">Máx</th>
-              <th className="text-center py-2 px-3 text-xs font-medium text-gray-500 w-24">
+              <th className="text-center py-2 px-3 text-xs font-medium text-muted-foreground w-14">
+                Mín
+              </th>
+              <th className="text-center py-2 px-3 text-xs font-medium text-muted-foreground w-14">
+                Máx
+              </th>
+              <th className="text-center py-2 px-3 text-xs font-medium text-muted-foreground w-24">
                 Delta
               </th>
             </tr>
@@ -101,7 +109,7 @@ export function OdsComparisonTable({ comparison, averages }: OdsComparisonTableP
               return (
                 <tr
                   key={entry.odsNumber}
-                  className="border-b border-gray-50 hover:bg-gray-50 transition-colors"
+                  className="border-b border-border hover:bg-accent transition-colors"
                 >
                   {/* ODS number badge with brand color */}
                   <td className="py-2 px-3">
@@ -115,7 +123,7 @@ export function OdsComparisonTable({ comparison, averages }: OdsComparisonTableP
 
                   {/* Full ODS name */}
                   <td className="py-2 px-3">
-                    <span className="text-xs text-gray-700 leading-tight">{name}</span>
+                    <span className="text-xs text-foreground leading-tight">{name}</span>
                   </td>
 
                   {/* Municipality score + progress bar */}
@@ -125,7 +133,7 @@ export function OdsComparisonTable({ comparison, averages }: OdsComparisonTableP
                         <div className="flex justify-between">
                           <ScoreCell score={entry.municipalityScore} />
                         </div>
-                        <div className="h-2 w-full rounded-full bg-gray-100 overflow-hidden">
+                        <div className="h-2 w-full rounded-full bg-muted overflow-hidden">
                           <div
                             className="h-full rounded-full bg-blue-500 transition-all duration-500"
                             style={{ width: `${Math.min(100, entry.municipalityScore)}%` }}
@@ -133,7 +141,9 @@ export function OdsComparisonTable({ comparison, averages }: OdsComparisonTableP
                         </div>
                       </div>
                     ) : (
-                      <span className="text-xs text-gray-400 italic">Dados indisponíveis</span>
+                      <span className="text-xs text-muted-foreground/60 italic">
+                        Dados indisponíveis
+                      </span>
                     )}
                   </td>
 
@@ -144,7 +154,7 @@ export function OdsComparisonTable({ comparison, averages }: OdsComparisonTableP
                         <div className="flex justify-between">
                           <ScoreCell score={entry.benchmarkAverage} />
                         </div>
-                        <div className="h-2 w-full rounded-full bg-gray-100 overflow-hidden">
+                        <div className="h-2 w-full rounded-full bg-muted overflow-hidden">
                           <div
                             className="h-full rounded-full bg-gray-400 transition-all duration-500"
                             style={{ width: `${Math.min(100, entry.benchmarkAverage)}%` }}
@@ -152,25 +162,25 @@ export function OdsComparisonTable({ comparison, averages }: OdsComparisonTableP
                         </div>
                       </div>
                     ) : (
-                      <span className="text-xs text-gray-400">—</span>
+                      <span className="text-xs text-muted-foreground/60">—</span>
                     )}
                   </td>
 
                   {/* Min */}
                   <td className="py-2 px-3 text-center">
                     {avg?.min !== null && avg?.min !== undefined ? (
-                      <span className="text-xs text-gray-500">{avg.min.toFixed(0)}</span>
+                      <span className="text-xs text-muted-foreground">{avg.min.toFixed(0)}</span>
                     ) : (
-                      <span className="text-xs text-gray-300">—</span>
+                      <span className="text-xs text-muted-foreground/40">—</span>
                     )}
                   </td>
 
                   {/* Max */}
                   <td className="py-2 px-3 text-center">
                     {avg?.max !== null && avg?.max !== undefined ? (
-                      <span className="text-xs text-gray-500">{avg.max.toFixed(0)}</span>
+                      <span className="text-xs text-muted-foreground">{avg.max.toFixed(0)}</span>
                     ) : (
-                      <span className="text-xs text-gray-300">—</span>
+                      <span className="text-xs text-muted-foreground/40">—</span>
                     )}
                   </td>
 
@@ -187,20 +197,20 @@ export function OdsComparisonTable({ comparison, averages }: OdsComparisonTableP
 
       {/* Legend */}
       {comparison.length > 0 && (
-        <div className="flex flex-wrap items-center gap-4 px-4 py-2 border-t border-gray-100 bg-gray-50">
+        <div className="flex flex-wrap items-center gap-4 px-4 py-2 border-t border-border bg-muted">
           <div className="flex items-center gap-1.5">
             <div className="w-4 h-2 rounded-full bg-blue-500" />
-            <span className="text-[10px] text-gray-500">Score do município</span>
+            <span className="text-[10px] text-muted-foreground">Score do município</span>
           </div>
           <div className="flex items-center gap-1.5">
             <div className="w-4 h-2 rounded-full bg-gray-400" />
-            <span className="text-[10px] text-gray-500">Média do grupo</span>
+            <span className="text-[10px] text-muted-foreground">Média do grupo</span>
           </div>
           <div className="flex items-center gap-1.5">
             <span className="text-[10px] text-green-700 font-medium">↑ positivo</span>
-            <span className="text-[10px] text-gray-400">/</span>
+            <span className="text-[10px] text-muted-foreground/60">/</span>
             <span className="text-[10px] text-red-600 font-medium">↓ negativo</span>
-            <span className="text-[10px] text-gray-500">vs. média</span>
+            <span className="text-[10px] text-muted-foreground">vs. média</span>
           </div>
         </div>
       )}

@@ -32,14 +32,14 @@ const ODS_SHORT_NAMES: Record<number, string> = {
 };
 
 function scoreColor(score: number | null): string {
-  if (score === null) return "text-gray-400";
+  if (score === null) return "text-muted-foreground/60";
   if (score >= 70) return "text-green-700";
   if (score >= 40) return "text-amber-600";
   return "text-red-600";
 }
 
 function progressBarColor(score: number | null): string {
-  if (score === null) return "bg-gray-300";
+  if (score === null) return "bg-muted";
   if (score >= 70) return "bg-green-500";
   if (score >= 40) return "bg-amber-400";
   return "bg-red-500";
@@ -48,8 +48,8 @@ function progressBarColor(score: number | null): string {
 function StatusBadge({ status }: { status: OdsStatus | null }) {
   if (!status) {
     return (
-      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-500">
-        <span className="w-1.5 h-1.5 rounded-full bg-gray-400" />
+      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-muted text-muted-foreground">
+        <span className="w-1.5 h-1.5 rounded-full bg-muted-foreground/60" />
         Sem dados
       </span>
     );
@@ -71,7 +71,7 @@ function StatusBadge({ status }: { status: OdsStatus | null }) {
 }
 
 function GapBadge({ gap }: { gap: number | null }) {
-  if (gap === null) return <span className="text-gray-400 text-sm">—</span>;
+  if (gap === null) return <span className="text-muted-foreground/60 text-sm">—</span>;
   if (gap <= 0) {
     return (
       <span className="text-xs font-semibold text-green-700 bg-green-100 px-2 py-0.5 rounded-full">
@@ -80,7 +80,7 @@ function GapBadge({ gap }: { gap: number | null }) {
     );
   }
   return (
-    <span className="text-xs font-semibold text-red-700 bg-red-50 px-2 py-0.5 rounded-full tabular-nums">
+    <span className="text-xs font-semibold text-destructive bg-destructive/10 px-2 py-0.5 rounded-full tabular-nums">
       -{gap.toFixed(1)} pts
     </span>
   );
@@ -111,7 +111,7 @@ function TrendBadge({ trend }: { trend: TrendDirection }) {
   }
   return (
     <span
-      className="text-xs font-bold text-gray-400 bg-gray-50 px-1.5 py-0.5 rounded"
+      className="text-xs font-bold text-muted-foreground/60 bg-muted px-1.5 py-0.5 rounded"
       title="Sem variacao"
     >
       →
@@ -131,7 +131,7 @@ function OdsRow({ ods, target, trend }: OdsRowProps) {
   const targetPct = Math.min(100, Math.max(0, target));
 
   return (
-    <div className="bg-white rounded-lg border border-gray-200 p-4 hover:border-gray-300 transition-colors">
+    <div className="bg-card rounded-lg border border-border p-4 hover:border-border/80 transition-colors">
       <div className="flex items-start gap-4">
         {/* ODS number circle */}
         <div
@@ -144,7 +144,7 @@ function OdsRow({ ods, target, trend }: OdsRowProps) {
         {/* Content */}
         <div className="flex-1 min-w-0">
           <div className="flex items-center justify-between gap-2 mb-1">
-            <p className="text-sm font-medium text-gray-900 truncate">
+            <p className="text-sm font-medium text-foreground truncate">
               {ODS_SHORT_NAMES[ods.odsNumber] ?? ods.shortName}
             </p>
             <div className="flex items-center gap-2 shrink-0">
@@ -154,14 +154,14 @@ function OdsRow({ ods, target, trend }: OdsRowProps) {
           </div>
 
           {/* Progress bar */}
-          <div className="relative h-3 bg-gray-100 rounded-full overflow-hidden mt-2">
+          <div className="relative h-3 bg-muted rounded-full overflow-hidden mt-2">
             <div
               className={`h-full rounded-full transition-all duration-500 ${progressBarColor(ods.score)}`}
               style={{ width: `${pct}%` }}
             />
             {/* Target marker */}
             <div
-              className="absolute top-0 h-full w-0.5 bg-gray-500 opacity-60"
+              className="absolute top-0 h-full w-0.5 bg-muted-foreground opacity-60"
               style={{ left: `${targetPct}%` }}
               title={`Meta: ${target}`}
             />
@@ -171,13 +171,13 @@ function OdsRow({ ods, target, trend }: OdsRowProps) {
           <div className="flex items-center justify-between mt-1">
             <span className={`text-sm font-semibold tabular-nums ${scoreColor(ods.score)}`}>
               {ods.score !== null ? ods.score.toFixed(1) : "—"}
-              <span className="text-xs font-normal text-gray-400 ml-1">atual</span>
+              <span className="text-xs font-normal text-muted-foreground/60 ml-1">atual</span>
               <span className="ml-2">
                 <TrendBadge trend={trend} />
               </span>
             </span>
-            <span className="text-xs text-gray-400">
-              Meta: <span className="font-medium text-gray-600">{target}</span>
+            <span className="text-xs text-muted-foreground/60">
+              Meta: <span className="font-medium text-muted-foreground">{target}</span>
             </span>
           </div>
         </div>
@@ -224,9 +224,9 @@ function SummaryStats({
     {
       label: "Sem dados",
       value: noData,
-      color: "text-gray-600",
-      bg: "bg-gray-100",
-      bar: "bg-gray-300",
+      color: "text-muted-foreground",
+      bg: "bg-muted",
+      bar: "bg-muted-foreground/40",
     },
   ];
 
@@ -235,8 +235,8 @@ function SummaryStats({
       {items.map(({ label, value, color, bg, bar }) => (
         <div key={label} className={`rounded-lg p-4 ${bg}`}>
           <div className={`text-2xl font-bold tabular-nums ${color}`}>{value}</div>
-          <div className="text-xs text-gray-600 mt-0.5">{label}</div>
-          <div className="mt-2 h-1.5 bg-white bg-opacity-60 rounded-full overflow-hidden">
+          <div className="text-xs text-foreground mt-0.5">{label}</div>
+          <div className="mt-2 h-1.5 bg-card/60 rounded-full overflow-hidden">
             <div
               className={`h-full rounded-full ${bar}`}
               style={{ width: total > 0 ? `${(value / total) * 100}%` : "0%" }}
@@ -369,24 +369,24 @@ export function MonitoringPage() {
       <div className="space-y-8">
         {/* Page title */}
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Monitoramento de Metas ODS</h1>
-          <p className="text-sm text-gray-500 mt-1">
+          <h1 className="text-2xl font-bold text-foreground">Monitoramento de Metas ODS</h1>
+          <p className="text-sm text-muted-foreground mt-1">
             Acompanhe o progresso do município em cada um dos 17 Objetivos de Desenvolvimento
             Sustentável.
           </p>
         </div>
 
         {isError && (
-          <div className="p-4 bg-red-50 border border-red-200 rounded-lg flex items-center justify-between">
+          <div className="p-4 bg-destructive/10 border border-destructive/20 rounded-lg flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-red-800">Erro ao carregar dados ODS</p>
-              <p className="text-xs text-red-600 mt-1">
+              <p className="text-sm font-medium text-destructive">Erro ao carregar dados ODS</p>
+              <p className="text-xs text-destructive mt-1">
                 {error?.message ?? "Verifique se o servidor está rodando."}
               </p>
             </div>
             <button
               onClick={() => refetch()}
-              className="px-3 py-1.5 text-sm font-medium text-red-700 bg-red-100 rounded-md hover:bg-red-200 transition-colors"
+              className="px-3 py-1.5 text-sm font-medium text-destructive bg-destructive/10 rounded-md hover:bg-destructive/20 transition-colors"
             >
               Tentar novamente
             </button>
@@ -397,7 +397,7 @@ export function MonitoringPage() {
         {isLoading ? (
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
             {Array.from({ length: 4 }, (_, i) => (
-              <div key={i} className="h-24 bg-gray-100 rounded-lg animate-pulse" />
+              <div key={i} className="h-24 bg-muted rounded-lg animate-pulse" />
             ))}
           </div>
         ) : report ? (
@@ -411,11 +411,11 @@ export function MonitoringPage() {
         ) : null}
 
         {/* Controls */}
-        <div className="bg-white rounded-xl border border-gray-200 p-4">
+        <div className="bg-card rounded-xl border border-border p-4">
           <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-end">
             {/* Target score */}
             <div className="flex-1 min-w-[180px]">
-              <label className="block text-xs font-medium text-gray-600 mb-1 uppercase tracking-wide">
+              <label className="block text-xs font-medium text-muted-foreground mb-1 uppercase tracking-wide">
                 Meta de score
               </label>
               <div className="flex items-center gap-3">
@@ -427,12 +427,12 @@ export function MonitoringPage() {
                     step={5}
                     value={target}
                     onChange={(e) => setTarget(parseInt(e.target.value, 10))}
-                    className="w-full accent-blue-600"
+                    className="w-full accent-primary"
                     aria-label={`Meta de score: ${target}`}
                   />
                   {/* Tooltip label above thumb */}
                   <div
-                    className="absolute -top-6 text-xs font-bold text-blue-700 tabular-nums pointer-events-none"
+                    className="absolute -top-6 text-xs font-bold text-primary tabular-nums pointer-events-none"
                     style={{
                       left: `calc(${((target - 40) / (100 - 40)) * 100}% - 12px)`,
                     }}
@@ -440,7 +440,7 @@ export function MonitoringPage() {
                     {target}
                   </div>
                 </div>
-                <span className="text-sm font-bold text-blue-700 tabular-nums w-8 text-right">
+                <span className="text-sm font-bold text-primary tabular-nums w-8 text-right">
                   {target}
                 </span>
               </div>
@@ -448,7 +448,7 @@ export function MonitoringPage() {
 
             {/* Filter */}
             <div>
-              <label className="block text-xs font-medium text-gray-600 mb-1 uppercase tracking-wide">
+              <label className="block text-xs font-medium text-muted-foreground mb-1 uppercase tracking-wide">
                 Filtrar por status
               </label>
               <div className="flex gap-1">
@@ -459,8 +459,8 @@ export function MonitoringPage() {
                     onClick={() => setFilterStatus(opt.value)}
                     className={`px-3 py-1.5 rounded-md text-xs font-medium transition-colors ${
                       filterStatus === opt.value
-                        ? "bg-blue-600 text-white"
-                        : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                        ? "bg-primary text-white"
+                        : "bg-muted text-muted-foreground hover:bg-accent"
                     }`}
                   >
                     {opt.label}
@@ -471,13 +471,13 @@ export function MonitoringPage() {
 
             {/* Sort */}
             <div>
-              <label className="block text-xs font-medium text-gray-600 mb-1 uppercase tracking-wide">
+              <label className="block text-xs font-medium text-muted-foreground mb-1 uppercase tracking-wide">
                 Ordenar por
               </label>
               <select
                 value={sortKey}
                 onChange={(e) => setSortKey(e.target.value as SortKey)}
-                className="px-3 py-1.5 border border-gray-300 rounded-md text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="px-3 py-1.5 border border-border rounded-md text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
               >
                 {SORT_OPTIONS.map((opt) => (
                   <option key={opt.value} value={opt.value}>
@@ -493,11 +493,11 @@ export function MonitoringPage() {
         {isLoading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             {Array.from({ length: 17 }, (_, i) => (
-              <div key={i} className="h-28 bg-gray-100 rounded-lg animate-pulse" />
+              <div key={i} className="h-28 bg-muted rounded-lg animate-pulse" />
             ))}
           </div>
         ) : filteredAndSorted.length === 0 ? (
-          <div className="text-center py-16 text-gray-400">
+          <div className="text-center py-16 text-muted-foreground/60">
             <svg
               className="w-12 h-12 mx-auto mb-3 opacity-40"
               fill="none"
@@ -536,7 +536,7 @@ export function MonitoringPage() {
         )}
 
         {/* Legenda permanente de status */}
-        <div className="flex items-center justify-center gap-6 py-3 text-xs text-gray-500">
+        <div className="flex items-center justify-center gap-6 py-3 text-xs text-muted-foreground">
           <span className="flex items-center gap-1.5">
             <span className="w-3 h-3 rounded-full bg-green-500 shrink-0" />
             Verde (≥70)

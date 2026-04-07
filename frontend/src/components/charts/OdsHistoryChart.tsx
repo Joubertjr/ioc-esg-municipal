@@ -48,15 +48,17 @@ function CustomTooltip({ active, payload }: TooltipProps<number, string>) {
   };
 
   return (
-    <div className="bg-white border border-gray-200 rounded-lg shadow-md px-3 py-2 text-sm">
-      <p className="font-semibold text-gray-800">Ano: {year}</p>
-      <p className="text-gray-700">
+    <div className="bg-card border border-border rounded-lg shadow-md px-3 py-2 text-sm">
+      <p className="font-semibold text-foreground">Ano: {year}</p>
+      <p className="text-foreground">
         Score: <span className="font-bold tabular-nums">{score.toFixed(1)}</span>
         /100
       </p>
       <p>
         Status:{" "}
-        <span className={`font-medium capitalize ${statusColors[status] ?? "text-gray-600"}`}>
+        <span
+          className={`font-medium capitalize ${statusColors[status] ?? "text-muted-foreground"}`}
+        >
           {status}
         </span>
       </p>
@@ -70,8 +72,8 @@ export function OdsHistoryChart({ ibgeCode }: OdsHistoryChartProps) {
   if (isLoading) {
     return (
       <div>
-        <h3 className="text-base font-semibold text-gray-900 mb-4">Evolucao do Score ESG</h3>
-        <div className="animate-pulse h-[300px] bg-gray-100 rounded-lg" />
+        <h3 className="text-base font-semibold text-foreground mb-4">Evolucao do Score ESG</h3>
+        <div className="animate-pulse h-[300px] bg-muted rounded-lg" />
       </div>
     );
   }
@@ -103,8 +105,8 @@ export function OdsHistoryChart({ ibgeCode }: OdsHistoryChartProps) {
   if (chartData.length < 2) {
     return (
       <div>
-        <h3 className="text-base font-semibold text-gray-900 mb-4">Evolucao do Score ESG</h3>
-        <div className="flex items-center justify-center h-[300px] text-gray-400 text-sm">
+        <h3 className="text-base font-semibold text-foreground mb-4">Evolucao do Score ESG</h3>
+        <div className="flex items-center justify-center h-[300px] text-muted-foreground/60 text-sm">
           Dados historicos insuficientes para exibir tendencia
         </div>
       </div>
@@ -113,7 +115,7 @@ export function OdsHistoryChart({ ibgeCode }: OdsHistoryChartProps) {
 
   return (
     <div>
-      <h3 className="text-base font-semibold text-gray-900 mb-4">Evolucao do Score ESG</h3>
+      <h3 className="text-base font-semibold text-foreground mb-4">Evolucao do Score ESG</h3>
       <ResponsiveContainer width="100%" height={300}>
         <LineChart data={chartData} margin={{ top: 10, right: 24, left: 0, bottom: 0 }}>
           <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />

@@ -38,7 +38,7 @@ export function OdsCard({ ods, onClick }: OdsCardProps) {
     <OdsTooltip odsNumber={ods.odsNumber} name={ods.name}>
       <button
         onClick={onClick}
-        className={`relative w-full text-left rounded-lg bg-white shadow-sm border border-gray-200 p-3 transition-all hover:shadow-md hover:scale-[1.02] cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 ${
+        className={`relative w-full text-left rounded-lg bg-card shadow-sm border border-border p-3 transition-all hover:shadow-md hover:scale-[1.02] cursor-pointer focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-1 ${
           hasData ? "" : "opacity-50"
         }`}
         style={{ borderLeftWidth: "4px", borderLeftColor: ods.color }}
@@ -51,7 +51,7 @@ export function OdsCard({ ods, onClick }: OdsCardProps) {
           >
             {ods.odsNumber}
           </span>
-          <span className="text-xs font-medium text-gray-600 leading-tight line-clamp-2">
+          <span className="text-xs font-medium text-muted-foreground leading-tight line-clamp-2">
             {ods.shortName}
           </span>
         </div>
@@ -59,12 +59,12 @@ export function OdsCard({ ods, onClick }: OdsCardProps) {
         {hasData ? (
           <>
             <div className="flex items-baseline gap-1 mb-1.5">
-              <span className="text-2xl font-bold text-gray-900">{ods.score}</span>
-              <span className="text-xs text-gray-400">/100</span>
+              <span className="text-2xl font-bold text-foreground">{ods.score}</span>
+              <span className="text-xs text-muted-foreground/60">/100</span>
             </div>
 
             {/* Barra de progresso */}
-            <div className="h-1.5 bg-gray-100 rounded-full overflow-hidden mb-2">
+            <div className="h-1.5 bg-muted rounded-full overflow-hidden mb-2">
               <div
                 className={`h-full rounded-full transition-all duration-500 ${config?.barColor ?? "bg-gray-300"}`}
                 style={{ width: `${Math.min(100, Math.max(0, ods.score ?? 0))}%` }}
@@ -79,12 +79,14 @@ export function OdsCard({ ods, onClick }: OdsCardProps) {
               </div>
             )}
 
-            <p className="text-[10px] text-gray-400 mt-1.5">Ver detalhes →</p>
+            <p className="text-[10px] text-muted-foreground/60 mt-1.5">Ver detalhes →</p>
           </>
         ) : (
           <div>
-            <span className="text-xs text-gray-400">Dados indisponíveis</span>
-            <p className="text-[10px] text-gray-300 mt-1">Sem dados para este município</p>
+            <span className="text-xs text-muted-foreground/60">Dados indisponíveis</span>
+            <p className="text-[10px] text-muted-foreground/40 mt-1">
+              Sem dados para este município
+            </p>
           </div>
         )}
       </button>
@@ -94,14 +96,14 @@ export function OdsCard({ ods, onClick }: OdsCardProps) {
 
 export function OdsCardSkeleton() {
   return (
-    <div className="rounded-lg bg-white shadow-sm border border-gray-200 p-3 animate-pulse">
+    <div className="rounded-lg bg-card shadow-sm border border-border p-3 animate-pulse">
       <div className="flex items-center gap-2 mb-2">
-        <div className="w-7 h-7 rounded bg-gray-200" />
-        <div className="h-3 w-16 rounded bg-gray-200" />
+        <div className="w-7 h-7 rounded bg-muted animate-pulse" />
+        <div className="h-3 w-16 rounded bg-muted animate-pulse" />
       </div>
-      <div className="h-8 w-12 rounded bg-gray-200 mb-2" />
-      <div className="h-1.5 w-full rounded bg-gray-200 mb-2" />
-      <div className="h-3 w-16 rounded bg-gray-200" />
+      <div className="h-8 w-12 rounded bg-muted animate-pulse mb-2" />
+      <div className="h-1.5 w-full rounded bg-muted animate-pulse mb-2" />
+      <div className="h-3 w-16 rounded bg-muted animate-pulse" />
     </div>
   );
 }

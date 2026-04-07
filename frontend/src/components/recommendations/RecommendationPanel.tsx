@@ -17,26 +17,26 @@ const PRIORITY_ORDER: Record<SmartRecommendation["priority"], number> = {
 
 function SkeletonCard() {
   return (
-    <div className="bg-white border border-gray-200 rounded-xl shadow-sm p-5 animate-pulse">
+    <div className="bg-card border border-border rounded-xl shadow-sm p-5 animate-pulse">
       <div className="flex items-start justify-between gap-3 mb-4">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-lg bg-gray-200 shrink-0" />
+          <div className="w-9 h-9 rounded-lg bg-muted shrink-0" />
           <div>
-            <div className="h-4 w-40 bg-gray-200 rounded mb-1" />
-            <div className="h-3 w-24 bg-gray-100 rounded" />
+            <div className="h-4 w-40 bg-muted rounded mb-1" />
+            <div className="h-3 w-24 bg-muted rounded" />
           </div>
         </div>
-        <div className="h-6 w-16 bg-gray-200 rounded-full" />
+        <div className="h-6 w-16 bg-muted rounded-full" />
       </div>
       <div className="flex gap-4 mb-4">
-        <div className="h-10 w-20 bg-gray-100 rounded" />
-        <div className="h-10 w-20 bg-gray-100 rounded" />
-        <div className="h-10 w-20 bg-gray-100 rounded" />
+        <div className="h-10 w-20 bg-muted rounded" />
+        <div className="h-10 w-20 bg-muted rounded" />
+        <div className="h-10 w-20 bg-muted rounded" />
       </div>
       <div className="space-y-2">
-        <div className="h-3 w-full bg-gray-100 rounded" />
-        <div className="h-3 w-4/5 bg-gray-100 rounded" />
-        <div className="h-3 w-3/5 bg-gray-100 rounded" />
+        <div className="h-3 w-full bg-muted rounded" />
+        <div className="h-3 w-4/5 bg-muted rounded" />
+        <div className="h-3 w-3/5 bg-muted rounded" />
       </div>
     </div>
   );
@@ -73,9 +73,9 @@ export function RecommendationPanel({ ibgeCode }: RecommendationPanelProps) {
       {/* Cabeçalho */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
         <div>
-          <h2 className="text-lg font-semibold text-gray-900">Recomendações Priorizadas</h2>
-          {report && <p className="text-sm text-gray-500 mt-0.5">{report.summary}</p>}
-          {isLoading && <div className="h-4 w-72 bg-gray-200 rounded animate-pulse mt-1" />}
+          <h2 className="text-lg font-semibold text-foreground">Recomendações Priorizadas</h2>
+          {report && <p className="text-sm text-muted-foreground mt-0.5">{report.summary}</p>}
+          {isLoading && <div className="h-4 w-72 bg-muted rounded animate-pulse mt-1" />}
         </div>
 
         {report && (
@@ -83,7 +83,7 @@ export function RecommendationPanel({ ibgeCode }: RecommendationPanelProps) {
             <span className="inline-flex items-center gap-1 bg-red-100 text-red-800 font-semibold px-3 py-1 rounded-full">
               {report.criticalCount} críticas
             </span>
-            <span className="text-gray-500">{report.totalRecommendations} total</span>
+            <span className="text-muted-foreground">{report.totalRecommendations} total</span>
           </div>
         )}
       </div>
@@ -111,7 +111,7 @@ export function RecommendationPanel({ ibgeCode }: RecommendationPanelProps) {
 
       {/* Estado vazio */}
       {!isLoading && !isError && report && sortedRecommendations.length === 0 && (
-        <div className="text-center py-12 text-gray-500">
+        <div className="text-center py-12 text-muted-foreground">
           <svg
             className="w-12 h-12 mx-auto mb-3 text-green-400"
             fill="none"
@@ -125,7 +125,7 @@ export function RecommendationPanel({ ibgeCode }: RecommendationPanelProps) {
               d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
             />
           </svg>
-          <p className="text-sm font-medium text-gray-700">
+          <p className="text-sm font-medium text-foreground">
             Nenhuma recomendação — todos os ODS estão acima da meta
           </p>
         </div>
@@ -193,7 +193,7 @@ export function RecommendationPanel({ ibgeCode }: RecommendationPanelProps) {
       {/* Pontos Fortes */}
       {!isLoading && report && report.strengths.length > 0 && (
         <div>
-          <h3 className="text-sm font-semibold text-gray-700 mb-3">Pontos Fortes</h3>
+          <h3 className="text-sm font-semibold text-foreground mb-3">Pontos Fortes</h3>
           <div className="flex flex-wrap gap-2">
             {report.strengths.map((strength) => {
               const odsDefinition = ODS_DEFINITIONS.find((o) => o.number === strength.odsNumber);

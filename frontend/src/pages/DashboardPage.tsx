@@ -1,11 +1,11 @@
 import { useState, useCallback, useEffect } from "react";
 import { useOdsReport } from "../hooks/useOdsReport";
 import { AppShell } from "../components/layout/AppShell";
-import { GlobalScore } from "../components/ods/GlobalScore";
-import { CoverageSummary } from "../components/ods/CoverageSummary";
+import { KpiCards } from "../components/dashboard/KpiCards";
+import { OdsDimensionGrid } from "../components/dashboard/OdsDimensionGrid";
+import { DimensionRadarChart } from "../components/dashboard/DimensionRadarChart";
 import { OdsCard, OdsCardSkeleton } from "../components/ods/OdsCard";
-import { OdsDetailDrawer } from "../components/ods/OdsDetailDrawer";
-import { OdsRadarChart } from "../components/charts/OdsRadarChart";
+import { OdsDetailPanel } from "../components/ods/OdsDetailPanel";
 import { OdsHistoryChart } from "../components/charts/OdsHistoryChart";
 import { RecommendationPanel } from "../components/recommendations/RecommendationPanel";
 import { useToast } from "../components/ui/Toast";
@@ -26,6 +26,7 @@ export function DashboardPage() {
   }, [isError, error, showToast]);
 
   const handleCloseDrawer = useCallback(() => setSelectedOds(null), []);
+  const handleOdsClick = useCallback((ods: OdsSummary) => setSelectedOds(ods), []);
 
   return (
     <AppShell
@@ -34,107 +35,56 @@ export function DashboardPage() {
       referenceYear={report?.referenceYear ?? null}
     >
       {isError && (
-        <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg flex items-center justify-between">
+        <div className="mb-6 p-4 bg-destructive/10 border border-destructive/20 rounded-lg flex items-center justify-between">
           <div>
-            <p className="text-sm font-medium text-red-800">Erro ao carregar dados ODS</p>
-            <p className="text-xs text-red-600 mt-1">
+            <p className="text-sm font-medium text-destructive">Erro ao carregar dados ODS</p>
+            <p className="text-xs text-destructive/80 mt-1">
               {error?.message ?? "Verifique se o servidor esta rodando."}
             </p>
           </div>
           <button
             onClick={() => refetch()}
-            className="px-3 py-1.5 text-sm font-medium text-red-700 bg-red-100 rounded-md hover:bg-red-200 transition-colors"
+            className="px-3 py-1.5 text-sm font-medium text-destructive bg-destructive/10 rounded-md hover:bg-destructive/20 transition-colors"
           >
             Tentar novamente
           </button>
         </div>
       )}
 
-      <div className="space-y-8">
-        {/* Top section: score + radar */}
-        <section className="flex flex-col lg:flex-row gap-6 items-start">
-          <div className="flex flex-col items-center gap-4">
-            <GlobalScore
-              score={report?.globalScore ?? null}
-              status={report?.globalStatus ?? null}
-              isLoading={isLoading}
-            />
-            <CoverageSummary
-              odsCount={
-                report?.odsCount ?? {
-                  total: 17,
-                  withData: 0,
-                  verde: 0,
-                  amarelo: 0,
-                  vermelho: 0,
-                }
-              }
-              isLoading={isLoading}
-            />
-          </div>
-          <div className="flex-1 min-w-0">
-            <OdsRadarChart ods={report?.ods ?? []} isLoading={isLoading} />
+      <div className="space-y-6">
+        {/* ── Row 1: KPI Cards — the "3-second" view ── */}
+        <section>
+          <KpiCards report={report} isLoading={isLoading} />
+        </section>
+
+        {/* ── Row 2: Dimension Grid + Radar side-by-side ── */}
+        <section className="grid grid-cols-1 xl:grid-cols-[1fr_340px] gap-4">
+          <OdsDimensionGrid
+            ods={report?.ods ?? []}
+            isLoading={isLoading}
+            onOdsClick={handleOdsClick}
+          />
+          <div className="xl:sticky xl:top-20 xl:self-start">
+            <DimensionRadarChart ods={report?.ods ?? []} isLoading={isLoading} />
           </div>
         </section>
 
-        {/* Historical ESG Score Chart */}
-        <section className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        {/* ── Row 3: Historical ESG Score ── */}
+        <section className="bg-card rounded-xl shadow-sm border border-border p-6">
           <OdsHistoryChart ibgeCode={ibgeCode} />
         </section>
 
-        {/* ODS Grid */}
+        {/* ── Row 4: All 17 ODS Cards ── */}
         <section>
           <div className="mb-4">
-            <h2 className="text-lg font-semibold text-gray-900">
-              Objetivos de Desenvolvimento Sustentável
-            </h2>
-            {report && (
-              <p className="text-sm text-gray-500 mt-0.5">
-                {report.odsCount.amarelo + report.odsCount.vermelho > 0 ? (
-                  <>
-                    <span className="text-amber-600 font-medium">
-                      {report.odsCount.amarelo + report.odsCount.vermelho}{" "}
-                      {report.odsCount.amarelo + report.odsCount.vermelho === 1
-                        ? "ODS precisa"
-                        : "ODS precisam"}{" "}
-                      de atenção
-                    </span>
-                    {" — "}
-                    <span className="text-green-600 font-medium">
-                      {report.odsCount.verde} {report.odsCount.verde === 1 ? "está" : "estão"} no
-                      caminho
-                    </span>
-                  </>
-                ) : (
-                  <span className="text-green-600 font-medium">
-                    Todos os ODS estão no caminho certo
-                  </span>
-                )}
-              </p>
-            )}
+            <h2 className="text-heading-3 font-semibold text-foreground">Todos os ODS</h2>
+            <p className="text-sm text-muted-foreground mt-0.5">
+              Clique em um ODS para ver detalhes e indicadores
+            </p>
           </div>
 
           {!isLoading && !report && !isError && (
-            <div className="text-center py-16 text-gray-400">
-              <svg
-                className="w-12 h-12 mx-auto mb-3 opacity-40"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={1.5}
-                  d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-                />
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={1.5}
-                  d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-                />
-              </svg>
+            <div className="text-center py-16 text-muted-foreground/60">
               <p className="text-sm">Selecione um município para ver os scores ODS</p>
             </div>
           )}
@@ -143,13 +93,13 @@ export function DashboardPage() {
             {isLoading
               ? Array.from({ length: 17 }, (_, i) => <OdsCardSkeleton key={i} />)
               : report?.ods.map((ods) => (
-                  <OdsCard key={ods.odsNumber} ods={ods} onClick={() => setSelectedOds(ods)} />
+                  <OdsCard key={ods.odsNumber} ods={ods} onClick={() => handleOdsClick(ods)} />
                 ))}
           </div>
 
-          {/* Legenda permanente de cores */}
-          <div className="mt-4 flex items-center gap-4 text-xs text-gray-500 border-t border-gray-100 pt-3">
-            <span className="font-medium text-gray-600">Legenda:</span>
+          {/* Status legend */}
+          <div className="mt-4 flex items-center gap-4 text-xs text-muted-foreground border-t border-border pt-3">
+            <span className="font-medium">Legenda:</span>
             <span className="flex items-center gap-1.5">
               <span className="w-3 h-3 rounded-full bg-green-500 inline-block" />
               <span>Verde — score ≥ 70</span>
@@ -165,13 +115,13 @@ export function DashboardPage() {
           </div>
         </section>
 
-        {/* Smart Recommendations */}
-        <section className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        {/* ── Row 5: Smart Recommendations ── */}
+        <section className="bg-card rounded-xl shadow-sm border border-border p-6">
           <RecommendationPanel ibgeCode={ibgeCode} />
         </section>
       </div>
 
-      <OdsDetailDrawer ods={selectedOds} onClose={handleCloseDrawer} />
+      <OdsDetailPanel ods={selectedOds} onClose={handleCloseDrawer} />
     </AppShell>
   );
 }

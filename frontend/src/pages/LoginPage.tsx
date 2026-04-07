@@ -47,21 +47,21 @@ export function LoginPage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center px-4">
+    <div className="min-h-screen bg-background flex flex-col items-center justify-center px-4">
       {/* Branding */}
       <div className="mb-8 text-center">
         <div className="inline-flex items-center gap-2 mb-2">
-          <span className="text-2xl font-bold text-gray-900">IOC ESG Municipal</span>
-          <span className="px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-700">
+          <span className="text-2xl font-bold text-foreground">IOC ESG Municipal</span>
+          <span className="px-2 py-0.5 rounded text-xs font-medium bg-primary/10 text-primary">
             SC
           </span>
         </div>
-        <p className="text-sm text-gray-500">Plataforma de Gestão ESG para Municípios</p>
+        <p className="text-sm text-muted-foreground">Plataforma de Gestão ESG para Municípios</p>
       </div>
 
       {/* Card */}
-      <div className="w-full max-w-md bg-white rounded-xl shadow-md border border-gray-200 p-8">
-        <h2 className="text-xl font-semibold text-gray-900 mb-6">
+      <div className="w-full max-w-md bg-card rounded-xl shadow-md border border-border p-8">
+        <h2 className="text-xl font-semibold text-foreground mb-6">
           {mode === "login" ? "Entrar na plataforma" : "Criar conta"}
         </h2>
 
@@ -74,7 +74,7 @@ export function LoginPage() {
         <form onSubmit={handleSubmit} noValidate className="space-y-4">
           {mode === "register" && (
             <div>
-              <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="name" className="block text-sm font-medium text-foreground mb-1">
                 Nome completo
               </label>
               <input
@@ -85,13 +85,13 @@ export function LoginPage() {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="Ex: João da Silva"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-3 py-2 border border-border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
               />
             </div>
           )}
 
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+            <label htmlFor="email" className="block text-sm font-medium text-foreground mb-1">
               E-mail
             </label>
             <input
@@ -102,12 +102,12 @@ export function LoginPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="prefeito@municipio.sc.gov.br"
-              className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-3 py-2 border border-border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
             />
           </div>
 
           <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+            <label htmlFor="password" className="block text-sm font-medium text-foreground mb-1">
               Senha
             </label>
             <input
@@ -118,14 +118,14 @@ export function LoginPage() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••"
-              className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-3 py-2 border border-border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
             />
           </div>
 
           <button
             type="submit"
             disabled={isSubmitting}
-            className="inline-flex items-center justify-center gap-2 w-full py-2.5 px-4 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-300 text-white font-medium text-sm rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+            className="inline-flex items-center justify-center gap-2 w-full py-2.5 px-4 bg-primary hover:bg-primary/90 disabled:bg-primary/40 text-white font-medium text-sm rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
           >
             {isSubmitting && (
               <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
@@ -152,7 +152,7 @@ export function LoginPage() {
           <button
             type="button"
             onClick={toggleMode}
-            className="text-sm text-blue-600 hover:text-blue-700 font-medium transition-colors"
+            className="text-sm text-primary hover:text-primary/80 font-medium transition-colors"
           >
             {mode === "login" ? "Não tem conta? Cadastre-se" : "Já tem conta? Entrar"}
           </button>
@@ -160,7 +160,7 @@ export function LoginPage() {
       </div>
 
       {/* Footer */}
-      <p className="mt-8 text-xs text-gray-400 text-center">
+      <p className="mt-8 text-xs text-muted-foreground/60 text-center">
         Dados públicos. Transparência total. Conforme Lei 14.133/2021.
       </p>
     </div>
