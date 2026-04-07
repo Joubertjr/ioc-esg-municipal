@@ -32,6 +32,9 @@ git status --short 2>/dev/null | head -5
 cat docs/PROJECT_STATE.md 2>/dev/null | head -30
 ```
 
+Memoria de longo prazo: ler `~/obsidian-vault/ioc-esg-municipal/long-term/gotchas.md` e `short-term/current-task.md`.
+Ou invoque o agente `memory-manager` para sincronizar automaticamente.
+
 Reporte: **feito / em progresso / próximo passo exato**
 
 ---
@@ -306,6 +309,7 @@ Regras:
 | Sonnet | `docs-writer`        | README, documentação de API                     |
 | Haiku  | `devops-engineer`    | Docker, CI/CD, infra                            |
 | Opus   | `project-monitor`    | Monitoramento continuo, KPIs, coerencia, riscos |
+| Sonnet | `memory-manager`     | Obsidian vault: sync, ADRs, gotchas, daily logs |
 
 ### Slash commands
 
@@ -334,8 +338,10 @@ Regras:
 
 1. Commit de tudo funcionando
 2. Atualize `docs/PROJECT_STATE.md`
-3. Registre decisões em `docs/decisions/` se houver
-4. Reporte: **feito / pendente / próximo passo exato**
+3. Invoque `memory-manager` para persistir decisões, gotchas e lições no vault Obsidian
+4. Atualize `~/obsidian-vault/ioc-esg-municipal/daily/YYYY-MM-DD.md`
+5. Registre decisões em `docs/decisions/` se houver
+6. Reporte: **feito / pendente / próximo passo exato**
 
 ---
 

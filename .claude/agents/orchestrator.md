@@ -1,6 +1,6 @@
 ---
 name: orchestrator
-description: Master orchestrator. Use PROACTIVELY for complex features requiring multiple specialists. Maximizes parallel execution — launches ALL independent agents simultaneously. Coordinates backend-architect, database-architect, frontend-architect, api-developer, test-writer, code-reviewer, security-auditor, observability-engineer, ux-reviewer, performance-analyzer.
+description: Master orchestrator. Use PROACTIVELY for complex features requiring multiple specialists. Maximizes parallel execution — launches ALL independent agents simultaneously. Coordinates backend-architect, database-architect, frontend-architect, api-developer, test-writer, code-reviewer, security-auditor, observability-engineer, ux-reviewer, performance-analyzer, memory-manager.
 allowed-tools: Read, Glob, Grep, Agent, TaskCreate, TaskUpdate, TaskList, TaskGet, SendMessage
 model: claude-opus-4-6
 effort: high
@@ -111,6 +111,47 @@ PARALELO (todos ao mesmo tempo):
 ├── project-monitor     → KPIs e estado geral
 ├── observability-engineer → Saude tecnica
 └── performance-analyzer → Gargalos
+```
+
+### Sequencia FULL-STACK FEATURE (com memoria)
+
+```
+FASE 0 — MEMORIA (antes de tudo):
+└── memory-manager     → Sincronizar vault, carregar contexto relevante
+
+FASE 1 — PARALELO:
+├── backend-architect  → API contracts + data model
+├── database-architect → Schema + migrations
+└── frontend-architect → Components + state design
+
+FASE 2 — PARALELO (usa outputs de Fase 1):
+├── api-developer      → Implementa backend
+├── [frontend dev]     → Implementa frontend
+└── test-writer        → Escreve testes
+
+FASE 3 — PARALELO:
+├── code-reviewer      → Review completo
+├── security-auditor   → Auditoria
+└── ux-reviewer        → Experiencia do usuario
+
+FASE 4 — MEMORIA (apos tudo):
+└── memory-manager     → Persistir decisoes, gotchas, licoes no vault
+```
+
+### Sequencia INICIO DE SESSAO
+
+```
+PARALELO:
+├── memory-manager     → Sincronizar vault Obsidian, carregar contexto
+└── project-monitor    → KPIs e estado atual do projeto
+```
+
+### Sequencia FIM DE SESSAO
+
+```
+PARALELO:
+├── memory-manager     → Atualizar daily log, current-task, decisoes, gotchas
+└── docs-writer        → Atualizar PROJECT_STATE.md e BACKLOG.md
 ```
 
 ## Como delegar corretamente
