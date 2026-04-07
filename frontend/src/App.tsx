@@ -1,8 +1,8 @@
-import { lazy, Suspense, useState, useEffect } from "react";
+import { lazy, Suspense } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { queryClient } from "./lib/queryClient";
-import { checkSession } from "./lib/api";
+import { AuthProvider, useAuthContext } from "./contexts/AuthContext";
 import { ErrorBoundary } from "./components/ui/ErrorBoundary";
 import { ToastProvider } from "./components/ui/Toast";
 
@@ -34,17 +34,11 @@ function PageLoader() {
   );
 }
 
-type SessionState = "loading" | "authenticated" | "unauthenticated";
-
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
-  const [session, setSession] = useState<SessionState>("loading");
+  const { isAuthenticated } = useAuthContext();
 
-  useEffect(() => {
-    checkSession().then((ok) => setSession(ok ? "authenticated" : "unauthenticated"));
-  }, []);
-
-  if (session === "loading") return <PageLoader />;
-  if (session === "unauthenticated") return <Navigate to="/login" replace />;
+  if (isAuthenticated === null) return <PageLoader />;
+  if (isAuthenticated === false) return <Navigate to="/login" replace />;
   return <>{children}</>;
 }
 
@@ -53,70 +47,72 @@ export function App() {
     <QueryClientProvider client={queryClient}>
       <ToastProvider>
         <BrowserRouter>
-          <ErrorBoundary>
-            <Suspense fallback={<PageLoader />}>
-              <Routes>
-                {/* Public */}
-                <Route path="/login" element={<LoginPage />} />
+          <AuthProvider>
+            <ErrorBoundary>
+              <Suspense fallback={<PageLoader />}>
+                <Routes>
+                  {/* Public */}
+                  <Route path="/login" element={<LoginPage />} />
 
-                {/* Onboarding — protegido mas sem município obrigatório */}
-                <Route
-                  path="/onboarding"
-                  element={
-                    <ProtectedRoute>
-                      <OnboardingPage />
-                    </ProtectedRoute>
-                  }
-                />
+                  {/* Onboarding — protegido mas sem município obrigatório */}
+                  <Route
+                    path="/onboarding"
+                    element={
+                      <ProtectedRoute>
+                        <OnboardingPage />
+                      </ProtectedRoute>
+                    }
+                  />
 
-                {/* Protected */}
-                <Route
-                  path="/dashboard"
-                  element={
-                    <ProtectedRoute>
-                      <DashboardPage />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/simulator"
-                  element={
-                    <ProtectedRoute>
-                      <SimulatorPage />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/reports"
-                  element={
-                    <ProtectedRoute>
-                      <ReportsPage />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/monitoring"
-                  element={
-                    <ProtectedRoute>
-                      <MonitoringPage />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/benchmark"
-                  element={
-                    <ProtectedRoute>
-                      <BenchmarkPage />
-                    </ProtectedRoute>
-                  }
-                />
+                  {/* Protected */}
+                  <Route
+                    path="/dashboard"
+                    element={
+                      <ProtectedRoute>
+                        <DashboardPage />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/simulator"
+                    element={
+                      <ProtectedRoute>
+                        <SimulatorPage />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/reports"
+                    element={
+                      <ProtectedRoute>
+                        <ReportsPage />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/monitoring"
+                    element={
+                      <ProtectedRoute>
+                        <MonitoringPage />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/benchmark"
+                    element={
+                      <ProtectedRoute>
+                        <BenchmarkPage />
+                      </ProtectedRoute>
+                    }
+                  />
 
-                {/* Default */}
-                <Route path="/" element={<Navigate to="/dashboard" replace />} />
-                <Route path="*" element={<Navigate to="/dashboard" replace />} />
-              </Routes>
-            </Suspense>
-          </ErrorBoundary>
+                  {/* Default */}
+                  <Route path="/" element={<Navigate to="/dashboard" replace />} />
+                  <Route path="*" element={<Navigate to="/dashboard" replace />} />
+                </Routes>
+              </Suspense>
+            </ErrorBoundary>
+          </AuthProvider>
         </BrowserRouter>
       </ToastProvider>
     </QueryClientProvider>

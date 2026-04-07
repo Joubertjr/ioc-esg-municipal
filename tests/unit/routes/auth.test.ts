@@ -41,6 +41,7 @@ const {
   mockCountUsers,
   mockRefreshAccessToken,
   mockRevokeRefreshToken,
+  mockUserUpdate,
 } = vi.hoisted(() => ({
   mockRegister: vi.fn(),
   mockLogin: vi.fn(),
@@ -48,6 +49,7 @@ const {
   mockCountUsers: vi.fn(),
   mockRefreshAccessToken: vi.fn(),
   mockRevokeRefreshToken: vi.fn(),
+  mockUserUpdate: vi.fn(),
 }));
 
 // AuthService: mock da classe inteira via factory
@@ -127,9 +129,14 @@ vi.mock("../../../backend/middleware/auth.js", () => ({
   requireRole: () => (_req: unknown, _res: unknown, next: () => void) => next(),
 }));
 
-// Prisma: necessário pois a rota instancia `new AuthService(prisma)` no módulo
+// Prisma: necessário pois a rota instancia `new AuthService(prisma)` no módulo.
+// user.update exposto para testar PATCH /me, que usa prisma diretamente.
 vi.mock("../../../backend/lib/prisma.js", () => ({
-  prisma: {},
+  prisma: {
+    user: {
+      update: mockUserUpdate,
+    },
+  },
 }));
 
 // ─── Importação da rota após os mocks ────────────────────────────────────────
@@ -450,5 +457,127 @@ describe("GET /api/auth/me", () => {
     expect(res.status).toBe(401);
     expect(res.body.error).toContain("Token");
     expect(mockFindById).not.toHaveBeenCalled();
+  });
+});
+
+// ─── PATCH /me ────────────────────────────────────────────────────────────────
+
+describe("PATCH /api/auth/me", () => {
+  const UPDATED_USER = {
+    ...MOCK_SAFE_USER,
+    municipalityId: "mun-42",
+  };
+
+  beforeEach(() => {
+    vi.clearAllMocks();
+
+    // Middleware autentica e injeta req.user por padrão — mesmo padrão do GET /me
+    vi.mocked(authenticateToken).mockImplementation((req, _res, next) => {
+      (req as express.Request).user = {
+        sub: MOCK_SAFE_USER.id,
+        email: MOCK_SAFE_USER.email,
+        role: MOCK_SAFE_USER.role,
+        municipalityId: MOCK_SAFE_USER.municipalityId,
+      };
+      next();
+    });
+
+    // Cenário default: update bem-sucedido
+    mockUserUpdate.mockResolvedValue(UPDATED_USER);
+  });
+
+  it("retorna 200 e user atualizado quando municipalityId válido é enviado", async () => {
+    // Arrange
+    const app = buildApp();
+
+    // Act
+    const res = await request(app)
+      .patch("/api/auth/me")
+      .set("Authorization", "Bearer jwt.token.assinado")
+      .send({ municipalityId: "mun-42" });
+
+    // Assert
+    expect(res.status).toBe(200);
+    expect(res.body.user.municipalityId).toBe("mun-42");
+    expect(mockUserUpdate).toHaveBeenCalledTimes(1);
+    expect(mockUserUpdate).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: { id: MOCK_SAFE_USER.id },
+        data: { municipalityId: "mun-42" },
+      }),
+    );
+  });
+
+  it("retorna 400 quando body está ausente", async () => {
+    // Arrange — Zod rejeita body vazio: municipalityId é obrigatório
+    const app = buildApp();
+
+    // Act
+    const res = await request(app)
+      .patch("/api/auth/me")
+      .set("Authorization", "Bearer jwt.token.assinado")
+      .send({});
+
+    // Assert
+    expect(res.status).toBe(400);
+    expect(res.body.error).toBe("Dados inválidos");
+    expect(mockUserUpdate).not.toHaveBeenCalled();
+  });
+
+  it("retorna 400 quando municipalityId é string vazia", async () => {
+    // Arrange — Zod valida min(1): string vazia deve ser rejeitada
+    const app = buildApp();
+
+    // Act
+    const res = await request(app)
+      .patch("/api/auth/me")
+      .set("Authorization", "Bearer jwt.token.assinado")
+      .send({ municipalityId: "" });
+
+    // Assert
+    expect(res.status).toBe(400);
+    expect(res.body.error).toBe("Dados inválidos");
+    expect(res.body.details).toBeDefined();
+    expect(mockUserUpdate).not.toHaveBeenCalled();
+  });
+
+  it("retorna 401 quando requisição não está autenticada", async () => {
+    // Arrange — middleware rejeita sem token, mesmo padrão do GET /me
+    vi.mocked(authenticateToken).mockImplementation((_req, res, _next) => {
+      (res as express.Response).status(401).json({ error: "Token de autenticação ausente" });
+    });
+
+    const app = buildApp();
+
+    // Act — sem header Authorization
+    const res = await request(app).patch("/api/auth/me").send({ municipalityId: "mun-42" });
+
+    // Assert
+    expect(res.status).toBe(401);
+    expect(res.body.error).toContain("Token");
+    expect(mockUserUpdate).not.toHaveBeenCalled();
+  });
+
+  it("retorna 500 quando prisma não encontra o usuário (P2025)", async () => {
+    // Arrange — prisma.user.update lança erro quando record não existe.
+    // A rota não trata P2025 separadamente: cai no catch genérico → 500.
+    // Nota: para expor 404 neste caso, a rota precisaria inspecionar
+    // err.code === "P2025" — isso é uma melhoria futura a registrar como ADR.
+    mockUserUpdate.mockRejectedValue(
+      Object.assign(new Error("Record to update not found."), { code: "P2025" }),
+    );
+
+    const app = buildApp();
+
+    // Act
+    const res = await request(app)
+      .patch("/api/auth/me")
+      .set("Authorization", "Bearer jwt.token.assinado")
+      .send({ municipalityId: "mun-inexistente" });
+
+    // Assert — comportamento atual da rota: erro interno, não 404
+    expect(res.status).toBe(500);
+    expect(res.body.error).toContain("Erro interno");
+    expect(mockUserUpdate).toHaveBeenCalledTimes(1);
   });
 });

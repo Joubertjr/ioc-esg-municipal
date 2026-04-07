@@ -1,6 +1,7 @@
 import { useCallback, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { apiPost, apiPatch, setRefreshToken, getRefreshToken } from "../lib/api";
+import { useAuthContext } from "../contexts/AuthContext";
 
 // ─── Tipos ────────────────────────────────────────────────────────────────────
 
@@ -39,6 +40,7 @@ interface UpdateMeResponse {
 export function useAuth() {
   const navigate = useNavigate();
   const [user, setUser] = useState<AuthUser | null>(null);
+  const { setAuthenticated } = useAuthContext();
 
   const login = useCallback(
     async (email: string, password: string): Promise<void> => {
@@ -48,6 +50,7 @@ export function useAuth() {
 
       const authenticatedUser = result.user ?? null;
       setUser(authenticatedUser);
+      setAuthenticated(true);
 
       if (!authenticatedUser || authenticatedUser.municipalityId === null) {
         navigate("/onboarding");
@@ -55,7 +58,7 @@ export function useAuth() {
         navigate("/dashboard");
       }
     },
-    [navigate],
+    [navigate, setAuthenticated],
   );
 
   const register = useCallback(
@@ -66,6 +69,7 @@ export function useAuth() {
 
       const registeredUser = result.user ?? null;
       setUser(registeredUser);
+      setAuthenticated(true);
 
       // Novo usuário sempre vai para onboarding (município ainda não definido)
       if (!registeredUser || registeredUser.municipalityId === null) {
@@ -74,7 +78,7 @@ export function useAuth() {
         navigate("/dashboard");
       }
     },
-    [navigate],
+    [navigate, setAuthenticated],
   );
 
   const logout = useCallback(async (): Promise<void> => {
@@ -84,9 +88,10 @@ export function useAuth() {
     } finally {
       setRefreshToken(null);
       setUser(null);
+      setAuthenticated(false);
       navigate("/login");
     }
-  }, [navigate]);
+  }, [navigate, setAuthenticated]);
 
   const updateMunicipality = useCallback(async (municipalityId: string): Promise<void> => {
     const result = await apiPatch<UpdateMeResponse>("/api/auth/me", { municipalityId });

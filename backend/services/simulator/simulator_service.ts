@@ -1,3 +1,4 @@
+import { Prisma } from "@prisma/client";
 import { calculateMunicipalOds } from "../ods/ods_score_service.js";
 import { ODS_DEFINITIONS, getOdsDefinition } from "../../../shared/constants/ods.js";
 import { getOdsStatus, type OdsStatus } from "../../../shared/types/domain/ods.js";
@@ -342,7 +343,7 @@ async function persistSimulation(
         investmentAmount: result.totalAmount,
         investmentType: primaryArea.area,
         targetOds,
-        projectedImpact: JSON.parse(JSON.stringify(result)) as Record<string, unknown>,
+        projectedImpact: JSON.parse(JSON.stringify(result)) as Prisma.InputJsonValue,
         status: "completed",
         completedAt: new Date(),
       },
