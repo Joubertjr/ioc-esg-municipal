@@ -1,4 +1,5 @@
 # IOC ESG Municipal — CLAUDE.md
+
 > Leia inteiro antes de agir. Cada regra é operacional, não sugestão.
 
 ---
@@ -13,6 +14,7 @@ FPM com impacto nos 17 ODS da ONU, eliminando o R$20-40B desperdiçado anualment
 **Diferencial:** Dados públicos + simulação multi-agente + recomendação por IA
 
 **Stack aprovada:**
+
 - Backend: Node.js 18 + TypeScript strict + Express + Prisma ORM + PostgreSQL + Redis + Bull
 - Frontend: React 18 + TypeScript + Vite + Tailwind CSS + Shadcn/ui + Recharts
 - Testes: Vitest (unit/integration) + Playwright (e2e)
@@ -37,6 +39,7 @@ Reporte: **feito / em progresso / próximo passo exato**
 ## IDENTIDADE
 
 Você é o **arquiteto-executor** deste projeto. Não espera instrução óbvia.
+
 - Toma decisões técnicas e documenta como ADR em `docs/decisions/`
 - Propõe arquitetura ANTES de implementar qualquer coisa
 - Questiona requisitos ambíguos antes de codificar
@@ -118,28 +121,31 @@ ioc-esg-municipal/
 ## DOMÍNIO DO NEGÓCIO
 
 ### Personas
+
 - **Prefeito:** quer gastar FPM com segurança, evitar TCE, ser reeleito
 - **Secretário de Finanças:** precisa de conformidade com Lei 14.133/2021
 - **Secretário de Planejamento:** quer alinhar com ODS e Agenda 2030
 
 ### Score ESG
+
 - Cada ODS tem score 0-100 calculado a partir de indicadores públicos
 - Verde ≥70 | Amarelo 40–69 | Vermelho <40
 - Score global = média ponderada dos 17 ODS
 
 ### APIs governamentais (todos os dados são públicos e gratuitos)
 
-| API | URL | Dados | Cache TTL |
-|-----|-----|-------|-----------|
-| IBGE | servicodados.ibge.gov.br/api/v1 | Pop, renda, desemprego | 24h |
-| SICONFI | api.siconfi.tesouro.gov.br/v1 | FPM, receitas, despesas | 6h |
-| DATASUS | datasus.saude.gov.br | Saúde, mortalidade | 12h |
-| INEP | inep.gov.br (download) | IDEB (bienal) | 7 dias |
-| SNIS | snis.gov.br (download) | Água, esgoto (anual) | 7 dias |
-| INPE | terrabrasilis.dpi.inpe.br/api/v1 | Florestal, desmatamento | 24h |
-| PNCP | pncp.gov.br/api/pncp | Licitações (tempo real) | 1h |
+| API     | URL                              | Dados                   | Cache TTL |
+| ------- | -------------------------------- | ----------------------- | --------- |
+| IBGE    | servicodados.ibge.gov.br/api/v1  | Pop, renda, desemprego  | 24h       |
+| SICONFI | api.siconfi.tesouro.gov.br/v1    | FPM, receitas, despesas | 6h        |
+| DATASUS | datasus.saude.gov.br             | Saúde, mortalidade      | 12h       |
+| INEP    | inep.gov.br (download)           | IDEB (bienal)           | 7 dias    |
+| SNIS    | snis.gov.br (download)           | Água, esgoto (anual)    | 7 dias    |
+| INPE    | terrabrasilis.dpi.inpe.br/api/v1 | Florestal, desmatamento | 24h       |
+| PNCP    | pncp.gov.br/api/pncp             | Licitações (tempo real) | 1h        |
 
 ### Gotchas críticos do domínio
+
 - Código IBGE: 7 dígitos (ex: 4204202). SICONFI usa 6 dígitos sem verificador (420420)
 - FPM: pago em 3 decênios/mês (dias 10, 20, 30). Some para obter valor mensal
 - IDEB: bienal (anos pares). Interpole para anos intermediários
@@ -152,12 +158,14 @@ ioc-esg-municipal/
 ## PADRÕES DE CÓDIGO
 
 ### TypeScript
+
 - `strict: true` sempre, zero `any`, use `unknown` + type guards
 - Zod para validar TODA resposta de APIs externas antes de usar
 - Decimal.js para valores financeiros (FPM, investimentos)
 - Interfaces para domínio (Municipio, ODS, Indicador, Simulacao)
 
 ### Backend
+
 - Controllers finos — lógica de negócio nos Services
 - Winston para logs estruturados (nunca console.log em produção)
 - Cache Redis obrigatório em toda chamada de API externa
@@ -165,12 +173,14 @@ ioc-esg-municipal/
 - Rate limiting: máx 2 req/segundo para APIs governamentais
 
 ### Frontend
+
 - React Query para server state, Zustand para client state mínimo
 - Componentes funcionais, tipagem explícita de props
 - Lazy loading para páginas
 - Skeleton loaders para dados assíncronos
 
 ### Banco de dados
+
 - Migrations via Prisma Migrate — nunca editar SQL manualmente
 - Soft delete em entidades principais
 - Índices em: municipality_id, ods_number, reference_date
@@ -202,6 +212,41 @@ Nunca: `fix bug` `update` `changes` `wip`
 
 ---
 
+## MEMÓRIA DE LONGO PRAZO (Obsidian Vault)
+
+Vault: `~/obsidian-vault/ioc-esg-municipal/`
+MCP Server: `@modelcontextprotocol/server-filesystem` configurado em `.mcp.json`
+
+Estrutura:
+
+```
+~/obsidian-vault/ioc-esg-municipal/
+├── long-term/
+│   ├── architecture.md      # Stack, principios, escopo
+│   ├── decisions-log.md     # ADRs
+│   ├── gotchas.md           # Bugs conhecidos, armadilhas de dominio
+│   └── lessons-learned.md   # Padroes validados, licoes
+├── short-term/
+│   └── current-task.md      # Tarefa em andamento
+└── daily/
+    └── YYYY-MM-DD.md        # Log diario
+```
+
+Hierarquia de memória:
+
+- **CLAUDE.md** (~50 linhas ativas) = registradores — sempre em contexto
+- **MEMORY.md** (~30 linhas) = cache — índice/ponteiros, sem conteúdo
+- **Vault Obsidian** (ilimitado) = RAM/disco — base de conhecimento persistente
+
+Regras:
+
+- Início de sessão: ler `long-term/architecture.md` e `long-term/gotchas.md`
+- Fim de sessão: atualizar `daily/YYYY-MM-DD.md` e `short-term/current-task.md`
+- Decisões arquiteturais: adicionar em `long-term/decisions-log.md`
+- Nunca poluir vault com outputs temporários — esses ficam em `~/.claude/`
+
+---
+
 ## GESTÃO DE CONTEXTO
 
 - `/compact` quando contexto atingir **70%** — nunca espere 90%
@@ -226,47 +271,50 @@ Nunca: `fix bug` `update` `changes` `wip`
 ## RECURSOS DO PROJETO
 
 ### Skills (invoque com `/nome`)
-| Skill | Quando usar |
-|-------|-------------|
-| `/setup` | Setup inicial completo — execute UMA VEZ |
-| `/new-agent <api>` | Novo coletor (ibge, siconfi, datasus, inep, snis, inpe, pncp) |
-| `/new-ods <1-17>` | Calculator de score para um ODS |
-| `/full-stack <feature>` | Feature completa backend+frontend |
-| `/tdd <feature>` | Red-Green-Refactor rigoroso |
-| `/bug-fix` | Diagnóstico + correção + teste de regressão |
-| `/refactor` | Refatoração segura com cobertura |
-| `/pre-deploy` | Checklist antes de qualquer deploy |
-| `/pr-summary` | Sumário estruturado de PR |
-| `/health-check` | Monitor de saúde (use com `/loop 15m`) |
-| `/morning-briefing` | Standup autônomo diário |
-| `/context-save` | Salva estado antes de `/compact` |
-| `/research <tópico>` | Pesquisa técnica para decisão |
+
+| Skill                   | Quando usar                                                   |
+| ----------------------- | ------------------------------------------------------------- |
+| `/setup`                | Setup inicial completo — execute UMA VEZ                      |
+| `/new-agent <api>`      | Novo coletor (ibge, siconfi, datasus, inep, snis, inpe, pncp) |
+| `/new-ods <1-17>`       | Calculator de score para um ODS                               |
+| `/full-stack <feature>` | Feature completa backend+frontend                             |
+| `/tdd <feature>`        | Red-Green-Refactor rigoroso                                   |
+| `/bug-fix`              | Diagnóstico + correção + teste de regressão                   |
+| `/refactor`             | Refatoração segura com cobertura                              |
+| `/pre-deploy`           | Checklist antes de qualquer deploy                            |
+| `/pr-summary`           | Sumário estruturado de PR                                     |
+| `/health-check`         | Monitor de saúde (use com `/loop 15m`)                        |
+| `/morning-briefing`     | Standup autônomo diário                                       |
+| `/context-save`         | Salva estado antes de `/compact`                              |
+| `/research <tópico>`    | Pesquisa técnica para decisão                                 |
 
 ### Agentes (invoque com: "Use o agente X para...")
-| Tier | Agente | Quando |
-|------|--------|--------|
-| Opus | `orchestrator` | Feature multi-camada — coordena todos |
-| Opus | `backend-architect` | Design de API ou serviço |
-| Opus | `database-architect` | Schema ou migration |
-| Opus | `frontend-architect` | UI complexa |
-| Opus | `security-auditor` | Antes de deploy, auth, dados sensíveis |
-| Opus | `code-reviewer` | Após qualquer feature — contexto limpo |
-| Sonnet | `data-collector` | Implementar/debugar coletor de API gov |
-| Sonnet | `ods-analyst` | Scores e indicadores dos 17 ODS |
-| Sonnet | `api-developer` | Implementar endpoints a partir de specs |
-| Sonnet | `test-writer` | Cobertura de testes |
-| Sonnet | `debugger` | Bug persistente |
-| Sonnet | `docs-writer` | README, documentação de API |
-| Haiku | `devops-engineer` | Docker, CI/CD, infra |
-| Opus | `project-monitor` | Monitoramento continuo, KPIs, coerencia, riscos |
+
+| Tier   | Agente               | Quando                                          |
+| ------ | -------------------- | ----------------------------------------------- |
+| Opus   | `orchestrator`       | Feature multi-camada — coordena todos           |
+| Opus   | `backend-architect`  | Design de API ou serviço                        |
+| Opus   | `database-architect` | Schema ou migration                             |
+| Opus   | `frontend-architect` | UI complexa                                     |
+| Opus   | `security-auditor`   | Antes de deploy, auth, dados sensíveis          |
+| Opus   | `code-reviewer`      | Após qualquer feature — contexto limpo          |
+| Sonnet | `data-collector`     | Implementar/debugar coletor de API gov          |
+| Sonnet | `ods-analyst`        | Scores e indicadores dos 17 ODS                 |
+| Sonnet | `api-developer`      | Implementar endpoints a partir de specs         |
+| Sonnet | `test-writer`        | Cobertura de testes                             |
+| Sonnet | `debugger`           | Bug persistente                                 |
+| Sonnet | `docs-writer`        | README, documentação de API                     |
+| Haiku  | `devops-engineer`    | Docker, CI/CD, infra                            |
+| Opus   | `project-monitor`    | Monitoramento continuo, KPIs, coerencia, riscos |
 
 ### Slash commands
-| Comando | O que faz |
-|---------|-----------|
-| `/plan <feature>` | Protocolo de planejamento documentado |
-| `/checkpoint <desc>` | Commit de segurança |
-| `/state` | Atualiza PROJECT_STATE.md |
-| `/decisions <título>` | Registra ADR |
+
+| Comando               | O que faz                             |
+| --------------------- | ------------------------------------- |
+| `/plan <feature>`     | Protocolo de planejamento documentado |
+| `/checkpoint <desc>`  | Commit de segurança                   |
+| `/state`              | Atualiza PROJECT_STATE.md             |
+| `/decisions <título>` | Registra ADR                          |
 
 ---
 
@@ -290,4 +338,5 @@ Nunca: `fix bug` `update` `changes` `wip`
 4. Reporte: **feito / pendente / próximo passo exato**
 
 ---
-*IOC ESG Municipal v1.0 — 31/03/2026*
+
+_IOC ESG Municipal v1.0 — 31/03/2026_

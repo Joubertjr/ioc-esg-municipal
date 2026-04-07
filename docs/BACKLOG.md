@@ -111,16 +111,17 @@ Atualizado: 2026-04-07
 
 ## Proximas Prioridades
 
-| #   | Item                                                            | Tipo        | Impacto |
-| --- | --------------------------------------------------------------- | ----------- | ------- |
-| 1   | Testes para fases 3-6 (recommendations, onboarding, history)    | Qualidade   | Alto    |
-| 2   | Fix debitos tecnicos (ProtectedRoute cache, simulator tsc)      | Tech debt   | Medio   |
-| 3   | Integracao simulador <-> recomendacoes (auto-preencher cenario) | Feature     | Alto    |
-| 4   | Multi-tenant: isolamento de dados por municipio                 | Seguranca   | Alto    |
-| 5   | Exportar relatorio PDF                                          | Feature     | Medio   |
-| 6   | Dashboard admin (gestao de usuarios, metricas uso)              | Feature     | Medio   |
-| 7   | Notificacoes por email (alertas ODS critico)                    | Feature     | Medio   |
-| 8   | API rate limiting por municipio                                 | Performance | Medio   |
+| #   | Item                                                            | Tipo        | Impacto | Status    |
+| --- | --------------------------------------------------------------- | ----------- | ------- | --------- |
+| 1   | Testes para fases 3-6 (recommendations, onboarding, history)    | Qualidade   | Alto    | Concluido |
+| 2   | Fix debitos tecnicos (ProtectedRoute cache, simulator tsc)      | Tech debt   | Medio   | Concluido |
+| 3   | Memoria longo prazo (Obsidian vault + MCP filesystem server)    | Infra       | Alto    | Concluido |
+| 4   | Integracao simulador <-> recomendacoes (auto-preencher cenario) | Feature     | Alto    | Planejado |
+| 5   | Multi-tenant: isolamento de dados por municipio                 | Seguranca   | Alto    | Planejado |
+| 6   | Exportar relatorio PDF                                          | Feature     | Medio   | Backlog   |
+| 7   | Dashboard admin (gestao de usuarios, metricas uso)              | Feature     | Medio   | Backlog   |
+| 8   | Notificacoes por email (alertas ODS critico)                    | Feature     | Medio   | Backlog   |
+| 9   | API rate limiting por municipio                                 | Performance | Medio   | Backlog   |
 
 ---
 

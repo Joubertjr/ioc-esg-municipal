@@ -1,6 +1,6 @@
 # Estado do Projeto — IOC ESG Municipal
 
-Atualizado: 2026-04-07 — 6 fases completas, 7 paginas frontend, 17/17 ODS, 14 coletores, recomendacoes inteligentes, onboarding, deploy-ready, 885+ testes
+Atualizado: 2026-04-07 — 6 fases completas, 7 paginas frontend, 17/17 ODS, 14 coletores, recomendacoes inteligentes, onboarding, deploy-ready, 918+ testes, Obsidian vault integrado
 
 ## Status geral
 
@@ -95,6 +95,8 @@ Atualizado: 2026-04-07 — 6 fases completas, 7 paginas frontend, 17/17 ODS, 14 
 - GitHub Actions: CI (lint+test+build) + Docker build GHCR + Deploy SSH
 - Redis cache com TTL por fonte
 - Graceful shutdown
+- Obsidian vault (~/obsidian-vault/ioc-esg-municipal/) + MCP filesystem server
+- Memoria de longo prazo: architecture, decisions, gotchas, lessons-learned
 
 ---
 
@@ -108,12 +110,13 @@ Atualizado: 2026-04-07 — 6 fases completas, 7 paginas frontend, 17/17 ODS, 14 
 
 ## Proximos passos (ver docs/BACKLOG.md)
 
-1. Testes para fases 3-6
-2. Fix debitos tecnicos
-3. Integracao simulador <-> recomendacoes
-4. Multi-tenant
-5. Exportar PDF
-6. Dashboard admin
+1. ~~Testes para fases 3-6~~ — Concluido (33 novos testes)
+2. ~~Fix debitos tecnicos~~ — Concluido (AuthContext + simulator tsc)
+3. ~~Memoria longo prazo (Obsidian)~~ — Concluido
+4. Integracao simulador <-> recomendacoes
+5. Multi-tenant
+6. Exportar PDF
+7. Dashboard admin
 
 ---
 
