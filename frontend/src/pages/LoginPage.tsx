@@ -29,8 +29,7 @@ export function LoginPage() {
           await register(name.trim(), email, password);
         }
       } catch (err) {
-        const message =
-          err instanceof Error ? err.message : "Erro ao autenticar.";
+        const message = err instanceof Error ? err.message : "Erro ao autenticar.";
         setErrorMessage(message);
       } finally {
         setIsSubmitting(false);
@@ -52,16 +51,12 @@ export function LoginPage() {
       {/* Branding */}
       <div className="mb-8 text-center">
         <div className="inline-flex items-center gap-2 mb-2">
-          <span className="text-2xl font-bold text-gray-900">
-            IOC ESG Municipal
-          </span>
+          <span className="text-2xl font-bold text-gray-900">IOC ESG Municipal</span>
           <span className="px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-700">
             SC
           </span>
         </div>
-        <p className="text-sm text-gray-500">
-          Plataforma de Gestao ESG para Municipios
-        </p>
+        <p className="text-sm text-gray-500">Plataforma de Gestão ESG para Municípios</p>
       </div>
 
       {/* Card */}
@@ -79,10 +74,7 @@ export function LoginPage() {
         <form onSubmit={handleSubmit} noValidate className="space-y-4">
           {mode === "register" && (
             <div>
-              <label
-                htmlFor="name"
-                className="block text-sm font-medium text-gray-700 mb-1"
-              >
+              <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
                 Nome completo
               </label>
               <input
@@ -92,17 +84,14 @@ export function LoginPage() {
                 required
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder="Ex: Joao da Silva"
+                placeholder="Ex: João da Silva"
                 className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
             </div>
           )}
 
           <div>
-            <label
-              htmlFor="email"
-              className="block text-sm font-medium text-gray-700 mb-1"
-            >
+            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
               E-mail
             </label>
             <input
@@ -118,18 +107,13 @@ export function LoginPage() {
           </div>
 
           <div>
-            <label
-              htmlFor="password"
-              className="block text-sm font-medium text-gray-700 mb-1"
-            >
+            <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
               Senha
             </label>
             <input
               id="password"
               type="password"
-              autoComplete={
-                mode === "login" ? "current-password" : "new-password"
-              }
+              autoComplete={mode === "login" ? "current-password" : "new-password"}
               required
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -145,15 +129,22 @@ export function LoginPage() {
           >
             {isSubmitting && (
               <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                />
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                />
               </svg>
             )}
-            {isSubmitting
-              ? "Aguarde..."
-              : mode === "login"
-                ? "Entrar"
-                : "Criar conta"}
+            {isSubmitting ? "Aguarde..." : mode === "login" ? "Entrar" : "Criar conta"}
           </button>
         </form>
 
@@ -163,16 +154,14 @@ export function LoginPage() {
             onClick={toggleMode}
             className="text-sm text-blue-600 hover:text-blue-700 font-medium transition-colors"
           >
-            {mode === "login"
-              ? "Nao tem conta? Cadastre-se"
-              : "Ja tem conta? Entrar"}
+            {mode === "login" ? "Não tem conta? Cadastre-se" : "Já tem conta? Entrar"}
           </button>
         </div>
       </div>
 
       {/* Footer */}
       <p className="mt-8 text-xs text-gray-400 text-center">
-        Dados publicos. Transparencia total. Conforme Lei 14.133/2021.
+        Dados públicos. Transparência total. Conforme Lei 14.133/2021.
       </p>
     </div>
   );

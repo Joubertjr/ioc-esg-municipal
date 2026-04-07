@@ -55,14 +55,14 @@ export type InvestmentArea =
   | "governance";
 
 export const INVESTMENT_AREA_LABELS: Record<InvestmentArea, string> = {
-  education: "Educacao",
-  health: "Saude",
+  education: "Educação",
+  health: "Saúde",
   sanitation: "Saneamento",
   environment: "Meio Ambiente",
-  security: "Seguranca",
+  security: "Segurança",
   energy: "Energia",
-  urbanization: "Urbanizacao",
-  governance: "Governanca",
+  urbanization: "Urbanização",
+  governance: "Governança",
 };
 
 export type InvestmentAllocation = Record<InvestmentArea, number>;

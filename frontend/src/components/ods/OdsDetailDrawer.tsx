@@ -1,20 +1,18 @@
-import { useEffect } from "react";
-import type { OdsSummary, OdsStatus } from "../../types/api";
+import { useEffect, useRef } from "react";
+import type { OdsSummary } from "../../types/api";
+import { ODS_DESCRIPTIONS } from "../../../../shared/constants/ods-descriptions";
+import { IndicatorRow } from "./IndicatorRow";
 
 interface OdsDetailDrawerProps {
   ods: OdsSummary | null;
   onClose: () => void;
 }
 
-const STATUS_DOT: Record<OdsStatus, string> = {
-  verde: "bg-green-500",
-  amarelo: "bg-amber-400",
-  vermelho: "bg-red-500",
-};
-
 export function OdsDetailDrawer({ ods, onClose }: OdsDetailDrawerProps) {
   const isOpen = ods !== null;
+  const drawerRef = useRef<HTMLDivElement>(null);
 
+  // Fecha com ESC
   useEffect(() => {
     function handleKey(e: KeyboardEvent) {
       if (e.key === "Escape") onClose();
@@ -23,105 +21,145 @@ export function OdsDetailDrawer({ ods, onClose }: OdsDetailDrawerProps) {
     return () => document.removeEventListener("keydown", handleKey);
   }, [isOpen, onClose]);
 
+  // Foca o primeiro elemento interativo ao abrir (acessibilidade WCAG 2.1 — 2.4.3)
+  useEffect(() => {
+    if (!isOpen || !drawerRef.current) return;
+    const focusable = drawerRef.current.querySelectorAll<HTMLElement>(
+      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
+    );
+    if (focusable.length > 0) focusable[0].focus();
+  }, [isOpen]);
+
+  // Armadilha de foco: mantém o Tab dentro do drawer enquanto aberto
+  useEffect(() => {
+    if (!isOpen || !drawerRef.current) return;
+    const el = drawerRef.current;
+
+    function handleTab(e: KeyboardEvent) {
+      if (e.key !== "Tab") return;
+      const focusable = Array.from(
+        el.querySelectorAll<HTMLElement>(
+          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
+        ),
+      ).filter((node) => !node.hasAttribute("disabled"));
+      if (focusable.length === 0) return;
+
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      const active = document.activeElement as HTMLElement;
+
+      if (e.shiftKey) {
+        if (active === first) {
+          e.preventDefault();
+          last.focus();
+        }
+      } else {
+        if (active === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
+    }
+
+    document.addEventListener("keydown", handleTab);
+    return () => document.removeEventListener("keydown", handleTab);
+  }, [isOpen]);
+
+  const desc = ods ? ODS_DESCRIPTIONS[ods.odsNumber] : null;
+  const updatedLabel = new Date().toLocaleDateString("pt-BR", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  });
+
   return (
     <>
-      {/* Backdrop */}
+      {/* Fundo escuro — oculto para leitores de tela */}
       <div
+        aria-hidden="true"
         className={`fixed inset-0 bg-black/30 z-40 transition-opacity duration-300 ${
           isOpen ? "opacity-100" : "opacity-0 pointer-events-none"
         }`}
         onClick={onClose}
       />
 
-      {/* Drawer */}
+      {/* Painel lateral */}
       <div
-        className={`fixed inset-y-0 right-0 w-96 max-w-full bg-white shadow-2xl z-50 transition-transform duration-300 ${
+        ref={drawerRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="drawer-title"
+        className={`fixed inset-y-0 right-0 w-96 max-w-full bg-white shadow-2xl z-50 transition-transform duration-300 flex flex-col ${
           isOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
         {ods && (
           <>
-            {/* Header */}
-            <div
-              className="px-6 py-4 text-white"
-              style={{ backgroundColor: ods.color }}
-            >
-              <div className="flex items-center justify-between">
-                <div>
-                  <span className="text-sm font-medium opacity-80">
-                    ODS {ods.odsNumber}
-                  </span>
-                  <h2 className="text-lg font-bold">{ods.name}</h2>
+            {/* Cabeçalho colorido com o número do ODS */}
+            <div className="px-6 py-4 text-white shrink-0" style={{ backgroundColor: ods.color }}>
+              <div className="flex items-start justify-between gap-2">
+                <div className="flex-1 min-w-0">
+                  <span className="text-sm font-medium opacity-80">ODS {ods.odsNumber}</span>
+                  <h2 id="drawer-title" className="text-lg font-bold leading-snug">
+                    {ods.name}
+                  </h2>
                 </div>
                 <button
                   onClick={onClose}
-                  className="w-8 h-8 flex items-center justify-center rounded-full bg-white/20 hover:bg-white/30 transition-colors"
+                  aria-label="Fechar painel"
+                  className="shrink-0 w-8 h-8 flex items-center justify-center rounded-full bg-white/20 hover:bg-white/30 focus:outline-none focus:ring-2 focus:ring-white/60 transition-colors"
                 >
-                  <span className="text-lg leading-none">&times;</span>
+                  <span className="text-lg leading-none" aria-hidden="true">
+                    &times;
+                  </span>
                 </button>
               </div>
+
+              {/* Score global do ODS */}
               {ods.score !== null && (
-                <div className="mt-2 flex items-center gap-3">
-                  <span className="text-3xl font-bold">{ods.score}</span>
-                  <span className="text-sm opacity-80">/ 100</span>
+                <div className="mt-2 flex items-baseline gap-1">
+                  <span className="text-3xl font-bold tabular-nums">{ods.score}</span>
+                  <span className="text-sm opacity-80">/100</span>
                 </div>
+              )}
+
+              {/* Descrição oficial */}
+              {desc && (
+                <p className="mt-2 text-sm opacity-90 leading-relaxed">{desc.description}</p>
               )}
             </div>
 
-            {/* Content */}
-            <div className="px-6 py-4 overflow-y-auto" style={{ maxHeight: "calc(100vh - 140px)" }}>
+            {/* Chamada de destaque: Meta 2030 */}
+            {desc && (
+              <div className="mx-6 mt-4 p-3 bg-blue-50 rounded-lg border border-blue-100 shrink-0">
+                <p className="text-xs font-semibold text-blue-700 mb-1">Meta 2030</p>
+                <p className="text-xs text-blue-600 leading-relaxed">{desc.meta2030}</p>
+              </div>
+            )}
+
+            {/* Lista de indicadores */}
+            <div className="px-6 py-4 overflow-y-auto flex-1">
+              <h3 className="text-sm font-semibold text-gray-700 mb-3">
+                Indicadores ({ods.indicators.length})
+              </h3>
+
               {ods.indicators.length === 0 ? (
                 <p className="text-gray-500 text-sm italic">
-                  Nenhum indicador disponivel para este ODS.
+                  Nenhum indicador disponível para este ODS neste município.
                 </p>
               ) : (
-                <table className="w-full text-sm">
-                  <thead>
-                    <tr className="text-left text-gray-500 border-b">
-                      <th className="pb-2 font-medium">Indicador</th>
-                      <th className="pb-2 font-medium text-right">Score</th>
-                      <th className="pb-2 font-medium text-center">Status</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {ods.indicators.map((ind) => (
-                      <tr key={ind.id} className="border-b border-gray-100">
-                        <td className="py-3">
-                          <div className="font-medium text-gray-900">
-                            {ind.indicatorName.replace(/_/g, " ")}
-                          </div>
-                          <div className="text-xs text-gray-400 mt-0.5">
-                            {ind.source.toUpperCase()} &middot; {ind.referenceYear}
-                          </div>
-                          {ind.value !== null && (
-                            <div className="text-xs text-gray-500 mt-0.5">
-                              Valor: {typeof ind.value === "number" ? ind.value.toLocaleString("pt-BR") : ind.value}
-                            </div>
-                          )}
-                        </td>
-                        <td className="py-3 text-right font-mono font-bold text-gray-900">
-                          {ind.score !== null ? ind.score : "—"}
-                        </td>
-                        <td className="py-3 text-center">
-                          {ind.status ? (
-                            <span
-                              className={`inline-block w-3 h-3 rounded-full ${STATUS_DOT[ind.status]}`}
-                            />
-                          ) : (
-                            <span className="text-gray-300">—</span>
-                          )}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+                ods.indicators.map((ind) => (
+                  <IndicatorRow key={ind.id} indicator={ind} odsNumber={ods.odsNumber} />
+                ))
               )}
+            </div>
 
+            {/* Rodapé: fontes e data de atualização */}
+            <div className="px-6 py-3 border-t border-gray-100 text-xs text-gray-400 shrink-0">
               {ods.sources.length > 0 && (
-                <div className="mt-4 pt-4 border-t text-xs text-gray-400">
-                  Fontes: {ods.sources.map((s) => s.toUpperCase()).join(", ")}
-                </div>
+                <p>Fontes: {ods.sources.map((s) => s.toUpperCase()).join(", ")}</p>
               )}
+              <p className="mt-1">Atualizado em {updatedLabel}</p>
             </div>
           </>
         )}

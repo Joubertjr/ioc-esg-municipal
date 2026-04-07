@@ -4,29 +4,29 @@ import { AppShell } from "../components/layout/AppShell";
 import { useToast } from "../components/ui/Toast";
 import type { OdsSummary, OdsStatus } from "../types/api";
 
-const DEFAULT_IBGE_CODE = "4205407"; // Florianopolis
+const DEFAULT_IBGE_CODE = "4205407"; // Florianópolis
 const DEFAULT_TARGET = 70;
 
 type SortKey = "odsNumber" | "scoreAsc" | "gapDesc";
 type FilterStatus = "all" | OdsStatus;
 
 const ODS_SHORT_NAMES: Record<number, string> = {
-  1: "Erradicacao da Pobreza",
+  1: "Erradicação da Pobreza",
   2: "Fome Zero",
-  3: "Saude e Bem-Estar",
-  4: "Educacao de Qualidade",
-  5: "Igualdade de Genero",
-  6: "Agua e Saneamento",
+  3: "Saúde e Bem-Estar",
+  4: "Educação de Qualidade",
+  5: "Igualdade de Gênero",
+  6: "Água e Saneamento",
   7: "Energia Limpa",
   8: "Trabalho Decente",
-  9: "Industria e Inovacao",
-  10: "Reducao de Desigualdades",
-  11: "Cidades Sustentaveis",
-  12: "Consumo Responsavel",
-  13: "Acao Climatica",
-  14: "Vida na Agua",
+  9: "Indústria e Inovação",
+  10: "Redução de Desigualdades",
+  11: "Cidades Sustentáveis",
+  12: "Consumo Responsável",
+  13: "Ação Climática",
+  14: "Vida na Água",
   15: "Vida Terrestre",
-  16: "Paz e Justica",
+  16: "Paz e Justiça",
   17: "Parcerias",
 };
 
@@ -60,7 +60,9 @@ function StatusBadge({ status }: { status: OdsStatus | null }) {
   };
   const { bg, dot, label } = map[status];
   return (
-    <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium ${bg}`}>
+    <span
+      className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium ${bg}`}
+    >
       <span className={`w-1.5 h-1.5 rounded-full ${dot}`} />
       {label}
     </span>
@@ -160,10 +162,34 @@ function SummaryStats({
   total: number;
 }) {
   const items = [
-    { label: "Verde (meta atingida)", value: verde, color: "text-green-700", bg: "bg-green-100", bar: "bg-green-500" },
-    { label: "Amarelo (atencao)", value: amarelo, color: "text-amber-700", bg: "bg-amber-100", bar: "bg-amber-400" },
-    { label: "Vermelho (critico)", value: vermelho, color: "text-red-700", bg: "bg-red-100", bar: "bg-red-500" },
-    { label: "Sem dados", value: noData, color: "text-gray-600", bg: "bg-gray-100", bar: "bg-gray-300" },
+    {
+      label: "Verde (meta atingida)",
+      value: verde,
+      color: "text-green-700",
+      bg: "bg-green-100",
+      bar: "bg-green-500",
+    },
+    {
+      label: "Amarelo (atenção)",
+      value: amarelo,
+      color: "text-amber-700",
+      bg: "bg-amber-100",
+      bar: "bg-amber-400",
+    },
+    {
+      label: "Vermelho (crítico)",
+      value: vermelho,
+      color: "text-red-700",
+      bg: "bg-red-100",
+      bar: "bg-red-500",
+    },
+    {
+      label: "Sem dados",
+      value: noData,
+      color: "text-gray-600",
+      bg: "bg-gray-100",
+      bar: "bg-gray-300",
+    },
   ];
 
   return (
@@ -248,9 +274,9 @@ export function MonitoringPage() {
   ];
 
   const SORT_OPTIONS: { value: SortKey; label: string }[] = [
-    { value: "odsNumber", label: "Numero ODS" },
+    { value: "odsNumber", label: "Número ODS" },
     { value: "scoreAsc", label: "Menor score" },
-    { value: "gapDesc", label: "Maior gap" },
+    { value: "gapDesc", label: "Mais urgente" },
   ];
 
   return (
@@ -264,7 +290,8 @@ export function MonitoringPage() {
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Monitoramento de Metas ODS</h1>
           <p className="text-sm text-gray-500 mt-1">
-            Acompanhe o progresso do municipio em cada um dos 17 Objetivos de Desenvolvimento Sustentavel.
+            Acompanhe o progresso do município em cada um dos 17 Objetivos de Desenvolvimento
+            Sustentável.
           </p>
         </div>
 
@@ -273,7 +300,7 @@ export function MonitoringPage() {
             <div>
               <p className="text-sm font-medium text-red-800">Erro ao carregar dados ODS</p>
               <p className="text-xs text-red-600 mt-1">
-                {error?.message ?? "Verifique se o servidor esta rodando."}
+                {error?.message ?? "Verifique se o servidor está rodando."}
               </p>
             </div>
             <button
@@ -311,15 +338,27 @@ export function MonitoringPage() {
                 Meta de score
               </label>
               <div className="flex items-center gap-3">
-                <input
-                  type="range"
-                  min={40}
-                  max={100}
-                  step={5}
-                  value={target}
-                  onChange={(e) => setTarget(parseInt(e.target.value, 10))}
-                  className="flex-1 accent-blue-600"
-                />
+                <div className="relative flex-1">
+                  <input
+                    type="range"
+                    min={40}
+                    max={100}
+                    step={5}
+                    value={target}
+                    onChange={(e) => setTarget(parseInt(e.target.value, 10))}
+                    className="w-full accent-blue-600"
+                    aria-label={`Meta de score: ${target}`}
+                  />
+                  {/* Tooltip label above thumb */}
+                  <div
+                    className="absolute -top-6 text-xs font-bold text-blue-700 tabular-nums pointer-events-none"
+                    style={{
+                      left: `calc(${((target - 40) / (100 - 40)) * 100}% - 12px)`,
+                    }}
+                  >
+                    {target}
+                  </div>
+                </div>
                 <span className="text-sm font-bold text-blue-700 tabular-nums w-8 text-right">
                   {target}
                 </span>
@@ -378,18 +417,29 @@ export function MonitoringPage() {
           </div>
         ) : filteredAndSorted.length === 0 ? (
           <div className="text-center py-16 text-gray-400">
-            <svg className="w-12 h-12 mx-auto mb-3 opacity-40" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+            <svg
+              className="w-12 h-12 mx-auto mb-3 opacity-40"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={1.5}
+                d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+              />
             </svg>
-            {report
-              ? <p className="text-sm">Nenhum ODS encontrado com o filtro selecionado.</p>
-              : (
-                <>
-                  <p className="text-sm">Nenhuma meta cadastrada</p>
-                  <p className="text-xs mt-1">Selecione um municipio para ver o monitoramento de metas ODS.</p>
-                </>
-              )
-            }
+            {report ? (
+              <p className="text-sm">Nenhum ODS encontrado com o filtro selecionado.</p>
+            ) : (
+              <>
+                <p className="text-sm">Nenhuma meta cadastrada</p>
+                <p className="text-xs mt-1">
+                  Selecione um município para ver o monitoramento de metas ODS.
+                </p>
+              </>
+            )}
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -399,13 +449,21 @@ export function MonitoringPage() {
           </div>
         )}
 
-        {/* Legend */}
-        {!isLoading && filteredAndSorted.length > 0 && (
-          <p className="text-xs text-gray-400 text-center">
-            A linha vertical nas barras de progresso indica a meta configurada ({target} pontos).
-            Score ≥ 70 = Verde | Score 40–69 = Amarelo | Score &lt; 40 = Vermelho.
-          </p>
-        )}
+        {/* Legenda permanente de status */}
+        <div className="flex items-center justify-center gap-6 py-3 text-xs text-gray-500">
+          <span className="flex items-center gap-1.5">
+            <span className="w-3 h-3 rounded-full bg-green-500 shrink-0" />
+            Verde (≥70)
+          </span>
+          <span className="flex items-center gap-1.5">
+            <span className="w-3 h-3 rounded-full bg-amber-400 shrink-0" />
+            Amarelo (40-69)
+          </span>
+          <span className="flex items-center gap-1.5">
+            <span className="w-3 h-3 rounded-full bg-red-500 shrink-0" />
+            Vermelho (&lt;40)
+          </span>
+        </div>
       </div>
     </AppShell>
   );
