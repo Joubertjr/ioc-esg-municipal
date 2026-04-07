@@ -181,3 +181,49 @@ export interface CompareResult {
   benchmark: BenchmarkResult;
   comparison: OdsComparisonEntry[];
 }
+
+// ---- History ----
+
+export interface OdsScoreRecord {
+  id: string;
+  municipalityId: string;
+  odsNumber: number;
+  score: number | null;
+  status: OdsStatus | null;
+  indicatorCount: number;
+  referenceYear: number;
+  calculatedAt: string;
+  sources: string[];
+}
+
+export interface OdsHistoryResponse {
+  ibgeCode: string;
+  total: number;
+  history: OdsScoreRecord[];
+}
+
+// ---- Recommendations ----
+
+export interface SmartRecommendation {
+  odsNumber: number;
+  odsName: string;
+  priority: "critica" | "alta" | "media";
+  currentScore: number;
+  stateAverage: number | null;
+  gap: number | null;
+  ranking: string;
+  actions: string[];
+  investmentArea: string;
+  estimatedImpact: string;
+}
+
+export interface RecommendationReport {
+  ibgeCode: string;
+  municipalityName: string | null;
+  generatedAt: string;
+  totalRecommendations: number;
+  criticalCount: number;
+  summary: string;
+  recommendations: SmartRecommendation[];
+  strengths: Array<{ odsNumber: number; odsName: string; score: number }>;
+}

@@ -1,17 +1,29 @@
+version: "3.8"
+
+# =============================================================================
+# IOC ESG Municipal — Docker Compose DESENVOLVIMENTO LOCAL
+# =============================================================================
+# USO:
+#   docker compose up -d
+#
+# Inicia apenas PostgreSQL e Redis. O backend e frontend rodam localmente
+# via pnpm dev (backend :3000 + frontend :5173).
+# =============================================================================
+
 services:
   postgres:
     image: postgres:15-alpine
     container_name: ioc_postgres
     environment:
-      POSTGRES_USER: ${DATABASE_USER:-postgres}
-      POSTGRES_PASSWORD: ${DATABASE_PASSWORD:-postgres}
-      POSTGRES_DB: ${DATABASE_NAME:-ioc_esg_municipal}
+      POSTGRES_USER: ioc
+      POSTGRES_PASSWORD: ioc_dev_2026
+      POSTGRES_DB: ioc_esg
     ports:
-      - "127.0.0.1:5432:5432"
+      - "5432:5432"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - pgdata:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      test: ["CMD-SHELL", "pg_isready -U ioc -d ioc_esg"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -19,66 +31,16 @@ services:
   redis:
     image: redis:7-alpine
     container_name: ioc_redis
-    command: >
-      sh -c "if [ -n \"$$REDIS_PASSWORD\" ]; then
-               redis-server --requirepass $$REDIS_PASSWORD;
-             else
-               redis-server;
-             fi"
-    environment:
-      REDIS_PASSWORD: ${REDIS_PASSWORD:-}
     ports:
-      - "127.0.0.1:6379:6379"
+      - "6379:6379"
     volumes:
-      - redis_data:/data
+      - redisdata:/data
     healthcheck:
-      test:
-        - "CMD-SHELL"
-        - >
-          if [ -n "$$REDIS_PASSWORD" ]; then
-            redis-cli -a "$$REDIS_PASSWORD" ping;
-          else
-            redis-cli ping;
-          fi
+      test: ["CMD", "redis-cli", "ping"]
       interval: 10s
       timeout: 5s
       retries: 5
 
-  api:
-    build: .
-    container_name: ioc_api
-    ports:
-      - "3000:3000"
-    environment:
-      - DATABASE_URL=postgresql://${DATABASE_USER:-postgres}:${DATABASE_PASSWORD:-postgres}@postgres:5432/${DATABASE_NAME:-ioc_esg_municipal}?schema=public
-      - REDIS_URL=redis://redis:6379
-      - JWT_SECRET=${JWT_SECRET:-dev-secret-change-me}
-      - JWT_EXPIRATION=${JWT_EXPIRATION:-1d}
-      - NODE_ENV=${NODE_ENV:-development}
-      - PORT=3000
-      - ALLOWED_ORIGINS=${ALLOWED_ORIGINS:-http://localhost:3000,http://localhost:5173}
-      - LOG_LEVEL=${LOG_LEVEL:-info}
-    depends_on:
-      postgres:
-        condition: service_healthy
-      redis:
-        condition: service_started
-    healthcheck:
-      test: ["CMD", "wget", "-qO-", "http://localhost:3000/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 60s
-    restart: unless-stopped
-
-  adminer:
-    image: adminer:latest
-    container_name: ioc_adminer
-    ports:
-      - "127.0.0.1:8080:8080"
-    depends_on:
-      - postgres
-
 volumes:
-  postgres_data:
-  redis_data:
+  pgdata:
+  redisdata:

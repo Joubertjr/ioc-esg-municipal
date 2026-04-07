@@ -1,8 +1,9 @@
 import { useState, useMemo, useEffect } from "react";
 import { useOdsReport } from "../hooks/useOdsReport";
+import { useOdsHistory } from "../hooks/useOdsHistory";
 import { AppShell } from "../components/layout/AppShell";
 import { useToast } from "../components/ui/Toast";
-import type { OdsSummary, OdsStatus } from "../types/api";
+import type { OdsSummary, OdsStatus, OdsScoreRecord } from "../types/api";
 
 const DEFAULT_IBGE_CODE = "4205407"; // Florianópolis
 const DEFAULT_TARGET = 70;
@@ -85,12 +86,46 @@ function GapBadge({ gap }: { gap: number | null }) {
   );
 }
 
+type TrendDirection = "up" | "down" | "neutral";
+
+function TrendBadge({ trend }: { trend: TrendDirection }) {
+  if (trend === "up") {
+    return (
+      <span
+        className="text-xs font-bold text-green-600 bg-green-50 px-1.5 py-0.5 rounded"
+        title="Tendencia de alta"
+      >
+        ↑
+      </span>
+    );
+  }
+  if (trend === "down") {
+    return (
+      <span
+        className="text-xs font-bold text-red-600 bg-red-50 px-1.5 py-0.5 rounded"
+        title="Tendencia de queda"
+      >
+        ↓
+      </span>
+    );
+  }
+  return (
+    <span
+      className="text-xs font-bold text-gray-400 bg-gray-50 px-1.5 py-0.5 rounded"
+      title="Sem variacao"
+    >
+      →
+    </span>
+  );
+}
+
 interface OdsRowProps {
   ods: OdsSummary;
   target: number;
+  trend: TrendDirection;
 }
 
-function OdsRow({ ods, target }: OdsRowProps) {
+function OdsRow({ ods, target, trend }: OdsRowProps) {
   const gap = ods.score !== null ? target - ods.score : null;
   const pct = ods.score !== null ? Math.min(100, Math.max(0, ods.score)) : 0;
   const targetPct = Math.min(100, Math.max(0, target));
@@ -137,6 +172,9 @@ function OdsRow({ ods, target }: OdsRowProps) {
             <span className={`text-sm font-semibold tabular-nums ${scoreColor(ods.score)}`}>
               {ods.score !== null ? ods.score.toFixed(1) : "—"}
               <span className="text-xs font-normal text-gray-400 ml-1">atual</span>
+              <span className="ml-2">
+                <TrendBadge trend={trend} />
+              </span>
             </span>
             <span className="text-xs text-gray-400">
               Meta: <span className="font-medium text-gray-600">{target}</span>
@@ -217,6 +255,7 @@ export function MonitoringPage() {
   const [sortKey, setSortKey] = useState<SortKey>("odsNumber");
 
   const { data: report, isLoading, isError, error, refetch } = useOdsReport(ibgeCode);
+  const { data: historyData } = useOdsHistory(ibgeCode);
   const { showToast } = useToast();
 
   useEffect(() => {
@@ -234,6 +273,48 @@ export function MonitoringPage() {
       noData: report.odsCount.total - report.odsCount.withData,
     };
   }, [report]);
+
+  // Build a map of odsNumber -> TrendDirection based on last two available years
+  const trendByOds = useMemo((): Map<number, TrendDirection> => {
+    const map = new Map<number, TrendDirection>();
+    if (!historyData?.history) return map;
+
+    // Group records by odsNumber
+    const byOds = new Map<number, OdsScoreRecord[]>();
+    for (const record of historyData.history) {
+      const existing = byOds.get(record.odsNumber);
+      if (existing) {
+        existing.push(record);
+      } else {
+        byOds.set(record.odsNumber, [record]);
+      }
+    }
+
+    for (const [odsNumber, records] of byOds.entries()) {
+      const sorted = records
+        .filter((r) => r.score !== null)
+        .sort((a, b) => b.referenceYear - a.referenceYear);
+
+      if (sorted.length < 2) {
+        map.set(odsNumber, "neutral");
+        continue;
+      }
+
+      const latest = sorted[0].score as number;
+      const previous = sorted[1].score as number;
+      const delta = latest - previous;
+
+      if (delta > 0.05) {
+        map.set(odsNumber, "up");
+      } else if (delta < -0.05) {
+        map.set(odsNumber, "down");
+      } else {
+        map.set(odsNumber, "neutral");
+      }
+    }
+
+    return map;
+  }, [historyData]);
 
   const filteredAndSorted = useMemo(() => {
     if (!report) return [];
@@ -444,7 +525,12 @@ export function MonitoringPage() {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             {filteredAndSorted.map((ods) => (
-              <OdsRow key={ods.odsNumber} ods={ods} target={target} />
+              <OdsRow
+                key={ods.odsNumber}
+                ods={ods}
+                target={target}
+                trend={trendByOds.get(ods.odsNumber) ?? "neutral"}
+              />
             ))}
           </div>
         )}

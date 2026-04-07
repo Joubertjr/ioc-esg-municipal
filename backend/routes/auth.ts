@@ -221,4 +221,53 @@ router.get("/me", authenticateToken, async (req: Request, res: Response) => {
   }
 });
 
+// ─── PATCH /api/auth/me ───────────────────────────────────────────────────────
+
+const UpdateMeSchema = z.object({
+  municipalityId: z.string().min(1, "municipalityId é obrigatório"),
+});
+
+/**
+ * Atualiza o município do usuário autenticado.
+ * Usado no fluxo de onboarding após o primeiro login/registro.
+ */
+router.patch("/me", authenticateToken, async (req: Request, res: Response) => {
+  const userId = req.user!.sub;
+  logger.info("PATCH /api/auth/me", { userId });
+
+  const parsed = UpdateMeSchema.safeParse(req.body);
+  if (!parsed.success) {
+    const errors = parsed.error.flatten().fieldErrors;
+    res.status(400).json({ error: "Dados inválidos", details: errors });
+    return;
+  }
+
+  const { municipalityId } = parsed.data;
+
+  try {
+    const user = await prisma.user.update({
+      where: { id: userId },
+      data: { municipalityId },
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        role: true,
+        municipalityId: true,
+        createdAt: true,
+      },
+    });
+
+    logger.info("municipalityId atualizado com sucesso", { userId, municipalityId });
+    res.json({ user });
+  } catch (err) {
+    logger.error("Erro ao atualizar município do usuário", {
+      userId,
+      municipalityId,
+      error: err instanceof Error ? err.message : String(err),
+    });
+    res.status(500).json({ error: "Erro interno ao atualizar município" });
+  }
+});
+
 export default router;

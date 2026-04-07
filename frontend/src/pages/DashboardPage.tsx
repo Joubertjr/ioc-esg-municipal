@@ -6,6 +6,8 @@ import { CoverageSummary } from "../components/ods/CoverageSummary";
 import { OdsCard, OdsCardSkeleton } from "../components/ods/OdsCard";
 import { OdsDetailDrawer } from "../components/ods/OdsDetailDrawer";
 import { OdsRadarChart } from "../components/charts/OdsRadarChart";
+import { OdsHistoryChart } from "../components/charts/OdsHistoryChart";
+import { RecommendationPanel } from "../components/recommendations/RecommendationPanel";
 import { useToast } from "../components/ui/Toast";
 import type { OdsSummary } from "../types/api";
 
@@ -73,6 +75,11 @@ export function DashboardPage() {
           <div className="flex-1 min-w-0">
             <OdsRadarChart ods={report?.ods ?? []} isLoading={isLoading} />
           </div>
+        </section>
+
+        {/* Historical ESG Score Chart */}
+        <section className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+          <OdsHistoryChart ibgeCode={ibgeCode} />
         </section>
 
         {/* ODS Grid */}
@@ -156,6 +163,11 @@ export function DashboardPage() {
               <span>Vermelho — score &lt; 40</span>
             </span>
           </div>
+        </section>
+
+        {/* Smart Recommendations */}
+        <section className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+          <RecommendationPanel ibgeCode={ibgeCode} />
         </section>
       </div>
 

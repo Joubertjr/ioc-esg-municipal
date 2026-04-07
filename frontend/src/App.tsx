@@ -22,6 +22,9 @@ const MonitoringPage = lazy(() =>
 const BenchmarkPage = lazy(() =>
   import("./pages/BenchmarkPage").then((m) => ({ default: m.BenchmarkPage })),
 );
+const OnboardingPage = lazy(() =>
+  import("./pages/OnboardingPage").then((m) => ({ default: m.OnboardingPage })),
+);
 
 function PageLoader() {
   return (
@@ -55,6 +58,16 @@ export function App() {
               <Routes>
                 {/* Public */}
                 <Route path="/login" element={<LoginPage />} />
+
+                {/* Onboarding — protegido mas sem município obrigatório */}
+                <Route
+                  path="/onboarding"
+                  element={
+                    <ProtectedRoute>
+                      <OnboardingPage />
+                    </ProtectedRoute>
+                  }
+                />
 
                 {/* Protected */}
                 <Route

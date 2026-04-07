@@ -1,0 +1,129 @@
+name: Deploy — Produção
+
+# ─── Triggers ─────────────────────────────────────────────────────────────────
+# Dispara automaticamente após o docker-build.yml concluir com sucesso na branch main.
+# Também pode ser disparado manualmente para redeployar uma imagem já publicada.
+
+on:
+  workflow_run:
+    workflows: ["Docker — Build & Publish"]
+    types:
+      - completed
+    branches:
+      - main
+
+  workflow_dispatch:
+    inputs:
+      image_tag:
+        description: "Tag da imagem a deployar (ex: abc1234 ou latest)"
+        required: false
+        default: "latest"
+        type: string
+
+# Apenas um deploy por vez — cancela o anterior se ainda estiver rodando
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Deploy no servidor de produção
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    # Executa apenas se o workflow_run concluiu com sucesso,
+    # OU se foi disparado manualmente (workflow_dispatch).
+    if: >
+      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success')
+
+    environment:
+      name: production
+      url: https://${{ secrets.DEPLOY_HOST }}
+
+    steps:
+      - name: Checkout (para obter commit SHA)
+        uses: actions/checkout@v4
+
+      - name: Determinar IMAGE_TAG
+        id: tag
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            TAG="${{ github.event.inputs.image_tag }}"
+          else
+            # Usa o SHA curto do commit que disparou o docker-build
+            TAG=$(echo "${{ github.event.workflow_run.head_sha }}" | cut -c1-7)
+          fi
+          echo "tag=${TAG}" >> "$GITHUB_OUTPUT"
+          echo "Deploying tag: ${TAG}"
+
+      - name: Configurar SSH agent
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.DEPLOY_SSH_KEY }}
+
+      - name: Adicionar host ao known_hosts
+        run: |
+          ssh-keyscan -H "${{ secrets.DEPLOY_HOST }}" >> ~/.ssh/known_hosts
+
+      - name: Deploy via SSH
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+          IMAGE_TAG: ${{ steps.tag.outputs.tag }}
+          REGISTRY: ghcr.io/${{ github.repository_owner }}
+        run: |
+          ssh "$DEPLOY_USER@$DEPLOY_HOST" bash -s << ENDSSH
+            set -e
+
+            echo "==> Navegando para o diretório da aplicação"
+            cd /opt/ioc-esg-municipal
+
+            echo "==> Autenticando no GitHub Container Registry"
+            echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
+
+            echo "==> Atualizando imagem: ${REGISTRY}/ioc-esg-municipal:${IMAGE_TAG}"
+            IMAGE_TAG="${IMAGE_TAG}" REGISTRY="${REGISTRY}" \
+              docker compose -f docker-compose.prod.yml pull api
+
+            echo "==> Subindo serviços atualizados"
+            IMAGE_TAG="${IMAGE_TAG}" REGISTRY="${REGISTRY}" \
+              docker compose -f docker-compose.prod.yml up -d --remove-orphans
+
+            echo "==> Aguardando healthcheck da API (máx 60s)"
+            for i in \$(seq 1 12); do
+              if docker compose -f docker-compose.prod.yml exec -T api \
+                  wget -qO- http://localhost:3000/health > /dev/null 2>&1; then
+                echo "API healthy após \$((i * 5))s"
+                break
+              fi
+              if [ "\$i" -eq 12 ]; then
+                echo "ERRO: API não ficou healthy em 60s"
+                docker compose -f docker-compose.prod.yml logs --tail=50 api
+                exit 1
+              fi
+              sleep 5
+            done
+
+            echo "==> Limpando imagens antigas (mantém últimas 3)"
+            docker image prune -f --filter "until=72h" || true
+
+            echo "==> Deploy concluído com sucesso!"
+          ENDSSH
+
+      - name: Sumário do deploy
+        if: success()
+        run: |
+          echo "### Deploy Concluido com Sucesso" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "**Servidor:** \`${{ secrets.DEPLOY_HOST }}\`" >> "$GITHUB_STEP_SUMMARY"
+          echo "**Image Tag:** \`${{ steps.tag.outputs.tag }}\`" >> "$GITHUB_STEP_SUMMARY"
+          echo "**Timestamp:** \`$(date -u '+%Y-%m-%d %H:%M:%S UTC')\`" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Notificar falha
+        if: failure()
+        run: |
+          echo "### FALHA NO DEPLOY" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "O deploy da imagem \`${{ steps.tag.outputs.tag }}\` falhou." >> "$GITHUB_STEP_SUMMARY"
+          echo "Verifique os logs acima para detalhes." >> "$GITHUB_STEP_SUMMARY"

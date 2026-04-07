@@ -109,6 +109,16 @@ export async function apiPost<T>(path: string, body: unknown): Promise<T> {
   return handleResponse<T>(res);
 }
 
+export async function apiPatch<T>(path: string, body: unknown): Promise<T> {
+  const res = await fetchWithRefresh(path, {
+    method: "PATCH",
+    credentials: "include",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  });
+  return handleResponse<T>(res);
+}
+
 export async function checkSession(): Promise<boolean> {
   try {
     const res = await fetch(`${BASE_URL}/api/auth/me`, {

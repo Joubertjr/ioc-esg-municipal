@@ -1,6 +1,17 @@
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { apiPost, setRefreshToken, getRefreshToken } from "../lib/api";
+import { apiPost, apiPatch, setRefreshToken, getRefreshToken } from "../lib/api";
+
+// ─── Tipos ────────────────────────────────────────────────────────────────────
+
+export interface AuthUser {
+  id: string;
+  name: string;
+  email: string;
+  role: string;
+  municipalityId: string | null;
+  createdAt: string;
+}
 
 interface LoginPayload {
   email: string;
@@ -16,17 +27,33 @@ interface RegisterPayload {
 interface AuthResponse {
   token: string;
   refreshToken: string;
+  user?: AuthUser;
 }
+
+interface UpdateMeResponse {
+  user: AuthUser;
+}
+
+// ─── Hook ─────────────────────────────────────────────────────────────────────
 
 export function useAuth() {
   const navigate = useNavigate();
+  const [user, setUser] = useState<AuthUser | null>(null);
 
   const login = useCallback(
     async (email: string, password: string): Promise<void> => {
       const payload: LoginPayload = { email, password };
       const result = await apiPost<AuthResponse>("/api/auth/login", payload);
       setRefreshToken(result.refreshToken);
-      navigate("/dashboard");
+
+      const authenticatedUser = result.user ?? null;
+      setUser(authenticatedUser);
+
+      if (!authenticatedUser || authenticatedUser.municipalityId === null) {
+        navigate("/onboarding");
+      } else {
+        navigate("/dashboard");
+      }
     },
     [navigate],
   );
@@ -36,7 +63,16 @@ export function useAuth() {
       const payload: RegisterPayload = { name, email, password };
       const result = await apiPost<AuthResponse>("/api/auth/register", payload);
       setRefreshToken(result.refreshToken);
-      navigate("/dashboard");
+
+      const registeredUser = result.user ?? null;
+      setUser(registeredUser);
+
+      // Novo usuário sempre vai para onboarding (município ainda não definido)
+      if (!registeredUser || registeredUser.municipalityId === null) {
+        navigate("/onboarding");
+      } else {
+        navigate("/dashboard");
+      }
     },
     [navigate],
   );
@@ -47,9 +83,15 @@ export function useAuth() {
       await apiPost<unknown>("/api/auth/logout", { refreshToken: currentRefreshToken });
     } finally {
       setRefreshToken(null);
+      setUser(null);
       navigate("/login");
     }
   }, [navigate]);
 
-  return { login, register, logout };
+  const updateMunicipality = useCallback(async (municipalityId: string): Promise<void> => {
+    const result = await apiPatch<UpdateMeResponse>("/api/auth/me", { municipalityId });
+    setUser(result.user);
+  }, []);
+
+  return { user, login, register, logout, updateMunicipality };
 }

@@ -13,6 +13,7 @@ import authRouter from "./routes/auth.js";
 import simulatorRouter from "./routes/simulator.js";
 import reportsRouter from "./routes/reports.js";
 import benchmarksRouter from "./routes/benchmarks.js";
+import recommendationsRouter from "./routes/recommendations.js";
 import { generalLimiter } from "./middleware/rate-limit.js";
 import { authenticateToken } from "./middleware/auth.js";
 import { globalErrorHandler, notFoundHandler } from "./middleware/error-handler.js";
@@ -116,6 +117,7 @@ app.use("/api/ods", authenticateToken, odsRouter);
 app.use("/api/simulator", authenticateToken, simulatorRouter);
 app.use("/api/reports", authenticateToken, reportsRouter);
 app.use("/api/benchmarks", authenticateToken, benchmarksRouter);
+app.use("/api/recommendations", authenticateToken, recommendationsRouter);
 
 // ─── Frontend estático (SPA) ──────────────────────────────────────────────────
 // Serve frontend/dist quando compilado (Docker ou pnpm build + pnpm start).

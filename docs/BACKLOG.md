@@ -35,20 +35,20 @@ Atualizado: 2026-04-07
 
 ---
 
-## Fase 2 — Benchmarking + Ranking Estadual — Em andamento
+## Fase 2 — Benchmarking + Ranking Estadual — Concluído
 
 > Prefeito precisa de contexto comparativo: "Meu score é bom comparado com SC?"
 
-| Item                            | Status       | Arquivos                                                      |
-| ------------------------------- | ------------ | ------------------------------------------------------------- |
-| Tipos TypeScript benchmark      | Em andamento | frontend/src/types/benchmark.ts                               |
-| Hook useBenchmark (React Query) | Em andamento | frontend/src/hooks/useBenchmark.ts                            |
-| MunicipalityMultiSelect         | Em andamento | frontend/src/components/benchmark/MunicipalityMultiSelect.tsx |
-| RankingTable                    | Em andamento | frontend/src/components/benchmark/RankingTable.tsx            |
-| ComparisonRadar (Recharts)      | Em andamento | frontend/src/components/benchmark/ComparisonRadar.tsx         |
-| OdsComparisonTable              | Em andamento | frontend/src/components/benchmark/OdsComparisonTable.tsx      |
-| BenchmarkPage                   | Em andamento | frontend/src/pages/BenchmarkPage.tsx                          |
-| Rota /benchmarks + nav item     | Em andamento | App.tsx + AppShell.tsx                                        |
+| Item                            | Status    | Arquivos                                                      |
+| ------------------------------- | --------- | ------------------------------------------------------------- |
+| Tipos TypeScript benchmark      | Concluído | frontend/src/types/benchmark.ts                               |
+| Hook useBenchmark (React Query) | Concluído | frontend/src/hooks/useBenchmark.ts                            |
+| MunicipalityMultiSelect         | Concluído | frontend/src/components/benchmark/MunicipalityMultiSelect.tsx |
+| RankingTable                    | Concluído | frontend/src/components/benchmark/RankingTable.tsx            |
+| ComparisonRadar (Recharts)      | Concluído | frontend/src/components/benchmark/ComparisonRadar.tsx         |
+| OdsComparisonTable              | Concluído | frontend/src/components/benchmark/OdsComparisonTable.tsx      |
+| BenchmarkPage                   | Concluído | frontend/src/pages/BenchmarkPage.tsx                          |
+| Rota /benchmark + nav item      | Concluído | App.tsx + AppShell.tsx                                        |
 
 ---
 
