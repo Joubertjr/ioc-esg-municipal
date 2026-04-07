@@ -1,7 +1,9 @@
-const BASE_URL = import.meta.env.VITE_API_URL ?? "http://localhost:3000";
+const BASE_URL = import.meta.env.VITE_API_URL ?? "";
 
 if (import.meta.env.PROD && !import.meta.env.VITE_API_URL) {
-  console.warn("[api] VITE_API_URL não definida — usando fallback localhost. Configure a variável em produção.");
+  console.warn(
+    "[api] VITE_API_URL não definida — usando fallback localhost. Configure a variável em produção.",
+  );
 }
 
 // In-memory refresh token — not persisted to localStorage (XSS protection).
@@ -10,6 +12,10 @@ let refreshToken: string | null = null;
 
 export function setRefreshToken(token: string | null): void {
   refreshToken = token;
+}
+
+export function getRefreshToken(): string | null {
+  return refreshToken;
 }
 
 // Promise lock: prevents multiple concurrent refresh attempts.
@@ -49,10 +55,7 @@ function triggerRefresh(): Promise<boolean> {
   return refreshPromise;
 }
 
-async function fetchWithRefresh(
-  path: string,
-  init: RequestInit,
-): Promise<Response> {
+async function fetchWithRefresh(path: string, init: RequestInit): Promise<Response> {
   const url = `${BASE_URL}${path}`;
   const res = await fetch(url, init);
 

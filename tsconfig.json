@@ -24,6 +24,6 @@
       "@shared/*": ["./shared/*"]
     }
   },
-  "include": ["backend/**/*", "shared/**/*", "scripts/**/*"],
+  "include": ["backend/**/*", "shared/**/*", "scripts/**/*", "prisma/**/*"],
   "exclude": ["node_modules", "dist", "frontend"]
 }

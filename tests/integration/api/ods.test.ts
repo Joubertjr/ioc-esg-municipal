@@ -76,10 +76,13 @@ const odsReportFactory = (
 
 // ─── Mocks hoisted ────────────────────────────────────────────────────────────
 
-// vi.hoisted garante que o fn seja criado antes do hoisting do vi.mock
-const { mockCalculateMunicipalOds } = vi.hoisted(() => ({
-  mockCalculateMunicipalOds: vi.fn(),
-}));
+// vi.hoisted garante que os fns sejam criados antes do hoisting do vi.mock
+const { mockCalculateMunicipalOds, mockMunicipalityFindUnique, mockMunicipalityFindMany } =
+  vi.hoisted(() => ({
+    mockCalculateMunicipalOds: vi.fn(),
+    mockMunicipalityFindUnique: vi.fn(),
+    mockMunicipalityFindMany: vi.fn(),
+  }));
 
 vi.mock("../../../backend/utils/logger.js", () => ({
   logger: { info: vi.fn(), warn: vi.fn(), error: vi.fn() },
@@ -100,9 +103,15 @@ vi.mock("@prisma/client", () => {
       create: vi.fn(),
       count: vi.fn().mockResolvedValue(1),
     },
-    municipality: {
-      findMany: vi.fn().mockResolvedValue([]),
+    refreshToken: {
+      create: vi.fn().mockResolvedValue(null),
       findUnique: vi.fn().mockResolvedValue(null),
+      update: vi.fn().mockResolvedValue(null),
+      updateMany: vi.fn().mockResolvedValue({ count: 0 }),
+    },
+    municipality: {
+      findMany: mockMunicipalityFindMany,
+      findUnique: mockMunicipalityFindUnique,
     },
     $connect: vi.fn(),
     $disconnect: vi.fn(),
@@ -156,7 +165,9 @@ vi.mock("../../../backend/agents/ana/index.js", () => ({
   mapToOdsIndicators: vi.fn().mockReturnValue([]),
 }));
 vi.mock("../../../backend/agents/convenios/index.js", () => ({
-  ConveniosCollector: vi.fn().mockImplementation(() => ({ collect: vi.fn(), collectBatch: vi.fn() })),
+  ConveniosCollector: vi
+    .fn()
+    .mockImplementation(() => ({ collect: vi.fn(), collectBatch: vi.fn() })),
   mapToOdsIndicators: vi.fn().mockReturnValue([]),
 }));
 vi.mock("../../../backend/agents/anatel/index.js", () => ({
@@ -202,6 +213,14 @@ beforeAll(async () => {
 
 beforeEach(() => {
   vi.clearAllMocks();
+
+  // Defaults: ambos os municípios existem no banco.
+  // Testes que precisam de comportamento diferente (404, etc.) sobrescrevem localmente.
+  mockMunicipalityFindUnique.mockResolvedValue({ name: "Florianópolis" });
+  mockMunicipalityFindMany.mockResolvedValue([
+    { ibgeCode: VALID_IBGE_CODE, name: "Florianópolis" },
+    { ibgeCode: VALID_IBGE_CODE_2, name: "Blumenau" },
+  ]);
 });
 
 // ─── GET /api/ods/:ibgeCode — proteção de autenticação ───────────────────────
@@ -315,9 +334,7 @@ describe("GET /api/ods/:ibgeCode — resposta do serviço", () => {
 
   it("deve retornar 500 quando serviço lança exceção interna", async () => {
     // Arrange — simula falha em cascata dos coletores
-    mockCalculateMunicipalOds.mockRejectedValue(
-      new Error("Timeout na API governamental"),
-    );
+    mockCalculateMunicipalOds.mockRejectedValue(new Error("Timeout na API governamental"));
 
     // Act
     const res = await request(app)
@@ -373,9 +390,7 @@ describe("POST /api/ods/compare — validação de input", () => {
 
   it("deve retornar 400 quando ibgeCodes tem mais de 10 elementos", async () => {
     // Arrange — 11 códigos válidos de 7 dígitos
-    const ibgeCodes = Array.from({ length: 11 }, (_, i) =>
-      String(4200000 + i).padStart(7, "0"),
-    );
+    const ibgeCodes = Array.from({ length: 11 }, (_, i) => String(4200000 + i).padStart(7, "0"));
 
     // Act
     const res = await request(app)
@@ -426,9 +441,7 @@ describe("POST /api/ods/compare — resposta do serviço", () => {
       globalScore: 58,
       globalStatus: "amarelo",
     });
-    mockCalculateMunicipalOds
-      .mockResolvedValueOnce(report1)
-      .mockResolvedValueOnce(report2);
+    mockCalculateMunicipalOds.mockResolvedValueOnce(report1).mockResolvedValueOnce(report2);
 
     // Act
     const res = await request(app)
@@ -450,9 +463,7 @@ describe("POST /api/ods/compare — resposta do serviço", () => {
   it("deve retornar found=1 quando apenas um dos municípios tem dados", async () => {
     // Arrange — primeiro tem dados, segundo não tem (null)
     const report1 = odsReportFactory(VALID_IBGE_CODE);
-    mockCalculateMunicipalOds
-      .mockResolvedValueOnce(report1)
-      .mockResolvedValueOnce(null);
+    mockCalculateMunicipalOds.mockResolvedValueOnce(report1).mockResolvedValueOnce(null);
 
     // Act
     const res = await request(app)

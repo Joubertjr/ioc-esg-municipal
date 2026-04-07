@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import { apiPost, setRefreshToken } from "../lib/api";
+import { apiPost, setRefreshToken, getRefreshToken } from "../lib/api";
 
 interface LoginPayload {
   email: string;
@@ -42,8 +42,9 @@ export function useAuth() {
   );
 
   const logout = useCallback(async (): Promise<void> => {
+    const currentRefreshToken = getRefreshToken();
     try {
-      await apiPost<unknown>("/api/auth/logout", {});
+      await apiPost<unknown>("/api/auth/logout", { refreshToken: currentRefreshToken });
     } finally {
       setRefreshToken(null);
       navigate("/login");

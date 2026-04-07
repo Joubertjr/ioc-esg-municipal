@@ -68,14 +68,14 @@ interface OdsImpactMapping {
 }
 
 const AREA_ODS_MAPPING: Record<InvestmentArea, OdsImpactMapping> = {
-  education:    { primary: [4],      secondary: [1, 8, 10] },
-  health:       { primary: [3],      secondary: [1] },
-  sanitation:   { primary: [6],      secondary: [3, 11, 14] },
-  environment:  { primary: [13, 15], secondary: [11, 14] },
-  security:     { primary: [16],     secondary: [11] },
-  energy:       { primary: [7],      secondary: [9, 13] },
-  urbanization: { primary: [11],     secondary: [9] },
-  governance:   { primary: [16, 17], secondary: [] },
+  education: { primary: [4], secondary: [1, 8, 10] },
+  health: { primary: [3], secondary: [1] },
+  sanitation: { primary: [6], secondary: [3, 11, 14] },
+  environment: { primary: [13, 15], secondary: [11, 14] },
+  security: { primary: [16], secondary: [11] },
+  energy: { primary: [7], secondary: [9, 13] },
+  urbanization: { primary: [11], secondary: [9] },
+  governance: { primary: [16, 17], secondary: [] },
 } as const;
 
 // ─── Constantes de eficiência ─────────────────────────────────────────────────
@@ -106,9 +106,7 @@ interface OdsAccumulator {
  * Calcula os investimentos acumulados por ODS para cada alocação.
  * Respeita override de targetOds quando fornecido pelo caller.
  */
-function buildOdsInvestmentMap(
-  allocations: InternalAllocation[],
-): Map<number, OdsAccumulator> {
+function buildOdsInvestmentMap(allocations: InternalAllocation[]): Map<number, OdsAccumulator> {
   const map = new Map<number, OdsAccumulator>();
 
   const getOrCreate = (odsNumber: number): OdsAccumulator => {
@@ -188,6 +186,12 @@ function projectOdsScore(
 export async function runSimulation(input: SimulationInput): Promise<SimulationResult> {
   const { ibgeCode, totalAmount, allocation } = input;
 
+  // Validar que alocações somam ~100%
+  const allocationSum = Object.values(allocation).reduce((a, b) => a + b, 0);
+  if (Math.abs(allocationSum - 100) > 1) {
+    throw new Error(`Alocação deve somar 100%, recebido ${allocationSum.toFixed(1)}%`);
+  }
+
   logger.info("[simulator] iniciando simulação", {
     ibgeCode,
     totalAmount,
@@ -244,9 +248,7 @@ export async function runSimulation(input: SimulationInput): Promise<SimulationR
     );
 
     const delta =
-      projectedScore !== null && currentScore !== null
-        ? projectedScore - currentScore
-        : null;
+      projectedScore !== null && currentScore !== null ? projectedScore - currentScore : null;
 
     return {
       odsNumber: def.number,
@@ -314,10 +316,18 @@ async function persistSimulation(
       return;
     }
 
+    // Sem alocações válidas → nada a persistir
+    if (allocations.length === 0) {
+      logger.warn("[simulator] nenhuma alocação válida para persistência", {
+        ibgeCode: result.ibgeCode,
+      });
+      return;
+    }
+
     // Determina a área de maior investimento como investmentType
     const primaryArea = allocations.reduce(
       (max, a) => (a.amount > max.amount ? a : max),
-      allocations[0] ?? { area: "governance" as InvestmentArea, amount: 0, targetOds: [] },
+      allocations[0],
     );
 
     // Coleta todos os ODS impactados (com delta > 0)
@@ -332,7 +342,7 @@ async function persistSimulation(
         investmentAmount: result.totalAmount,
         investmentType: primaryArea.area,
         targetOds,
-        projectedImpact: JSON.parse(JSON.stringify(result)),
+        projectedImpact: JSON.parse(JSON.stringify(result)) as Record<string, unknown>,
         status: "completed",
         completedAt: new Date(),
       },
@@ -353,7 +363,9 @@ async function persistSimulation(
  * Extrai a população do relatório ODS via indicadores IBGE (indicador populacao).
  * Retorna 0 se não encontrado — o caller usará um budget default.
  */
-function extractPopulation(ods: Array<{ indicators: Array<{ indicatorName: string; value: number | null }> }>): number {
+function extractPopulation(
+  ods: Array<{ indicators: Array<{ indicatorName: string; value: number | null }> }>,
+): number {
   for (const odsSummary of ods) {
     for (const indicator of odsSummary.indicators) {
       if (

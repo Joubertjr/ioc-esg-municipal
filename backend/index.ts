@@ -3,6 +3,8 @@ import compression from "compression";
 import cors from "cors";
 import helmet from "helmet";
 import cookieParser from "cookie-parser";
+import path from "path";
+import { fileURLToPath } from "url";
 import swaggerUi from "swagger-ui-express";
 import agentsRouter from "./routes/agents.js";
 import municipalitiesRouter from "./routes/municipalities.js";
@@ -33,16 +35,26 @@ app.use(requestLoggerMiddleware);
 // Compressão gzip — reduz payload ~70-80% em respostas JSON grandes (ex: 17 ODS)
 app.use(compression());
 
+const isDev = env.NODE_ENV === "development";
+
+// Em desenvolvimento o Vite HMR requer 'unsafe-inline' e 'unsafe-eval' em scripts
+// e WebSocket para hot reload. Em produção a CSP é estrita.
+const scriptSrc: string[] = isDev ? ["'self'", "'unsafe-inline'", "'unsafe-eval'"] : ["'self'"];
+
+const connectSrc: string[] = isDev
+  ? ["'self'", "ws://localhost:*", "http://localhost:*"]
+  : ["'self'"];
+
 app.use(
   helmet({
     contentSecurityPolicy: {
       directives: {
         defaultSrc: ["'self'"],
-        scriptSrc: ["'self'"],
-        styleSrc: ["'self'", "'unsafe-inline'"],
+        scriptSrc,
+        styleSrc: ["'self'", "'unsafe-inline'"], // Tailwind injeta estilos inline em dev e prod
         imgSrc: ["'self'", "data:", "https:"],
         fontSrc: ["'self'"],
-        connectSrc: ["'self'"],
+        connectSrc,
         frameSrc: ["'none'"],
         objectSrc: ["'none'"],
         baseUri: ["'self'"],
@@ -54,7 +66,7 @@ app.use(
       includeSubDomains: true,
       preload: true,
     },
-    noSniff: true,           // X-Content-Type-Options: nosniff
+    noSniff: true, // X-Content-Type-Options: nosniff
     frameguard: { action: "deny" }, // X-Frame-Options: DENY
     referrerPolicy: { policy: "strict-origin-when-cross-origin" },
     permittedCrossDomainPolicies: false,
@@ -105,6 +117,40 @@ app.use("/api/simulator", authenticateToken, simulatorRouter);
 app.use("/api/reports", authenticateToken, reportsRouter);
 app.use("/api/benchmarks", authenticateToken, benchmarksRouter);
 
+// ─── Frontend estático (SPA) ──────────────────────────────────────────────────
+// Serve frontend/dist quando compilado (Docker ou pnpm build + pnpm start).
+// Em dev local com `pnpm dev`, o Vite roda na porta 5173 e faz proxy para /api.
+// Deve vir DEPOIS de todas as rotas de API para não interceptá-las.
+
+{
+  const __dirname = path.dirname(fileURLToPath(import.meta.url));
+  // dist/backend/index.js → subir dois níveis → raiz do projeto → frontend/dist
+  const frontendDist = path.resolve(__dirname, "../../frontend/dist");
+
+  app.use(
+    express.static(frontendDist, {
+      // Arquivos com hash no nome (ex: assets/index-abc123.js) ficam em cache 1 ano
+      setHeaders(res, filePath) {
+        if (/\.(js|css|woff2?|ttf|eot|svg|png|jpg|webp)$/.test(filePath)) {
+          res.setHeader("Cache-Control", "public, max-age=31536000, immutable");
+        }
+      },
+    }),
+  );
+
+  // SPA fallback: qualquer rota não-API serve o index.html
+  // para que o React Router trate o roteamento no cliente.
+  app.get("*", (req, res, next) => {
+    // Não interceptar rotas de API nem health check
+    if (req.path.startsWith("/api") || req.path === "/health") {
+      return next();
+    }
+    res.sendFile(path.join(frontendDist, "index.html"), (err) => {
+      if (err) next(); // Se index.html não existir (dev local), segue para 404 handler
+    });
+  });
+}
+
 // ─── Error handlers (ordem importa: 404 antes do error handler global) ────────
 
 app.use(notFoundHandler);
@@ -123,12 +169,15 @@ function gracefulShutdown(signal: string): void {
 
   server.close(() => {
     logger.info("HTTP server closed");
-    prisma.$disconnect().then(() => {
-      logger.info("Database disconnected");
-      process.exit(0);
-    }).catch(() => {
-      process.exit(1);
-    });
+    prisma
+      .$disconnect()
+      .then(() => {
+        logger.info("Database disconnected");
+        process.exit(0);
+      })
+      .catch(() => {
+        process.exit(1);
+      });
   });
 
   // Force shutdown after 10 seconds

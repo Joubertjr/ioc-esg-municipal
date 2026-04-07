@@ -124,10 +124,7 @@ vi.mock("../../../backend/middleware/rate-limit.js", () => ({
 // não-autenticado injetando um mock que retorna 401 no teste específico
 vi.mock("../../../backend/middleware/auth.js", () => ({
   authenticateToken: vi.fn((_req: unknown, _res: unknown, next: () => void) => next()),
-  requireRole:
-    () =>
-    (_req: unknown, _res: unknown, next: () => void) =>
-      next(),
+  requireRole: () => (_req: unknown, _res: unknown, next: () => void) => next(),
 }));
 
 // Prisma: necessário pois a rota instancia `new AuthService(prisma)` no módulo
@@ -167,14 +164,14 @@ describe("POST /api/auth/register", () => {
     // Cenário default: primeiro usuário (bootstrap) — sem exigência de admin
     mockCountUsers.mockResolvedValue(0);
     mockRegister.mockResolvedValue(MOCK_SAFE_USER);
+    // Auto-login após registro: retorna tokens válidos
+    mockLogin.mockResolvedValue(MOCK_LOGIN_RESULT);
   });
 
   it("retorna 201 e dados do usuário quando registro é válido", async () => {
     const app = buildApp();
 
-    const res = await request(app)
-      .post("/api/auth/register")
-      .send(VALID_REGISTER_BODY);
+    const res = await request(app).post("/api/auth/register").send(VALID_REGISTER_BODY);
 
     expect(res.status).toBe(201);
     expect(res.body.user.id).toBe(MOCK_SAFE_USER.id);
@@ -186,9 +183,7 @@ describe("POST /api/auth/register", () => {
     const app = buildApp();
     const { email: _omit, ...bodyWithoutEmail } = VALID_REGISTER_BODY;
 
-    const res = await request(app)
-      .post("/api/auth/register")
-      .send(bodyWithoutEmail);
+    const res = await request(app).post("/api/auth/register").send(bodyWithoutEmail);
 
     expect(res.status).toBe(400);
     expect(res.body.error).toBe("Dados inválidos");
@@ -199,9 +194,7 @@ describe("POST /api/auth/register", () => {
     const app = buildApp();
     const { password: _omit, ...bodyWithoutPassword } = VALID_REGISTER_BODY;
 
-    const res = await request(app)
-      .post("/api/auth/register")
-      .send(bodyWithoutPassword);
+    const res = await request(app).post("/api/auth/register").send(bodyWithoutPassword);
 
     expect(res.status).toBe(400);
     expect(res.body.error).toBe("Dados inválidos");
@@ -212,9 +205,7 @@ describe("POST /api/auth/register", () => {
     mockRegister.mockRejectedValue(new AuthConflictError("E-mail já cadastrado"));
     const app = buildApp();
 
-    const res = await request(app)
-      .post("/api/auth/register")
-      .send(VALID_REGISTER_BODY);
+    const res = await request(app).post("/api/auth/register").send(VALID_REGISTER_BODY);
 
     expect(res.status).toBe(409);
     expect(res.body.error).toBe("E-mail já cadastrado");
@@ -224,9 +215,7 @@ describe("POST /api/auth/register", () => {
     mockRegister.mockRejectedValue(new Error("DB connection failed"));
     const app = buildApp();
 
-    const res = await request(app)
-      .post("/api/auth/register")
-      .send(VALID_REGISTER_BODY);
+    const res = await request(app).post("/api/auth/register").send(VALID_REGISTER_BODY);
 
     expect(res.status).toBe(500);
     expect(res.body.error).toContain("Erro interno");
@@ -244,9 +233,7 @@ describe("POST /api/auth/login", () => {
   it("retorna 200 com token, refreshToken e dados do usuário quando credenciais são válidas", async () => {
     const app = buildApp();
 
-    const res = await request(app)
-      .post("/api/auth/login")
-      .send(VALID_LOGIN_BODY);
+    const res = await request(app).post("/api/auth/login").send(VALID_LOGIN_BODY);
 
     expect(res.status).toBe(200);
     expect(res.body.token).toBe(MOCK_LOGIN_RESULT.token);
@@ -258,14 +245,14 @@ describe("POST /api/auth/login", () => {
   it("define cookie httpOnly 'token' na resposta de login bem-sucedido", async () => {
     const app = buildApp();
 
-    const res = await request(app)
-      .post("/api/auth/login")
-      .send(VALID_LOGIN_BODY);
+    const res = await request(app).post("/api/auth/login").send(VALID_LOGIN_BODY);
 
     expect(res.status).toBe(200);
     const setCookieHeader = res.headers["set-cookie"] as string[] | string | undefined;
     expect(setCookieHeader).toBeDefined();
-    const cookieStr = Array.isArray(setCookieHeader) ? setCookieHeader.join("; ") : setCookieHeader ?? "";
+    const cookieStr = Array.isArray(setCookieHeader)
+      ? setCookieHeader.join("; ")
+      : (setCookieHeader ?? "");
     expect(cookieStr).toContain("token=");
     expect(cookieStr.toLowerCase()).toContain("httponly");
   });
@@ -274,9 +261,7 @@ describe("POST /api/auth/login", () => {
     const app = buildApp();
     const { email: _omit, ...bodyWithoutEmail } = VALID_LOGIN_BODY;
 
-    const res = await request(app)
-      .post("/api/auth/login")
-      .send(bodyWithoutEmail);
+    const res = await request(app).post("/api/auth/login").send(bodyWithoutEmail);
 
     expect(res.status).toBe(400);
     expect(res.body.error).toBe("Dados inválidos");
@@ -287,9 +272,7 @@ describe("POST /api/auth/login", () => {
     const app = buildApp();
     const { password: _omit, ...bodyWithoutPassword } = VALID_LOGIN_BODY;
 
-    const res = await request(app)
-      .post("/api/auth/login")
-      .send(bodyWithoutPassword);
+    const res = await request(app).post("/api/auth/login").send(bodyWithoutPassword);
 
     expect(res.status).toBe(400);
     expect(res.body.error).toBe("Dados inválidos");
@@ -300,9 +283,7 @@ describe("POST /api/auth/login", () => {
     mockLogin.mockRejectedValue(new AuthCredentialsError("Credenciais inválidas"));
     const app = buildApp();
 
-    const res = await request(app)
-      .post("/api/auth/login")
-      .send(VALID_LOGIN_BODY);
+    const res = await request(app).post("/api/auth/login").send(VALID_LOGIN_BODY);
 
     expect(res.status).toBe(401);
     expect(res.body.error).toBe("Credenciais inválidas");
@@ -312,9 +293,7 @@ describe("POST /api/auth/login", () => {
     mockLogin.mockRejectedValue(new Error("DB timeout"));
     const app = buildApp();
 
-    const res = await request(app)
-      .post("/api/auth/login")
-      .send(VALID_LOGIN_BODY);
+    const res = await request(app).post("/api/auth/login").send(VALID_LOGIN_BODY);
 
     expect(res.status).toBe(500);
     expect(res.body.error).toContain("Erro interno");
@@ -348,9 +327,7 @@ describe("POST /api/auth/refresh", () => {
   it("retorna 400 quando refreshToken está ausente", async () => {
     const app = buildApp();
 
-    const res = await request(app)
-      .post("/api/auth/refresh")
-      .send({});
+    const res = await request(app).post("/api/auth/refresh").send({});
 
     expect(res.status).toBe(400);
     expect(res.body.error).toBe("Dados inválidos");
@@ -373,9 +350,7 @@ describe("POST /api/auth/refresh", () => {
     mockRefreshAccessToken.mockRejectedValue(new Error("DB error"));
     const app = buildApp();
 
-    const res = await request(app)
-      .post("/api/auth/refresh")
-      .send({ refreshToken: "qualquer" });
+    const res = await request(app).post("/api/auth/refresh").send({ refreshToken: "qualquer" });
 
     expect(res.status).toBe(500);
     expect(res.body.error).toContain("Erro interno");
@@ -401,7 +376,9 @@ describe("POST /api/auth/logout", () => {
     // O cookie deve ser expirado (cleared) — supertest pode não incluir set-cookie
     // quando o valor é vazio, mas o endpoint não deve retornar erro
     if (setCookieHeader) {
-      const cookieStr = Array.isArray(setCookieHeader) ? setCookieHeader.join("; ") : setCookieHeader;
+      const cookieStr = Array.isArray(setCookieHeader)
+        ? setCookieHeader.join("; ")
+        : setCookieHeader;
       // Cookie limpo deve ter expires no passado ou max-age=0
       expect(cookieStr.toLowerCase()).toMatch(/expires=|max-age=0/);
     }

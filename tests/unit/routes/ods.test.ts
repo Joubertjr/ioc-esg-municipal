@@ -64,18 +64,18 @@ vi.mock("../../../backend/middleware/rate-limit.js", () => ({
 // Auth middleware passthrough — testes unitários de rota não testam auth
 vi.mock("../../../backend/middleware/auth.js", () => ({
   authenticateToken: (_req: unknown, _res: unknown, next: () => void) => next(),
-  requireRole:
-    () =>
-    (_req: unknown, _res: unknown, next: () => void) =>
-      next(),
+  requireRole: () => (_req: unknown, _res: unknown, next: () => void) => next(),
 }));
 
-// Prisma mock para municipalityName lookup
+// Prisma mock — por padrão simula município existente; testes individuais podem sobrescrever
 vi.mock("../../../backend/lib/prisma.js", () => ({
   prisma: {
     municipality: {
       findUnique: vi.fn().mockResolvedValue({ name: "Chapecó" }),
-      findMany: vi.fn().mockResolvedValue([]),
+      findMany: vi.fn().mockResolvedValue([
+        { ibgeCode: "4204202", name: "Blumenau" },
+        { ibgeCode: "4205407", name: "Florianópolis" },
+      ]),
     },
   },
 }));
@@ -84,6 +84,11 @@ vi.mock("../../../backend/lib/prisma.js", () => ({
 vi.mock("../../../backend/utils/cache.js", () => ({
   withCache: (_key: string, _ttl: number, fn: () => unknown) => fn(),
 }));
+
+// Referência ao mock Prisma para sobrescrever em testes individuais
+const { prisma: mockPrisma } = await import("../../../backend/lib/prisma.js");
+const mockFindUnique = vi.mocked(mockPrisma.municipality.findUnique);
+const mockFindMany = vi.mocked(mockPrisma.municipality.findMany);
 
 // ─── App de teste ─────────────────────────────────────────────────────────────
 
@@ -137,7 +142,10 @@ describe("GET /api/ods/:ibgeCode", () => {
     expect(res.status).toBe(200);
     // Aguarda microtasks do fire-and-forget para que o mock seja registrado
     await Promise.resolve();
-    expect(mockCalculateAndPersistScores).toHaveBeenCalledWith(VALID_IBGE_CODE, expect.objectContaining({ ibgeCode: VALID_IBGE_CODE }));
+    expect(mockCalculateAndPersistScores).toHaveBeenCalledWith(
+      VALID_IBGE_CODE,
+      expect.objectContaining({ ibgeCode: VALID_IBGE_CODE }),
+    );
   });
 
   it("não deve chamar calculateAndPersistScores quando não há dados (404)", async () => {
@@ -172,6 +180,19 @@ describe("GET /api/ods/:ibgeCode", () => {
     // Assert
     expect(res.status).toBe(404);
     expect(res.body).toMatchObject({ error: expect.stringContaining(VALID_IBGE_CODE) });
+  });
+
+  it("deve retornar 404 para município inexistente SEM chamar calculateMunicipalOds (bug: score 98 para 0000000)", async () => {
+    // Arrange — simula município não cadastrado no seed
+    mockFindUnique.mockResolvedValueOnce(null);
+
+    // Act
+    const res = await request(app).get("/api/ods/0000000");
+
+    // Assert — deve ser rejeitado na guarda do DB, antes de acionar coletores
+    expect(res.status).toBe(404);
+    expect(res.body).toMatchObject({ error: expect.stringContaining("0000000") });
+    expect(mockCalculateMunicipalOds).not.toHaveBeenCalled();
   });
 });
 
@@ -212,9 +233,7 @@ describe("POST /api/ods/compare", () => {
 
   it("deve retornar 400 quando ibgeCodes é array vazio", async () => {
     // Act
-    const res = await request(app)
-      .post("/api/ods/compare")
-      .send({ ibgeCodes: [] });
+    const res = await request(app).post("/api/ods/compare").send({ ibgeCodes: [] });
 
     // Assert
     expect(res.status).toBe(400);
@@ -236,18 +255,29 @@ describe("POST /api/ods/compare", () => {
 
   it("deve retornar 400 quando ibgeCodes tem mais de 10 municípios", async () => {
     // Arrange — 11 códigos de 7 dígitos
-    const codes = Array.from({ length: 11 }, (_, i) =>
-      String(4200000 + i).padStart(7, "0"),
-    );
+    const codes = Array.from({ length: 11 }, (_, i) => String(4200000 + i).padStart(7, "0"));
 
     // Act
-    const res = await request(app)
-      .post("/api/ods/compare")
-      .send({ ibgeCodes: codes });
+    const res = await request(app).post("/api/ods/compare").send({ ibgeCodes: codes });
 
     // Assert
     expect(res.status).toBe(400);
     expect(res.body).toMatchObject({ error: expect.stringContaining("10") });
+    expect(mockCalculateMunicipalOds).not.toHaveBeenCalled();
+  });
+
+  it("deve retornar 404 quando um dos ibgeCodes não existe no banco SEM chamar calculateMunicipalOds", async () => {
+    // Arrange — findMany retorna somente um dos dois códigos (0000000 não existe)
+    mockFindMany.mockResolvedValueOnce([{ ibgeCode: VALID_IBGE_CODE, name: "Blumenau" }]);
+
+    // Act
+    const res = await request(app)
+      .post("/api/ods/compare")
+      .send({ ibgeCodes: [VALID_IBGE_CODE, "0000000"] });
+
+    // Assert — 404 antes de acionar coletores
+    expect(res.status).toBe(404);
+    expect(res.body).toMatchObject({ error: expect.stringContaining("0000000") });
     expect(mockCalculateMunicipalOds).not.toHaveBeenCalled();
   });
 });

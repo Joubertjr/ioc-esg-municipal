@@ -1,9 +1,11 @@
 # =============================================================================
-# IOC ESG Municipal — Backend Dockerfile (multi-stage)
+# IOC ESG Municipal — Dockerfile (multi-stage, backend + frontend)
 # =============================================================================
-# Stage 1: base com dependências comuns
-# Stage 2: builder — compila TypeScript
-# Stage 3: production — imagem final mínima, non-root
+# Stage 1: base         — Node + pnpm
+# Stage 2: deps         — backend prod deps only
+# Stage 3: builder      — compila TypeScript (backend)
+# Stage 4: fe-builder   — instala deps frontend e roda vite build
+# Stage 5: production   — imagem final mínima, non-root
 # =============================================================================
 
 # ── Stage 1: base ─────────────────────────────────────────────────────────────
@@ -17,12 +19,12 @@ WORKDIR /app
 # Copia apenas manifests para maximizar cache de layer
 COPY package.json pnpm-lock.yaml ./
 
-# ── Stage 2: deps — instala dependências de produção ──────────────────────────
+# ── Stage 2: deps — instala dependências de produção (backend) ────────────────
 FROM base AS deps
 
 RUN pnpm install --frozen-lockfile --prod
 
-# ── Stage 3: builder — compila TypeScript ─────────────────────────────────────
+# ── Stage 3: builder — compila TypeScript (backend) ───────────────────────────
 FROM base AS builder
 
 # Instala TODAS as deps (dev incluídas) para compilar
@@ -40,11 +42,42 @@ RUN pnpm prisma generate
 # Compila TypeScript → dist/
 RUN pnpm build:backend
 
-# ── Stage 4: production ────────────────────────────────────────────────────────
+# ── Stage 4: fe-builder — build do frontend com Vite ──────────────────────────
+# Usa a raiz do projeto como WORKDIR para que o TypeScript encontre zod/decimal.js
+# (importados por shared/types/) nos node_modules do root, igual ao ambiente local.
+FROM node:20-alpine AS fe-builder
+
+RUN corepack enable && corepack prepare pnpm@8.15.0 --activate
+
+WORKDIR /app
+
+# Copia manifests do root (para instalar zod, decimal.js, etc. que shared/ precisa)
+COPY package.json pnpm-lock.yaml ./
+
+# Instala deps do root (apenas as que o TSC precisa para type-check de shared/)
+RUN pnpm install --frozen-lockfile
+
+# Copia manifests do frontend e instala suas deps
+COPY frontend/package.json frontend/pnpm-lock.yaml ./frontend/
+RUN cd frontend && pnpm install --frozen-lockfile
+
+# Copia shared/ e frontend/
+COPY shared/ ./shared/
+COPY frontend/ ./frontend/
+
+# Compila frontend → frontend/dist/
+RUN cd frontend && pnpm build
+
+# ── Stage 5: production ────────────────────────────────────────────────────────
 FROM node:20-alpine AS production
 
-# Instala apenas o necessário: pnpm e dumb-init (PID 1 correto para Node)
-RUN apk add --no-cache dumb-init && \
+# Hardcode NODE_ENV=production na imagem — garante que Express nunca expõe
+# stack traces, mesmo que a variável não seja passada no runtime
+ENV NODE_ENV=production
+
+# Instala dependências de sistema: dumb-init (PID 1), netcat (healthcheck DB),
+# openssl (requerido pelo Prisma engine em Alpine para migrate/generate)
+RUN apk add --no-cache dumb-init netcat-openbsd openssl && \
     corepack enable && corepack prepare pnpm@8.15.0 --activate
 
 WORKDIR /app
@@ -53,7 +86,7 @@ WORKDIR /app
 RUN addgroup --system --gid 1001 nodejs && \
     adduser  --system --uid  1001 --ingroup nodejs nodeuser
 
-# Copia artefatos do builder
+# Copia artefatos do builder (backend)
 COPY --from=builder --chown=nodeuser:nodejs /app/dist ./dist
 COPY --from=builder --chown=nodeuser:nodejs /app/prisma ./prisma
 
@@ -63,13 +96,23 @@ COPY --from=deps --chown=nodeuser:nodejs /app/node_modules ./node_modules
 # Copia package.json para `node` resolver o "main"
 COPY --chown=nodeuser:nodejs package.json ./
 
-# Gera Prisma Client no contexto de produção (antes do USER switch para ter
-# permissão de escrita em node_modules/.prisma/) e corrige ownership
+# Gera Prisma Client no contexto de produção e corrige ownership dos artefatos
+# Nota: com pnpm, o client fica em node_modules/.pnpm/ (não em .prisma)
 RUN pnpm prisma generate && \
-    chown -R nodeuser:nodejs /app/node_modules/.prisma
+    chown -R nodeuser:nodejs /app/node_modules
 
 # Copia arquivos JSON de shared/data — lidos em runtime pelos coletores
+# Os imports compilados resolvem para dist/shared/data/ (relativo ao JS em dist/backend/)
+COPY --from=builder --chown=nodeuser:nodejs /app/shared/data ./dist/shared/data
+# Também copia para shared/data/ (usado por módulos que fazem fs.readFile)
 COPY --from=builder --chown=nodeuser:nodejs /app/shared/data ./shared/data
+
+# Copia dist do frontend — servido pelo Express em /app/frontend/dist
+COPY --from=fe-builder --chown=nodeuser:nodejs /app/frontend/dist ./frontend/dist
+
+# Copia entrypoint e garante permissão de execução (antes do USER switch)
+COPY entrypoint.sh ./entrypoint.sh
+RUN chmod +x ./entrypoint.sh && chown nodeuser:nodejs ./entrypoint.sh
 
 USER nodeuser
 
@@ -79,6 +122,6 @@ EXPOSE 3000
 HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
   CMD wget -qO- http://localhost:3000/health || exit 1
 
-# dumb-init garante que sinais (SIGTERM) sejam repassados ao Node
-ENTRYPOINT ["dumb-init", "--"]
+# dumb-init passa sinais ao shell; o shell exec-a o Node (PID final = Node)
+ENTRYPOINT ["dumb-init", "--", "/app/entrypoint.sh"]
 CMD ["node", "dist/backend/index.js"]
