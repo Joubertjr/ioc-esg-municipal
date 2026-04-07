@@ -2,111 +2,132 @@
 
 Atualizado: 2026-04-07
 
+**Escopo:** Santa Catarina (295 municípios). Escala nacional adiada.
+**Escala de agentes:** Maximizar paralelismo com múltiplos agentes Claude em cada fase.
+
 ---
 
 ## Legenda
 
-- **Concluído** — implementado, testado, mergeado
-- **Em andamento** — implementação ativa
-- **Planejado** — aprovado, aguardando implementação
-- **Backlog** — identificado, não priorizado
+- **Concluido** — implementado, testado, mergeado
+- **Em andamento** — implementacao ativa
+- **Planejado** — aprovado, aguardando implementacao
+- **Backlog** — identificado, nao priorizado
 
 ---
 
-## Fase 1 — Comunicar Significado (UX Redesign) — Concluído
+## Fase 1 — Comunicar Significado (UX Redesign) — Concluido
 
-> Auditoria UX: 47 problemas (8 críticos, 22 altos). Tooltips, IndicatorRow, WCAG 2.1 AA, acentuação.
+> Auditoria UX: 47 problemas (8 criticos, 22 altos). Tooltips, IndicatorRow, WCAG 2.1 AA, acentuacao.
 
 | Item                                                  | Status    | Arquivos                                         |
 | ----------------------------------------------------- | --------- | ------------------------------------------------ |
-| ods-descriptions.ts (dados de contexto 17 ODS)        | Concluído | shared/constants/ods-descriptions.ts             |
-| OdsTooltip (hover com descrição + meta 2030)          | Concluído | frontend/src/components/ods/OdsTooltip.tsx       |
-| IndicatorRow (valor + unidade + barra + ícone)        | Concluído | frontend/src/components/ods/IndicatorRow.tsx     |
-| OdsCard redesign (score/100, ícones, progress bar)    | Concluído | frontend/src/components/ods/OdsCard.tsx          |
-| GlobalScore redesign (tooltip, legenda 3 faixas)      | Concluído | frontend/src/components/ods/GlobalScore.tsx      |
-| OdsDetailDrawer WCAG (aria-dialog, focus trap)        | Concluído | frontend/src/components/ods/OdsDetailDrawer.tsx  |
-| OdsRadarChart (excluir null, meta 70, tooltip custom) | Concluído | frontend/src/components/charts/OdsRadarChart.tsx |
-| DashboardPage (título, subtítulo dinâmico, legenda)   | Concluído | frontend/src/pages/DashboardPage.tsx             |
-| SimulatorPage (área→ODS, R$ format, placeholder)      | Concluído | frontend/src/pages/SimulatorPage.tsx             |
-| ReportsPage (barras, unidades, legenda impressão)     | Concluído | frontend/src/pages/ReportsPage.tsx               |
-| MonitoringPage ("Mais urgente", legenda permanente)   | Concluído | frontend/src/pages/MonitoringPage.tsx            |
-| AppShell (logo→link, combobox populares, ESC mobile)  | Concluído | frontend/src/components/layout/AppShell.tsx      |
-| Acentuação (todas as 5 páginas + LoginPage)           | Concluído | 6 arquivos                                       |
+| ods-descriptions.ts (dados de contexto 17 ODS)        | Concluido | shared/constants/ods-descriptions.ts             |
+| OdsTooltip (hover com descricao + meta 2030)          | Concluido | frontend/src/components/ods/OdsTooltip.tsx       |
+| IndicatorRow (valor + unidade + barra + icone)        | Concluido | frontend/src/components/ods/IndicatorRow.tsx     |
+| OdsCard redesign (score/100, icones, progress bar)    | Concluido | frontend/src/components/ods/OdsCard.tsx          |
+| GlobalScore redesign (tooltip, legenda 3 faixas)      | Concluido | frontend/src/components/ods/GlobalScore.tsx      |
+| OdsDetailDrawer WCAG (aria-dialog, focus trap)        | Concluido | frontend/src/components/ods/OdsDetailDrawer.tsx  |
+| OdsRadarChart (excluir null, meta 70, tooltip custom) | Concluido | frontend/src/components/charts/OdsRadarChart.tsx |
+| DashboardPage (titulo, subtitulo dinamico, legenda)   | Concluido | frontend/src/pages/DashboardPage.tsx             |
+| SimulatorPage (area->ODS, R$ format, placeholder)     | Concluido | frontend/src/pages/SimulatorPage.tsx             |
+| ReportsPage (barras, unidades, legenda impressao)     | Concluido | frontend/src/pages/ReportsPage.tsx               |
+| MonitoringPage ("Mais urgente", legenda permanente)   | Concluido | frontend/src/pages/MonitoringPage.tsx            |
+| AppShell (logo->link, combobox populares, ESC mobile) | Concluido | frontend/src/components/layout/AppShell.tsx      |
+| Acentuacao (todas as 5 paginas + LoginPage)           | Concluido | 6 arquivos                                       |
 
 ---
 
-## Fase 2 — Benchmarking + Ranking Estadual — Concluído
+## Fase 2 — Benchmarking + Ranking Estadual — Concluido
 
-> Prefeito precisa de contexto comparativo: "Meu score é bom comparado com SC?"
+> Prefeito precisa de contexto comparativo: "Meu score e bom comparado com SC?"
 
 | Item                            | Status    | Arquivos                                                      |
 | ------------------------------- | --------- | ------------------------------------------------------------- |
-| Tipos TypeScript benchmark      | Concluído | frontend/src/types/benchmark.ts                               |
-| Hook useBenchmark (React Query) | Concluído | frontend/src/hooks/useBenchmark.ts                            |
-| MunicipalityMultiSelect         | Concluído | frontend/src/components/benchmark/MunicipalityMultiSelect.tsx |
-| RankingTable                    | Concluído | frontend/src/components/benchmark/RankingTable.tsx            |
-| ComparisonRadar (Recharts)      | Concluído | frontend/src/components/benchmark/ComparisonRadar.tsx         |
-| OdsComparisonTable              | Concluído | frontend/src/components/benchmark/OdsComparisonTable.tsx      |
-| BenchmarkPage                   | Concluído | frontend/src/pages/BenchmarkPage.tsx                          |
-| Rota /benchmark + nav item      | Concluído | App.tsx + AppShell.tsx                                        |
+| Tipos TypeScript benchmark      | Concluido | frontend/src/types/benchmark.ts                               |
+| Hook useBenchmark (React Query) | Concluido | frontend/src/hooks/useBenchmark.ts                            |
+| MunicipalityMultiSelect         | Concluido | frontend/src/components/benchmark/MunicipalityMultiSelect.tsx |
+| RankingTable                    | Concluido | frontend/src/components/benchmark/RankingTable.tsx            |
+| ComparisonRadar (Recharts)      | Concluido | frontend/src/components/benchmark/ComparisonRadar.tsx         |
+| OdsComparisonTable              | Concluido | frontend/src/components/benchmark/OdsComparisonTable.tsx      |
+| BenchmarkPage                   | Concluido | frontend/src/pages/BenchmarkPage.tsx                          |
+| Rota /benchmark + nav item      | Concluido | App.tsx + AppShell.tsx                                        |
 
 ---
 
-## Fase 3 — Histórico Temporal + Tendências — Planejado
+## Fase 3 — Historico Temporal + Tendencias — Concluido
 
-> ODS History endpoint já existe (GET /ods/:ibgeCode/history). Falta frontend.
+> ODS History endpoint ja existe. Frontend implementado com chart e trend badges.
 
-| Item                                         | Status    | Arquivos |
-| -------------------------------------------- | --------- | -------- |
-| Gráfico de evolução temporal por ODS         | Planejado | —        |
-| Indicador de tendência (melhorando/piorando) | Planejado | —        |
-| Comparação ano a ano no dashboard            | Planejado | —        |
-
----
-
-## Fase 4 — Recomendações por IA — Planejado
-
-> Motor de recomendação baseado em gap analysis + benchmarks + simulação.
-
-| Item                                              | Status    | Arquivos |
-| ------------------------------------------------- | --------- | -------- |
-| Endpoint de recomendações priorizadas             | Planejado | —        |
-| Card "Próximos passos" no dashboard               | Planejado | —        |
-| Integração com simulador (auto-preencher cenário) | Planejado | —        |
+| Item                                      | Status    | Arquivos                                           |
+| ----------------------------------------- | --------- | -------------------------------------------------- |
+| Tipos OdsScoreRecord + OdsHistoryResponse | Concluido | frontend/src/types/api.ts                          |
+| Hook useOdsHistory                        | Concluido | frontend/src/hooks/useOdsHistory.ts                |
+| OdsHistoryChart (LineChart Recharts)      | Concluido | frontend/src/components/charts/OdsHistoryChart.tsx |
+| Integracao DashboardPage                  | Concluido | frontend/src/pages/DashboardPage.tsx               |
+| Trend badges no MonitoringPage (setas)    | Concluido | frontend/src/pages/MonitoringPage.tsx              |
 
 ---
 
-## Fase 5 — Multi-estado + Escala Nacional — Backlog
+## Fase 4 — Recomendacoes Inteligentes — Concluido
 
-> Escalar de 295 SC → 5.570 Brasil. Requer: seed nacional, performance tuning.
+> Motor de recomendacao com gap analysis vs benchmark SC + acoes concretas por ODS.
 
-| Item                                         | Status  | Arquivos |
-| -------------------------------------------- | ------- | -------- |
-| Seed municípios Brasil (5.570)               | Backlog | —        |
-| Filtro por estado/região na UI               | Backlog | —        |
-| Performance: paginação/virtualização ranking | Backlog | —        |
-| Cache hierárquico (estado → município)       | Backlog | —        |
-
----
-
-## Fase 6 — Deploy Produção + Onboarding — Backlog
-
-> Primeiro cliente piloto em SC.
-
-| Item                                    | Status  | Arquivos |
-| --------------------------------------- | ------- | -------- |
-| Deploy cloud (AWS/GCP)                  | Backlog | —        |
-| Domínio + SSL                           | Backlog | —        |
-| Onboarding flow (primeiro acesso)       | Backlog | —        |
-| Multi-tenant (isolamento por município) | Backlog | —        |
-| Billing integration                     | Backlog | —        |
+| Item                                             | Status    | Arquivos                                                        |
+| ------------------------------------------------ | --------- | --------------------------------------------------------------- |
+| recommendation_service.ts (gap + acoes)          | Concluido | backend/services/recommendations/recommendation_service.ts      |
+| GET /api/recommendations/:ibgeCode               | Concluido | backend/routes/recommendations.ts                               |
+| Tipos SmartRecommendation + RecommendationReport | Concluido | frontend/src/types/api.ts                                       |
+| Hook useRecommendations                          | Concluido | frontend/src/hooks/useRecommendations.ts                        |
+| RecommendationCard                               | Concluido | frontend/src/components/recommendations/RecommendationCard.tsx  |
+| RecommendationPanel no DashboardPage             | Concluido | frontend/src/components/recommendations/RecommendationPanel.tsx |
 
 ---
 
-## Bugs e Débitos Técnicos
+## Fase 5 — Multi-estado + Escala Nacional — Adiado
+
+> **Decisao:** Foco em SC (295 municipios). Escala nacional somente apos validacao do piloto.
+
+---
+
+## Fase 6 — Deploy Producao + Onboarding — Concluido
+
+> Onboarding flow + infra de deploy pronta. Dominio/SSL e billing dependem de decisoes externas.
+
+| Item                                     | Status    | Arquivos                                   |
+| ---------------------------------------- | --------- | ------------------------------------------ |
+| PATCH /api/auth/me (atualizar municipio) | Concluido | backend/routes/auth.ts                     |
+| OnboardingPage (selecao de municipio)    | Concluido | frontend/src/pages/OnboardingPage.tsx      |
+| useAuth com user + redirect onboarding   | Concluido | frontend/src/hooks/useAuth.ts              |
+| Rota /onboarding                         | Concluido | frontend/src/App.tsx                       |
+| docker-compose.yml (dev simplificado)    | Concluido | docker-compose.yml                         |
+| nginx reverse proxy (HTTPS + headers)    | Concluido | nginx/nginx.conf + docker-compose.prod.yml |
+| deploy.yml workflow (SSH + healthcheck)  | Concluido | .github/workflows/deploy.yml               |
+| Dominio + SSL                            | Pendente  | Requer compra de dominio                   |
+| Multi-tenant (isolamento por municipio)  | Pendente  | Decisao arquitetural necessaria            |
+| Billing integration                      | Pendente  | Requer escolha de payment provider         |
+
+---
+
+## Proximas Prioridades
+
+| #   | Item                                                            | Tipo        | Impacto |
+| --- | --------------------------------------------------------------- | ----------- | ------- |
+| 1   | Testes para fases 3-6 (recommendations, onboarding, history)    | Qualidade   | Alto    |
+| 2   | Fix debitos tecnicos (ProtectedRoute cache, simulator tsc)      | Tech debt   | Medio   |
+| 3   | Integracao simulador <-> recomendacoes (auto-preencher cenario) | Feature     | Alto    |
+| 4   | Multi-tenant: isolamento de dados por municipio                 | Seguranca   | Alto    |
+| 5   | Exportar relatorio PDF                                          | Feature     | Medio   |
+| 6   | Dashboard admin (gestao de usuarios, metricas uso)              | Feature     | Medio   |
+| 7   | Notificacoes por email (alertas ODS critico)                    | Feature     | Medio   |
+| 8   | API rate limiting por municipio                                 | Performance | Medio   |
+
+---
+
+## Bugs e Debitos Tecnicos
 
 | Item                                              | Severidade | Status                      |
 | ------------------------------------------------- | ---------- | --------------------------- |
 | Vitest SIGSEGV com 41+ arquivos                   | Baixa      | Workaround (batches)        |
-| ProtectedRoute round-trip a cada mount            | Média      | Pendente (cache em context) |
+| ProtectedRoute round-trip a cada mount            | Media      | Pendente (cache em context) |
 | simulator_service.ts tsc error (Prisma JSON type) | Baixa      | Pendente                    |
