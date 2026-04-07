@@ -26,7 +26,8 @@
     "db:studio": "prisma studio",
     "docker:up": "docker compose up -d postgres redis adminer",
     "docker:down": "docker compose down",
-    "docker:logs": "docker compose logs -f"
+    "docker:logs": "docker compose logs -f",
+    "prepare": "husky"
   },
   "dependencies": {
     "@prisma/client": "^5.7.1",
@@ -43,6 +44,7 @@
     "express-rate-limit": "^8.3.2",
     "helmet": "^8.1.0",
     "jsonwebtoken": "^9.0.2",
+    "prisma": "^5.7.1",
     "rate-limit-redis": "^4.3.1",
     "redis": "^4.6.12",
     "swagger-jsdoc": "^6.2.8",
@@ -69,16 +71,17 @@
     "@vitest/ui": "^1.1.0",
     "concurrently": "^8.2.2",
     "eslint": "^8.56.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.4.0",
     "playwright": "^1.59.1",
     "prettier": "^3.1.1",
-    "prisma": "^5.7.1",
     "supertest": "^6.3.3",
     "tsx": "^4.7.0",
     "typescript": "^5.3.3",
     "vitest": "^1.1.0"
   },
   "prisma": {
-    "seed": "npx tsx prisma/seed.ts"
+    "seed": "node dist/prisma/seed.js"
   },
   "engines": {
     "node": ">=18.0.0"

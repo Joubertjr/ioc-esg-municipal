@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
     inputs:
       tag:
-        description: 'Tag adicional para a imagem (ex: v1.0.0)'
+        description: "Tag adicional para a imagem (ex: v1.0.0)"
         required: false
         type: string
 
@@ -23,9 +23,6 @@ jobs:
     name: Build & Push Docker Image
     runs-on: ubuntu-latest
     timeout-minutes: 20
-
-    # CI deve passar antes de publicar imagem
-    # (o job ci do main.yml cobre tsc + lint + tests + build)
 
     permissions:
       contents: read
@@ -57,6 +54,24 @@ jobs:
             type=raw,value=latest,enable=${{ github.ref == 'refs/heads/main' }}
             # Tag manual via workflow_dispatch
             type=raw,value=${{ github.event.inputs.tag }},enable=${{ github.event.inputs.tag != '' }}
+
+      - name: Build Docker image (local)
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          load: true
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:scan
+          cache-from: type=registry,ref=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:buildcache
+          platforms: linux/amd64
+
+      - name: Trivy vulnerability scan
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:scan
+          format: table
+          exit-code: 1
+          severity: CRITICAL,HIGH
+          ignore-unfixed: true
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
