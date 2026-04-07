@@ -109,6 +109,24 @@ function IconMonitoring() {
   );
 }
 
+function IconBenchmark() {
+  return (
+    <svg
+      className="w-4 h-4"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+      strokeWidth={1.75}
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M3 10h4v11H3zM10 3h4v18h-4zM17 7h4v14h-4z"
+      />
+    </svg>
+  );
+}
+
 function IconLogout() {
   return (
     <svg
@@ -156,6 +174,7 @@ const NAV_ITEMS: NavItem[] = [
   { to: "/simulator", label: "Simulador", icon: <IconSimulator /> },
   { to: "/reports", label: "Relatórios", icon: <IconReports /> },
   { to: "/monitoring", label: "Monitoramento", icon: <IconMonitoring /> },
+  { to: "/benchmark", label: "Comparativo", icon: <IconBenchmark /> },
 ];
 
 function navLinkClass({ isActive }: { isActive: boolean }): string {
