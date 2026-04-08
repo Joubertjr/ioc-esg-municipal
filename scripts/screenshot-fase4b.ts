@@ -23,6 +23,19 @@ const OUT_DIR = join(process.cwd(), "docs", "evidence", "2026-04-08-fase4b-clust
 const EMAIL = `screenshot-4b-${Date.now()}@evidence.test`;
 const PASS = "EvidenceTest123!@#";
 
+/**
+ * Aguarda até que TODOS os skeletons desapareçam da página.
+ * Benchmark/Compare APIs podem levar 15-30s para municípios não cacheados.
+ */
+async function waitForDataLoad(page: Page, timeoutMs = 60_000): Promise<void> {
+  await page.waitForFunction(
+    () => document.querySelectorAll('[class*="animate-pulse"]').length === 0,
+    { timeout: timeoutMs },
+  );
+  // Extra settle time para Recharts/animations
+  await page.waitForTimeout(500);
+}
+
 async function registerAndGetToken(): Promise<string> {
   const res = await fetch(`${API_URL}/auth/register`, {
     method: "POST",
@@ -82,7 +95,8 @@ async function main(): Promise<void> {
     // Navigate to benchmark
     await page.goto(`${BASE_URL}/benchmark`, { waitUntil: "networkidle" });
     await setTheme(page, "light");
-    await page.waitForTimeout(2_000);
+    // Wait for initial data to fully load (skeletons disappear)
+    await waitForDataLoad(page);
 
     // Screenshot 1: Light mode, before clicking suggest
     log("3/5 Screenshot: benchmark-light-before-suggest.png");
@@ -95,8 +109,9 @@ async function main(): Promise<void> {
     const suggestBtn = page.locator("button", { hasText: "Sugerir municípios similares" });
     if (await suggestBtn.isVisible()) {
       await suggestBtn.click();
-      // Wait for the API call and UI update
-      await page.waitForTimeout(3_000);
+      log("   Botão clicado, aguardando dados carregar...");
+      // Wait for all skeletons to disappear (API calls can take 15-30s for uncached municipalities)
+      await waitForDataLoad(page);
     }
 
     // Screenshot 2: Light mode, after clicking suggest (with IA badges)
@@ -106,9 +121,13 @@ async function main(): Promise<void> {
       fullPage: true,
     });
 
-    // Switch to dark mode
-    await setTheme(page, "dark");
-    await page.waitForTimeout(2_000);
+    // Switch to dark mode — use evaluate to avoid page.reload() which resets React state
+    await page.evaluate(() => {
+      localStorage.setItem("ioc-theme", "dark");
+      document.documentElement.classList.remove("light");
+      document.documentElement.classList.add("dark");
+    });
+    await page.waitForTimeout(1_000);
 
     // Screenshot 3: Dark mode, after suggest (with IA badges)
     log("5/5 Screenshot: benchmark-dark-after-suggest.png");
