@@ -31,6 +31,19 @@ import { logger } from "../../utils/logger.js";
 import { withCache } from "../../utils/cache.js";
 
 /**
+ * Média geométrica ponderada (padrão IDHM/ONU).
+ * Floor em 1 para evitar ln(0) — scores zero contribuem como 1.
+ */
+export function calculateGeometricMean(scores: number[], weights?: number[]): number {
+  if (scores.length === 0) return 0;
+  const w = weights ?? scores.map(() => 1);
+  const totalWeight = w.reduce((a, b) => a + b, 0);
+  if (totalWeight === 0) return 0;
+  const weightedLogSum = scores.reduce((acc, s, i) => acc + w[i] * Math.log(Math.max(s, 1)), 0);
+  return Math.round(Math.exp(weightedLogSum / totalWeight));
+}
+
+/**
  * Envolve uma promise com timeout independente.
  * Em caso de timeout ou erro, loga o aviso e retorna null em vez de rejeitar.
  * Isso impede que um coletor lento (ex: DATASUS) bloqueie o Promise.all inteiro.
@@ -67,6 +80,8 @@ export interface MunicipalOdsReport {
   referenceYear: number;
   globalScore: number | null;
   globalStatus: OdsStatus | null;
+  geometricScore: number | null;
+  geometricStatus: OdsStatus | null;
   odsCount: { total: number; withData: number; verde: number; amarelo: number; vermelho: number };
   ods: OdsSummary[];
 }
@@ -265,12 +280,28 @@ async function _fetchAndCalculate(ibgeCode: string): Promise<MunicipalOdsReport 
   const globalScore = weightTotal > 0 ? Math.round(weightedSum / weightTotal) : null;
   const globalStatus = globalScore !== null ? getOdsStatus(globalScore) : null;
 
+  // Média geométrica ponderada (padrão IDHM/ONU)
+  const geoScores: number[] = [];
+  const geoWeights: number[] = [];
+  for (const ods of odsSummaries) {
+    if (ods.score !== null) {
+      const def = getOdsDefinition(ods.odsNumber);
+      geoWeights.push(def?.weight ?? 1.0);
+      geoScores.push(ods.score);
+    }
+  }
+  const geometricScore =
+    geoScores.length > 0 ? calculateGeometricMean(geoScores, geoWeights) : null;
+  const geometricStatus = geometricScore !== null ? getOdsStatus(geometricScore) : null;
+
   return {
     ibgeCode,
     municipalityName: null, // Populated by route if DB available
     referenceYear,
     globalScore,
     globalStatus,
+    geometricScore,
+    geometricStatus,
     odsCount: {
       total: 17,
       withData: withDataCount,

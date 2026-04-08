@@ -146,7 +146,7 @@ export function KpiCards({
   }
 
   // --- Card 1: Score Global ---
-  const globalBorder = borderFromStatus(report.globalStatus);
+  const globalBorder = borderFromStatus(report.geometricStatus ?? report.globalStatus);
   let globalContext: React.ReactNode;
   if (benchmark && benchmark.deltaVsState !== null && benchmark.stateAverage !== null) {
     const absDelta = Math.abs(benchmark.deltaVsState);
@@ -255,9 +255,20 @@ export function KpiCards({
       {/* Card 1 — Score Global (hero) */}
       <KpiCard
         label="Score Global"
-        value={report.globalScore !== null ? Math.round(report.globalScore) : "—"}
+        value={
+          (report.geometricScore ?? report.globalScore) !== null
+            ? Math.round((report.geometricScore ?? report.globalScore)!)
+            : "—"
+        }
         suffix="/100"
-        context={globalContext}
+        context={
+          <>
+            {globalContext}
+            <span className="block text-[10px] text-muted-foreground/60 mt-0.5">
+              Média geométrica ponderada (padrão ONU/IDHM)
+            </span>
+          </>
+        }
         borderClass={globalBorder}
         animate
         hero

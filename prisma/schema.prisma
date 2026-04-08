@@ -55,6 +55,7 @@ model OdsScore {
   municipalityId String
   odsNumber      Int /// 1-17 (0 = global)
   score          Int? /// 0-100, null = sem dados
+  geometricScore Int? /// 0-100, média geométrica ponderada (padrão IDHM/ONU)
   status         String? /// verde|amarelo|vermelho
   indicatorCount Int      @default(0)
   referenceYear  Int

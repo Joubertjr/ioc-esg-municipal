@@ -1,6 +1,21 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 
-const { mockIbgeCollect, mockSiconfiCollect, mockDatasusCollect, mockInepCollect, mockSnisCollect, mockInpeCollect, mockPncpCollect, mockTseCollect, mockAneelCollect, mockSnisRsCollect, mockAnaCollect, mockConveniosCollect, mockAnatelCollect, mockSisvanCollect } = vi.hoisted(() => ({
+const {
+  mockIbgeCollect,
+  mockSiconfiCollect,
+  mockDatasusCollect,
+  mockInepCollect,
+  mockSnisCollect,
+  mockInpeCollect,
+  mockPncpCollect,
+  mockTseCollect,
+  mockAneelCollect,
+  mockSnisRsCollect,
+  mockAnaCollect,
+  mockConveniosCollect,
+  mockAnatelCollect,
+  mockSisvanCollect,
+} = vi.hoisted(() => ({
   mockIbgeCollect: vi.fn(),
   mockSiconfiCollect: vi.fn(),
   mockDatasusCollect: vi.fn(),
@@ -126,9 +141,7 @@ vi.mock("../../../shared/data/anatel_2023.json", () => ({ default: {} }));
 vi.mock("../../../shared/data/sisvan_2023.json", () => ({ default: {} }));
 
 vi.mock("../../../backend/utils/cache.js", () => ({
-  withCache: vi.fn(
-    async (_key: string, _ttl: number, fn: () => Promise<unknown>) => fn(),
-  ),
+  withCache: vi.fn(async (_key: string, _ttl: number, fn: () => Promise<unknown>) => fn()),
 }));
 
 vi.mock("../../../backend/utils/http-client.js", () => ({
@@ -144,7 +157,10 @@ vi.mock("../../../backend/utils/logger.js", () => ({
   },
 }));
 
-import { calculateMunicipalOds } from "../../../backend/services/ods/ods_score_service.js";
+import {
+  calculateMunicipalOds,
+  calculateGeometricMean,
+} from "../../../backend/services/ods/ods_score_service.js";
 
 const MOCK_IBGE_DATA = {
   ibgeCode: "4204202",
@@ -228,7 +244,6 @@ const MOCK_SNIS_DATA = {
     perdaFaturamento: 25.0,
   },
 };
-
 
 describe("ODS Score Service", () => {
   beforeEach(() => {
@@ -450,5 +465,63 @@ describe("ODS Score Service", () => {
     expect(ods4.sources).toContain("siconfi");
     expect(ods4.sources).toContain("inep");
     expect(ods4.indicators.length).toBe(3);
+  });
+});
+
+describe("calculateGeometricMean", () => {
+  it("retorna 0 para array vazio", () => {
+    // Arrange
+    const scores: number[] = [];
+
+    // Act
+    const result = calculateGeometricMean(scores);
+
+    // Assert
+    expect(result).toBe(0);
+  });
+
+  it("retorna o próprio valor quando todos scores são iguais", () => {
+    // Arrange
+    const scores = [50, 50, 50];
+
+    // Act
+    const result = calculateGeometricMean(scores);
+
+    // Assert
+    expect(result).toBe(50);
+  });
+
+  it("penaliza scores muito baixos mais que média aritmética", () => {
+    // Arrange — média aritmética = (90 + 90 + 10) / 3 = 63.3
+    const scores = [90, 90, 10];
+
+    // Act
+    const result = calculateGeometricMean(scores);
+
+    // Assert — média geométrica deve ser menor que a aritmética devido ao outlier baixo
+    expect(result).toBeLessThan(63);
+    expect(result).toBeGreaterThan(0);
+  });
+
+  it("trata score zero com floor em 1", () => {
+    // Arrange — ln(1) = 0, então o score zero arrasta a média para baixo
+    const scores = [80, 0, 80];
+
+    // Act
+    const result = calculateGeometricMean(scores);
+
+    // Assert — deve ser menor que 80 (score dominante) mas maior que 0
+    expect(result).toBeLessThan(80);
+    expect(result).toBeGreaterThan(0);
+  });
+
+  it("respeita pesos quando fornecidos", () => {
+    // Arrange — peso maior no score mais alto deve elevar a média
+    const scores = [100, 50];
+    const weightedResult = calculateGeometricMean(scores, [2, 1]);
+    const equalWeightResult = calculateGeometricMean(scores);
+
+    // Act + Assert — peso 2x no score 100 deve resultar em média maior do que pesos iguais
+    expect(weightedResult).toBeGreaterThan(equalWeightResult);
   });
 });

@@ -32,6 +32,8 @@ export interface MunicipalOdsReport {
   referenceYear: number;
   globalScore: number | null;
   globalStatus: OdsStatus | null;
+  geometricScore: number | null;
+  geometricStatus: OdsStatus | null;
   odsCount: {
     total: number;
     withData: number;

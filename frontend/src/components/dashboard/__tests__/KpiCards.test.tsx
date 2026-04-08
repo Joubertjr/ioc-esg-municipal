@@ -57,6 +57,8 @@ function makeReport(overrides: Partial<MunicipalOdsReport> = {}): MunicipalOdsRe
     referenceYear: 2023,
     globalScore: 72,
     globalStatus: "verde",
+    geometricScore: 68,
+    geometricStatus: "amarelo",
     odsCount: { total: 17, withData: 15, verde: 10, amarelo: 4, vermelho: 1 },
     ods: [],
     ...overrides,
@@ -164,7 +166,12 @@ describe("KpiCards (data)", () => {
   // --- Score global ---
 
   it("displays the rounded global score value", () => {
-    render(<KpiCards report={makeReport({ globalScore: 72.6 })} isLoading={false} />);
+    render(
+      <KpiCards
+        report={makeReport({ globalScore: 72.6, geometricScore: 72.6 })}
+        isLoading={false}
+      />,
+    );
     expect(screen.getByText("73")).toBeInTheDocument();
   });
 
