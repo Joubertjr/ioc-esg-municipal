@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import {
   RadarChart,
   Radar,
@@ -8,8 +9,8 @@ import {
   Tooltip,
   Legend,
 } from "recharts";
-import { ODS_DEFINITIONS } from "../../../../shared/constants/ods";
 import { useTheme } from "../../hooks/useTheme";
+import { ODS_DIMENSIONS } from "../../lib/odsDimensions";
 
 export interface ComparisonRadarProps {
   comparison: Array<{
@@ -23,13 +24,13 @@ export interface ComparisonRadarProps {
 }
 
 interface RadarDataPoint {
-  subject: string;
-  odsName: string;
+  dimension: string;
+  description: string;
   municipalityScore: number;
   benchmarkAverage: number;
   municipalityScoreRaw: number | null;
   benchmarkAverageRaw: number | null;
-  delta: number | null;
+  fullMark: number;
 }
 
 // Recharts does not export precise types for custom tooltip payload entries.
@@ -49,11 +50,17 @@ function ComparisonTooltip({ active, payload }: CustomTooltipProps) {
   if (!active || !payload?.[0]) return null;
 
   const point = payload[0].payload;
-  const delta = point.delta;
+  const delta =
+    point.municipalityScoreRaw !== null && point.benchmarkAverageRaw !== null
+      ? Math.round((point.municipalityScoreRaw - point.benchmarkAverageRaw) * 10) / 10
+      : null;
 
   return (
     <div className="bg-card px-3 py-2 rounded-xl shadow-popover border-0 text-xs min-w-[180px]">
-      <p className="font-semibold text-foreground mb-1.5">{point.odsName}</p>
+      <p className="font-semibold text-foreground mb-1.5">
+        {point.dimension}
+        <span className="font-normal text-muted-foreground ml-1">— {point.description}</span>
+      </p>
       <div className="space-y-1">
         <div className="flex justify-between gap-4">
           <span className="text-primary">Município</span>
@@ -91,20 +98,61 @@ function ComparisonTooltip({ active, payload }: CustomTooltipProps) {
   );
 }
 
+function buildComparisonRadarData(
+  comparison: ComparisonRadarProps["comparison"],
+): RadarDataPoint[] {
+  return ODS_DIMENSIONS.map((dim) => {
+    const members = dim.odsNumbers
+      .map((n) => comparison.find((c) => c.odsNumber === n))
+      .filter((c): c is ComparisonRadarProps["comparison"][number] => c !== undefined);
+
+    const municipalityMembers = members.filter((m) => m.municipalityScore !== null);
+    const benchmarkMembers = members.filter((m) => m.benchmarkAverage !== null);
+
+    const municipalityAvg =
+      municipalityMembers.length > 0
+        ? Math.round(
+            municipalityMembers.reduce((acc, m) => acc + (m.municipalityScore ?? 0), 0) /
+              municipalityMembers.length,
+          )
+        : null;
+
+    const benchmarkAvg =
+      benchmarkMembers.length > 0
+        ? Math.round(
+            benchmarkMembers.reduce((acc, m) => acc + (m.benchmarkAverage ?? 0), 0) /
+              benchmarkMembers.length,
+          )
+        : null;
+
+    return {
+      dimension: dim.name,
+      description: dim.description,
+      municipalityScore: municipalityAvg ?? 0,
+      benchmarkAverage: benchmarkAvg ?? 0,
+      municipalityScoreRaw: municipalityAvg,
+      benchmarkAverageRaw: benchmarkAvg,
+      fullMark: 100,
+    };
+  });
+}
+
 export function ComparisonRadar({ comparison, municipalityName }: ComparisonRadarProps) {
   const { resolvedTheme } = useTheme();
-  const isDark = resolvedTheme === "dark";
 
-  // Theme-aware colors for Recharts (SVG doesn't support CSS vars)
-  const gridColor = isDark ? "#374151" : "#e5e7eb";
-  const axisColor = isDark ? "#9ca3af" : "#6b7280";
-  const radiusColor = isDark ? "#6b7280" : "#9ca3af";
-  const municipalityStroke = isDark ? "#60a5fa" : "#2563eb";
-  const municipalityFill = isDark ? "#3b82f6" : "#3b82f6";
-  const benchmarkStroke = isDark ? "#9ca3af" : "#6b7280";
-  const benchmarkFill = isDark ? "#6b7280" : "#9ca3af";
+  const colors = useMemo(() => {
+    const isDark = resolvedTheme === "dark";
+    return {
+      grid: isDark ? "hsl(215, 28%, 25%)" : "#e5e7eb",
+      axis: isDark ? "hsl(218, 11%, 65%)" : "#6b7280",
+      radius: isDark ? "#6b7280" : "#9ca3af",
+      municipalityStroke: isDark ? "#60a5fa" : "#2563eb",
+      municipalityFill: isDark ? "#3b82f6" : "#3b82f6",
+      benchmarkStroke: isDark ? "#9ca3af" : "#6b7280",
+      benchmarkFill: isDark ? "#6b7280" : "#9ca3af",
+    };
+  }, [resolvedTheme]);
 
-  // Filter ODS where at least one score is available
   const validItems = comparison.filter(
     (item) => item.municipalityScore !== null || item.benchmarkAverage !== null,
   );
@@ -119,33 +167,32 @@ export function ComparisonRadar({ comparison, municipalityName }: ComparisonRada
     );
   }
 
-  const data: RadarDataPoint[] = validItems.map((item) => {
-    const def = ODS_DEFINITIONS.find((d) => d.number === item.odsNumber);
-    return {
-      subject: def?.shortName ?? `ODS ${item.odsNumber}`,
-      odsName: def?.name ?? `ODS ${item.odsNumber}`,
-      // Plot 0 when null — tooltip clarifies "sem dados"
-      municipalityScore: item.municipalityScore ?? 0,
-      benchmarkAverage: item.benchmarkAverage ?? 0,
-      municipalityScoreRaw: item.municipalityScore,
-      benchmarkAverageRaw: item.benchmarkAverage,
-      delta: item.delta,
-    };
-  });
+  const data = buildComparisonRadarData(comparison);
+  const hasAnyData = data.some((d) => d.municipalityScore > 0 || d.benchmarkAverage > 0);
+
+  if (!hasAnyData) {
+    return (
+      <div className="bg-card rounded-xl shadow-card p-4 flex items-center justify-center h-80">
+        <p className="text-sm text-muted-foreground/60 italic text-center">
+          Nenhum dado disponível para exibir o gráfico.
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div className="bg-card rounded-xl shadow-card p-4">
-      <h3 className="text-sm font-semibold text-foreground mb-1">Radar Comparativo ODS</h3>
+      <h3 className="text-sm font-semibold text-foreground mb-1">Radar Comparativo por Dimensão</h3>
       <p className="text-xs text-muted-foreground mb-3">{municipalityName} vs. média do grupo</p>
 
       <ResponsiveContainer width="100%" height={340}>
         <RadarChart data={data} outerRadius={110}>
-          <PolarGrid stroke={gridColor} />
-          <PolarAngleAxis dataKey="subject" tick={{ fontSize: 9, fill: axisColor }} />
+          <PolarGrid stroke={colors.grid} />
+          <PolarAngleAxis dataKey="dimension" tick={{ fontSize: 11, fill: colors.axis }} />
           <PolarRadiusAxis
             angle={90}
             domain={[0, 100]}
-            tick={{ fontSize: 9, fill: radiusColor }}
+            tick={{ fontSize: 9, fill: colors.radius }}
             tickCount={5}
           />
           <Tooltip content={<ComparisonTooltip />} />
@@ -155,8 +202,8 @@ export function ComparisonRadar({ comparison, municipalityName }: ComparisonRada
           <Radar
             name="Média do grupo"
             dataKey="benchmarkAverage"
-            stroke={benchmarkStroke}
-            fill={benchmarkFill}
+            stroke={colors.benchmarkStroke}
+            fill={colors.benchmarkFill}
             fillOpacity={0.15}
             strokeWidth={1.5}
             strokeDasharray="5 5"
@@ -166,8 +213,8 @@ export function ComparisonRadar({ comparison, municipalityName }: ComparisonRada
           <Radar
             name="Seu município"
             dataKey="municipalityScore"
-            stroke={municipalityStroke}
-            fill={municipalityFill}
+            stroke={colors.municipalityStroke}
+            fill={colors.municipalityFill}
             fillOpacity={0.3}
             strokeWidth={2}
           />
@@ -175,7 +222,8 @@ export function ComparisonRadar({ comparison, municipalityName }: ComparisonRada
       </ResponsiveContainer>
 
       <p className="text-[10px] text-muted-foreground/60 text-center mt-1">
-        ODS plotados como 0 podem indicar ausência de dados — consulte a tabela abaixo.
+        Cada dimensão agrupa a média dos ODS correspondentes (Social, Econômico, Ambiental,
+        Institucional, Parcerias).
       </p>
     </div>
   );

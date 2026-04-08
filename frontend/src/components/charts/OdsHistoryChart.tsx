@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import {
   ResponsiveContainer,
   LineChart,
@@ -11,6 +12,7 @@ import {
   Legend,
 } from "recharts";
 import { useOdsHistory } from "../../hooks/useOdsHistory";
+import { useTheme } from "../../hooks/useTheme";
 import type { TooltipProps } from "recharts";
 
 interface OdsHistoryChartProps {
@@ -68,6 +70,23 @@ function CustomTooltip({ active, payload }: TooltipProps<number, string>) {
 
 export function OdsHistoryChart({ ibgeCode }: OdsHistoryChartProps) {
   const { data, isLoading } = useOdsHistory(ibgeCode);
+  const { resolvedTheme } = useTheme();
+
+  const colors = useMemo(() => {
+    const isDark = resolvedTheme === "dark";
+    return {
+      grid: isDark ? "hsl(215, 28%, 25%)" : "#f0f0f0",
+      tick: isDark ? "hsl(218, 11%, 65%)" : "#6b7280",
+      redBand: isDark ? "hsla(0, 60%, 30%, 0.15)" : "#fef2f2",
+      yellowBand: isDark ? "hsla(40, 60%, 30%, 0.15)" : "#fffbeb",
+      greenBand: isDark ? "hsla(140, 60%, 25%, 0.15)" : "#f0fdf4",
+      bandOpacity: isDark ? 0.8 : 0.5,
+      line: isDark ? "#60a5fa" : "#2563eb",
+      refGreen: isDark ? "#4ade80" : "#22c55e",
+      refRed: isDark ? "#f87171" : "#ef4444",
+      refLabel: isDark ? "#4ade80" : "#16a34a",
+    };
+  }, [resolvedTheme]);
 
   if (isLoading) {
     return (
@@ -118,17 +137,27 @@ export function OdsHistoryChart({ ibgeCode }: OdsHistoryChartProps) {
       <h3 className="text-base font-semibold text-foreground mb-4">Evolução do Score ESG</h3>
       <ResponsiveContainer width="100%" height={300}>
         <LineChart data={chartData} margin={{ top: 10, right: 24, left: 0, bottom: 0 }}>
-          <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+          <CartesianGrid strokeDasharray="3 3" stroke={colors.grid} />
 
           {/* Colored bands: red <40, yellow 40-70, green 70-100 */}
-          <ReferenceArea y1={0} y2={40} fill="#fef2f2" fillOpacity={0.5} />
-          <ReferenceArea y1={40} y2={70} fill="#fffbeb" fillOpacity={0.5} />
-          <ReferenceArea y1={70} y2={100} fill="#f0fdf4" fillOpacity={0.5} />
+          <ReferenceArea y1={0} y2={40} fill={colors.redBand} fillOpacity={colors.bandOpacity} />
+          <ReferenceArea
+            y1={40}
+            y2={70}
+            fill={colors.yellowBand}
+            fillOpacity={colors.bandOpacity}
+          />
+          <ReferenceArea
+            y1={70}
+            y2={100}
+            fill={colors.greenBand}
+            fillOpacity={colors.bandOpacity}
+          />
 
-          <XAxis dataKey="year" tick={{ fontSize: 12, fill: "#6b7280" }} tickLine={false} />
+          <XAxis dataKey="year" tick={{ fontSize: 12, fill: colors.tick }} tickLine={false} />
           <YAxis
             domain={[0, 100]}
-            tick={{ fontSize: 12, fill: "#6b7280" }}
+            tick={{ fontSize: 12, fill: colors.tick }}
             tickLine={false}
             axisLine={false}
             width={36}
@@ -140,20 +169,25 @@ export function OdsHistoryChart({ ibgeCode }: OdsHistoryChartProps) {
           {/* Reference lines for thresholds */}
           <ReferenceLine
             y={70}
-            stroke="#22c55e"
+            stroke={colors.refGreen}
             strokeDasharray="4 3"
             strokeWidth={1.5}
-            label={{ value: "Meta", position: "insideTopRight", fontSize: 11, fill: "#16a34a" }}
+            label={{
+              value: "Meta",
+              position: "insideTopRight",
+              fontSize: 11,
+              fill: colors.refLabel,
+            }}
           />
-          <ReferenceLine y={40} stroke="#ef4444" strokeDasharray="4 3" strokeWidth={1.5} />
+          <ReferenceLine y={40} stroke={colors.refRed} strokeDasharray="4 3" strokeWidth={1.5} />
 
           <Line
             type="monotone"
             dataKey="score"
             name="Score Global"
-            stroke="#2563eb"
+            stroke={colors.line}
             strokeWidth={2}
-            dot={{ r: 4, fill: "#2563eb", strokeWidth: 0 }}
+            dot={{ r: 4, fill: colors.line, strokeWidth: 0 }}
             activeDot={{ r: 6 }}
           />
         </LineChart>

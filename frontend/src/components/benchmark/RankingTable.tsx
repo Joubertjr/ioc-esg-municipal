@@ -1,5 +1,6 @@
 import type { RankingEntry } from "../../types/api";
 import type { OdsStatus } from "../../types/api";
+import { getMunicipalityName } from "../../lib/municipalityLookup";
 
 interface RankingTableProps {
   ranking: RankingEntry[];
@@ -141,7 +142,7 @@ export function RankingTable({ ranking, highlightCode, globalAverage }: RankingT
                     <span
                       className={`font-medium ${isHighlighted ? "text-primary" : "text-foreground"}`}
                     >
-                      {entry.municipalityName ?? entry.ibgeCode}
+                      {entry.municipalityName ?? getMunicipalityName(entry.ibgeCode)}
                     </span>
                   </td>
 

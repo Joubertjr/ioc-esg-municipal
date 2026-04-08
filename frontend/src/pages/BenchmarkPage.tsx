@@ -7,6 +7,7 @@ import { RankingTable } from "../components/benchmark/RankingTable";
 import { ComparisonRadar } from "../components/benchmark/ComparisonRadar";
 import { OdsComparisonTable } from "../components/benchmark/OdsComparisonTable";
 import { useBenchmark, useCompare } from "../hooks/useBenchmark";
+import { getMunicipalityName } from "../lib/municipalityLookup";
 
 const DEFAULT_IBGE_CODE = "4205407"; // Florianópolis
 const DEFAULT_SELECTED_CODES = [
@@ -307,7 +308,9 @@ export function BenchmarkPage() {
               ) : compare ? (
                 <ComparisonRadar
                   comparison={compare.comparison}
-                  municipalityName={myMunicipality?.municipalityName ?? "Município"}
+                  municipalityName={
+                    myMunicipality?.municipalityName ?? getMunicipalityName(ibgeCode)
+                  }
                 />
               ) : (
                 <RadarSkeleton />

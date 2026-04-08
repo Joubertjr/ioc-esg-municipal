@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { SC_MUNICIPALITIES } from "../../../../shared/constants/municipalities-sc";
+import { getMunicipalityName } from "../../lib/municipalityLookup";
 
 interface MunicipalityMultiSelectProps {
   selected: string[];
@@ -9,10 +10,6 @@ interface MunicipalityMultiSelectProps {
 
 // Florianópolis, Joinville, Chapecó, Criciúma, São José
 const POPULAR_CODES = ["4205407", "4209102", "4204202", "4205002", "4218707"];
-
-function getMunicipalityName(ibgeCode: string): string {
-  return SC_MUNICIPALITIES.find((m) => m.ibgeCode === ibgeCode)?.name ?? ibgeCode;
-}
 
 export function MunicipalityMultiSelect({
   selected,
