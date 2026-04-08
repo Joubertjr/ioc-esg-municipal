@@ -6,6 +6,7 @@ interface MunicipalityMultiSelectProps {
   selected: string[];
   onChange: (codes: string[]) => void;
   maxItems?: number;
+  suggestedCodes?: string[];
 }
 
 // Florianópolis, Joinville, Chapecó, Criciúma, São José
@@ -15,6 +16,7 @@ export function MunicipalityMultiSelect({
   selected,
   onChange,
   maxItems = 50,
+  suggestedCodes,
 }: MunicipalityMultiSelectProps) {
   const [query, setQuery] = useState("");
   const [debouncedQuery, setDebouncedQuery] = useState("");
@@ -83,6 +85,11 @@ export function MunicipalityMultiSelect({
               className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-primary/10 text-primary border border-primary/10"
             >
               {getMunicipalityName(code)}
+              {suggestedCodes?.includes(code) && (
+                <span className="text-[9px] font-bold text-primary/80 bg-primary/15 px-1 rounded">
+                  IA
+                </span>
+              )}
               <button
                 type="button"
                 onClick={() => handleRemove(code)}

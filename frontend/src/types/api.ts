@@ -246,3 +246,11 @@ export interface RecommendedScenario {
   basedOnRecommendations: number;
   allOdsGreen: boolean;
 }
+
+// ---- Peers ----
+
+export interface PeersResult {
+  ibgeCode: string;
+  peers: string[];
+  peerCount: number;
+}

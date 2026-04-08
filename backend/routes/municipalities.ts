@@ -11,6 +11,7 @@ import { Router, type Request, type Response, type Router as RouterType } from "
 import { z, ZodError } from "zod";
 import { prisma } from "../lib/prisma.js";
 import { logger } from "../utils/logger.js";
+import { findPeerMunicipalities } from "../services/clustering/peer_clustering_service.js";
 
 const router: RouterType = Router();
 
@@ -64,6 +65,61 @@ router.get("/", async (req: Request, res: Response) => {
       error: err instanceof Error ? err.message : String(err),
     });
     res.status(500).json({ error: "Erro interno ao listar municípios" });
+  }
+});
+
+// ---------------------------------------------------------------------------
+// GET /api/municipalities/:ibgeCode/peers
+// ---------------------------------------------------------------------------
+
+const TopNSchema = z.coerce.number().int().min(1).max(20).default(5);
+
+/**
+ * Retorna os N municípios de SC mais similares ao município informado.
+ * Similaridade calculada via distância euclidiana no espaço z-score de
+ * população, PIB per capita e macrorregião.
+ *
+ * Query params: topN (default 5, min 1, max 20)
+ */
+router.get("/:ibgeCode/peers", (req: Request, res: Response) => {
+  const rawCode = req.params["ibgeCode"];
+
+  const parsedCode = IbgeCodeSchema.safeParse(rawCode);
+  if (!parsedCode.success) {
+    const message = parsedCode.error.errors[0]?.message ?? "ibgeCode inválido";
+    res.status(400).json({ error: message });
+    return;
+  }
+
+  const ibgeCode = parsedCode.data;
+
+  const parsedTopN = TopNSchema.safeParse(req.query["topN"]);
+  const topN = parsedTopN.success ? parsedTopN.data : 5;
+
+  logger.info("GET /api/municipalities/:ibgeCode/peers", { ibgeCode, topN });
+
+  try {
+    const peers = findPeerMunicipalities(ibgeCode, topN);
+
+    if (peers.length === 0) {
+      res
+        .status(404)
+        .json({ error: `Município ${ibgeCode} não encontrado no dataset de clustering` });
+      return;
+    }
+
+    logger.info("GET /api/municipalities/:ibgeCode/peers — ok", {
+      ibgeCode,
+      peerCount: peers.length,
+    });
+
+    res.json({ ibgeCode, peers, peerCount: peers.length });
+  } catch (err) {
+    logger.error("GET /api/municipalities/:ibgeCode/peers — erro", {
+      ibgeCode,
+      error: err instanceof Error ? err.message : String(err),
+    });
+    res.status(500).json({ error: "Erro interno ao calcular peers" });
   }
 });
 

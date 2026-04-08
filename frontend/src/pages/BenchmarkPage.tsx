@@ -7,6 +7,7 @@ import { RankingTable } from "../components/benchmark/RankingTable";
 import { ComparisonRadar } from "../components/benchmark/ComparisonRadar";
 import { OdsComparisonTable } from "../components/benchmark/OdsComparisonTable";
 import { useBenchmark, useCompare } from "../hooks/useBenchmark";
+import { usePeers } from "../hooks/usePeers";
 import { getMunicipalityName } from "../lib/municipalityLookup";
 
 const DEFAULT_IBGE_CODE = "4205407"; // Florianópolis
@@ -109,6 +110,9 @@ function SummaryCard({ label, value, sub, highlight = "neutral" }: SummaryCardPr
 export function BenchmarkPage() {
   const [ibgeCode, setIbgeCode] = useState(DEFAULT_IBGE_CODE);
   const [selectedCodes, setSelectedCodes] = useState<string[]>(DEFAULT_SELECTED_CODES);
+  const [suggestedCodes, setSuggestedCodes] = useState<string[]>([]);
+
+  const { data: peersData, isLoading: isPeersLoading } = usePeers(ibgeCode);
 
   const {
     data: benchmark,
@@ -176,10 +180,48 @@ export function BenchmarkPage() {
               {selectedCodes.length === 1 ? "município selecionado" : "municípios selecionados"}
             </span>
           </div>
+
+          {/* Suggest peers button */}
+          <button
+            type="button"
+            disabled={isPeersLoading || !peersData?.peers?.length}
+            onClick={() => {
+              if (peersData?.peers) {
+                const newCodes = [ibgeCode, ...peersData.peers];
+                setSelectedCodes(newCodes);
+                setSuggestedCodes(peersData.peers);
+              }
+            }}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg bg-primary/10 text-primary hover:bg-primary/20 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          >
+            {isPeersLoading ? (
+              <>
+                <span className="inline-block w-3 h-3 border-2 border-primary/30 border-t-primary rounded-full animate-spin" />
+                Buscando similares...
+              </>
+            ) : (
+              <>
+                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M13 10V3L4 14h7v7l9-11h-7z"
+                  />
+                </svg>
+                Sugerir municípios similares
+              </>
+            )}
+          </button>
+
           <MunicipalityMultiSelect
             selected={selectedCodes}
-            onChange={setSelectedCodes}
+            onChange={(codes) => {
+              setSelectedCodes(codes);
+              setSuggestedCodes((prev) => prev.filter((c) => codes.includes(c)));
+            }}
             maxItems={10}
+            suggestedCodes={suggestedCodes}
           />
           {!canCompare && (
             <p className="text-xs text-warning">Selecione pelo menos 2 municípios para comparar.</p>
