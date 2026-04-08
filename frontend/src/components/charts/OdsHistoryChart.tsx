@@ -136,8 +136,12 @@ export function OdsHistoryChart({ ibgeCode }: OdsHistoryChartProps) {
     <div>
       <h3 className="text-base font-semibold text-foreground mb-4">Evolução do Score ESG</h3>
       <ResponsiveContainer width="100%" height={300}>
-        <LineChart data={chartData} margin={{ top: 10, right: 24, left: 0, bottom: 0 }}>
-          <CartesianGrid strokeDasharray="3 3" stroke={colors.grid} />
+        <LineChart
+          data={chartData}
+          margin={{ top: 10, right: 24, left: 0, bottom: 0 }}
+          style={{ background: "transparent" }}
+        >
+          <CartesianGrid strokeDasharray="3 3" stroke={colors.grid} fill="transparent" />
 
           {/* Colored bands: red <40, yellow 40-70, green 70-100 */}
           <ReferenceArea y1={0} y2={40} fill={colors.redBand} fillOpacity={colors.bandOpacity} />

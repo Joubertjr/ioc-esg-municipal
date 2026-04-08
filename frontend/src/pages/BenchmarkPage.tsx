@@ -14,7 +14,7 @@ const DEFAULT_SELECTED_CODES = [
   "4205407", // Florianópolis
   "4209102", // Joinville
   "4204202", // Chapecó
-  "4205002", // Criciúma
+  "4204608", // Criciúma
   "4218707", // São José
 ];
 

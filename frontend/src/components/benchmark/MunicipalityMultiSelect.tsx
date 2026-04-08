@@ -9,7 +9,7 @@ interface MunicipalityMultiSelectProps {
 }
 
 // Florianópolis, Joinville, Chapecó, Criciúma, São José
-const POPULAR_CODES = ["4205407", "4209102", "4204202", "4205002", "4218707"];
+const POPULAR_CODES = ["4205407", "4209102", "4204202", "4204608", "4218707"];
 
 export function MunicipalityMultiSelect({
   selected,
