@@ -95,10 +95,10 @@ export function DashboardPage() {
 
         {/* ── Row 3: Recommendations + History side-by-side ── */}
         <section className="grid grid-cols-1 xl:grid-cols-[1fr_380px] gap-4">
-          <div className="bg-card rounded-xl shadow-sm border border-border p-6">
+          <div className="bg-card rounded-xl shadow-card p-6">
             <RecommendationPanel ibgeCode={ibgeCode} compact />
           </div>
-          <div className="bg-card rounded-xl shadow-sm border border-border p-6">
+          <div className="bg-card rounded-xl shadow-card p-6">
             <OdsHistoryChart ibgeCode={ibgeCode} />
           </div>
         </section>

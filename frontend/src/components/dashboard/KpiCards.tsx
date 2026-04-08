@@ -55,9 +55,26 @@ interface KpiCardProps {
   borderClass: string;
   animate?: boolean;
   prefix?: string;
+  hero?: boolean;
 }
 
-function KpiCard({ label, value, suffix, prefix, context, borderClass, animate }: KpiCardProps) {
+function KpiCard({
+  label,
+  value,
+  suffix,
+  prefix,
+  context,
+  borderClass,
+  animate,
+  hero,
+}: KpiCardProps) {
+  const valueSize = hero
+    ? "text-5xl md:text-6xl font-extrabold tracking-tight tabular-nums text-foreground leading-none"
+    : "text-3xl font-extrabold tracking-tight tabular-nums text-foreground leading-none";
+  const prefixSize = hero
+    ? "text-3xl md:text-4xl font-extrabold tracking-tight text-foreground leading-none"
+    : "text-2xl font-extrabold tracking-tight text-foreground leading-none";
+
   return (
     <Card className={cn("border-l-4 rounded-xl overflow-hidden", borderClass)}>
       <CardContent className="p-5 flex flex-col gap-1">
@@ -68,22 +85,19 @@ function KpiCard({ label, value, suffix, prefix, context, borderClass, animate }
 
         {/* Big number */}
         <div className="flex items-baseline gap-1 mt-1">
-          {prefix && (
-            <span className="text-2xl font-extrabold tracking-tight text-foreground leading-none">
-              {prefix}
-            </span>
-          )}
+          {prefix && <span className={prefixSize}>{prefix}</span>}
           {animate && typeof value === "number" ? (
-            <AnimatedNumber
-              value={value}
-              className="text-3xl font-extrabold tracking-tight tabular-nums text-foreground leading-none"
-            />
+            <AnimatedNumber value={value} className={valueSize} />
           ) : (
-            <span className="text-3xl font-extrabold tracking-tight tabular-nums text-foreground leading-none">
-              {value}
+            <span className={valueSize}>{value}</span>
+          )}
+          {suffix && (
+            <span
+              className={cn("text-muted-foreground font-normal", hero ? "text-base" : "text-sm")}
+            >
+              {suffix}
             </span>
           )}
-          {suffix && <span className="text-sm text-muted-foreground font-normal">{suffix}</span>}
         </div>
 
         {/* Context line */}
@@ -238,7 +252,7 @@ export function KpiCards({
 
   return (
     <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-      {/* Card 1 — Score Global */}
+      {/* Card 1 — Score Global (hero) */}
       <KpiCard
         label="Score Global"
         value={report.globalScore !== null ? Math.round(report.globalScore) : "—"}
@@ -246,6 +260,7 @@ export function KpiCards({
         context={globalContext}
         borderClass={globalBorder}
         animate
+        hero
       />
 
       {/* Card 2 — Ranking SC */}

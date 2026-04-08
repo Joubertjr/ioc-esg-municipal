@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { Card, CardContent } from "../components/ui/card";
+import { Skeleton } from "../components/ui/skeleton";
 import { AppShell } from "../components/layout/AppShell";
 import { MunicipalityMultiSelect } from "../components/benchmark/MunicipalityMultiSelect";
 import { RankingTable } from "../components/benchmark/RankingTable";
@@ -19,20 +21,22 @@ const DEFAULT_SELECTED_CODES = [
 
 function SummaryCardSkeleton() {
   return (
-    <div className="bg-card rounded-xl border border-border p-5 animate-pulse">
-      <div className="h-3 w-24 bg-muted rounded mb-3" />
-      <div className="h-8 w-16 bg-muted rounded mb-1" />
-      <div className="h-3 w-32 bg-muted rounded" />
-    </div>
+    <Card className="rounded-xl">
+      <CardContent className="p-5 flex flex-col gap-2">
+        <Skeleton className="h-3 w-24 rounded" />
+        <Skeleton className="h-8 w-16 rounded" />
+        <Skeleton className="h-3 w-32 rounded" />
+      </CardContent>
+    </Card>
   );
 }
 
 function RankingSkeleton() {
   return (
-    <div className="space-y-2 animate-pulse">
-      <div className="h-10 bg-muted rounded-lg" />
+    <div className="space-y-2">
+      <Skeleton className="h-10 w-full rounded-lg" />
       {Array.from({ length: 5 }, (_, i) => (
-        <div key={i} className="h-14 bg-background rounded-lg border border-border" />
+        <Skeleton key={i} className="h-14 w-full rounded-lg" />
       ))}
     </div>
   );
@@ -40,21 +44,25 @@ function RankingSkeleton() {
 
 function RadarSkeleton() {
   return (
-    <div className="bg-card rounded-xl border border-border p-5 animate-pulse">
-      <div className="h-4 w-32 bg-muted rounded mb-4" />
-      <div className="h-64 bg-muted rounded-lg" />
-    </div>
+    <Card className="rounded-xl">
+      <CardContent className="p-5 space-y-4">
+        <Skeleton className="h-4 w-32 rounded" />
+        <Skeleton className="h-64 w-full rounded-lg" />
+      </CardContent>
+    </Card>
   );
 }
 
 function TableSkeleton() {
   return (
-    <div className="bg-card rounded-xl border border-border p-5 animate-pulse space-y-2">
-      <div className="h-4 w-40 bg-muted rounded mb-4" />
-      {Array.from({ length: 8 }, (_, i) => (
-        <div key={i} className="h-8 bg-muted rounded" />
-      ))}
-    </div>
+    <Card className="rounded-xl">
+      <CardContent className="p-5 space-y-2">
+        <Skeleton className="h-4 w-40 rounded mb-4" />
+        {Array.from({ length: 8 }, (_, i) => (
+          <Skeleton key={i} className="h-8 w-full rounded" />
+        ))}
+      </CardContent>
+    </Card>
   );
 }
 
@@ -75,14 +83,23 @@ function SummaryCard({ label, value, sub, highlight = "neutral" }: SummaryCardPr
         ? "text-danger"
         : "text-foreground";
 
+  const borderAccent =
+    highlight === "positive"
+      ? "border-l-success"
+      : highlight === "negative"
+        ? "border-l-danger"
+        : "border-l-border";
+
   return (
-    <div className="bg-card rounded-xl border border-border p-5">
-      <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-1">
-        {label}
-      </p>
-      <p className={`text-2xl font-bold tabular-nums ${valueColor}`}>{value}</p>
-      {sub && <p className="text-xs text-muted-foreground/60 mt-0.5">{sub}</p>}
-    </div>
+    <Card className={`border-l-4 ${borderAccent} rounded-xl`}>
+      <CardContent className="p-5">
+        <p className="text-[11px] font-medium text-muted-foreground uppercase tracking-[0.08em] mb-1">
+          {label}
+        </p>
+        <p className={`text-3xl font-extrabold tabular-nums ${valueColor}`}>{value}</p>
+        {sub && <p className="text-xs text-muted-foreground/60 mt-0.5">{sub}</p>}
+      </CardContent>
+    </Card>
   );
 }
 
@@ -150,7 +167,7 @@ export function BenchmarkPage() {
         </div>
 
         {/* Municipality selection */}
-        <div className="bg-card rounded-xl border border-border p-5 space-y-3">
+        <div className="bg-card rounded-xl shadow-card p-5 space-y-3">
           <div className="flex items-center justify-between">
             <h2 className="text-sm font-semibold text-foreground">Municípios para comparação</h2>
             <span className="text-xs text-muted-foreground">

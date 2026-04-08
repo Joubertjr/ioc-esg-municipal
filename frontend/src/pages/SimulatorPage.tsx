@@ -92,8 +92,10 @@ function ScoreDisplay({ label, score }: { label: string; score: number | null })
 
   return (
     <div className="text-center">
-      <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">{label}</p>
-      <p className={`text-4xl font-bold tabular-nums ${color}`}>
+      <p className="text-[11px] text-muted-foreground uppercase tracking-[0.08em] font-medium mb-1">
+        {label}
+      </p>
+      <p className={`text-5xl font-extrabold tabular-nums ${color}`}>
         {score !== null ? score.toFixed(1) : "—"}
       </p>
       <p className="text-xs text-muted-foreground/60 mt-0.5">/ 100</p>
@@ -133,7 +135,7 @@ function OdsResultCard({ ods }: { ods: OdsSimulationResult }) {
 
   return (
     <div
-      className="bg-card rounded-lg border border-border p-3 flex flex-col gap-1"
+      className="bg-card rounded-xl shadow-card p-3 flex flex-col gap-1"
       style={{ borderTopColor: ods.color, borderTopWidth: 3 }}
     >
       <div className="flex items-center justify-between">
@@ -188,7 +190,7 @@ function OdsBadge({ odsNumber }: { odsNumber: number }) {
 
 function EmptyResultsPlaceholder() {
   return (
-    <div className="bg-card rounded-xl border border-border p-10 flex flex-col items-center justify-center text-center gap-4">
+    <div className="bg-card rounded-xl shadow-card p-10 flex flex-col items-center justify-center text-center gap-4">
       <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
         <svg
           className="w-8 h-8 text-primary/40"
@@ -369,7 +371,7 @@ export function SimulatorPage() {
 
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Município + Valor */}
-          <div className="bg-card rounded-xl border border-border p-6">
+          <div className="bg-card rounded-xl shadow-card p-6">
             <h2 className="text-base font-semibold text-foreground mb-4">
               Parâmetros da simulação
             </h2>
@@ -387,7 +389,7 @@ export function SimulatorPage() {
                     id="municipality"
                     value={ibgeCode}
                     onChange={(e) => setIbgeCode(e.target.value)}
-                    className="w-full px-3 py-2 border border-border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+                    className="w-full px-3 py-2 bg-card border border-border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-ring"
                   >
                     {municipalities.map((m) => (
                       <option key={m.ibgeCode} value={m.ibgeCode}>
@@ -422,7 +424,7 @@ export function SimulatorPage() {
                     onChange={handleAmountChange}
                     onFocus={handleAmountFocus}
                     onBlur={handleAmountBlur}
-                    className="w-full pl-9 pr-3 py-2 border border-border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+                    className="w-full pl-9 pr-3 py-2 bg-card border border-border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-ring"
                   />
                 </div>
                 {totalAmount > 0 && (
@@ -435,7 +437,7 @@ export function SimulatorPage() {
           </div>
 
           {/* Sliders de alocação */}
-          <div className="bg-card rounded-xl border border-border p-6">
+          <div className="bg-card rounded-xl shadow-card p-6">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-base font-semibold text-foreground">Distribuição por área (%)</h2>
               <span
@@ -528,7 +530,7 @@ export function SimulatorPage() {
         {/* Resultados ou placeholder */}
         {result ? (
           <div className="space-y-6">
-            <div className="bg-card rounded-xl border border-border p-6">
+            <div className="bg-card rounded-xl shadow-card p-6">
               <h2 className="text-base font-semibold text-foreground mb-1 text-center">
                 Projeção de Impacto nos ODS — {result.municipalityName ?? result.ibgeCode}
               </h2>

@@ -96,14 +96,14 @@ function TableHead() {
 export function RankingTable({ ranking, highlightCode, globalAverage }: RankingTableProps) {
   if (ranking.length === 0) {
     return (
-      <div className="rounded-lg border border-border p-8 text-center">
+      <div className="bg-card rounded-xl shadow-card p-8 text-center">
         <p className="text-sm text-muted-foreground">Nenhum dado de ranking disponível.</p>
       </div>
     );
   }
 
   return (
-    <div className="rounded-lg border border-border overflow-hidden">
+    <div className="bg-card rounded-xl shadow-card overflow-hidden">
       <div className="max-h-[600px] overflow-y-auto">
         <table className="w-full text-sm" aria-label="Ranking de municípios">
           <TableHead />
@@ -165,7 +165,7 @@ export function RankingTable({ ranking, highlightCode, globalAverage }: RankingT
                   <td className="px-4 py-3 w-36">
                     <StatusCell score={entry.globalScore} />
                     {/* Mini progress bar */}
-                    <div className="mt-1 h-1 w-full bg-muted rounded-full overflow-hidden">
+                    <div className="mt-1 h-1.5 w-full bg-muted rounded-full overflow-hidden">
                       <div
                         className={`h-full rounded-full ${config.barColor}`}
                         style={{

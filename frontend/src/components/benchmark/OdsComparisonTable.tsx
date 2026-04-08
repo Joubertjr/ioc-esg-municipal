@@ -64,7 +64,7 @@ export function OdsComparisonTable({ comparison, averages }: OdsComparisonTableP
   const averagesMap = new Map(averages.map((a) => [a.odsNumber, a]));
 
   return (
-    <div className="bg-card rounded-lg border border-border overflow-hidden">
+    <div className="bg-card rounded-xl shadow-card overflow-hidden">
       <div className="px-4 py-3 border-b border-border">
         <h3 className="text-sm font-semibold text-foreground">Tabela Comparativa por ODS</h3>
         <p className="text-xs text-muted-foreground mt-0.5">Município vs. média do grupo</p>
@@ -133,9 +133,9 @@ export function OdsComparisonTable({ comparison, averages }: OdsComparisonTableP
                         <div className="flex justify-between">
                           <ScoreCell score={entry.municipalityScore} />
                         </div>
-                        <div className="h-2 w-full rounded-full bg-muted overflow-hidden">
+                        <div className="h-1.5 w-full rounded-full bg-muted overflow-hidden">
                           <div
-                            className="h-full rounded-full bg-primary transition-all duration-500"
+                            className="h-full rounded-full bg-primary transition-all duration-300"
                             style={{ width: `${Math.min(100, entry.municipalityScore)}%` }}
                           />
                         </div>
@@ -154,7 +154,7 @@ export function OdsComparisonTable({ comparison, averages }: OdsComparisonTableP
                         <div className="flex justify-between">
                           <ScoreCell score={entry.benchmarkAverage} />
                         </div>
-                        <div className="h-2 w-full rounded-full bg-muted overflow-hidden">
+                        <div className="h-1.5 w-full rounded-full bg-muted overflow-hidden">
                           <div
                             className="h-full rounded-full bg-muted-foreground/40 transition-all duration-500"
                             style={{ width: `${Math.min(100, entry.benchmarkAverage)}%` }}

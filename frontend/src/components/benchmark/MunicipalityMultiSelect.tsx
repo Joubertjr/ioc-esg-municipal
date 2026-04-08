@@ -118,7 +118,7 @@ export function MunicipalityMultiSelect({
               : "Buscar município..."
           }
           disabled={selected.length >= maxItems}
-          className="w-full px-3 py-1.5 text-sm border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent disabled:bg-muted disabled:text-muted-foreground/60 disabled:cursor-not-allowed"
+          className="w-full px-3 py-1.5 text-sm bg-card border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent disabled:bg-muted disabled:text-muted-foreground/60 disabled:cursor-not-allowed"
           onFocus={() => {
             setIsOpen(true);
           }}
@@ -130,7 +130,7 @@ export function MunicipalityMultiSelect({
 
         {/* Dropdown */}
         {isOpen && filtered.length > 0 && (
-          <ul className="absolute top-full left-0 mt-1 w-full bg-card border border-border rounded-md shadow-lg max-h-60 overflow-y-auto z-50">
+          <ul className="absolute top-full left-0 mt-1 w-full bg-card border border-border rounded-xl shadow-popover max-h-60 overflow-y-auto z-50">
             {filtered.map((m) => {
               const isSelected = selected.includes(m.ibgeCode);
               return (

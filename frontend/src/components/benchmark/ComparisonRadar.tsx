@@ -9,6 +9,7 @@ import {
   Legend,
 } from "recharts";
 import { ODS_DEFINITIONS } from "../../../../shared/constants/ods";
+import { useTheme } from "../../hooks/useTheme";
 
 export interface ComparisonRadarProps {
   comparison: Array<{
@@ -51,7 +52,7 @@ function ComparisonTooltip({ active, payload }: CustomTooltipProps) {
   const delta = point.delta;
 
   return (
-    <div className="bg-card px-3 py-2 rounded-lg shadow-lg border border-border text-xs min-w-[180px]">
+    <div className="bg-card px-3 py-2 rounded-xl shadow-popover border border-border text-xs min-w-[180px]">
       <p className="font-semibold text-foreground mb-1.5">{point.odsName}</p>
       <div className="space-y-1">
         <div className="flex justify-between gap-4">
@@ -91,6 +92,18 @@ function ComparisonTooltip({ active, payload }: CustomTooltipProps) {
 }
 
 export function ComparisonRadar({ comparison, municipalityName }: ComparisonRadarProps) {
+  const { resolvedTheme } = useTheme();
+  const isDark = resolvedTheme === "dark";
+
+  // Theme-aware colors for Recharts (SVG doesn't support CSS vars)
+  const gridColor = isDark ? "#374151" : "#e5e7eb";
+  const axisColor = isDark ? "#9ca3af" : "#6b7280";
+  const radiusColor = isDark ? "#6b7280" : "#9ca3af";
+  const municipalityStroke = isDark ? "#60a5fa" : "#2563eb";
+  const municipalityFill = isDark ? "#3b82f6" : "#3b82f6";
+  const benchmarkStroke = isDark ? "#9ca3af" : "#6b7280";
+  const benchmarkFill = isDark ? "#6b7280" : "#9ca3af";
+
   // Filter ODS where at least one score is available
   const validItems = comparison.filter(
     (item) => item.municipalityScore !== null || item.benchmarkAverage !== null,
@@ -98,7 +111,7 @@ export function ComparisonRadar({ comparison, municipalityName }: ComparisonRada
 
   if (validItems.length === 0) {
     return (
-      <div className="bg-card rounded-lg border border-border p-4 flex items-center justify-center h-80">
+      <div className="bg-card rounded-xl shadow-card p-4 flex items-center justify-center h-80">
         <p className="text-sm text-muted-foreground/60 italic text-center">
           Selecione municípios para comparar
         </p>
@@ -121,18 +134,18 @@ export function ComparisonRadar({ comparison, municipalityName }: ComparisonRada
   });
 
   return (
-    <div className="bg-card rounded-lg border border-border p-4">
+    <div className="bg-card rounded-xl shadow-card p-4">
       <h3 className="text-sm font-semibold text-foreground mb-1">Radar Comparativo ODS</h3>
       <p className="text-xs text-muted-foreground mb-3">{municipalityName} vs. média do grupo</p>
 
       <ResponsiveContainer width="100%" height={340}>
         <RadarChart data={data} outerRadius={110}>
-          <PolarGrid stroke="#e5e7eb" />
-          <PolarAngleAxis dataKey="subject" tick={{ fontSize: 9, fill: "#6b7280" }} />
+          <PolarGrid stroke={gridColor} />
+          <PolarAngleAxis dataKey="subject" tick={{ fontSize: 9, fill: axisColor }} />
           <PolarRadiusAxis
             angle={90}
             domain={[0, 100]}
-            tick={{ fontSize: 9, fill: "#9ca3af" }}
+            tick={{ fontSize: 9, fill: radiusColor }}
             tickCount={5}
           />
           <Tooltip content={<ComparisonTooltip />} />
@@ -142,8 +155,8 @@ export function ComparisonRadar({ comparison, municipalityName }: ComparisonRada
           <Radar
             name="Média do grupo"
             dataKey="benchmarkAverage"
-            stroke="#6b7280"
-            fill="#9ca3af"
+            stroke={benchmarkStroke}
+            fill={benchmarkFill}
             fillOpacity={0.15}
             strokeWidth={1.5}
             strokeDasharray="5 5"
@@ -153,8 +166,8 @@ export function ComparisonRadar({ comparison, municipalityName }: ComparisonRada
           <Radar
             name="Seu município"
             dataKey="municipalityScore"
-            stroke="#2563eb"
-            fill="#3b82f6"
+            stroke={municipalityStroke}
+            fill={municipalityFill}
             fillOpacity={0.3}
             strokeWidth={2}
           />
