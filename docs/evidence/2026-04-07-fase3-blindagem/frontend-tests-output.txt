@@ -1,0 +1,44 @@
+
+ RUN  v1.6.1 /Users/joubert/Library/CloudStorage/OneDrive-Pessoal/ioc-esg-municipal/frontend
+
+ ✓ src/components/ui/__tests__/AnimatedNumber.test.tsx  (9 tests) 26ms
+stderr | src/components/recommendations/__tests__/RecommendationPanel.test.tsx > RecommendationPanel (loading) > renders the section heading
+⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.
+⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.
+
+ ✓ src/components/layout/__tests__/FloatingBottomTabBar.test.tsx  (11 tests) 293ms
+stderr | src/components/layout/__tests__/FloatingBottomTabBar.test.tsx > FloatingBottomTabBar > renders the navigation landmark with the correct accessible label
+⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.
+⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.
+
+stderr | src/components/layout/__tests__/NavigationRail.test.tsx > NavigationRail > renders the aside landmark with the correct accessible label
+⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.
+⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.
+
+ ✓ src/components/recommendations/__tests__/RecommendationPanel.test.tsx  (20 tests) 194ms
+ ✓ src/components/layout/__tests__/NavigationRail.test.tsx  (13 tests) 285ms
+ ✓ src/components/dashboard/__tests__/KpiCards.test.tsx  (24 tests) 76ms
+stderr | src/components/dashboard/__tests__/KpiCards.test.tsx > KpiCards (data) > renders the up arrow prefix when trend direction is up
+The width(0) and height(0) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+
+stderr | src/components/dashboard/__tests__/KpiCards.test.tsx > KpiCards (data) > renders the down arrow prefix when trend direction is down
+The width(0) and height(0) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+
+stderr | src/components/dashboard/__tests__/KpiCards.test.tsx > KpiCards (data) > renders the year range in trend context
+The width(0) and height(0) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+
+
+ Test Files  5 passed (5)
+      Tests  77 passed (77)
+   Start at  22:39:57
+   Duration  1.49s (transform 353ms, setup 420ms, collect 1.38s, tests 874ms, environment 3.11s, prepare 292ms)
+

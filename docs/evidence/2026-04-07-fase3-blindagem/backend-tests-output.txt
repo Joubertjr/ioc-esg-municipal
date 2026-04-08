@@ -1,0 +1,36 @@
+
+ RUN  v1.6.1 /Users/joubert/Library/CloudStorage/OneDrive-Pessoal/ioc-esg-municipal
+
+ ✓ tests/unit/services/scenario_service.test.ts  (22 tests) 7ms
+ ✓ tests/unit/agents/ibge_ods_mapper.test.ts  (67 tests) 7ms
+ ✓ tests/unit/services/recommendation_service.test.ts  (20 tests) 14ms
+ ✓ tests/unit/services/auth_service.test.ts  (32 tests) 12ms
+ ✓ tests/unit/scoring/boundary-values.test.ts  (131 tests) 12ms
+ ✓ tests/unit/agents/ibge_collector.test.ts  (65 tests) 10ms
+ ✓ tests/unit/agents/siconfi_ods_mapper.test.ts  (51 tests) 6ms
+ ✓ tests/unit/routes/auth.test.ts  (25 tests) 145ms
+ ✓ tests/unit/agents/ana_collector.test.ts  (39 tests) 6ms
+ ✓ tests/unit/agents/inpe_collector.test.ts  (32 tests) 319ms
+ ✓ tests/unit/routes/ods.test.ts  (18 tests) 59ms
+ ✓ tests/unit/routes/agents.test.ts  (39 tests) 414ms
+ ✓ tests/unit/agents/tse_collector.test.ts  (34 tests) 5ms
+ ✓ tests/integration/api/ods.test.ts  (16 tests) 486ms
+ ✓ tests/unit/agents/datasus_ods_mapper.test.ts  (31 tests) 7ms
+ ✓ tests/unit/services/ods_score_service.test.ts  (13 tests) 6ms
+ ✓ tests/unit/agents/siconfi_collector.test.ts  (14 tests) 6ms
+ ✓ tests/unit/agents/convenios_collector.test.ts  (22 tests) 6ms
+ ✓ tests/unit/agents/aneel_collector.test.ts  (22 tests) 3ms
+ ✓ tests/unit/agents/inep_ods_mapper.test.ts  (28 tests) 6ms
+ ✓ tests/integration/api/simulator.test.ts  (11 tests) 427ms
+ ✓ tests/integration/api/benchmarks.test.ts  (11 tests) 469ms
+ ✓ tests/unit/agents/snis_rs_collector.test.ts  (22 tests) 4ms
+ ✓ tests/integration/api/municipalities.test.ts  (11 tests) 420ms
+ ✓ tests/unit/services/ods_history_service.test.ts  (14 tests) 5ms
+ ✓ tests/unit/middleware/auth.test.ts  (17 tests) 189ms
+ ✓ tests/unit/routes/benchmarks.test.ts  (14 tests) 65ms
+ ✓ tests/integration/api/reports.test.ts  (7 tests) 387ms
+ ✓ tests/unit/middleware/error-handler.test.ts  (19 tests) 104ms
+ ✓ tests/unit/utils/env-validator.test.ts  (19 tests) 7ms
+ ✓ tests/unit/routes/municipalities.test.ts  (12 tests) 48ms
+ ✓ tests/unit/agents/sisvan_collector.test.ts  (21 tests) 4ms
+ ✓ tests/unit/services/simulator_service.test.ts  (10 tests) 5ms
