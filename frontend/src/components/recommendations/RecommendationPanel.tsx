@@ -93,15 +93,47 @@ export function RecommendationPanel({ ibgeCode, compact = false }: Recommendatio
         )}
       </div>
 
-      {/* Estado de erro */}
+      {/* Estado de erro — nunca mostrar mensagem técnica ao prefeito */}
       {isError && (
-        <div className="p-4 bg-danger/10 border border-danger/20 rounded-lg">
-          <p className="text-sm font-medium text-danger">
-            Não foi possível carregar as recomendações
+        <div className="text-center py-12 text-muted-foreground">
+          <svg
+            className="w-12 h-12 mx-auto mb-3 text-muted-foreground/40"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={1.5}
+              d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"
+            />
+          </svg>
+          <p className="text-sm font-medium text-foreground">
+            Recomendações serão geradas após a coleta de dados
           </p>
-          <p className="text-xs text-danger mt-1">
-            {error?.message ?? "Verifique se o servidor está rodando e tente novamente."}
+          <p className="text-xs text-muted-foreground mt-1">
+            Os dados do município precisam ser coletados para gerar recomendações personalizadas.
           </p>
+          <button
+            onClick={() => window.location.reload()}
+            className="mt-4 inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground shadow-sm hover:bg-primary/90 transition-colors"
+          >
+            <svg
+              className="h-4 w-4"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth="1.5"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182"
+              />
+            </svg>
+            Tentar novamente
+          </button>
         </div>
       )}
 

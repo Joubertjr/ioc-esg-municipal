@@ -66,7 +66,7 @@ export function DashboardPage() {
         </div>
       )}
 
-      <div className="space-y-8">
+      <div className="space-y-8 pb-20 md:pb-0">
         {/* ── Row 1: KPI Cards — the "3-second" view ── */}
         <section>
           <KpiCards

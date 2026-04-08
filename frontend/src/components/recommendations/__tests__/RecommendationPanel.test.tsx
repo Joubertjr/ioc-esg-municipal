@@ -161,14 +161,16 @@ describe("RecommendationPanel (error)", () => {
     } as ReturnType<typeof useRecommendations>);
   });
 
-  it("renders the error message", () => {
+  it("renders the friendly empty state message instead of technical error", () => {
     renderPanel();
-    expect(screen.getByText("Não foi possível carregar as recomendações")).toBeInTheDocument();
+    expect(
+      screen.getByText("Recomendações serão geradas após a coleta de dados"),
+    ).toBeInTheDocument();
   });
 
-  it("shows the error detail from the thrown Error object", () => {
+  it("shows the retry button in error state", () => {
     renderPanel();
-    expect(screen.getByText("Servidor indisponível")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /tentar novamente/i })).toBeInTheDocument();
   });
 
   it("does not render skeleton cards when in error state", () => {

@@ -224,9 +224,9 @@ describe("KpiCards (data)", () => {
     expect(screen.getByText("/ 20")).toBeInTheDocument();
   });
 
-  it("displays — for ranking when benchmark is absent", () => {
+  it("shows fallback message for ranking when benchmark is absent", () => {
     render(<KpiCards report={makeReport()} isLoading={false} />);
-    expect(screen.getAllByText("—").length).toBeGreaterThan(0);
+    expect(screen.getByText(/ranking disponível após benchmark/i)).toBeInTheDocument();
   });
 
   // --- Trend ---

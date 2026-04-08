@@ -253,7 +253,15 @@ export function KpiCards({
         label="Ranking SC"
         value={rankingValue}
         suffix={rankingSuffix}
-        context={<span>entre {totalInBenchmark ?? "—"} maiores cidades SC</span>}
+        context={
+          isBenchmarkLoading ? (
+            <Skeleton className="h-3 w-32 rounded" />
+          ) : rankingPosition !== null ? (
+            <span>entre {totalInBenchmark} maiores cidades SC</span>
+          ) : (
+            <span className="text-muted-foreground">Ranking disponível após benchmark</span>
+          )
+        }
         borderClass={rankingBorder}
         animate={typeof rankingValue === "number"}
       />

@@ -72,7 +72,7 @@ export function OdsHistoryChart({ ibgeCode }: OdsHistoryChartProps) {
   if (isLoading) {
     return (
       <div>
-        <h3 className="text-base font-semibold text-foreground mb-4">Evolucao do Score ESG</h3>
+        <h3 className="text-base font-semibold text-foreground mb-4">Evolução do Score ESG</h3>
         <div className="animate-pulse h-[300px] bg-muted rounded-lg" />
       </div>
     );
@@ -105,9 +105,9 @@ export function OdsHistoryChart({ ibgeCode }: OdsHistoryChartProps) {
   if (chartData.length < 2) {
     return (
       <div>
-        <h3 className="text-base font-semibold text-foreground mb-4">Evolucao do Score ESG</h3>
+        <h3 className="text-base font-semibold text-foreground mb-4">Evolução do Score ESG</h3>
         <div className="flex items-center justify-center h-[300px] text-muted-foreground/60 text-sm">
-          Dados historicos insuficientes para exibir tendencia
+          Dados históricos insuficientes para exibir tendência
         </div>
       </div>
     );
@@ -115,7 +115,7 @@ export function OdsHistoryChart({ ibgeCode }: OdsHistoryChartProps) {
 
   return (
     <div>
-      <h3 className="text-base font-semibold text-foreground mb-4">Evolucao do Score ESG</h3>
+      <h3 className="text-base font-semibold text-foreground mb-4">Evolução do Score ESG</h3>
       <ResponsiveContainer width="100%" height={300}>
         <LineChart data={chartData} margin={{ top: 10, right: 24, left: 0, bottom: 0 }}>
           <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
