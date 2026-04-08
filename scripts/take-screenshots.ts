@@ -139,19 +139,13 @@ async function loginViaUI(page: Page): Promise<void> {
 async function setTheme(page: Page, theme: "light" | "dark"): Promise<void> {
   await page.evaluate((t) => {
     localStorage.setItem("ioc-theme", t);
-    // Dispatch storage event to trigger useTheme hook
-    window.dispatchEvent(new Event("storage"));
   }, theme);
 
-  // Apply class to document
-  if (theme === "dark") {
-    await page.evaluate(() => document.documentElement.classList.add("dark"));
-  } else {
-    await page.evaluate(() => document.documentElement.classList.remove("dark"));
-  }
+  // Reload to ensure React picks up the new theme from localStorage
+  await page.reload({ waitUntil: "networkidle" });
 
-  // Brief wait for CSS transitions
-  await page.waitForTimeout(300);
+  // Brief wait for charts to render with correct theme colors
+  await page.waitForTimeout(500);
 }
 
 async function takePageScreenshot(

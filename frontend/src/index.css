@@ -103,3 +103,16 @@
     padding-bottom: env(safe-area-inset-bottom, 0px);
   }
 }
+
+/* Recharts SVG background fix — prevent white/gray rect in dark mode */
+.dark .recharts-wrapper,
+.dark .recharts-surface {
+  background: transparent !important;
+}
+
+.dark .recharts-cartesian-grid-bg,
+.dark .recharts-wrapper rect[fill="#fff"],
+.dark .recharts-wrapper rect[fill="#ffffff"],
+.dark .recharts-wrapper rect[fill="white"] {
+  fill: transparent !important;
+}
