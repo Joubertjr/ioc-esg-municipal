@@ -5,7 +5,10 @@ import { NavigationRail } from "../NavigationRail";
 
 function renderWithRouter(initialPath = "/dashboard", onLogout = vi.fn()) {
   return render(
-    <MemoryRouter initialEntries={[initialPath]}>
+    <MemoryRouter
+      initialEntries={[initialPath]}
+      future={{ v7_startTransition: true, v7_relativeSplatPath: true }}
+    >
       <NavigationRail onLogout={onLogout} />
     </MemoryRouter>,
   );

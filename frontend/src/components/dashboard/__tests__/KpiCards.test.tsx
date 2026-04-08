@@ -26,6 +26,27 @@ globalThis.ResizeObserver = class ResizeObserver {
 };
 
 // ---------------------------------------------------------------------------
+// Suppress Recharts "width(0) and height(0)" warnings in jsdom.
+// jsdom has no layout engine, so containers always report 0x0 — expected.
+// ---------------------------------------------------------------------------
+const originalWarn = console.warn;
+const originalError = console.error;
+beforeAll(() => {
+  console.warn = (...args: unknown[]) => {
+    if (typeof args[0] === "string" && args[0].includes("width(0) and height(0)")) return;
+    originalWarn(...args);
+  };
+  console.error = (...args: unknown[]) => {
+    if (typeof args[0] === "string" && args[0].includes("width(0) and height(0)")) return;
+    originalError(...args);
+  };
+});
+afterAll(() => {
+  console.warn = originalWarn;
+  console.error = originalError;
+});
+
+// ---------------------------------------------------------------------------
 // Factories
 // ---------------------------------------------------------------------------
 

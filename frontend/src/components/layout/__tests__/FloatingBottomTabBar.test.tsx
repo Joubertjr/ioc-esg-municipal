@@ -4,7 +4,10 @@ import { FloatingBottomTabBar } from "../FloatingBottomTabBar";
 
 function renderWithRouter(initialPath = "/dashboard") {
   return render(
-    <MemoryRouter initialEntries={[initialPath]}>
+    <MemoryRouter
+      initialEntries={[initialPath]}
+      future={{ v7_startTransition: true, v7_relativeSplatPath: true }}
+    >
       <FloatingBottomTabBar />
     </MemoryRouter>,
   );

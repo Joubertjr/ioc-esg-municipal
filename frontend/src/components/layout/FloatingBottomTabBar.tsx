@@ -1,5 +1,5 @@
 import { NavLink, useLocation } from "react-router-dom";
-import { LayoutDashboard, Calculator, FileText, Target, ArrowUpDown } from "lucide-react";
+import { LayoutDashboard, Calculator, FileText, Target, Scale } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface TabItem {
@@ -13,7 +13,7 @@ const TABS: TabItem[] = [
   { to: "/simulator", label: "Simular", icon: Calculator },
   { to: "/monitoring", label: "Metas", icon: Target },
   { to: "/reports", label: "Relatórios", icon: FileText },
-  { to: "/benchmark", label: "Comparar", icon: ArrowUpDown },
+  { to: "/benchmark", label: "Comparar", icon: Scale },
 ];
 
 export function FloatingBottomTabBar() {
