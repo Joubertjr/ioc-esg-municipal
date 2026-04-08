@@ -39,7 +39,7 @@ afterEach(() => {
 });
 
 function flushRaf(timestamp = 10_000) {
-  (globalThis as Record<string, unknown>).__flushRaf(timestamp);
+  ((globalThis as Record<string, unknown>).__flushRaf as (ts: number) => void)(timestamp);
 }
 
 // ---------------------------------------------------------------------------
