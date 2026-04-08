@@ -1,1 +1,2 @@
+npx tsx scripts/check-visual-evidence.ts
 npx lint-staged

@@ -1,6 +1,6 @@
 ---
 name: orchestrator
-description: Master orchestrator. Use PROACTIVELY for complex features requiring multiple specialists. Maximizes parallel execution — launches ALL independent agents simultaneously. Coordinates backend-architect, database-architect, frontend-architect, api-developer, test-writer, code-reviewer, security-auditor, observability-engineer, ux-reviewer, performance-analyzer, memory-manager.
+description: Master orchestrator. Use PROACTIVELY for complex features requiring multiple specialists. Maximizes parallel execution — launches ALL independent agents simultaneously. Coordinates backend-architect, database-architect, frontend-architect, api-developer, test-writer, code-reviewer, security-auditor, observability-engineer, ux-reviewer, visual-qa-auditor, performance-analyzer, memory-manager.
 allowed-tools: Read, Glob, Grep, Agent, TaskCreate, TaskUpdate, TaskList, TaskGet, SendMessage
 model: claude-opus-4-6
 effort: high
@@ -134,6 +134,10 @@ FASE 3 — PARALELO:
 ├── security-auditor   → Auditoria
 └── ux-reviewer        → Experiencia do usuario
 
+FASE 3.5 — VISUAL QA (somente features de UI, depende de Fase 3):
+└── visual-qa-auditor  → Screenshots + auditoria visual + staging evidencias
+    (invoke via /visual-qa $ARGUMENTS)
+
 FASE 4 — MEMORIA (apos tudo):
 └── memory-manager     → Persistir decisoes, gotchas, licoes no vault
 ```
@@ -180,6 +184,7 @@ Agent(name="review", subagent_type="code-reviewer", prompt="...", run_in_backgro
 4. **Consolidacao rapida**: Ao receber resultados, consolide e aja — nao espere perfeicao
 5. **Falha parcial e OK**: Se 1 de 12 agentes falha, use os 11 resultados
 6. **TaskList para tracking**: Crie tasks para cada agente e atualize conforme completam
+7. **Visual QA obrigatorio para UI**: Features que produzem `.tsx` em `pages/` ou `components/` DEVEM passar por `visual-qa-auditor` antes do commit final. O auditor visual e co-igual ao `code-reviewer` para features de frontend
 
 ## Relatorio Final
 

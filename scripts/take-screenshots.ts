@@ -6,11 +6,14 @@
  *
  * Uso:
  *   npx tsx scripts/take-screenshots.ts [--feature <nome>] [--pages <p1,p2>] [--width <px>]
+ *                                        [--mobile] [--interactive <script.ts>]
  *
  * Exemplos:
  *   npx tsx scripts/take-screenshots.ts --feature fase35-polish-premium
  *   npx tsx scripts/take-screenshots.ts --feature fase36 --pages dashboard,simulator
  *   npx tsx scripts/take-screenshots.ts --feature fase36 --width 1280
+ *   npx tsx scripts/take-screenshots.ts --feature fase4b --mobile
+ *   npx tsx scripts/take-screenshots.ts --feature fase4b --interactive scripts/screenshot-fase4b.ts
  *
  * Pré-requisitos:
  *   - Backend rodando em localhost:3000 (pnpm dev:backend)
@@ -20,8 +23,12 @@
  */
 
 import { chromium, type Page, type Browser } from "playwright";
-import { mkdirSync, writeFileSync, existsSync } from "fs";
-import { join } from "path";
+import { mkdirSync, existsSync } from "fs";
+import { join, resolve } from "path";
+import { writeFile } from "fs/promises";
+
+// eslint-disable-next-line no-console
+const log = console.log.bind(console);
 
 // ---------------------------------------------------------------------------
 // Config
@@ -45,6 +52,8 @@ interface Config {
   pages: string[];
   width: number;
   municipalityIbge: string;
+  mobile: boolean;
+  interactive: string;
 }
 
 function parseArgs(): Config {
@@ -54,6 +63,8 @@ function parseArgs(): Config {
     pages: DEFAULT_PAGES,
     width: 1440,
     municipalityIbge: "4205407", // Florianópolis
+    mobile: false,
+    interactive: "",
   };
 
   for (let i = 0; i < args.length; i++) {
@@ -70,6 +81,12 @@ function parseArgs(): Config {
       case "--municipality":
         config.municipalityIbge = args[++i] ?? "4205407";
         break;
+      case "--mobile":
+        config.mobile = true;
+        break;
+      case "--interactive":
+        config.interactive = args[++i] ?? "";
+        break;
     }
   }
 
@@ -84,7 +101,6 @@ const SCREENSHOT_EMAIL = `screenshot-${Date.now()}@evidence.test`;
 const SCREENSHOT_PASS = "EvidenceTest123!@#";
 
 async function ensureUserViaApi(): Promise<string> {
-  // Register
   const regRes = await fetch(`${API_URL}/auth/register`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -127,12 +143,10 @@ async function assignMunicipality(token: string, ibgeCode: string): Promise<void
 async function loginViaUI(page: Page): Promise<void> {
   await page.goto(`${BASE_URL}/login`, { waitUntil: "networkidle" });
 
-  // Fill login form
   await page.fill('input[type="email"]', SCREENSHOT_EMAIL);
   await page.fill('input[type="password"]', SCREENSHOT_PASS);
   await page.click('button[type="submit"]');
 
-  // Wait for redirect to dashboard (user already has municipality set)
   await page.waitForURL("**/dashboard", { timeout: 15_000 });
 }
 
@@ -141,11 +155,14 @@ async function setTheme(page: Page, theme: "light" | "dark"): Promise<void> {
     localStorage.setItem("ioc-theme", t);
   }, theme);
 
-  // Reload to ensure React picks up the new theme from localStorage
   await page.reload({ waitUntil: "networkidle" });
-
-  // Brief wait for charts to render with correct theme colors
   await page.waitForTimeout(500);
+}
+
+interface ViewportConfig {
+  name: string;
+  width: number;
+  height: number;
 }
 
 async function takePageScreenshot(
@@ -154,17 +171,35 @@ async function takePageScreenshot(
   outDir: string,
   pageName: string,
   theme: "light" | "dark",
+  viewport: ViewportConfig,
 ): Promise<string> {
+  await page.setViewportSize({ width: viewport.width, height: viewport.height });
   await page.goto(`${BASE_URL}${route}`, { waitUntil: "networkidle", timeout: 30_000 });
   await setTheme(page, theme);
 
   // Wait for skeletons to resolve
   await page.waitForTimeout(2_000);
 
-  const filename = `${pageName}-${theme}.png`;
+  const filename = `${pageName}-${viewport.name}-${theme}.png`;
   const filepath = join(outDir, filename);
   await page.screenshot({ path: filepath, fullPage: true });
   return filename;
+}
+
+// ---------------------------------------------------------------------------
+// Interactive script support
+// ---------------------------------------------------------------------------
+
+type InteractiveHandler = (page: Page, outDir: string) => Promise<void>;
+
+async function loadInteractiveScript(scriptPath: string): Promise<InteractiveHandler | null> {
+  const absPath = resolve(process.cwd(), scriptPath);
+  if (!existsSync(absPath)) {
+    log(`   Interactive script not found: ${absPath}`);
+    return null;
+  }
+  const mod = (await import(absPath)) as { default?: InteractiveHandler };
+  return mod.default ?? null;
 }
 
 // ---------------------------------------------------------------------------
@@ -175,14 +210,15 @@ function generateReport(
   feature: string,
   date: string,
   pages: string[],
-  screenshots: Array<{ page: string; theme: string; file: string }>,
+  screenshots: Array<{ page: string; theme: string; viewport: string; file: string }>,
+  hasMobile: boolean,
 ): string {
   const lines: string[] = [
     `# Evidence Report: ${feature}`,
     "",
     `**Data:** ${date}`,
     `**Páginas capturadas:** ${pages.join(", ")}`,
-    `**Resolução:** Desktop (1440px)`,
+    `**Resolução:** Desktop (1440px)${hasMobile ? " + Mobile (375px)" : ""}`,
     `**Temas:** Light + Dark`,
     "",
     "---",
@@ -194,15 +230,37 @@ function generateReport(
   for (const pageName of pages) {
     lines.push(`### ${pageName.charAt(0).toUpperCase() + pageName.slice(1)}`);
     lines.push("");
-    lines.push("| Light | Dark |");
-    lines.push("|-------|------|");
 
-    const light = screenshots.find((s) => s.page === pageName && s.theme === "light");
-    const dark = screenshots.find((s) => s.page === pageName && s.theme === "dark");
+    if (hasMobile) {
+      lines.push("| Viewport | Light | Dark |");
+      lines.push("|----------|-------|------|");
 
-    lines.push(
-      `| ${light ? `![${pageName}-light](${light.file})` : "N/A"} | ${dark ? `![${pageName}-dark](${dark.file})` : "N/A"} |`,
-    );
+      for (const vp of ["desktop", "mobile"]) {
+        const light = screenshots.find(
+          (s) => s.page === pageName && s.theme === "light" && s.viewport === vp,
+        );
+        const dark = screenshots.find(
+          (s) => s.page === pageName && s.theme === "dark" && s.viewport === vp,
+        );
+        const vpLabel = vp.charAt(0).toUpperCase() + vp.slice(1);
+        lines.push(
+          `| ${vpLabel} | ${light ? `![${light.file}](${light.file})` : "N/A"} | ${dark ? `![${dark.file}](${dark.file})` : "N/A"} |`,
+        );
+      }
+    } else {
+      lines.push("| Light | Dark |");
+      lines.push("|-------|------|");
+
+      const light = screenshots.find(
+        (s) => s.page === pageName && s.theme === "light" && s.viewport === "desktop",
+      );
+      const dark = screenshots.find(
+        (s) => s.page === pageName && s.theme === "dark" && s.viewport === "desktop",
+      );
+      lines.push(
+        `| ${light ? `![${light.file}](${light.file})` : "N/A"} | ${dark ? `![${dark.file}](${dark.file})` : "N/A"} |`,
+      );
+    }
     lines.push("");
   }
 
@@ -223,26 +281,30 @@ async function main(): Promise<void> {
   const date = new Date().toISOString().slice(0, 10);
   const outDir = join(process.cwd(), "docs", "evidence", `${date}-${config.feature}`);
 
-  console.log(`\n📸 Screenshot automation`);
-  console.log(`   Feature: ${config.feature}`);
-  console.log(`   Pages:   ${config.pages.join(", ")}`);
-  console.log(`   Width:   ${config.width}px`);
-  console.log(`   Output:  ${outDir}\n`);
+  const viewports: ViewportConfig[] = [{ name: "desktop", width: config.width, height: 900 }];
+  if (config.mobile) {
+    viewports.push({ name: "mobile", width: 375, height: 812 });
+  }
 
-  // Ensure output directory
+  log(`\nScreenshot automation`);
+  log(`   Feature:    ${config.feature}`);
+  log(`   Pages:      ${config.pages.join(", ")}`);
+  log(`   Viewports:  ${viewports.map((v) => `${v.name} (${v.width}px)`).join(", ")}`);
+  log(`   Output:     ${outDir}\n`);
+
   if (!existsSync(outDir)) {
     mkdirSync(outDir, { recursive: true });
   }
 
   // Step 1: Create user via API and assign municipality
-  console.log("1/4 Creating test user via API...");
+  log("1/5 Creating test user via API...");
   const token = await ensureUserViaApi();
 
-  console.log("2/4 Assigning municipality...");
+  log("2/5 Assigning municipality...");
   await assignMunicipality(token, config.municipalityIbge);
 
   // Step 2: Launch browser and login via UI
-  console.log("3/4 Launching browser...");
+  log("3/5 Launching browser...");
   let browser: Browser | null = null;
 
   try {
@@ -254,39 +316,53 @@ async function main(): Promise<void> {
     const page = await context.newPage();
 
     await loginViaUI(page);
-    console.log("   Logged in successfully\n");
+    log("   Logged in successfully\n");
 
-    // Step 3: Take screenshots
-    console.log("4/4 Taking screenshots...");
-    const screenshots: Array<{ page: string; theme: string; file: string }> = [];
+    // Step 3: Take screenshots for each viewport × page × theme
+    log("4/5 Taking screenshots...");
+    const screenshots: Array<{ page: string; theme: string; viewport: string; file: string }> = [];
 
-    for (const pageName of config.pages) {
-      const route = ALL_PAGES[pageName];
-      if (!route) {
-        console.warn(`   ⚠️  Unknown page: ${pageName}, skipping`);
-        continue;
+    for (const viewport of viewports) {
+      for (const pageName of config.pages) {
+        const route = ALL_PAGES[pageName];
+        if (!route) {
+          log(`   Unknown page: ${pageName}, skipping`);
+          continue;
+        }
+
+        for (const theme of ["light", "dark"] as const) {
+          const file = await takePageScreenshot(page, route, outDir, pageName, theme, viewport);
+          screenshots.push({ page: pageName, theme, viewport: viewport.name, file });
+          log(`   ${file}`);
+        }
       }
+    }
 
-      for (const theme of ["light", "dark"] as const) {
-        const file = await takePageScreenshot(page, route, outDir, pageName, theme);
-        screenshots.push({ page: pageName, theme, file });
-        console.log(`   ✅ ${file}`);
+    // Step 3.5: Run interactive script if provided
+    if (config.interactive) {
+      log(`\n   Running interactive script: ${config.interactive}`);
+      const handler = await loadInteractiveScript(config.interactive);
+      if (handler) {
+        await handler(page, outDir);
+        log("   Interactive script completed");
       }
     }
 
     // Step 4: Generate REPORT.md
-    const report = generateReport(config.feature, date, config.pages, screenshots);
+    log("\n5/5 Generating report...");
+    const report = generateReport(config.feature, date, config.pages, screenshots, config.mobile);
     const reportPath = join(outDir, "REPORT.md");
-    writeFileSync(reportPath, report, "utf-8");
-    console.log(`   ✅ REPORT.md\n`);
+    await writeFile(reportPath, report, "utf-8");
+    log(`   REPORT.md\n`);
 
-    console.log(`Done! ${screenshots.length} screenshots saved to:\n   ${outDir}\n`);
+    log(`Done! ${screenshots.length} screenshots saved to:\n   ${outDir}\n`);
   } finally {
     if (browser) await browser.close();
   }
 }
 
 main().catch((err) => {
-  console.error("❌ Screenshot automation failed:", err);
+  // eslint-disable-next-line no-console
+  console.error("Screenshot automation failed:", err);
   process.exit(1);
 });

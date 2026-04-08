@@ -290,6 +290,8 @@ Regras:
 | `/morning-briefing`     | Standup autônomo diário                                       |
 | `/context-save`         | Salva estado antes de `/compact`                              |
 | `/research <tópico>`    | Pesquisa técnica para decisão                                 |
+| `/screenshot <feature>` | Capturar evidências visuais (desktop+mobile, light+dark)      |
+| `/visual-qa <feature>`  | Ciclo completo: screenshots + auditoria + staging atômico     |
 
 ### Agentes (invoque com: "Use o agente X para...")
 
@@ -310,6 +312,7 @@ Regras:
 | Haiku  | `devops-engineer`    | Docker, CI/CD, infra                            |
 | Opus   | `project-monitor`    | Monitoramento continuo, KPIs, coerencia, riscos |
 | Sonnet | `memory-manager`     | Obsidian vault: sync, ADRs, gotchas, daily logs |
+| Sonnet | `visual-qa-auditor`  | Auditar screenshots contra checklist Visual QA  |
 
 ### Slash commands
 
@@ -331,6 +334,7 @@ Regras:
 - `git push --force` sem confirmação explícita
 - Hardcodar IDs de município, URLs ou valores de configuração
 - Misturar refatoração com nova feature no mesmo commit
+- Commitar `.tsx` de `pages/` ou `components/` sem evidências visuais em `docs/evidence/`
 
 ---
 
