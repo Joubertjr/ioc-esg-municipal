@@ -13,20 +13,20 @@ const STATUS_CONFIG: Record<
   verde: {
     icon: "✓",
     label: "Bom",
-    color: "text-green-700",
-    barColor: "bg-green-500",
+    color: "text-success",
+    barColor: "bg-success",
   },
   amarelo: {
     icon: "⚠",
     label: "Atenção",
-    color: "text-amber-600",
-    barColor: "bg-amber-400",
+    color: "text-warning",
+    barColor: "bg-warning",
   },
   vermelho: {
     icon: "✗",
     label: "Crítico",
-    color: "text-red-600",
-    barColor: "bg-red-500",
+    color: "text-danger",
+    barColor: "bg-danger",
   },
 };
 
@@ -108,7 +108,7 @@ export function IndicatorRow({ indicator, odsNumber }: IndicatorRowProps) {
           aria-label={`Score ${indicator.score} de 100`}
         >
           <div
-            className={`h-full rounded-full transition-all duration-500 ${config?.barColor ?? "bg-gray-300"}`}
+            className={`h-full rounded-full transition-all duration-500 ${config?.barColor ?? "bg-muted"}`}
             style={{ width: `${Math.min(100, Math.max(0, indicator.score))}%` }}
           />
         </div>

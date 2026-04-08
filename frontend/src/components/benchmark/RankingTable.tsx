@@ -1,4 +1,4 @@
-import type { RankingEntry } from "../../types/benchmark";
+import type { RankingEntry } from "../../types/api";
 import type { OdsStatus } from "../../types/api";
 
 interface RankingTableProps {
@@ -20,29 +20,29 @@ const STATUS_CONFIG: Record<
   verde: {
     icon: "✓",
     label: "No caminho",
-    textColor: "text-green-700",
-    barColor: "bg-green-500",
+    textColor: "text-success",
+    barColor: "bg-success",
   },
   amarelo: {
     icon: "⚠",
     label: "Atenção",
-    textColor: "text-amber-600",
-    barColor: "bg-amber-400",
+    textColor: "text-warning",
+    barColor: "bg-warning",
   },
   vermelho: {
     icon: "✗",
     label: "Crítico",
-    textColor: "text-red-600",
-    barColor: "bg-red-500",
+    textColor: "text-danger",
+    barColor: "bg-danger",
   },
 };
 
 // ---- Medal helpers ----
 
 const MEDAL_LABEL: Record<number, { text: string; className: string }> = {
-  1: { text: "🥇", className: "text-yellow-500" },
-  2: { text: "🥈", className: "text-gray-400" },
-  3: { text: "🥉", className: "text-amber-600" },
+  1: { text: "🥇", className: "text-warning" },
+  2: { text: "🥈", className: "text-muted-foreground" },
+  3: { text: "🥉", className: "text-warning" },
 };
 
 // ---- Sub-components ----
@@ -150,10 +150,10 @@ export function RankingTable({ ranking, highlightCode, globalAverage }: RankingT
                     <span
                       className={`font-bold text-base ${
                         status === "verde"
-                          ? "text-green-700"
+                          ? "text-success"
                           : status === "amarelo"
-                            ? "text-amber-600"
-                            : "text-red-600"
+                            ? "text-warning"
+                            : "text-danger"
                       }`}
                     >
                       {entry.globalScore}

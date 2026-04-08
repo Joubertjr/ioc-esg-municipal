@@ -6,9 +6,9 @@ interface RecommendationCardProps {
 }
 
 const PRIORITY_STYLES: Record<SmartRecommendation["priority"], string> = {
-  critica: "bg-red-100 text-red-800",
-  alta: "bg-amber-100 text-amber-800",
-  media: "bg-blue-100 text-blue-800",
+  critica: "bg-danger/10 text-danger",
+  alta: "bg-warning/10 text-warning",
+  media: "bg-primary/10 text-primary",
 };
 
 const PRIORITY_LABELS: Record<SmartRecommendation["priority"], string> = {
@@ -63,7 +63,7 @@ export function RecommendationCard({ recommendation }: RecommendationCardProps) 
       <div className="flex flex-wrap gap-3 text-sm">
         <div className="flex flex-col">
           <span className="text-xs text-muted-foreground">Score atual</span>
-          <span className="font-semibold text-foreground">{currentScore}/100</span>
+          <span className="font-semibold tabular-nums text-foreground">{currentScore}/100</span>
         </div>
 
         {stateAverage !== null && (
@@ -77,7 +77,7 @@ export function RecommendationCard({ recommendation }: RecommendationCardProps) 
           <div className="flex flex-col">
             <span className="text-xs text-muted-foreground">Diferença</span>
             <span
-              className={`font-semibold ${deltaValue >= 0 ? "text-green-600" : "text-red-600"}`}
+              className={`font-semibold tabular-nums ${deltaValue >= 0 ? "text-success" : "text-danger"}`}
             >
               {deltaValue >= 0 ? "+" : ""}
               {deltaValue.toFixed(1)}
@@ -88,7 +88,7 @@ export function RecommendationCard({ recommendation }: RecommendationCardProps) 
 
       {/* Impacto estimado */}
       <div>
-        <span className="inline-flex items-center gap-1.5 text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-full px-3 py-1">
+        <span className="inline-flex items-center gap-1.5 text-xs font-medium bg-success/10 text-success border border-success/20 rounded-full px-3 py-1">
           <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path
               strokeLinecap="round"

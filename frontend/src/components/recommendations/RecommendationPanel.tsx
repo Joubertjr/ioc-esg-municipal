@@ -7,6 +7,7 @@ import type { SmartRecommendation } from "../../types/api";
 
 interface RecommendationPanelProps {
   ibgeCode: string;
+  compact?: boolean;
 }
 
 const PRIORITY_ORDER: Record<SmartRecommendation["priority"], number> = {
@@ -42,7 +43,7 @@ function SkeletonCard() {
   );
 }
 
-export function RecommendationPanel({ ibgeCode }: RecommendationPanelProps) {
+export function RecommendationPanel({ ibgeCode, compact = false }: RecommendationPanelProps) {
   const { data: report, isLoading, isError, error } = useRecommendations(ibgeCode);
   const { fetchScenario, isPending } = useRecommendedScenario();
   const navigate = useNavigate();
@@ -68,6 +69,10 @@ export function RecommendationPanel({ ibgeCode }: RecommendationPanelProps) {
       )
     : [];
 
+  const displayedRecommendations = compact
+    ? sortedRecommendations.slice(0, 1)
+    : sortedRecommendations;
+
   return (
     <div className="space-y-6">
       {/* Cabeçalho */}
@@ -80,7 +85,7 @@ export function RecommendationPanel({ ibgeCode }: RecommendationPanelProps) {
 
         {report && (
           <div className="flex items-center gap-2 text-sm shrink-0">
-            <span className="inline-flex items-center gap-1 bg-red-100 text-red-800 font-semibold px-3 py-1 rounded-full">
+            <span className="inline-flex items-center gap-1 bg-danger/10 text-danger font-semibold px-3 py-1 rounded-full">
               {report.criticalCount} críticas
             </span>
             <span className="text-muted-foreground">{report.totalRecommendations} total</span>
@@ -90,11 +95,11 @@ export function RecommendationPanel({ ibgeCode }: RecommendationPanelProps) {
 
       {/* Estado de erro */}
       {isError && (
-        <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
-          <p className="text-sm font-medium text-red-800">
+        <div className="p-4 bg-danger/10 border border-danger/20 rounded-lg">
+          <p className="text-sm font-medium text-danger">
             Não foi possível carregar as recomendações
           </p>
-          <p className="text-xs text-red-600 mt-1">
+          <p className="text-xs text-danger mt-1">
             {error?.message ?? "Verifique se o servidor está rodando e tente novamente."}
           </p>
         </div>
@@ -103,7 +108,7 @@ export function RecommendationPanel({ ibgeCode }: RecommendationPanelProps) {
       {/* Skeleton de carregamento */}
       {isLoading && (
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-          {Array.from({ length: 3 }, (_, i) => (
+          {Array.from({ length: compact ? 1 : 3 }, (_, i) => (
             <SkeletonCard key={i} />
           ))}
         </div>
@@ -113,7 +118,7 @@ export function RecommendationPanel({ ibgeCode }: RecommendationPanelProps) {
       {!isLoading && !isError && report && sortedRecommendations.length === 0 && (
         <div className="text-center py-12 text-muted-foreground">
           <svg
-            className="w-12 h-12 mx-auto mb-3 text-green-400"
+            className="w-12 h-12 mx-auto mb-3 text-success"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -132,12 +137,12 @@ export function RecommendationPanel({ ibgeCode }: RecommendationPanelProps) {
       )}
 
       {/* Botão simular cenário */}
-      {!isLoading && report && sortedRecommendations.length > 0 && (
+      {!isLoading && report && displayedRecommendations.length > 0 && (
         <div className="flex justify-end">
           <button
             onClick={handleSimulateScenario}
             disabled={isPending}
-            className="inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground shadow-sm hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
             {isPending ? (
               <>
@@ -182,12 +187,19 @@ export function RecommendationPanel({ ibgeCode }: RecommendationPanelProps) {
       )}
 
       {/* Lista de recomendações */}
-      {!isLoading && sortedRecommendations.length > 0 && (
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-          {sortedRecommendations.map((rec) => (
-            <RecommendationCard key={rec.odsNumber} recommendation={rec} />
-          ))}
-        </div>
+      {!isLoading && displayedRecommendations.length > 0 && (
+        <>
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+            {displayedRecommendations.map((rec) => (
+              <RecommendationCard key={rec.odsNumber} recommendation={rec} />
+            ))}
+          </div>
+          {compact && sortedRecommendations.length > 1 && (
+            <p className="text-sm text-primary mt-3">
+              + {sortedRecommendations.length - 1} outras recomendações disponíveis
+            </p>
+          )}
+        </>
       )}
 
       {/* Pontos Fortes */}
@@ -202,7 +214,7 @@ export function RecommendationPanel({ ibgeCode }: RecommendationPanelProps) {
               return (
                 <span
                   key={strength.odsNumber}
-                  className="inline-flex items-center gap-2 text-xs font-medium bg-green-50 border border-green-200 text-green-800 rounded-full px-3 py-1.5"
+                  className="inline-flex items-center gap-2 text-xs font-medium bg-success/10 border border-success/20 text-success rounded-full px-3 py-1.5"
                 >
                   <span
                     className="inline-flex items-center justify-center w-5 h-5 rounded-full text-white text-xs font-bold shrink-0"
@@ -211,7 +223,7 @@ export function RecommendationPanel({ ibgeCode }: RecommendationPanelProps) {
                     {strength.odsNumber}
                   </span>
                   {strength.odsName}
-                  <span className="font-semibold text-green-700">
+                  <span className="font-semibold text-success">
                     {strength.score.toFixed(0)}/100
                   </span>
                 </span>

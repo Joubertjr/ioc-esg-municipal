@@ -42,9 +42,9 @@ function CustomTooltip({ active, payload }: TooltipProps<number, string>) {
   const { year, score } = data;
   const status = scoreToStatus(score);
   const statusColors: Record<string, string> = {
-    verde: "text-green-700",
-    amarelo: "text-amber-600",
-    vermelho: "text-red-600",
+    verde: "text-success",
+    amarelo: "text-warning",
+    vermelho: "text-danger",
   };
 
   return (

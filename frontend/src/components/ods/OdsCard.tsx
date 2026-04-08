@@ -13,20 +13,20 @@ const STATUS_CONFIG: Record<
   verde: {
     icon: "✓",
     label: "No caminho",
-    textColor: "text-green-700",
-    barColor: "bg-green-500",
+    textColor: "text-success",
+    barColor: "bg-success",
   },
   amarelo: {
     icon: "⚠",
     label: "Atenção",
-    textColor: "text-amber-600",
-    barColor: "bg-amber-400",
+    textColor: "text-warning",
+    barColor: "bg-warning",
   },
   vermelho: {
     icon: "✗",
     label: "Crítico",
-    textColor: "text-red-600",
-    barColor: "bg-red-500",
+    textColor: "text-danger",
+    barColor: "bg-danger",
   },
 };
 
@@ -38,7 +38,7 @@ export function OdsCard({ ods, onClick }: OdsCardProps) {
     <OdsTooltip odsNumber={ods.odsNumber} name={ods.name}>
       <button
         onClick={onClick}
-        className={`relative w-full text-left rounded-lg bg-card shadow-sm border border-border p-3 transition-all hover:shadow-md hover:scale-[1.02] cursor-pointer focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-1 ${
+        className={`relative w-full text-left rounded-lg bg-card shadow-card border border-border p-3 transition-shadow duration-150 hover:shadow-card-hover hover:border-primary/20 cursor-pointer focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-1 ${
           hasData ? "" : "opacity-50"
         }`}
         style={{ borderLeftWidth: "4px", borderLeftColor: ods.color }}
@@ -59,14 +59,14 @@ export function OdsCard({ ods, onClick }: OdsCardProps) {
         {hasData ? (
           <>
             <div className="flex items-baseline gap-1 mb-1.5">
-              <span className="text-2xl font-bold text-foreground">{ods.score}</span>
+              <span className="text-2xl font-bold tabular-nums text-foreground">{ods.score}</span>
               <span className="text-xs text-muted-foreground/60">/100</span>
             </div>
 
             {/* Barra de progresso */}
             <div className="h-1.5 bg-muted rounded-full overflow-hidden mb-2">
               <div
-                className={`h-full rounded-full transition-all duration-500 ${config?.barColor ?? "bg-gray-300"}`}
+                className={`h-full rounded-full transition-all duration-500 ${config?.barColor ?? "bg-muted"}`}
                 style={{ width: `${Math.min(100, Math.max(0, ods.score ?? 0))}%` }}
               />
             </div>

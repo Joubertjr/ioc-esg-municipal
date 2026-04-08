@@ -116,15 +116,15 @@ export interface AuthResponse {
 }
 
 export const STATUS_COLORS: Record<OdsStatus, string> = {
-  verde: "bg-green-500",
-  amarelo: "bg-amber-400",
-  vermelho: "bg-red-500",
+  verde: "bg-success",
+  amarelo: "bg-warning",
+  vermelho: "bg-danger",
 };
 
 export const STATUS_TEXT_COLORS: Record<OdsStatus, string> = {
-  verde: "text-green-700",
-  amarelo: "text-amber-700",
-  vermelho: "text-red-700",
+  verde: "text-success",
+  amarelo: "text-warning",
+  vermelho: "text-danger",
 };
 
 export const STATUS_LABELS: Record<OdsStatus, string> = {

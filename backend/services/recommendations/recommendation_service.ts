@@ -3,24 +3,9 @@ import { compareAgainstBenchmark } from "../benchmarks/benchmark_service.js";
 import { withCache } from "../../utils/cache.js";
 import { logger } from "../../utils/logger.js";
 
-// ─── Constantes ───────────────────────────────────────────────────────────────
+import { SC_BENCHMARK_CODES } from "../../../shared/constants/sc-benchmark-codes.js";
 
-/**
- * 10 maiores municípios de SC usados como grupo de comparação estadual.
- * Evita chamar todos os 295 municípios por requisição.
- */
-const SC_BENCHMARK_CODES: readonly string[] = [
-  "4205407", // Florianópolis
-  "4209102", // Joinville
-  "4204202", // Blumenau
-  "4205002", // Criciúma
-  "4218707", // São José
-  "4211503", // Lages
-  "4202404", // Balneário Camboriú
-  "4204806", // Chapecó
-  "4207007", // Itajaí
-  "4215802", // Palhoça
-];
+// ─── Constantes ───────────────────────────────────────────────────────────────
 
 const RECOMMENDATIONS_CACHE_TTL = 3_600; // 1 hora
 

@@ -2,11 +2,20 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { AnimatedNumber } from "@/components/ui/AnimatedNumber";
 import { cn } from "@/lib/utils";
-import type { MunicipalOdsReport, OdsStatus } from "../../types/api";
+import { ResponsiveContainer, LineChart, Line } from "recharts";
+import type { MunicipalOdsReport, OdsSummary, OdsStatus } from "../../types/api";
+import type { StateBenchmarkData } from "../../hooks/useStateBenchmark";
+import type { TrendData } from "../../hooks/useTrend";
 
 interface KpiCardsProps {
   report: MunicipalOdsReport | undefined;
   isLoading: boolean;
+  benchmark?: StateBenchmarkData;
+  trend?: TrendData;
+  isBenchmarkLoading?: boolean;
+  isTrendLoading?: boolean;
+  worstOds?: OdsSummary;
+  worstOdsContext?: string;
 }
 
 // Maps ODS status to a left-border accent color class
@@ -45,26 +54,32 @@ interface KpiCardProps {
   context: React.ReactNode;
   borderClass: string;
   animate?: boolean;
+  prefix?: string;
 }
 
-function KpiCard({ label, value, suffix, context, borderClass, animate }: KpiCardProps) {
+function KpiCard({ label, value, suffix, prefix, context, borderClass, animate }: KpiCardProps) {
   return (
     <Card className={cn("border-l-4 rounded-xl overflow-hidden", borderClass)}>
       <CardContent className="p-5 flex flex-col gap-1">
         {/* Label */}
-        <span className="text-xs font-medium text-muted-foreground uppercase tracking-widest">
+        <span className="text-[11px] font-medium text-muted-foreground uppercase tracking-[0.08em]">
           {label}
         </span>
 
         {/* Big number */}
         <div className="flex items-baseline gap-1 mt-1">
+          {prefix && (
+            <span className="text-2xl font-extrabold tracking-tight text-foreground leading-none">
+              {prefix}
+            </span>
+          )}
           {animate && typeof value === "number" ? (
             <AnimatedNumber
               value={value}
-              className="text-3xl font-extrabold tracking-tight text-foreground leading-none"
+              className="text-3xl font-extrabold tracking-tight tabular-nums text-foreground leading-none"
             />
           ) : (
-            <span className="text-3xl font-extrabold tracking-tight text-foreground leading-none">
+            <span className="text-3xl font-extrabold tracking-tight tabular-nums text-foreground leading-none">
               {value}
             </span>
           )}
@@ -102,52 +117,120 @@ export function KpiCardsSkeleton() {
 // Main component
 // ---------------------------------------------------------------------------
 
-export function KpiCards({ report, isLoading }: KpiCardsProps) {
+export function KpiCards({
+  report,
+  isLoading,
+  benchmark,
+  trend,
+  isBenchmarkLoading,
+  isTrendLoading,
+  worstOds,
+  worstOdsContext,
+}: KpiCardsProps) {
   if (isLoading || !report) {
     return <KpiCardsSkeleton />;
   }
 
   // --- Card 1: Score Global ---
   const globalBorder = borderFromStatus(report.globalStatus);
-  const globalContext = report.globalStatus ? (
-    <span className={statusBadgeClass[report.globalStatus]}>
-      {statusLabel[report.globalStatus]}
-    </span>
+  let globalContext: React.ReactNode;
+  if (benchmark && benchmark.deltaVsState !== null && benchmark.stateAverage !== null) {
+    const absDelta = Math.abs(benchmark.deltaVsState);
+    const avg = benchmark.stateAverage;
+    if (benchmark.deltaVsState === 0) {
+      globalContext = <span className="text-muted-foreground">Na média SC ({avg})</span>;
+    } else if (benchmark.aboveStateAverage) {
+      globalContext = (
+        <span className="text-success">
+          &uarr; {absDelta} pts acima da média SC ({avg})
+        </span>
+      );
+    } else {
+      globalContext = (
+        <span className="text-danger">
+          &darr; {absDelta} pts abaixo da média SC ({avg})
+        </span>
+      );
+    }
+  } else if (report.globalStatus) {
+    globalContext = (
+      <span className={statusBadgeClass[report.globalStatus]}>
+        {statusLabel[report.globalStatus]}
+      </span>
+    );
+  } else {
+    globalContext = <span>Sem dados suficientes</span>;
+  }
+
+  // --- Card 2: Ranking SC ---
+  const rankingPosition = benchmark?.rankingPosition ?? null;
+  const totalInBenchmark = benchmark?.totalInBenchmark ?? null;
+  let rankingBorder = "border-l-border";
+  if (rankingPosition !== null && totalInBenchmark !== null) {
+    const topThird = totalInBenchmark / 3;
+    const bottomThird = (totalInBenchmark * 2) / 3;
+    if (rankingPosition <= topThird) rankingBorder = "border-l-success";
+    else if (rankingPosition <= bottomThird) rankingBorder = "border-l-warning";
+    else rankingBorder = "border-l-danger";
+  }
+  const rankingValue = isBenchmarkLoading ? "—" : rankingPosition !== null ? rankingPosition : "—";
+  const rankingSuffix =
+    isBenchmarkLoading || totalInBenchmark === null ? undefined : `/ ${totalInBenchmark}`;
+
+  // --- Card 3: Tendência ---
+  let trendPrefix: string | undefined;
+  let trendValue: string | number = "—";
+  let trendSuffix: string | undefined;
+  let trendBorder = "border-l-border";
+
+  if (!isTrendLoading && trend) {
+    if (trend.delta !== null) {
+      trendValue = Math.abs(Math.round(trend.delta));
+      trendSuffix = "pts";
+      if (trend.direction === "up") {
+        trendPrefix = "↑";
+        trendBorder = "border-l-success";
+      } else if (trend.direction === "down") {
+        trendPrefix = "↓";
+        trendBorder = "border-l-danger";
+      } else {
+        trendPrefix = "→";
+        trendBorder = "border-l-warning";
+      }
+    }
+  }
+
+  const trendContext: React.ReactNode = isTrendLoading ? (
+    <Skeleton className="h-3 w-24 rounded" />
+  ) : trend && trend.sparklineData.length > 1 ? (
+    <div className="flex items-center gap-2 mt-1">
+      <div className="w-[60px] h-6 shrink-0" aria-hidden="true">
+        <ResponsiveContainer width="100%" height="100%">
+          <LineChart data={trend.sparklineData}>
+            <Line
+              type="monotone"
+              dataKey="score"
+              stroke="currentColor"
+              strokeWidth={1.5}
+              dot={false}
+            />
+          </LineChart>
+        </ResponsiveContainer>
+      </div>
+      <span className="text-xs">
+        {trend.previousYear} → {trend.latestYear}
+      </span>
+    </div>
   ) : (
-    <span>Sem dados suficientes</span>
+    <span>Sem histórico</span>
   );
 
-  // --- Card 2: ODS Críticos ---
-  const criticalCount = report.odsCount.vermelho + report.odsCount.amarelo;
-  const criticalBorder =
-    criticalCount === 0
-      ? "border-l-success"
-      : report.odsCount.vermelho > 0
-        ? "border-l-danger"
-        : "border-l-warning";
-  const criticalContext =
-    criticalCount === 0 ? (
-      <span className="text-success">Todos no caminho</span>
-    ) : (
-      <span>ODS precisam de atenção</span>
-    );
-
-  // --- Card 3: Cobertura ---
-  const coverageBorder =
-    report.odsCount.withData === report.odsCount.total
-      ? "border-l-success"
-      : report.odsCount.withData === 0
-        ? "border-l-danger"
-        : "border-l-warning";
-
   // --- Card 4: Pior ODS ---
-  const worstOds = report.ods
-    .filter((o) => o.score !== null)
-    .sort((a, b) => (a.score as number) - (b.score as number))[0];
-
   const worstBorder = worstOds?.status ? statusBorderClass[worstOds.status] : "border-l-border";
 
-  const worstContext = worstOds ? (
+  const worstContext: React.ReactNode = worstOdsContext ? (
+    <span className="text-xs">{worstOdsContext}</span>
+  ) : worstOds ? (
     <span style={{ color: worstOds.color }}>{worstOds.name}</span>
   ) : (
     <span>Sem dados</span>
@@ -165,23 +248,25 @@ export function KpiCards({ report, isLoading }: KpiCardsProps) {
         animate
       />
 
-      {/* Card 2 — ODS Críticos */}
+      {/* Card 2 — Ranking SC */}
       <KpiCard
-        label="ODS Críticos"
-        value={criticalCount}
-        context={criticalContext}
-        borderClass={criticalBorder}
-        animate
+        label="Ranking SC"
+        value={rankingValue}
+        suffix={rankingSuffix}
+        context={<span>entre {totalInBenchmark ?? "—"} maiores cidades SC</span>}
+        borderClass={rankingBorder}
+        animate={typeof rankingValue === "number"}
       />
 
-      {/* Card 3 — Cobertura */}
+      {/* Card 3 — Tendência */}
       <KpiCard
-        label="Cobertura"
-        value={report.odsCount.withData}
-        suffix={`/${report.odsCount.total}`}
-        context={<span>ODS com dados disponíveis</span>}
-        borderClass={coverageBorder}
-        animate
+        label="Tendência"
+        value={trendValue}
+        suffix={trendSuffix}
+        prefix={trendPrefix}
+        context={trendContext}
+        borderClass={trendBorder}
+        animate={typeof trendValue === "number"}
       />
 
       {/* Card 4 — Pior ODS */}

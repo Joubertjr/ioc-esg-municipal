@@ -66,8 +66,8 @@ export function LoginPage() {
         </h2>
 
         {errorMessage && (
-          <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
-            <p className="text-sm text-red-700">{errorMessage}</p>
+          <div className="mb-4 p-3 bg-danger/10 border border-danger/20 rounded-lg">
+            <p className="text-sm text-danger">{errorMessage}</p>
           </div>
         )}
 

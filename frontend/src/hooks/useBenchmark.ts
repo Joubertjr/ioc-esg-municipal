@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { apiPost } from "../lib/api";
-import type { BenchmarkResult, CompareResult } from "../types/benchmark";
+import type { BenchmarkResult, CompareResult } from "../types/api";
 
 function isValidCode(code: string): boolean {
   return /^\d{7}$/.test(code);

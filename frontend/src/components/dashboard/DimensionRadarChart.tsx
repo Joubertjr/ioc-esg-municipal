@@ -9,25 +9,8 @@ import {
 } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useTheme } from "../../hooks/useTheme";
+import { ODS_DIMENSIONS } from "@/lib/odsDimensions";
 import type { OdsSummary } from "../../types/api";
-
-// ---------------------------------------------------------------------------
-// Dimension mapping (mirrors OdsDimensionGrid — kept local for independence)
-// ---------------------------------------------------------------------------
-
-interface OdsDimension {
-  name: string;
-  description: string;
-  odsNumbers: number[];
-}
-
-const ODS_DIMENSIONS: OdsDimension[] = [
-  { name: "Social", description: "Pessoas", odsNumbers: [1, 2, 3, 4, 5] },
-  { name: "Econômico", description: "Prosperidade", odsNumbers: [8, 9, 10, 11, 12] },
-  { name: "Ambiental", description: "Planeta", odsNumbers: [6, 7, 13, 14, 15] },
-  { name: "Institucional", description: "Paz e Justiça", odsNumbers: [16] },
-  { name: "Parcerias", description: "Cooperação", odsNumbers: [17] },
-];
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -89,9 +72,9 @@ function DimensionTooltipContent({ active, payload }: CustomTooltipProps) {
         Score médio: <span className="font-bold text-foreground">{score}/100</span>
       </p>
       {score >= 70 ? (
-        <p className="text-green-600 mt-0.5">Acima da meta (≥ 70)</p>
+        <p className="text-success mt-0.5">Acima da meta (≥ 70)</p>
       ) : (
-        <p className="text-amber-600 mt-0.5">Abaixo da meta (70)</p>
+        <p className="text-warning mt-0.5">Abaixo da meta (70)</p>
       )}
     </div>
   );
@@ -116,6 +99,7 @@ export function DimensionRadarChart({ ods, isLoading }: DimensionRadarChartProps
       grid: isDark ? "hsl(215, 28%, 25%)" : "hsl(220, 13%, 91%)",
       tick: isDark ? "hsl(218, 11%, 65%)" : "hsl(220, 9%, 46%)",
       meta: isDark ? "hsl(215, 20%, 45%)" : "hsl(220, 9%, 64%)",
+      primary: isDark ? "hsl(217, 91%, 60%)" : "hsl(221, 83%, 53%)",
     };
   }, [resolvedTheme]);
 
@@ -169,8 +153,8 @@ export function DimensionRadarChart({ ods, isLoading }: DimensionRadarChartProps
                 <Radar
                   name="Score"
                   dataKey="score"
-                  stroke="hsl(var(--primary))"
-                  fill="hsl(var(--primary))"
+                  stroke={chartColors.primary}
+                  fill={chartColors.primary}
                   fillOpacity={0.25}
                   strokeWidth={2}
                 />

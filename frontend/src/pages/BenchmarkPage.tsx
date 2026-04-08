@@ -70,9 +70,9 @@ interface SummaryCardProps {
 function SummaryCard({ label, value, sub, highlight = "neutral" }: SummaryCardProps) {
   const valueColor =
     highlight === "positive"
-      ? "text-green-700"
+      ? "text-success"
       : highlight === "negative"
-        ? "text-red-600"
+        ? "text-danger"
         : "text-foreground";
 
   return (
@@ -164,9 +164,7 @@ export function BenchmarkPage() {
             maxItems={10}
           />
           {!canCompare && (
-            <p className="text-xs text-amber-600">
-              Selecione pelo menos 2 municípios para comparar.
-            </p>
+            <p className="text-xs text-warning">Selecione pelo menos 2 municípios para comparar.</p>
           )}
         </div>
 
@@ -197,10 +195,10 @@ export function BenchmarkPage() {
 
         {/* Error state */}
         {canCompare && isError && (
-          <div className="p-4 bg-red-50 border border-red-200 rounded-lg flex items-center justify-between">
+          <div className="p-4 bg-danger/10 border border-danger/20 rounded-lg flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-red-800">Erro ao carregar dados</p>
-              <p className="text-xs text-red-600 mt-1">{errorMessage}</p>
+              <p className="text-sm font-medium text-danger">Erro ao carregar dados</p>
+              <p className="text-xs text-danger mt-1">{errorMessage}</p>
             </div>
             <button
               type="button"
@@ -208,7 +206,7 @@ export function BenchmarkPage() {
                 void refetchBenchmark();
                 void refetchCompare();
               }}
-              className="px-3 py-1.5 text-sm font-medium text-red-700 bg-red-100 rounded-md hover:bg-red-200 transition-colors"
+              className="px-3 py-1.5 text-sm font-medium text-danger bg-danger/10 rounded-md hover:bg-danger/20 transition-colors"
             >
               Tentar novamente
             </button>

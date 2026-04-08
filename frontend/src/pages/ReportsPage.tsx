@@ -57,9 +57,9 @@ function statusBadge(status: OdsStatus | null): JSX.Element {
     );
   }
   const map: Record<OdsStatus, string> = {
-    verde: "bg-green-100 text-green-800 print:border print:border-green-400",
-    amarelo: "bg-amber-100 text-amber-800 print:border print:border-amber-400",
-    vermelho: "bg-red-100 text-red-800 print:border print:border-red-400",
+    verde: "bg-success/10 text-success print:border print:border-success",
+    amarelo: "bg-warning/10 text-warning print:border print:border-warning",
+    vermelho: "bg-danger/10 text-danger print:border print:border-danger",
   };
   const label: Record<OdsStatus, string> = {
     verde: "Verde",
@@ -75,9 +75,9 @@ function statusBadge(status: OdsStatus | null): JSX.Element {
 
 function scoreColor(score: number | null): string {
   if (score === null) return "text-muted-foreground/60";
-  if (score >= 70) return "text-green-700";
-  if (score >= 40) return "text-amber-600";
-  return "text-red-600";
+  if (score >= 70) return "text-success";
+  if (score >= 40) return "text-warning";
+  return "text-danger";
 }
 
 function GlobalGauge({ score }: { score: number | null }) {
@@ -147,10 +147,10 @@ function ExecutiveSummary({
       {withData > 0 && (
         <p>
           De {total} Objetivos de Desenvolvimento Sustentável avaliados, {withData} possuem dados
-          disponíveis: <strong className="text-green-700">{verde} em situação verde</strong> (score
-          ≥ 70), <strong className="text-amber-600">{amarelo} em situação amarela</strong> (score
-          40–69) e <strong className="text-red-600">{vermelho} em situação vermelha</strong> (score
-          &lt; 40).
+          disponíveis: <strong className="text-success">{verde} em situação verde</strong> (score ≥
+          70), <strong className="text-warning">{amarelo} em situação amarela</strong> (score 40–69)
+          e <strong className="text-danger">{vermelho} em situação vermelha</strong> (score &lt;
+          40).
         </p>
       )}
       {vermelho > 0 && (
@@ -444,10 +444,10 @@ export function ReportsPage() {
                         ods.score === null
                           ? "bg-muted"
                           : ods.score >= 70
-                            ? "bg-green-500"
+                            ? "bg-success"
                             : ods.score >= 40
-                              ? "bg-amber-400"
-                              : "bg-red-500";
+                              ? "bg-warning"
+                              : "bg-danger";
                       return (
                         <tr key={ods.odsNumber} className="hover:bg-accent transition-colors">
                           <td className="px-4 py-3">
@@ -553,15 +553,15 @@ export function ReportsPage() {
             <div className="flex items-center justify-center gap-6 py-3 rounded-lg bg-muted border border-border text-xs text-muted-foreground print:border print:border-border">
               <span className="font-medium text-foreground">Legenda:</span>
               <span className="flex items-center gap-1.5">
-                <span className="w-3 h-3 rounded-full bg-green-500 shrink-0" />
+                <span className="w-3 h-3 rounded-full bg-success shrink-0" />
                 Verde (score ≥ 70)
               </span>
               <span className="flex items-center gap-1.5">
-                <span className="w-3 h-3 rounded-full bg-amber-400 shrink-0" />
+                <span className="w-3 h-3 rounded-full bg-warning shrink-0" />
                 Amarelo (40–69)
               </span>
               <span className="flex items-center gap-1.5">
-                <span className="w-3 h-3 rounded-full bg-red-500 shrink-0" />
+                <span className="w-3 h-3 rounded-full bg-danger shrink-0" />
                 Vermelho (&lt;40)
               </span>
             </div>

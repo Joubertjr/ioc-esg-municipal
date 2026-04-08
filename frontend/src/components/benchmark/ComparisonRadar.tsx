@@ -76,9 +76,9 @@ function ComparisonTooltip({ active, payload }: CustomTooltipProps) {
           <span
             className={
               delta > 0
-                ? "text-green-600 font-semibold"
+                ? "text-success font-semibold"
                 : delta < 0
-                  ? "text-red-600 font-semibold"
+                  ? "text-danger font-semibold"
                   : "text-muted-foreground/60"
             }
           >

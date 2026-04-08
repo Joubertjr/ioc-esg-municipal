@@ -33,16 +33,16 @@ const ODS_SHORT_NAMES: Record<number, string> = {
 
 function scoreColor(score: number | null): string {
   if (score === null) return "text-muted-foreground/60";
-  if (score >= 70) return "text-green-700";
-  if (score >= 40) return "text-amber-600";
-  return "text-red-600";
+  if (score >= 70) return "text-success";
+  if (score >= 40) return "text-warning";
+  return "text-danger";
 }
 
 function progressBarColor(score: number | null): string {
   if (score === null) return "bg-muted";
-  if (score >= 70) return "bg-green-500";
-  if (score >= 40) return "bg-amber-400";
-  return "bg-red-500";
+  if (score >= 70) return "bg-success";
+  if (score >= 40) return "bg-warning";
+  return "bg-danger";
 }
 
 function StatusBadge({ status }: { status: OdsStatus | null }) {
@@ -55,9 +55,9 @@ function StatusBadge({ status }: { status: OdsStatus | null }) {
     );
   }
   const map: Record<OdsStatus, { bg: string; dot: string; label: string }> = {
-    verde: { bg: "bg-green-100 text-green-800", dot: "bg-green-500", label: "Verde" },
-    amarelo: { bg: "bg-amber-100 text-amber-800", dot: "bg-amber-400", label: "Amarelo" },
-    vermelho: { bg: "bg-red-100 text-red-800", dot: "bg-red-500", label: "Vermelho" },
+    verde: { bg: "bg-success/10 text-success", dot: "bg-success", label: "Verde" },
+    amarelo: { bg: "bg-warning/10 text-warning", dot: "bg-warning", label: "Amarelo" },
+    vermelho: { bg: "bg-danger/10 text-danger", dot: "bg-danger", label: "Vermelho" },
   };
   const { bg, dot, label } = map[status];
   return (
@@ -74,13 +74,13 @@ function GapBadge({ gap }: { gap: number | null }) {
   if (gap === null) return <span className="text-muted-foreground/60 text-sm">—</span>;
   if (gap <= 0) {
     return (
-      <span className="text-xs font-semibold text-green-700 bg-green-100 px-2 py-0.5 rounded-full">
+      <span className="text-xs font-semibold text-success bg-success/10 px-2 py-0.5 rounded-full">
         Meta atingida
       </span>
     );
   }
   return (
-    <span className="text-xs font-semibold text-destructive bg-destructive/10 px-2 py-0.5 rounded-full tabular-nums">
+    <span className="text-xs font-semibold text-danger bg-danger/10 px-2 py-0.5 rounded-full tabular-nums">
       -{gap.toFixed(1)} pts
     </span>
   );
@@ -92,7 +92,7 @@ function TrendBadge({ trend }: { trend: TrendDirection }) {
   if (trend === "up") {
     return (
       <span
-        className="text-xs font-bold text-green-600 bg-green-50 px-1.5 py-0.5 rounded"
+        className="text-xs font-bold text-success bg-success/10 px-1.5 py-0.5 rounded"
         title="Tendencia de alta"
       >
         ↑
@@ -102,7 +102,7 @@ function TrendBadge({ trend }: { trend: TrendDirection }) {
   if (trend === "down") {
     return (
       <span
-        className="text-xs font-bold text-red-600 bg-red-50 px-1.5 py-0.5 rounded"
+        className="text-xs font-bold text-danger bg-danger/10 px-1.5 py-0.5 rounded"
         title="Tendencia de queda"
       >
         ↓
@@ -203,23 +203,23 @@ function SummaryStats({
     {
       label: "Verde (meta atingida)",
       value: verde,
-      color: "text-green-700",
-      bg: "bg-green-100",
-      bar: "bg-green-500",
+      color: "text-success",
+      bg: "bg-success/10",
+      bar: "bg-success",
     },
     {
       label: "Amarelo (atenção)",
       value: amarelo,
-      color: "text-amber-700",
-      bg: "bg-amber-100",
-      bar: "bg-amber-400",
+      color: "text-warning",
+      bg: "bg-warning/10",
+      bar: "bg-warning",
     },
     {
       label: "Vermelho (crítico)",
       value: vermelho,
-      color: "text-red-700",
-      bg: "bg-red-100",
-      bar: "bg-red-500",
+      color: "text-danger",
+      bg: "bg-danger/10",
+      bar: "bg-danger",
     },
     {
       label: "Sem dados",
@@ -538,15 +538,15 @@ export function MonitoringPage() {
         {/* Legenda permanente de status */}
         <div className="flex items-center justify-center gap-6 py-3 text-xs text-muted-foreground">
           <span className="flex items-center gap-1.5">
-            <span className="w-3 h-3 rounded-full bg-green-500 shrink-0" />
+            <span className="w-3 h-3 rounded-full bg-success shrink-0" />
             Verde (≥70)
           </span>
           <span className="flex items-center gap-1.5">
-            <span className="w-3 h-3 rounded-full bg-amber-400 shrink-0" />
+            <span className="w-3 h-3 rounded-full bg-warning shrink-0" />
             Amarelo (40-69)
           </span>
           <span className="flex items-center gap-1.5">
-            <span className="w-3 h-3 rounded-full bg-red-500 shrink-0" />
+            <span className="w-3 h-3 rounded-full bg-danger shrink-0" />
             Vermelho (&lt;40)
           </span>
         </div>

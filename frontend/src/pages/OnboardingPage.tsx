@@ -100,8 +100,8 @@ export function OnboardingPage() {
         </p>
 
         {errorMessage && (
-          <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
-            <p className="text-sm text-red-700">{errorMessage}</p>
+          <div className="mb-4 p-3 bg-danger/10 border border-danger/20 rounded-lg">
+            <p className="text-sm text-danger">{errorMessage}</p>
           </div>
         )}
 
@@ -162,7 +162,7 @@ export function OnboardingPage() {
           </div>
 
           {selected && (
-            <p className="mt-2 text-xs text-green-600 font-medium">
+            <p className="mt-2 text-xs text-success font-medium">
               Selecionado: {selected.name} (IBGE: {selected.ibgeCode})
             </p>
           )}

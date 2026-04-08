@@ -57,7 +57,7 @@ function ToastItem({ toast, onDismiss }: { toast: Toast; onDismiss: (id: number)
 
   const styles: Record<ToastType, string> = {
     error: "bg-destructive text-destructive-foreground",
-    success: "bg-green-600 text-white",
+    success: "bg-success text-white",
     info: "bg-foreground text-background",
   };
 

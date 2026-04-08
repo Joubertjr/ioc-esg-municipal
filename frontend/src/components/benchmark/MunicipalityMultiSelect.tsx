@@ -158,7 +158,7 @@ export function MunicipalityMultiSelect({
 
       {/* Validation hint */}
       {!isValid && selected.length > 0 && (
-        <p className="mt-1.5 text-xs text-amber-600">
+        <p className="mt-1.5 text-xs text-warning">
           Selecione pelo menos 2 municípios para comparar.
         </p>
       )}

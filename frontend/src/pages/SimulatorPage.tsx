@@ -57,9 +57,9 @@ function formatCurrencyRaw(value: string): string {
 
 function getScoreColor(score: number | null): string {
   if (score === null) return "text-muted-foreground/60";
-  if (score >= 70) return "text-green-600";
-  if (score >= 40) return "text-amber-500";
-  return "text-red-600";
+  if (score >= 70) return "text-success";
+  if (score >= 40) return "text-warning";
+  return "text-danger";
 }
 
 function getStatusLabel(status: OdsStatus | null): string {
@@ -71,9 +71,9 @@ function getStatusLabel(status: OdsStatus | null): string {
 
 function getStatusBadgeClasses(status: OdsStatus | null): string {
   if (status === null) return "bg-muted text-muted-foreground";
-  if (status === "verde") return "bg-green-100 text-green-700";
-  if (status === "amarelo") return "bg-amber-100 text-amber-700";
-  return "bg-red-100 text-red-700";
+  if (status === "verde") return "bg-success/10 text-success";
+  if (status === "amarelo") return "bg-warning/10 text-warning";
+  return "bg-danger/10 text-danger";
 }
 
 function ScoreDisplay({ label, score }: { label: string; score: number | null }) {
@@ -85,10 +85,10 @@ function ScoreDisplay({ label, score }: { label: string; score: number | null })
     score === null
       ? null
       : score >= 70
-        ? "bg-green-100 text-green-700"
+        ? "bg-success/10 text-success"
         : score >= 40
-          ? "bg-amber-100 text-amber-700"
-          : "bg-red-100 text-red-700";
+          ? "bg-warning/10 text-warning"
+          : "bg-danger/10 text-danger";
 
   return (
     <div className="text-center">
@@ -114,7 +114,7 @@ function DeltaBadge({ delta }: { delta: number | null }) {
   return (
     <span
       className={`inline-flex items-center gap-0.5 text-xs font-semibold px-1.5 py-0.5 rounded ${
-        positive ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
+        positive ? "bg-success/10 text-success" : "bg-danger/10 text-danger"
       }`}
     >
       {positive ? "↑" : "↓"}
@@ -324,11 +324,11 @@ export function SimulatorPage() {
 
         {/* Banner de cenário pré-preenchido */}
         {showScenarioBanner && (
-          <div className="rounded-lg border border-indigo-200 bg-indigo-50 p-4">
+          <div className="rounded-lg border border-primary/20 bg-primary/5 p-4">
             <div className="flex items-start justify-between">
               <div className="flex items-start gap-3">
                 <svg
-                  className="h-5 w-5 text-indigo-600 mt-0.5 flex-shrink-0"
+                  className="h-5 w-5 text-primary mt-0.5 flex-shrink-0"
                   fill="none"
                   viewBox="0 0 24 24"
                   strokeWidth="1.5"
@@ -341,10 +341,10 @@ export function SimulatorPage() {
                   />
                 </svg>
                 <div>
-                  <p className="text-sm font-medium text-indigo-900">
+                  <p className="text-sm font-medium text-foreground">
                     Cenário pré-preenchido a partir das recomendações
                   </p>
-                  <p className="text-sm text-indigo-700 mt-1">
+                  <p className="text-sm text-primary mt-1">
                     Os sliders foram ajustados para priorizar as áreas com maior necessidade de
                     investimento. Revise e clique em &ldquo;Simular impacto&rdquo;.
                   </p>
@@ -353,7 +353,7 @@ export function SimulatorPage() {
               <button
                 type="button"
                 onClick={() => setShowScenarioBanner(false)}
-                className="text-indigo-400 hover:text-indigo-600 ml-4"
+                className="text-primary/40 hover:text-primary ml-4"
               >
                 <svg className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                   <path
@@ -440,7 +440,7 @@ export function SimulatorPage() {
               <h2 className="text-base font-semibold text-foreground">Distribuição por área (%)</h2>
               <span
                 className={`text-sm font-semibold ${
-                  allocationSum === 100 ? "text-green-600" : "text-red-600"
+                  allocationSum === 100 ? "text-success" : "text-danger"
                 }`}
               >
                 Total: {allocationSum}%
@@ -448,7 +448,7 @@ export function SimulatorPage() {
             </div>
 
             {allocationSum !== 100 && (
-              <p className="text-xs text-red-600 mb-4">
+              <p className="text-xs text-danger mb-4">
                 A soma das porcentagens deve ser exatamente 100%.
               </p>
             )}
@@ -517,8 +517,8 @@ export function SimulatorPage() {
           </button>
 
           {simulateMutation.isError && (
-            <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
-              <p className="text-sm text-red-700">
+            <div className="p-3 bg-danger/10 border border-danger/20 rounded-lg">
+              <p className="text-sm text-danger">
                 {simulateMutation.error?.message ?? "Erro ao simular. Tente novamente."}
               </p>
             </div>

@@ -34,12 +34,18 @@ export default {
         caption: ["0.75rem", { lineHeight: "1.5", fontWeight: "400" }],
         micro: ["0.625rem", { lineHeight: "1.4", fontWeight: "500" }],
       },
+      boxShadow: {
+        card: "0 1px 3px rgba(0,0,0,0.07), 0 1px 2px rgba(0,0,0,0.04)",
+        "card-hover": "0 4px 16px rgba(0,0,0,0.09), 0 2px 4px rgba(0,0,0,0.05)",
+        popover: "0 4px 14px rgba(0,0,0,0.10)",
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
+        surface: "hsl(var(--surface))",
         primary: {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",

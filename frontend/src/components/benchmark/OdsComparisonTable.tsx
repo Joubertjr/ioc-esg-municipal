@@ -25,10 +25,10 @@ function ScoreCell({ score }: { score: number | null }) {
 
   const color =
     score >= 70
-      ? "text-green-700 font-semibold"
+      ? "text-success font-semibold"
       : score >= 40
-        ? "text-amber-700 font-semibold"
-        : "text-red-600 font-semibold";
+        ? "text-warning font-semibold"
+        : "text-danger font-semibold";
 
   return <span className={`text-sm ${color}`}>{score}</span>;
 }
@@ -51,7 +51,7 @@ function DeltaBadge({
   return (
     <span
       className={`inline-flex items-center gap-0.5 text-xs font-medium px-1.5 py-0.5 rounded-full ${
-        isPositive ? "bg-green-50 text-green-700" : "bg-red-50 text-red-600"
+        isPositive ? "bg-success/10 text-success" : "bg-danger/10 text-danger"
       }`}
     >
       {isPositive ? "↑" : "↓"} {formatted}
@@ -135,7 +135,7 @@ export function OdsComparisonTable({ comparison, averages }: OdsComparisonTableP
                         </div>
                         <div className="h-2 w-full rounded-full bg-muted overflow-hidden">
                           <div
-                            className="h-full rounded-full bg-blue-500 transition-all duration-500"
+                            className="h-full rounded-full bg-primary transition-all duration-500"
                             style={{ width: `${Math.min(100, entry.municipalityScore)}%` }}
                           />
                         </div>
@@ -156,7 +156,7 @@ export function OdsComparisonTable({ comparison, averages }: OdsComparisonTableP
                         </div>
                         <div className="h-2 w-full rounded-full bg-muted overflow-hidden">
                           <div
-                            className="h-full rounded-full bg-gray-400 transition-all duration-500"
+                            className="h-full rounded-full bg-muted-foreground/40 transition-all duration-500"
                             style={{ width: `${Math.min(100, entry.benchmarkAverage)}%` }}
                           />
                         </div>
@@ -199,17 +199,17 @@ export function OdsComparisonTable({ comparison, averages }: OdsComparisonTableP
       {comparison.length > 0 && (
         <div className="flex flex-wrap items-center gap-4 px-4 py-2 border-t border-border bg-muted">
           <div className="flex items-center gap-1.5">
-            <div className="w-4 h-2 rounded-full bg-blue-500" />
+            <div className="w-4 h-2 rounded-full bg-primary" />
             <span className="text-[10px] text-muted-foreground">Score do município</span>
           </div>
           <div className="flex items-center gap-1.5">
-            <div className="w-4 h-2 rounded-full bg-gray-400" />
+            <div className="w-4 h-2 rounded-full bg-muted-foreground/40" />
             <span className="text-[10px] text-muted-foreground">Média do grupo</span>
           </div>
           <div className="flex items-center gap-1.5">
-            <span className="text-[10px] text-green-700 font-medium">↑ positivo</span>
+            <span className="text-[10px] text-success font-medium">↑ positivo</span>
             <span className="text-[10px] text-muted-foreground/60">/</span>
-            <span className="text-[10px] text-red-600 font-medium">↓ negativo</span>
+            <span className="text-[10px] text-danger font-medium">↓ negativo</span>
             <span className="text-[10px] text-muted-foreground">vs. média</span>
           </div>
         </div>
