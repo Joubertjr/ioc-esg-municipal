@@ -21,7 +21,7 @@ export const API_CONFIGS: Record<string, ApiConfig> = {
   siconfi: {
     name: "SICONFI",
     baseUrl: "https://api.siconfi.tesouro.gov.br/v1",
-    cacheTtlSeconds: 21_600, // 6h
+    cacheTtlSeconds: 86_400, // 24h — dados RREO mudam raramente
     rateLimit: 2,
     timeoutMs: 30_000,
     retryCount: 3,

@@ -1,0 +1,53 @@
+[
+  {
+    "exercicio": 2024,
+    "demonstrativo": "RREO",
+    "periodo": 6,
+    "periodicidade": "B",
+    "instituicao": "Prefeitura Municipal de Florianópolis - SC",
+    "cod_ibge": 4205407,
+    "uf": "SC",
+    "populacao": 574200,
+    "anexo": "RREO-Anexo 01",
+    "esfera": "M",
+    "rotulo": "Padrão",
+    "coluna": "PREVISÃO INICIAL",
+    "cod_conta": "ReceitasExcetoIntraOrcamentarias",
+    "conta": "RECEITAS (EXCETO INTRA-ORÇAMENTÁRIAS) (I)",
+    "valor": 3641124729
+  },
+  {
+    "exercicio": 2024,
+    "demonstrativo": "RREO",
+    "periodo": 6,
+    "periodicidade": "B",
+    "instituicao": "Prefeitura Municipal de Florianópolis - SC",
+    "cod_ibge": 4205407,
+    "uf": "SC",
+    "populacao": 574200,
+    "anexo": "RREO-Anexo 01",
+    "esfera": "M",
+    "rotulo": "Padrão",
+    "coluna": "PREVISÃO ATUALIZADA (a)",
+    "cod_conta": "ReceitasExcetoIntraOrcamentarias",
+    "conta": "RECEITAS (EXCETO INTRA-ORÇAMENTÁRIAS) (I)",
+    "valor": 3641124729
+  },
+  {
+    "exercicio": 2024,
+    "demonstrativo": "RREO",
+    "periodo": 6,
+    "periodicidade": "B",
+    "instituicao": "Prefeitura Municipal de Florianópolis - SC",
+    "cod_ibge": 4205407,
+    "uf": "SC",
+    "populacao": 574200,
+    "anexo": "RREO-Anexo 01",
+    "esfera": "M",
+    "rotulo": "Padrão",
+    "coluna": "No Bimestre (b)",
+    "cod_conta": "ReceitasExcetoIntraOrcamentarias",
+    "conta": "RECEITAS (EXCETO INTRA-ORÇAMENTÁRIAS) (I)",
+    "valor": 634005811.11
+  }
+]
