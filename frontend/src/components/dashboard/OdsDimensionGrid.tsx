@@ -222,7 +222,7 @@ export function OdsDimensionGridSkeleton() {
                 <div key={j} className="flex items-center gap-2 px-2 py-1.5">
                   <div className="w-5 h-5 rounded bg-muted" />
                   <div className="h-3 flex-1 rounded bg-muted" />
-                  <div className="w-20 h-1.5 rounded bg-muted" />
+                  <div className="w-20 h-1.5 rounded-full bg-muted" />
                   <div className="w-7 h-3 rounded bg-muted" />
                 </div>
               ))}

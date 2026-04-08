@@ -48,7 +48,7 @@ function CustomTooltip({ active, payload }: TooltipProps<number, string>) {
   };
 
   return (
-    <div className="bg-card border border-border rounded-lg shadow-md px-3 py-2 text-sm">
+    <div className="bg-card border-0 rounded-xl shadow-popover px-3 py-2 text-sm">
       <p className="font-semibold text-foreground">Ano: {year}</p>
       <p className="text-foreground">
         Score: <span className="font-bold tabular-nums">{score.toFixed(1)}</span>

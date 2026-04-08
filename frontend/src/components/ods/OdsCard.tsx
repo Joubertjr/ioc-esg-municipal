@@ -38,10 +38,10 @@ export function OdsCard({ ods, onClick }: OdsCardProps) {
     <OdsTooltip odsNumber={ods.odsNumber} name={ods.name}>
       <button
         onClick={onClick}
-        className={`relative w-full text-left rounded-lg bg-card shadow-card border border-border p-3 transition-shadow duration-150 hover:shadow-card-hover hover:border-primary/20 cursor-pointer focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-1 ${
+        className={`relative w-full text-left rounded-xl bg-card shadow-card border-l-4 p-3 transition-shadow duration-150 hover:shadow-card-hover cursor-pointer focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-1 ${
           hasData ? "" : "opacity-50"
         }`}
-        style={{ borderLeftWidth: "4px", borderLeftColor: ods.color }}
+        style={{ borderLeftColor: ods.color }}
         aria-label={`ODS ${ods.odsNumber}: ${ods.name}. Score: ${hasData ? `${ods.score} de 100` : "dados indisponíveis"}`}
       >
         <div className="flex items-center gap-2 mb-2">
@@ -96,13 +96,13 @@ export function OdsCard({ ods, onClick }: OdsCardProps) {
 
 export function OdsCardSkeleton() {
   return (
-    <div className="rounded-lg bg-card shadow-sm border border-border p-3 animate-pulse">
+    <div className="rounded-xl bg-card shadow-card border-0 p-3 animate-pulse">
       <div className="flex items-center gap-2 mb-2">
         <div className="w-7 h-7 rounded bg-muted animate-pulse" />
         <div className="h-3 w-16 rounded bg-muted animate-pulse" />
       </div>
       <div className="h-8 w-12 rounded bg-muted animate-pulse mb-2" />
-      <div className="h-1.5 w-full rounded bg-muted animate-pulse mb-2" />
+      <div className="h-1.5 w-full rounded-full bg-muted animate-pulse mb-2" />
       <div className="h-3 w-16 rounded bg-muted animate-pulse" />
     </div>
   );

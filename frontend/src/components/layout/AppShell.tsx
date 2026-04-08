@@ -77,7 +77,7 @@ export function AppShell({ ibgeCode, onSelect, referenceYear, children }: AppShe
     <div className="min-h-screen bg-background">
       {/* Top header — simplified, no nav links (those are in Rail/BottomTab now) */}
       <header className="sticky top-0 z-30 bg-card/80 backdrop-blur-xl border-b border-border shadow-sm">
-        <div className="max-w-screen-2xl mx-auto px-4 h-14 flex items-center gap-3">
+        <div className="max-w-screen-2xl mx-auto px-4 h-12 flex items-center gap-3">
           {/* Brand */}
           <NavLink to="/dashboard" className="flex items-center gap-2 shrink-0">
             <div className="w-7 h-7 bg-primary rounded-md flex items-center justify-center text-primary-foreground">

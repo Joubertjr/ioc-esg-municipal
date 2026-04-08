@@ -37,7 +37,7 @@ export function RecommendationCard({ recommendation }: RecommendationCardProps) 
   const deltaValue = gap !== null ? -gap : null;
 
   return (
-    <div className="bg-card border border-border rounded-xl shadow-sm p-5 flex flex-col gap-4">
+    <div className="bg-card border-0 rounded-xl shadow-card p-5 flex flex-col gap-4">
       {/* Header */}
       <div className="flex items-start justify-between gap-3">
         <div className="flex items-center gap-3">

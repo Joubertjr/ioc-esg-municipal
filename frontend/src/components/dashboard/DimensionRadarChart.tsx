@@ -63,7 +63,7 @@ function DimensionTooltipContent({ active, payload }: CustomTooltipProps) {
   if (!active || !payload?.[0]) return null;
   const { dimension, description, score } = payload[0].payload;
   return (
-    <div className="bg-card px-3 py-2 rounded-lg shadow-lg border border-border text-xs">
+    <div className="bg-card px-3 py-2 rounded-xl shadow-popover border-0 text-xs">
       <p className="font-semibold text-foreground">
         {dimension}
         <span className="font-normal text-muted-foreground ml-1">— {description}</span>

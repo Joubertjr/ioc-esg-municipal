@@ -35,7 +35,7 @@ export class ErrorBoundary extends Component<Props, State> {
 
       return (
         <div className="min-h-screen bg-background flex items-center justify-center px-4">
-          <div className="max-w-md w-full bg-card rounded-xl border border-border shadow-sm p-8 text-center">
+          <div className="max-w-md w-full bg-card rounded-xl border-0 shadow-card p-8 text-center">
             <div className="w-12 h-12 bg-destructive/10 rounded-full flex items-center justify-center mx-auto mb-4">
               <svg
                 className="w-6 h-6 text-destructive"

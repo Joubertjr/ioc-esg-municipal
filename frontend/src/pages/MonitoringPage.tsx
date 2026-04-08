@@ -131,7 +131,7 @@ function OdsRow({ ods, target, trend }: OdsRowProps) {
   const targetPct = Math.min(100, Math.max(0, target));
 
   return (
-    <div className="bg-card rounded-lg border border-border p-4 hover:border-border/80 transition-colors">
+    <div className="bg-card rounded-xl shadow-card border-0 p-4 transition-shadow hover:shadow-card-hover">
       <div className="flex items-start gap-4">
         {/* ODS number circle */}
         <div
@@ -411,7 +411,7 @@ export function MonitoringPage() {
         ) : null}
 
         {/* Controls */}
-        <div className="bg-card rounded-xl border border-border p-4">
+        <div className="bg-card rounded-xl shadow-card border-0 p-4">
           <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-end">
             {/* Target score */}
             <div className="flex-1 min-w-[180px]">

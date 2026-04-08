@@ -18,7 +18,7 @@ const PRIORITY_ORDER: Record<SmartRecommendation["priority"], number> = {
 
 function SkeletonCard() {
   return (
-    <div className="bg-card border border-border rounded-xl shadow-sm p-5 animate-pulse">
+    <div className="bg-card border-0 rounded-xl shadow-card p-5 animate-pulse">
       <div className="flex items-start justify-between gap-3 mb-4">
         <div className="flex items-center gap-3">
           <div className="w-9 h-9 rounded-lg bg-muted shrink-0" />

@@ -52,7 +52,7 @@ function ComparisonTooltip({ active, payload }: CustomTooltipProps) {
   const delta = point.delta;
 
   return (
-    <div className="bg-card px-3 py-2 rounded-xl shadow-popover border border-border text-xs min-w-[180px]">
+    <div className="bg-card px-3 py-2 rounded-xl shadow-popover border-0 text-xs min-w-[180px]">
       <p className="font-semibold text-foreground mb-1.5">{point.odsName}</p>
       <div className="space-y-1">
         <div className="flex justify-between gap-4">
