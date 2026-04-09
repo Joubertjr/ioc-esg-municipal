@@ -21,6 +21,7 @@ import {
 } from "../../agents/convenios/index.js";
 import { AnatelCollector, mapToOdsIndicators as mapAnatelOds } from "../../agents/anatel/index.js";
 import { SisvanCollector, mapToOdsIndicators as mapSisvanOds } from "../../agents/sisvan/index.js";
+import { IepsCollector, mapToOdsIndicators as mapIepsOds } from "../../agents/ieps/index.js";
 import { ODS_DEFINITIONS, getOdsDefinition } from "../../../shared/constants/ods.js";
 import {
   getOdsStatus,
@@ -100,6 +101,7 @@ const anaCollector = new AnaCollector();
 const conveniosCollector = new ConveniosCollector();
 const anatelCollector = new AnatelCollector();
 const sisvanCollector = new SisvanCollector();
+const iepsCollector = new IepsCollector();
 
 /**
  * Serviço que orquestra todos os coletores e consolida scores ODS para um município.
@@ -144,6 +146,7 @@ async function _fetchAndCalculate(ibgeCode: string): Promise<MunicipalOdsReport 
     conveniosData,
     anatelData,
     sisvanData,
+    iepsData,
   ] = await Promise.all([
     withTimeout(ibgeCollector.collect(ibgeCode), 10_000, "ibge"),
     withTimeout(siconfiCollector.collect(ibgeCode), 15_000, "siconfi"),
@@ -159,6 +162,7 @@ async function _fetchAndCalculate(ibgeCode: string): Promise<MunicipalOdsReport 
     withTimeout(conveniosCollector.collect(ibgeCode), 1_000, "convenios"),
     withTimeout(anatelCollector.collect(ibgeCode), 1_000, "anatel"),
     withTimeout(sisvanCollector.collect(ibgeCode), 1_000, "sisvan"),
+    withTimeout(iepsCollector.collect(ibgeCode), 1_000, "ieps"),
   ]);
 
   // Se nenhuma fonte retornou dados, não há score
@@ -176,7 +180,8 @@ async function _fetchAndCalculate(ibgeCode: string): Promise<MunicipalOdsReport 
     !anaData &&
     !conveniosData &&
     !anatelData &&
-    !sisvanData
+    !sisvanData &&
+    !iepsData
   ) {
     logger.warn(`No data from any source for municipality ${ibgeCode}`);
     return null;
@@ -198,6 +203,7 @@ async function _fetchAndCalculate(ibgeCode: string): Promise<MunicipalOdsReport 
   if (conveniosData) allIndicators.push(...mapConveniosOds(conveniosData));
   if (anatelData) allIndicators.push(...mapAnatelOds(anatelData));
   if (sisvanData) allIndicators.push(...mapSisvanOds(sisvanData));
+  if (iepsData) allIndicators.push(...mapIepsOds(iepsData));
 
   // Determinar ano de referência mais recente
   const referenceYear = Math.max(
@@ -215,6 +221,7 @@ async function _fetchAndCalculate(ibgeCode: string): Promise<MunicipalOdsReport 
     conveniosData?.referenceYear ?? 0,
     anatelData?.referenceYear ?? 0,
     sisvanData?.referenceYear ?? 0,
+    iepsData?.referenceYear ?? 0,
   );
 
   // Agrupar indicadores por ODS number

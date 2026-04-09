@@ -1,0 +1,2362 @@
+{
+  "4200051": {
+    "mortalidadeInfantil": 16.01,
+    "coberturaEsf": 81.14,
+    "coberturaVacinal": 74.65,
+    "internacoesCsap": 808.64,
+    "gastoSaudePerCapita": 969.25,
+    "prenatalAdequado": 72.2
+  },
+  "4200101": {
+    "mortalidadeInfantil": 16.59,
+    "coberturaEsf": 76.8,
+    "coberturaVacinal": 66.76,
+    "internacoesCsap": 905.48,
+    "gastoSaudePerCapita": 1054.39,
+    "prenatalAdequado": 55.11
+  },
+  "4200200": {
+    "mortalidadeInfantil": 11.15,
+    "coberturaEsf": 74.92,
+    "coberturaVacinal": 92.6,
+    "internacoesCsap": 1120.81,
+    "gastoSaudePerCapita": 589.25,
+    "prenatalAdequado": 88.25
+  },
+  "4200309": {
+    "mortalidadeInfantil": 10.27,
+    "coberturaEsf": 71.01,
+    "coberturaVacinal": 80.19,
+    "internacoesCsap": 905.08,
+    "gastoSaudePerCapita": 1371.84,
+    "prenatalAdequado": 57.67
+  },
+  "4200408": {
+    "mortalidadeInfantil": 7.5,
+    "coberturaEsf": 84.58,
+    "coberturaVacinal": 73.9,
+    "internacoesCsap": 721.9,
+    "gastoSaudePerCapita": 1039.78,
+    "prenatalAdequado": 83.73
+  },
+  "4200507": {
+    "mortalidadeInfantil": 5.22,
+    "coberturaEsf": 98.5,
+    "coberturaVacinal": 84.04,
+    "internacoesCsap": 693.37,
+    "gastoSaudePerCapita": 733.33,
+    "prenatalAdequado": 71.88
+  },
+  "4200556": {
+    "mortalidadeInfantil": 4.52,
+    "coberturaEsf": 100,
+    "coberturaVacinal": 76.52,
+    "internacoesCsap": 813.71,
+    "gastoSaudePerCapita": 788.86,
+    "prenatalAdequado": 78.96
+  },
+  "4200606": {
+    "mortalidadeInfantil": 2.51,
+    "coberturaEsf": 79.44,
+    "coberturaVacinal": 82.42,
+    "internacoesCsap": 708.92,
+    "gastoSaudePerCapita": 829.81,
+    "prenatalAdequado": 62.63
+  },
+  "4200705": {
+    "mortalidadeInfantil": 7.56,
+    "coberturaEsf": 73.69,
+    "coberturaVacinal": 93.68,
+    "internacoesCsap": 1072.33,
+    "gastoSaudePerCapita": 1065.96,
+    "prenatalAdequado": 85.28
+  },
+  "4200754": {
+    "mortalidadeInfantil": 23.37,
+    "coberturaEsf": 78.28,
+    "coberturaVacinal": 96.63,
+    "internacoesCsap": 592.52,
+    "gastoSaudePerCapita": 1012.75,
+    "prenatalAdequado": 44.01
+  },
+  "4200804": {
+    "mortalidadeInfantil": 4.94,
+    "coberturaEsf": 81.77,
+    "coberturaVacinal": 100,
+    "internacoesCsap": 1628.68,
+    "gastoSaudePerCapita": 406.26,
+    "prenatalAdequado": 52.79
+  },
+  "4200903": {
+    "mortalidadeInfantil": 9.16,
+    "coberturaEsf": 100,
+    "coberturaVacinal": 69.57,
+    "internacoesCsap": 1136.2,
+    "gastoSaudePerCapita": 1101.58,
+    "prenatalAdequado": 67.39
+  },
+  "4201000": {
+    "mortalidadeInfantil": 15.4,
+    "coberturaEsf": 95.5,
+    "coberturaVacinal": 81.95,
+    "internacoesCsap": 1070.27,
+    "gastoSaudePerCapita": 986.37,
+    "prenatalAdequado": 51.28
+  },
+  "4201109": {
+    "mortalidadeInfantil": 8.19,
+    "coberturaEsf": 74.68,
+    "coberturaVacinal": 89.4,
+    "internacoesCsap": 1654.23,
+    "gastoSaudePerCapita": 917.74,
+    "prenatalAdequado": 96.57
+  },
+  "4201208": {
+    "mortalidadeInfantil": null,
+    "coberturaEsf": 90.47,
+    "coberturaVacinal": 68.84,
+    "internacoesCsap": 1317.47,
+    "gastoSaudePerCapita": 855.49,
+    "prenatalAdequado": 66.58
+  },
+  "4201257": {
+    "mortalidadeInfantil": 9.59,
+    "coberturaEsf": 93.76,
+    "coberturaVacinal": 92.33,
+    "internacoesCsap": 257,
+    "gastoSaudePerCapita": 1135.6,
+    "prenatalAdequado": 81.1
+  },
+  "4201273": {
+    "mortalidadeInfantil": 13.74,
+    "coberturaEsf": 100,
+    "coberturaVacinal": 88.78,
+    "internacoesCsap": 899.55,
+    "gastoSaudePerCapita": 1013.68,
+    "prenatalAdequado": 78.37
+  },
+  "4201307": {
+    "mortalidadeInfantil": 8.32,
+    "coberturaEsf": 74.82,
+    "coberturaVacinal": 66.54,
+    "internacoesCsap": 300.45,
+    "gastoSaudePerCapita": 652.48,
+    "prenatalAdequado": 70.19
+  },
+  "4201406": {
+    "mortalidadeInfantil": 5.65,
+    "coberturaEsf": 74.03,
+    "coberturaVacinal": 62.46,
+    "internacoesCsap": 810.83,
+    "gastoSaudePerCapita": 651.88,
+    "prenatalAdequado": 58.68
+  },
+  "4201505": {
+    "mortalidadeInfantil": 3.15,
+    "coberturaEsf": 92.19,
+    "coberturaVacinal": 72.95,
+    "internacoesCsap": 1331.38,
+    "gastoSaudePerCapita": 321.94,
+    "prenatalAdequado": 79.32
+  },
+  "4201604": {
+    "mortalidadeInfantil": 8.51,
+    "coberturaEsf": 94.04,
+    "coberturaVacinal": 68.39,
+    "internacoesCsap": 624.51,
+    "gastoSaudePerCapita": 595.95,
+    "prenatalAdequado": 74.3
+  },
+  "4201653": {
+    "mortalidadeInfantil": 18.86,
+    "coberturaEsf": 77.17,
+    "coberturaVacinal": 58.62,
+    "internacoesCsap": 1301.09,
+    "gastoSaudePerCapita": 704.2,
+    "prenatalAdequado": 81.7
+  },
+  "4201703": {
+    "mortalidadeInfantil": 14.2,
+    "coberturaEsf": 100,
+    "coberturaVacinal": 91.41,
+    "internacoesCsap": 1639.2,
+    "gastoSaudePerCapita": 897.96,
+    "prenatalAdequado": 77.11
+  },
+  "4201802": {
+    "mortalidadeInfantil": 10.86,
+    "coberturaEsf": 48.57,
+    "coberturaVacinal": 54.56,
+    "internacoesCsap": 783.61,
+    "gastoSaudePerCapita": 1120.21,
+    "prenatalAdequado": 57.3
+  },
+  "4201901": {
+    "mortalidadeInfantil": 14.9,
+    "coberturaEsf": 78.98,
+    "coberturaVacinal": 73.32,
+    "internacoesCsap": 1087.81,
+    "gastoSaudePerCapita": 766.43,
+    "prenatalAdequado": 63
+  },
+  "4201950": {
+    "mortalidadeInfantil": 10.3,
+    "coberturaEsf": 92.2,
+    "coberturaVacinal": 80.06,
+    "internacoesCsap": 507.82,
+    "gastoSaudePerCapita": 723.22,
+    "prenatalAdequado": 75.06
+  },
+  "4202008": {
+    "mortalidadeInfantil": 5.46,
+    "coberturaEsf": 78.15,
+    "coberturaVacinal": 87.12,
+    "internacoesCsap": 671.1,
+    "gastoSaudePerCapita": 724.17,
+    "prenatalAdequado": 68.86
+  },
+  "4202057": {
+    "mortalidadeInfantil": 14.93,
+    "coberturaEsf": 58.79,
+    "coberturaVacinal": 66.22,
+    "internacoesCsap": 1110.66,
+    "gastoSaudePerCapita": 892.65,
+    "prenatalAdequado": 70.07
+  },
+  "4202073": {
+    "mortalidadeInfantil": 12.81,
+    "coberturaEsf": 73.26,
+    "coberturaVacinal": 66.87,
+    "internacoesCsap": 780.74,
+    "gastoSaudePerCapita": 837.96,
+    "prenatalAdequado": 82.17
+  },
+  "4202081": {
+    "mortalidadeInfantil": 14.94,
+    "coberturaEsf": 92.31,
+    "coberturaVacinal": 56.82,
+    "internacoesCsap": 539.43,
+    "gastoSaudePerCapita": 934.98,
+    "prenatalAdequado": 74.05
+  },
+  "4202099": {
+    "mortalidadeInfantil": 3.34,
+    "coberturaEsf": 55.15,
+    "coberturaVacinal": 83.73,
+    "internacoesCsap": 1246.29,
+    "gastoSaudePerCapita": 880.29,
+    "prenatalAdequado": 82.03
+  },
+  "4202107": {
+    "mortalidadeInfantil": 7.73,
+    "coberturaEsf": 90.67,
+    "coberturaVacinal": 78.61,
+    "internacoesCsap": 708.85,
+    "gastoSaudePerCapita": 638.67,
+    "prenatalAdequado": 71.3
+  },
+  "4202131": {
+    "mortalidadeInfantil": 9.37,
+    "coberturaEsf": 78.92,
+    "coberturaVacinal": 73.75,
+    "internacoesCsap": 548.39,
+    "gastoSaudePerCapita": 1452.12,
+    "prenatalAdequado": 77
+  },
+  "4202156": {
+    "mortalidadeInfantil": 10.58,
+    "coberturaEsf": 86.31,
+    "coberturaVacinal": 78.65,
+    "internacoesCsap": 1475.89,
+    "gastoSaudePerCapita": 480.41,
+    "prenatalAdequado": 82.64
+  },
+  "4202206": {
+    "mortalidadeInfantil": 0,
+    "coberturaEsf": 90.4,
+    "coberturaVacinal": 70.02,
+    "internacoesCsap": 871.79,
+    "gastoSaudePerCapita": 822.18,
+    "prenatalAdequado": 69.44
+  },
+  "4202305": {
+    "mortalidadeInfantil": 6.83,
+    "coberturaEsf": 62.84,
+    "coberturaVacinal": 68.2,
+    "internacoesCsap": 988.1,
+    "gastoSaudePerCapita": 603.65,
+    "prenatalAdequado": 69.66
+  },
+  "4202404": {
+    "mortalidadeInfantil": 8.8,
+    "coberturaEsf": 78.46,
+    "coberturaVacinal": 96.7,
+    "internacoesCsap": 668.57,
+    "gastoSaudePerCapita": 827.56,
+    "prenatalAdequado": 87.61
+  },
+  "4202438": {
+    "mortalidadeInfantil": 6.14,
+    "coberturaEsf": 68.14,
+    "coberturaVacinal": 86.75,
+    "internacoesCsap": 1093.11,
+    "gastoSaudePerCapita": 985.84,
+    "prenatalAdequado": 87.81
+  },
+  "4202453": {
+    "mortalidadeInfantil": 14.42,
+    "coberturaEsf": 63.47,
+    "coberturaVacinal": 70.19,
+    "internacoesCsap": 1056.31,
+    "gastoSaudePerCapita": 564.37,
+    "prenatalAdequado": 69.53
+  },
+  "4202503": {
+    "mortalidadeInfantil": 8.63,
+    "coberturaEsf": 83.5,
+    "coberturaVacinal": 79.05,
+    "internacoesCsap": 821.62,
+    "gastoSaudePerCapita": 806.35,
+    "prenatalAdequado": 72.88
+  },
+  "4202537": {
+    "mortalidadeInfantil": 8.55,
+    "coberturaEsf": 91.95,
+    "coberturaVacinal": 69.99,
+    "internacoesCsap": 1028.4,
+    "gastoSaudePerCapita": 490.91,
+    "prenatalAdequado": 52.56
+  },
+  "4202578": {
+    "mortalidadeInfantil": 5.96,
+    "coberturaEsf": 72.41,
+    "coberturaVacinal": 72.4,
+    "internacoesCsap": 592.82,
+    "gastoSaudePerCapita": 1170.28,
+    "prenatalAdequado": 62.57
+  },
+  "4202602": {
+    "mortalidadeInfantil": 16.71,
+    "coberturaEsf": 86.19,
+    "coberturaVacinal": 62.19,
+    "internacoesCsap": 1099.64,
+    "gastoSaudePerCapita": 1027.09,
+    "prenatalAdequado": 81.51
+  },
+  "4202701": {
+    "mortalidadeInfantil": 12.81,
+    "coberturaEsf": 59.02,
+    "coberturaVacinal": 78.88,
+    "internacoesCsap": 1105.32,
+    "gastoSaudePerCapita": 747.37,
+    "prenatalAdequado": 91.47
+  },
+  "4202800": {
+    "mortalidadeInfantil": 13.77,
+    "coberturaEsf": 65.27,
+    "coberturaVacinal": 66.09,
+    "internacoesCsap": 1138.19,
+    "gastoSaudePerCapita": 1119.65,
+    "prenatalAdequado": 98
+  },
+  "4202859": {
+    "mortalidadeInfantil": 6.11,
+    "coberturaEsf": 86.39,
+    "coberturaVacinal": 84.94,
+    "internacoesCsap": 959.16,
+    "gastoSaudePerCapita": 568.11,
+    "prenatalAdequado": 62.25
+  },
+  "4202875": {
+    "mortalidadeInfantil": 11.84,
+    "coberturaEsf": 89.11,
+    "coberturaVacinal": 65.21,
+    "internacoesCsap": 1125.43,
+    "gastoSaudePerCapita": 730.81,
+    "prenatalAdequado": 48.58
+  },
+  "4202909": {
+    "mortalidadeInfantil": 11.28,
+    "coberturaEsf": 54.16,
+    "coberturaVacinal": 75.83,
+    "internacoesCsap": 701.6,
+    "gastoSaudePerCapita": 922.26,
+    "prenatalAdequado": 54.34
+  },
+  "4203006": {
+    "mortalidadeInfantil": 7.76,
+    "coberturaEsf": 41.52,
+    "coberturaVacinal": 57.85,
+    "internacoesCsap": 463.74,
+    "gastoSaudePerCapita": 1068.32,
+    "prenatalAdequado": 45.78
+  },
+  "4203105": {
+    "mortalidadeInfantil": 6.32,
+    "coberturaEsf": 88.01,
+    "coberturaVacinal": 55.41,
+    "internacoesCsap": 1485.02,
+    "gastoSaudePerCapita": 768.12,
+    "prenatalAdequado": 46.75
+  },
+  "4203154": {
+    "mortalidadeInfantil": 11.14,
+    "coberturaEsf": 75.55,
+    "coberturaVacinal": 53.07,
+    "internacoesCsap": 1600.28,
+    "gastoSaudePerCapita": 995.81,
+    "prenatalAdequado": 72.37
+  },
+  "4203204": {
+    "mortalidadeInfantil": null,
+    "coberturaEsf": 92.92,
+    "coberturaVacinal": 86.24,
+    "internacoesCsap": 938.68,
+    "gastoSaudePerCapita": 606.31,
+    "prenatalAdequado": 79.7
+  },
+  "4203253": {
+    "mortalidadeInfantil": 9.89,
+    "coberturaEsf": 100,
+    "coberturaVacinal": 79.01,
+    "internacoesCsap": 1013.74,
+    "gastoSaudePerCapita": 998.09,
+    "prenatalAdequado": 62.73
+  },
+  "4203303": {
+    "mortalidadeInfantil": 7.52,
+    "coberturaEsf": 81.86,
+    "coberturaVacinal": 77.35,
+    "internacoesCsap": 284.35,
+    "gastoSaudePerCapita": 794.17,
+    "prenatalAdequado": 77.67
+  },
+  "4203402": {
+    "mortalidadeInfantil": 14.36,
+    "coberturaEsf": 77.21,
+    "coberturaVacinal": 82.74,
+    "internacoesCsap": 1454.01,
+    "gastoSaudePerCapita": 988.28,
+    "prenatalAdequado": 63.97
+  },
+  "4203501": {
+    "mortalidadeInfantil": 17.66,
+    "coberturaEsf": 100,
+    "coberturaVacinal": 63.25,
+    "internacoesCsap": 805.08,
+    "gastoSaudePerCapita": 1375.26,
+    "prenatalAdequado": 85.78
+  },
+  "4203600": {
+    "mortalidadeInfantil": 12.36,
+    "coberturaEsf": 86.34,
+    "coberturaVacinal": 92.32,
+    "internacoesCsap": 777.2,
+    "gastoSaudePerCapita": 782.24,
+    "prenatalAdequado": 97.13
+  },
+  "4203709": {
+    "mortalidadeInfantil": 8.88,
+    "coberturaEsf": 91.14,
+    "coberturaVacinal": 83.61,
+    "internacoesCsap": 1193.95,
+    "gastoSaudePerCapita": 760.6,
+    "prenatalAdequado": 58.16
+  },
+  "4203808": {
+    "mortalidadeInfantil": null,
+    "coberturaEsf": 60.39,
+    "coberturaVacinal": 85,
+    "internacoesCsap": 844.6,
+    "gastoSaudePerCapita": 737.1,
+    "prenatalAdequado": 89.51
+  },
+  "4203907": {
+    "mortalidadeInfantil": 4.71,
+    "coberturaEsf": 81.61,
+    "coberturaVacinal": 83.29,
+    "internacoesCsap": 814.28,
+    "gastoSaudePerCapita": 976.63,
+    "prenatalAdequado": 82.02
+  },
+  "4203956": {
+    "mortalidadeInfantil": 6.71,
+    "coberturaEsf": 75.5,
+    "coberturaVacinal": 50.49,
+    "internacoesCsap": 652.35,
+    "gastoSaudePerCapita": 899.28,
+    "prenatalAdequado": 81.03
+  },
+  "4204004": {
+    "mortalidadeInfantil": 10.62,
+    "coberturaEsf": 62.82,
+    "coberturaVacinal": 89.1,
+    "internacoesCsap": 1096.91,
+    "gastoSaudePerCapita": 739.1,
+    "prenatalAdequado": 59.74
+  },
+  "4204103": {
+    "mortalidadeInfantil": 11.71,
+    "coberturaEsf": 50.58,
+    "coberturaVacinal": 88.56,
+    "internacoesCsap": 621.73,
+    "gastoSaudePerCapita": 677.74,
+    "prenatalAdequado": 54.92
+  },
+  "4204152": {
+    "mortalidadeInfantil": 10.22,
+    "coberturaEsf": 73.23,
+    "coberturaVacinal": 64.62,
+    "internacoesCsap": 829.3,
+    "gastoSaudePerCapita": 1070.81,
+    "prenatalAdequado": 71.24
+  },
+  "4204178": {
+    "mortalidadeInfantil": 7.31,
+    "coberturaEsf": 83.06,
+    "coberturaVacinal": 67.95,
+    "internacoesCsap": 478.15,
+    "gastoSaudePerCapita": 670.22,
+    "prenatalAdequado": 98
+  },
+  "4204194": {
+    "mortalidadeInfantil": 12.48,
+    "coberturaEsf": 86.23,
+    "coberturaVacinal": 99.44,
+    "internacoesCsap": 633.7,
+    "gastoSaudePerCapita": 944.15,
+    "prenatalAdequado": 67.39
+  },
+  "4204202": {
+    "mortalidadeInfantil": 11.64,
+    "coberturaEsf": 100,
+    "coberturaVacinal": 77.98,
+    "internacoesCsap": 1397.95,
+    "gastoSaudePerCapita": 808.01,
+    "prenatalAdequado": 77.03
+  },
+  "4204251": {
+    "mortalidadeInfantil": 11.27,
+    "coberturaEsf": 86.75,
+    "coberturaVacinal": 60.13,
+    "internacoesCsap": 710.89,
+    "gastoSaudePerCapita": 1136.79,
+    "prenatalAdequado": 72.97
+  },
+  "4204301": {
+    "mortalidadeInfantil": 14.02,
+    "coberturaEsf": 94.99,
+    "coberturaVacinal": 68.2,
+    "internacoesCsap": 1157.66,
+    "gastoSaudePerCapita": 1175.36,
+    "prenatalAdequado": 63.42
+  },
+  "4204350": {
+    "mortalidadeInfantil": 12.45,
+    "coberturaEsf": 59.76,
+    "coberturaVacinal": 77.26,
+    "internacoesCsap": 750.66,
+    "gastoSaudePerCapita": 935.34,
+    "prenatalAdequado": 55.81
+  },
+  "4204400": {
+    "mortalidadeInfantil": 14.04,
+    "coberturaEsf": 69.78,
+    "coberturaVacinal": 61.25,
+    "internacoesCsap": 1925.54,
+    "gastoSaudePerCapita": 394.27,
+    "prenatalAdequado": 90.99
+  },
+  "4204459": {
+    "mortalidadeInfantil": 1.67,
+    "coberturaEsf": 42.66,
+    "coberturaVacinal": 68.79,
+    "internacoesCsap": 1002.55,
+    "gastoSaudePerCapita": 1446.34,
+    "prenatalAdequado": 58.37
+  },
+  "4204509": {
+    "mortalidadeInfantil": 4.25,
+    "coberturaEsf": 76.35,
+    "coberturaVacinal": 69.51,
+    "internacoesCsap": 1017.65,
+    "gastoSaudePerCapita": 1314.34,
+    "prenatalAdequado": 65.32
+  },
+  "4204558": {
+    "mortalidadeInfantil": 6.81,
+    "coberturaEsf": 77.55,
+    "coberturaVacinal": 71.06,
+    "internacoesCsap": 796.01,
+    "gastoSaudePerCapita": 719.13,
+    "prenatalAdequado": 84.87
+  },
+  "4204608": {
+    "mortalidadeInfantil": 7.67,
+    "coberturaEsf": 55.95,
+    "coberturaVacinal": 100,
+    "internacoesCsap": 992.3,
+    "gastoSaudePerCapita": 560.17,
+    "prenatalAdequado": 74.75
+  },
+  "4204707": {
+    "mortalidadeInfantil": 9.3,
+    "coberturaEsf": 56.53,
+    "coberturaVacinal": 91.67,
+    "internacoesCsap": 989.24,
+    "gastoSaudePerCapita": 702.82,
+    "prenatalAdequado": 67.38
+  },
+  "4204756": {
+    "mortalidadeInfantil": 9.98,
+    "coberturaEsf": 67.64,
+    "coberturaVacinal": 61.75,
+    "internacoesCsap": 779.87,
+    "gastoSaudePerCapita": 989.88,
+    "prenatalAdequado": 73.17
+  },
+  "4204806": {
+    "mortalidadeInfantil": 6.14,
+    "coberturaEsf": 100,
+    "coberturaVacinal": 78.03,
+    "internacoesCsap": 1273.49,
+    "gastoSaudePerCapita": 1028.22,
+    "prenatalAdequado": 69.26
+  },
+  "4204905": {
+    "mortalidadeInfantil": 3.91,
+    "coberturaEsf": 65.03,
+    "coberturaVacinal": 53.94,
+    "internacoesCsap": 824.55,
+    "gastoSaudePerCapita": 1069.75,
+    "prenatalAdequado": 73.33
+  },
+  "4205001": {
+    "mortalidadeInfantil": 7.35,
+    "coberturaEsf": 100,
+    "coberturaVacinal": 69.32,
+    "internacoesCsap": 905.28,
+    "gastoSaudePerCapita": 748.31,
+    "prenatalAdequado": 95.63
+  },
+  "4205100": {
+    "mortalidadeInfantil": 4.1,
+    "coberturaEsf": 79.93,
+    "coberturaVacinal": 74.15,
+    "internacoesCsap": 1031.85,
+    "gastoSaudePerCapita": 885.19,
+    "prenatalAdequado": 67.99
+  },
+  "4205159": {
+    "mortalidadeInfantil": 12.4,
+    "coberturaEsf": 96.63,
+    "coberturaVacinal": 89.81,
+    "internacoesCsap": 845.5,
+    "gastoSaudePerCapita": 568.42,
+    "prenatalAdequado": 74.29
+  },
+  "4205175": {
+    "mortalidadeInfantil": 7.92,
+    "coberturaEsf": 78.59,
+    "coberturaVacinal": 59.69,
+    "internacoesCsap": 909.9,
+    "gastoSaudePerCapita": 944.54,
+    "prenatalAdequado": 71
+  },
+  "4205191": {
+    "mortalidadeInfantil": 4.44,
+    "coberturaEsf": 65.46,
+    "coberturaVacinal": 84.66,
+    "internacoesCsap": 858.99,
+    "gastoSaudePerCapita": 608.85,
+    "prenatalAdequado": 65.27
+  },
+  "4205209": {
+    "mortalidadeInfantil": 7.43,
+    "coberturaEsf": 76.19,
+    "coberturaVacinal": 66.33,
+    "internacoesCsap": 1062.12,
+    "gastoSaudePerCapita": 1018.58,
+    "prenatalAdequado": 81.71
+  },
+  "4205308": {
+    "mortalidadeInfantil": 9.33,
+    "coberturaEsf": 81.04,
+    "coberturaVacinal": 65.5,
+    "internacoesCsap": 763.41,
+    "gastoSaudePerCapita": 731.28,
+    "prenatalAdequado": 80.96
+  },
+  "4205357": {
+    "mortalidadeInfantil": 11.05,
+    "coberturaEsf": 89.75,
+    "coberturaVacinal": 71.29,
+    "internacoesCsap": 403.67,
+    "gastoSaudePerCapita": 1097.73,
+    "prenatalAdequado": 73
+  },
+  "4205407": {
+    "mortalidadeInfantil": 17.92,
+    "coberturaEsf": 100,
+    "coberturaVacinal": 100,
+    "internacoesCsap": 1016.14,
+    "gastoSaudePerCapita": 919.27,
+    "prenatalAdequado": 58.46
+  },
+  "4205431": {
+    "mortalidadeInfantil": 7.6,
+    "coberturaEsf": 75.77,
+    "coberturaVacinal": 87.44,
+    "internacoesCsap": 839.8,
+    "gastoSaudePerCapita": 1121.09,
+    "prenatalAdequado": 39.28
+  },
+  "4205456": {
+    "mortalidadeInfantil": 11.67,
+    "coberturaEsf": 82.25,
+    "coberturaVacinal": 46.85,
+    "internacoesCsap": 864.29,
+    "gastoSaudePerCapita": 869.7,
+    "prenatalAdequado": 87.57
+  },
+  "4205506": {
+    "mortalidadeInfantil": 12.46,
+    "coberturaEsf": 90.15,
+    "coberturaVacinal": 67.61,
+    "internacoesCsap": 692.69,
+    "gastoSaudePerCapita": 1162.44,
+    "prenatalAdequado": 43.44
+  },
+  "4205555": {
+    "mortalidadeInfantil": 13.57,
+    "coberturaEsf": 100,
+    "coberturaVacinal": 68.51,
+    "internacoesCsap": 767,
+    "gastoSaudePerCapita": 799.62,
+    "prenatalAdequado": 73.12
+  },
+  "4205605": {
+    "mortalidadeInfantil": 14.75,
+    "coberturaEsf": 100,
+    "coberturaVacinal": 94.52,
+    "internacoesCsap": 914.94,
+    "gastoSaudePerCapita": 803.76,
+    "prenatalAdequado": 69.42
+  },
+  "4205704": {
+    "mortalidadeInfantil": 18.45,
+    "coberturaEsf": 83.16,
+    "coberturaVacinal": 80.74,
+    "internacoesCsap": 1163.84,
+    "gastoSaudePerCapita": 713.07,
+    "prenatalAdequado": 85.14
+  },
+  "4205803": {
+    "mortalidadeInfantil": 10.7,
+    "coberturaEsf": 91.77,
+    "coberturaVacinal": 58.18,
+    "internacoesCsap": 1043.91,
+    "gastoSaudePerCapita": 892.73,
+    "prenatalAdequado": 74.16
+  },
+  "4205902": {
+    "mortalidadeInfantil": 9.93,
+    "coberturaEsf": 94.93,
+    "coberturaVacinal": 85.98,
+    "internacoesCsap": 1026.2,
+    "gastoSaudePerCapita": 989.41,
+    "prenatalAdequado": 65.5
+  },
+  "4206009": {
+    "mortalidadeInfantil": 9.86,
+    "coberturaEsf": 69.77,
+    "coberturaVacinal": 83.85,
+    "internacoesCsap": 807.45,
+    "gastoSaudePerCapita": 942.31,
+    "prenatalAdequado": 40.37
+  },
+  "4206108": {
+    "mortalidadeInfantil": 10.09,
+    "coberturaEsf": 100,
+    "coberturaVacinal": 63.45,
+    "internacoesCsap": 995.8,
+    "gastoSaudePerCapita": 826.44,
+    "prenatalAdequado": 66.4
+  },
+  "4206207": {
+    "mortalidadeInfantil": 12.32,
+    "coberturaEsf": 87.34,
+    "coberturaVacinal": 94.37,
+    "internacoesCsap": 839.5,
+    "gastoSaudePerCapita": 331.37,
+    "prenatalAdequado": 44.91
+  },
+  "4206306": {
+    "mortalidadeInfantil": 17.17,
+    "coberturaEsf": 85.07,
+    "coberturaVacinal": 100,
+    "internacoesCsap": 846.04,
+    "gastoSaudePerCapita": 755.06,
+    "prenatalAdequado": 60.34
+  },
+  "4206405": {
+    "mortalidadeInfantil": 12.14,
+    "coberturaEsf": 65.74,
+    "coberturaVacinal": 78.24,
+    "internacoesCsap": 1131.2,
+    "gastoSaudePerCapita": 807.06,
+    "prenatalAdequado": 67.93
+  },
+  "4206504": {
+    "mortalidadeInfantil": 12.61,
+    "coberturaEsf": 86.18,
+    "coberturaVacinal": 59.63,
+    "internacoesCsap": 485.47,
+    "gastoSaudePerCapita": 904.16,
+    "prenatalAdequado": 65.4
+  },
+  "4206603": {
+    "mortalidadeInfantil": 8.11,
+    "coberturaEsf": 100,
+    "coberturaVacinal": 64.34,
+    "internacoesCsap": 632.26,
+    "gastoSaudePerCapita": 1116.39,
+    "prenatalAdequado": 70.65
+  },
+  "4206652": {
+    "mortalidadeInfantil": 3.17,
+    "coberturaEsf": 100,
+    "coberturaVacinal": 59.94,
+    "internacoesCsap": 1180.46,
+    "gastoSaudePerCapita": 967.02,
+    "prenatalAdequado": 60.31
+  },
+  "4206702": {
+    "mortalidadeInfantil": 7.28,
+    "coberturaEsf": 77.48,
+    "coberturaVacinal": 77.49,
+    "internacoesCsap": 914.2,
+    "gastoSaudePerCapita": 612.95,
+    "prenatalAdequado": 79.84
+  },
+  "4206751": {
+    "mortalidadeInfantil": 7.74,
+    "coberturaEsf": 74.56,
+    "coberturaVacinal": 77.29,
+    "internacoesCsap": 545.28,
+    "gastoSaudePerCapita": 1206.23,
+    "prenatalAdequado": 68.62
+  },
+  "4206801": {
+    "mortalidadeInfantil": null,
+    "coberturaEsf": 73.58,
+    "coberturaVacinal": 68.22,
+    "internacoesCsap": 965.73,
+    "gastoSaudePerCapita": 796.41,
+    "prenatalAdequado": 86.73
+  },
+  "4206900": {
+    "mortalidadeInfantil": 8.12,
+    "coberturaEsf": 81.85,
+    "coberturaVacinal": 61.9,
+    "internacoesCsap": 810,
+    "gastoSaudePerCapita": 237.57,
+    "prenatalAdequado": 78.49
+  },
+  "4207007": {
+    "mortalidadeInfantil": 14.4,
+    "coberturaEsf": 60.23,
+    "coberturaVacinal": 77.07,
+    "internacoesCsap": 936.11,
+    "gastoSaudePerCapita": 636.79,
+    "prenatalAdequado": 54.13
+  },
+  "4207106": {
+    "mortalidadeInfantil": 12.88,
+    "coberturaEsf": 88.65,
+    "coberturaVacinal": 76.05,
+    "internacoesCsap": 724.03,
+    "gastoSaudePerCapita": 761.85,
+    "prenatalAdequado": 75.26
+  },
+  "4207205": {
+    "mortalidadeInfantil": 15.08,
+    "coberturaEsf": 67.44,
+    "coberturaVacinal": 60.33,
+    "internacoesCsap": 726.67,
+    "gastoSaudePerCapita": 1047.6,
+    "prenatalAdequado": 79.95
+  },
+  "4207304": {
+    "mortalidadeInfantil": 11.29,
+    "coberturaEsf": 78.26,
+    "coberturaVacinal": 83.72,
+    "internacoesCsap": 1058.5,
+    "gastoSaudePerCapita": 1212.02,
+    "prenatalAdequado": 77.6
+  },
+  "4207403": {
+    "mortalidadeInfantil": 13.2,
+    "coberturaEsf": 66.68,
+    "coberturaVacinal": 74.45,
+    "internacoesCsap": 1127.07,
+    "gastoSaudePerCapita": 746.59,
+    "prenatalAdequado": 75.29
+  },
+  "4207502": {
+    "mortalidadeInfantil": 6.62,
+    "coberturaEsf": 69.49,
+    "coberturaVacinal": 61.08,
+    "internacoesCsap": 666.11,
+    "gastoSaudePerCapita": 861.1,
+    "prenatalAdequado": 59.12
+  },
+  "4207577": {
+    "mortalidadeInfantil": 11.67,
+    "coberturaEsf": 84.19,
+    "coberturaVacinal": 86.67,
+    "internacoesCsap": 868.16,
+    "gastoSaudePerCapita": 1103.51,
+    "prenatalAdequado": 63.32
+  },
+  "4207601": {
+    "mortalidadeInfantil": 4.81,
+    "coberturaEsf": 98.54,
+    "coberturaVacinal": 92.22,
+    "internacoesCsap": 854.21,
+    "gastoSaudePerCapita": 472.89,
+    "prenatalAdequado": 69.43
+  },
+  "4207650": {
+    "mortalidadeInfantil": 9.44,
+    "coberturaEsf": 84.5,
+    "coberturaVacinal": 100,
+    "internacoesCsap": 1312.24,
+    "gastoSaudePerCapita": 1119.95,
+    "prenatalAdequado": 77.19
+  },
+  "4207684": {
+    "mortalidadeInfantil": 9.73,
+    "coberturaEsf": 68.91,
+    "coberturaVacinal": 88.07,
+    "internacoesCsap": 1632.01,
+    "gastoSaudePerCapita": 848.4,
+    "prenatalAdequado": 64.1
+  },
+  "4207700": {
+    "mortalidadeInfantil": 7.69,
+    "coberturaEsf": 99.71,
+    "coberturaVacinal": 72.99,
+    "internacoesCsap": 1093.55,
+    "gastoSaudePerCapita": 821.58,
+    "prenatalAdequado": 56.2
+  },
+  "4207759": {
+    "mortalidadeInfantil": 10.52,
+    "coberturaEsf": 88.82,
+    "coberturaVacinal": 66.51,
+    "internacoesCsap": 450.7,
+    "gastoSaudePerCapita": 1159.08,
+    "prenatalAdequado": 59.71
+  },
+  "4207809": {
+    "mortalidadeInfantil": 8.68,
+    "coberturaEsf": 92.96,
+    "coberturaVacinal": 75.43,
+    "internacoesCsap": 1389.77,
+    "gastoSaudePerCapita": 743.1,
+    "prenatalAdequado": 90.56
+  },
+  "4207858": {
+    "mortalidadeInfantil": 9.94,
+    "coberturaEsf": 83.54,
+    "coberturaVacinal": 96.93,
+    "internacoesCsap": 1192.04,
+    "gastoSaudePerCapita": 795.54,
+    "prenatalAdequado": 81.22
+  },
+  "4207908": {
+    "mortalidadeInfantil": 7.79,
+    "coberturaEsf": 68.62,
+    "coberturaVacinal": 71.05,
+    "internacoesCsap": 561.71,
+    "gastoSaudePerCapita": 1001.88,
+    "prenatalAdequado": 94.26
+  },
+  "4208005": {
+    "mortalidadeInfantil": 11.11,
+    "coberturaEsf": 48.94,
+    "coberturaVacinal": 80.09,
+    "internacoesCsap": 346.28,
+    "gastoSaudePerCapita": 918.52,
+    "prenatalAdequado": 71
+  },
+  "4208104": {
+    "mortalidadeInfantil": 12.19,
+    "coberturaEsf": 75.89,
+    "coberturaVacinal": 73.99,
+    "internacoesCsap": 1074.56,
+    "gastoSaudePerCapita": 361.43,
+    "prenatalAdequado": 62.17
+  },
+  "4208203": {
+    "mortalidadeInfantil": 8.98,
+    "coberturaEsf": 95.29,
+    "coberturaVacinal": 83.71,
+    "internacoesCsap": 919.49,
+    "gastoSaudePerCapita": 802.51,
+    "prenatalAdequado": 68.66
+  },
+  "4208302": {
+    "mortalidadeInfantil": 9.39,
+    "coberturaEsf": 86.95,
+    "coberturaVacinal": 57.26,
+    "internacoesCsap": 1341.66,
+    "gastoSaudePerCapita": 698.51,
+    "prenatalAdequado": 63.32
+  },
+  "4208401": {
+    "mortalidadeInfantil": 5.97,
+    "coberturaEsf": 76.42,
+    "coberturaVacinal": 50.43,
+    "internacoesCsap": 1425.3,
+    "gastoSaudePerCapita": 891.84,
+    "prenatalAdequado": 69.22
+  },
+  "4208450": {
+    "mortalidadeInfantil": 4.68,
+    "coberturaEsf": 70.27,
+    "coberturaVacinal": 62.18,
+    "internacoesCsap": 782.03,
+    "gastoSaudePerCapita": 807.03,
+    "prenatalAdequado": 78.19
+  },
+  "4208500": {
+    "mortalidadeInfantil": 3.77,
+    "coberturaEsf": 69.43,
+    "coberturaVacinal": 65.03,
+    "internacoesCsap": 999.05,
+    "gastoSaudePerCapita": 972.28,
+    "prenatalAdequado": 73.72
+  },
+  "4208609": {
+    "mortalidadeInfantil": 10.28,
+    "coberturaEsf": 52.72,
+    "coberturaVacinal": 81.92,
+    "internacoesCsap": 674.37,
+    "gastoSaudePerCapita": 965.14,
+    "prenatalAdequado": 57.56
+  },
+  "4208708": {
+    "mortalidadeInfantil": 9.7,
+    "coberturaEsf": 69.87,
+    "coberturaVacinal": 69.43,
+    "internacoesCsap": 866.59,
+    "gastoSaudePerCapita": 1052.38,
+    "prenatalAdequado": 79.99
+  },
+  "4208807": {
+    "mortalidadeInfantil": 9.7,
+    "coberturaEsf": 95.59,
+    "coberturaVacinal": 64.81,
+    "internacoesCsap": 560.2,
+    "gastoSaudePerCapita": 1164.1,
+    "prenatalAdequado": 79.66
+  },
+  "4208906": {
+    "mortalidadeInfantil": 13.14,
+    "coberturaEsf": 92.11,
+    "coberturaVacinal": 67.18,
+    "internacoesCsap": 521.96,
+    "gastoSaudePerCapita": 825.65,
+    "prenatalAdequado": 81.3
+  },
+  "4208955": {
+    "mortalidadeInfantil": 12.01,
+    "coberturaEsf": 88.03,
+    "coberturaVacinal": 74.69,
+    "internacoesCsap": 794.1,
+    "gastoSaudePerCapita": 784.92,
+    "prenatalAdequado": 81.55
+  },
+  "4209003": {
+    "mortalidadeInfantil": 5.19,
+    "coberturaEsf": 79.65,
+    "coberturaVacinal": 72.27,
+    "internacoesCsap": 923.68,
+    "gastoSaudePerCapita": 1244.03,
+    "prenatalAdequado": 48.67
+  },
+  "4209102": {
+    "mortalidadeInfantil": 9.44,
+    "coberturaEsf": 72.01,
+    "coberturaVacinal": 93.46,
+    "internacoesCsap": 1043.59,
+    "gastoSaudePerCapita": 523.27,
+    "prenatalAdequado": 61.66
+  },
+  "4209151": {
+    "mortalidadeInfantil": 5.43,
+    "coberturaEsf": 100,
+    "coberturaVacinal": 56.37,
+    "internacoesCsap": 742.48,
+    "gastoSaudePerCapita": 984.04,
+    "prenatalAdequado": 58.5
+  },
+  "4209177": {
+    "mortalidadeInfantil": 11.36,
+    "coberturaEsf": 100,
+    "coberturaVacinal": 68.78,
+    "internacoesCsap": 432.39,
+    "gastoSaudePerCapita": 1035.41,
+    "prenatalAdequado": 73.82
+  },
+  "4209201": {
+    "mortalidadeInfantil": 0,
+    "coberturaEsf": 90.92,
+    "coberturaVacinal": 81.94,
+    "internacoesCsap": 1190.64,
+    "gastoSaudePerCapita": 985.94,
+    "prenatalAdequado": 82.27
+  },
+  "4209300": {
+    "mortalidadeInfantil": 6.17,
+    "coberturaEsf": 96.59,
+    "coberturaVacinal": 88.79,
+    "internacoesCsap": 941.9,
+    "gastoSaudePerCapita": 554.49,
+    "prenatalAdequado": 73.81
+  },
+  "4209409": {
+    "mortalidadeInfantil": 11.6,
+    "coberturaEsf": 90.39,
+    "coberturaVacinal": 84.08,
+    "internacoesCsap": 500.21,
+    "gastoSaudePerCapita": 1326.75,
+    "prenatalAdequado": 65.09
+  },
+  "4209458": {
+    "mortalidadeInfantil": 15.37,
+    "coberturaEsf": 82.36,
+    "coberturaVacinal": 87.97,
+    "internacoesCsap": 558.59,
+    "gastoSaudePerCapita": 890.58,
+    "prenatalAdequado": 71.47
+  },
+  "4209508": {
+    "mortalidadeInfantil": 12.96,
+    "coberturaEsf": 90.48,
+    "coberturaVacinal": 84.32,
+    "internacoesCsap": 367.33,
+    "gastoSaudePerCapita": 831.97,
+    "prenatalAdequado": 75.29
+  },
+  "4209607": {
+    "mortalidadeInfantil": 10.79,
+    "coberturaEsf": 84.28,
+    "coberturaVacinal": 60.24,
+    "internacoesCsap": 743,
+    "gastoSaudePerCapita": 824.39,
+    "prenatalAdequado": 92.03
+  },
+  "4209706": {
+    "mortalidadeInfantil": 17.08,
+    "coberturaEsf": 96.72,
+    "coberturaVacinal": 86.97,
+    "internacoesCsap": 818.91,
+    "gastoSaudePerCapita": 942.73,
+    "prenatalAdequado": 49.51
+  },
+  "4209805": {
+    "mortalidadeInfantil": 12.12,
+    "coberturaEsf": 95.93,
+    "coberturaVacinal": 73.04,
+    "internacoesCsap": 1102.88,
+    "gastoSaudePerCapita": 932.59,
+    "prenatalAdequado": 63.9
+  },
+  "4209854": {
+    "mortalidadeInfantil": 9.36,
+    "coberturaEsf": 85.19,
+    "coberturaVacinal": 85.26,
+    "internacoesCsap": 1039.27,
+    "gastoSaudePerCapita": 1088.05,
+    "prenatalAdequado": 60.1
+  },
+  "4209904": {
+    "mortalidadeInfantil": 14.01,
+    "coberturaEsf": 95.88,
+    "coberturaVacinal": 76.9,
+    "internacoesCsap": 1214.61,
+    "gastoSaudePerCapita": 946.11,
+    "prenatalAdequado": 77.85
+  },
+  "4210001": {
+    "mortalidadeInfantil": 0.49,
+    "coberturaEsf": 89.41,
+    "coberturaVacinal": 70.42,
+    "internacoesCsap": 1336.68,
+    "gastoSaudePerCapita": 710.39,
+    "prenatalAdequado": 59.94
+  },
+  "4210035": {
+    "mortalidadeInfantil": 10.34,
+    "coberturaEsf": 79.16,
+    "coberturaVacinal": 70.08,
+    "internacoesCsap": 956.07,
+    "gastoSaudePerCapita": 1002.61,
+    "prenatalAdequado": 98
+  },
+  "4210050": {
+    "mortalidadeInfantil": 16.01,
+    "coberturaEsf": 100,
+    "coberturaVacinal": 75.96,
+    "internacoesCsap": 1400.79,
+    "gastoSaudePerCapita": 1185.14,
+    "prenatalAdequado": 71.72
+  },
+  "4210100": {
+    "mortalidadeInfantil": 7.43,
+    "coberturaEsf": 98.86,
+    "coberturaVacinal": 57.54,
+    "internacoesCsap": 875.54,
+    "gastoSaudePerCapita": 972.82,
+    "prenatalAdequado": 71.39
+  },
+  "4210209": {
+    "mortalidadeInfantil": 11.53,
+    "coberturaEsf": 84.84,
+    "coberturaVacinal": 67.59,
+    "internacoesCsap": 1040.66,
+    "gastoSaudePerCapita": 490.51,
+    "prenatalAdequado": 64.56
+  },
+  "4210308": {
+    "mortalidadeInfantil": 11.69,
+    "coberturaEsf": 100,
+    "coberturaVacinal": 83.19,
+    "internacoesCsap": 1042.09,
+    "gastoSaudePerCapita": 1055.06,
+    "prenatalAdequado": 86.49
+  },
+  "4210407": {
+    "mortalidadeInfantil": 10.31,
+    "coberturaEsf": 80.07,
+    "coberturaVacinal": 92.36,
+    "internacoesCsap": 310.41,
+    "gastoSaudePerCapita": 1011.92,
+    "prenatalAdequado": 93.93
+  },
+  "4210506": {
+    "mortalidadeInfantil": 16.54,
+    "coberturaEsf": 100,
+    "coberturaVacinal": 69.5,
+    "internacoesCsap": 1066.2,
+    "gastoSaudePerCapita": 590.76,
+    "prenatalAdequado": 69.73
+  },
+  "4210555": {
+    "mortalidadeInfantil": 2.6,
+    "coberturaEsf": 91.58,
+    "coberturaVacinal": 66.64,
+    "internacoesCsap": 1002.1,
+    "gastoSaudePerCapita": 1080.35,
+    "prenatalAdequado": 71.21
+  },
+  "4210605": {
+    "mortalidadeInfantil": 11.99,
+    "coberturaEsf": 87.77,
+    "coberturaVacinal": 80.69,
+    "internacoesCsap": 1223.98,
+    "gastoSaudePerCapita": 1154.03,
+    "prenatalAdequado": 62.04
+  },
+  "4210704": {
+    "mortalidadeInfantil": 7.51,
+    "coberturaEsf": 94.14,
+    "coberturaVacinal": 43.68,
+    "internacoesCsap": 1016.93,
+    "gastoSaudePerCapita": 405.94,
+    "prenatalAdequado": 52.29
+  },
+  "4210803": {
+    "mortalidadeInfantil": 5.98,
+    "coberturaEsf": 84.17,
+    "coberturaVacinal": 88.4,
+    "internacoesCsap": 589.11,
+    "gastoSaudePerCapita": 575.95,
+    "prenatalAdequado": 90.22
+  },
+  "4210852": {
+    "mortalidadeInfantil": 2.04,
+    "coberturaEsf": 73.92,
+    "coberturaVacinal": 84.51,
+    "internacoesCsap": 1217.43,
+    "gastoSaudePerCapita": 637.65,
+    "prenatalAdequado": 64.02
+  },
+  "4210902": {
+    "mortalidadeInfantil": 3.67,
+    "coberturaEsf": 90.94,
+    "coberturaVacinal": 83.89,
+    "internacoesCsap": 1050.15,
+    "gastoSaudePerCapita": 430.63,
+    "prenatalAdequado": 98
+  },
+  "4211009": {
+    "mortalidadeInfantil": 17.71,
+    "coberturaEsf": 42.58,
+    "coberturaVacinal": 67.71,
+    "internacoesCsap": 1314.42,
+    "gastoSaudePerCapita": 827.03,
+    "prenatalAdequado": 64.85
+  },
+  "4211058": {
+    "mortalidadeInfantil": 5.88,
+    "coberturaEsf": 82.24,
+    "coberturaVacinal": 98.96,
+    "internacoesCsap": 757.12,
+    "gastoSaudePerCapita": 738.27,
+    "prenatalAdequado": 74.19
+  },
+  "4211108": {
+    "mortalidadeInfantil": 12.28,
+    "coberturaEsf": 99.15,
+    "coberturaVacinal": 81.45,
+    "internacoesCsap": 308.77,
+    "gastoSaudePerCapita": 526.64,
+    "prenatalAdequado": 77
+  },
+  "4211207": {
+    "mortalidadeInfantil": 9.31,
+    "coberturaEsf": 83.53,
+    "coberturaVacinal": 86.92,
+    "internacoesCsap": 543.56,
+    "gastoSaudePerCapita": 1359.46,
+    "prenatalAdequado": 69.52
+  },
+  "4211256": {
+    "mortalidadeInfantil": 5.15,
+    "coberturaEsf": 78.52,
+    "coberturaVacinal": 88.86,
+    "internacoesCsap": 1271.31,
+    "gastoSaudePerCapita": 577.59,
+    "prenatalAdequado": 79.91
+  },
+  "4211306": {
+    "mortalidadeInfantil": 11.38,
+    "coberturaEsf": 100,
+    "coberturaVacinal": 56.11,
+    "internacoesCsap": 623.65,
+    "gastoSaudePerCapita": 842.82,
+    "prenatalAdequado": 48.44
+  },
+  "4211405": {
+    "mortalidadeInfantil": 12.71,
+    "coberturaEsf": 76.45,
+    "coberturaVacinal": 79.35,
+    "internacoesCsap": 850.4,
+    "gastoSaudePerCapita": 622.65,
+    "prenatalAdequado": 77.67
+  },
+  "4211454": {
+    "mortalidadeInfantil": 4.27,
+    "coberturaEsf": 83.97,
+    "coberturaVacinal": 55.64,
+    "internacoesCsap": 1276.45,
+    "gastoSaudePerCapita": 902.72,
+    "prenatalAdequado": 67.25
+  },
+  "4211504": {
+    "mortalidadeInfantil": 2.84,
+    "coberturaEsf": 96.46,
+    "coberturaVacinal": 87.44,
+    "internacoesCsap": 1041.18,
+    "gastoSaudePerCapita": 1233.86,
+    "prenatalAdequado": 61.31
+  },
+  "4211603": {
+    "mortalidadeInfantil": 7.6,
+    "coberturaEsf": 59.34,
+    "coberturaVacinal": 80.3,
+    "internacoesCsap": 1005.72,
+    "gastoSaudePerCapita": 1290.91,
+    "prenatalAdequado": 67.81
+  },
+  "4211652": {
+    "mortalidadeInfantil": 6.04,
+    "coberturaEsf": 77.2,
+    "coberturaVacinal": 62.85,
+    "internacoesCsap": 679,
+    "gastoSaudePerCapita": 750.98,
+    "prenatalAdequado": 55.61
+  },
+  "4211702": {
+    "mortalidadeInfantil": 5.16,
+    "coberturaEsf": 100,
+    "coberturaVacinal": 81.5,
+    "internacoesCsap": 1210.21,
+    "gastoSaudePerCapita": 1012.68,
+    "prenatalAdequado": 77.4
+  },
+  "4211751": {
+    "mortalidadeInfantil": 11.91,
+    "coberturaEsf": 87.75,
+    "coberturaVacinal": 92.78,
+    "internacoesCsap": 544.65,
+    "gastoSaudePerCapita": 776.95,
+    "prenatalAdequado": 64.52
+  },
+  "4211801": {
+    "mortalidadeInfantil": 2.39,
+    "coberturaEsf": 66.74,
+    "coberturaVacinal": 65.95,
+    "internacoesCsap": 1011.42,
+    "gastoSaudePerCapita": 1174.27,
+    "prenatalAdequado": 66.22
+  },
+  "4211850": {
+    "mortalidadeInfantil": 7.04,
+    "coberturaEsf": 90.98,
+    "coberturaVacinal": 78.56,
+    "internacoesCsap": 441.79,
+    "gastoSaudePerCapita": 1113.24,
+    "prenatalAdequado": 79.16
+  },
+  "4211876": {
+    "mortalidadeInfantil": 8.28,
+    "coberturaEsf": 79.42,
+    "coberturaVacinal": 89.09,
+    "internacoesCsap": 1326.02,
+    "gastoSaudePerCapita": 1224.78,
+    "prenatalAdequado": 72.87
+  },
+  "4211892": {
+    "mortalidadeInfantil": 2.03,
+    "coberturaEsf": 100,
+    "coberturaVacinal": 82.78,
+    "internacoesCsap": 701.23,
+    "gastoSaudePerCapita": 703.34,
+    "prenatalAdequado": 78.16
+  },
+  "4211900": {
+    "mortalidadeInfantil": 12.7,
+    "coberturaEsf": 93.13,
+    "coberturaVacinal": 59.47,
+    "internacoesCsap": 623.3,
+    "gastoSaudePerCapita": 1181.37,
+    "prenatalAdequado": 77
+  },
+  "4212007": {
+    "mortalidadeInfantil": 8.85,
+    "coberturaEsf": 62.93,
+    "coberturaVacinal": 75.11,
+    "internacoesCsap": 872.01,
+    "gastoSaudePerCapita": 827.96,
+    "prenatalAdequado": 83.78
+  },
+  "4212056": {
+    "mortalidadeInfantil": null,
+    "coberturaEsf": 77.73,
+    "coberturaVacinal": 74.61,
+    "internacoesCsap": 881.08,
+    "gastoSaudePerCapita": 1085.47,
+    "prenatalAdequado": 55.15
+  },
+  "4212106": {
+    "mortalidadeInfantil": 7.99,
+    "coberturaEsf": 68.23,
+    "coberturaVacinal": 77.62,
+    "internacoesCsap": 534.93,
+    "gastoSaudePerCapita": 917.78,
+    "prenatalAdequado": 71.88
+  },
+  "4212205": {
+    "mortalidadeInfantil": 9.15,
+    "coberturaEsf": 67.63,
+    "coberturaVacinal": 87.33,
+    "internacoesCsap": 934.9,
+    "gastoSaudePerCapita": 564.7,
+    "prenatalAdequado": 76.97
+  },
+  "4212239": {
+    "mortalidadeInfantil": 14.49,
+    "coberturaEsf": 89.48,
+    "coberturaVacinal": 85.61,
+    "internacoesCsap": 460.1,
+    "gastoSaudePerCapita": 640.69,
+    "prenatalAdequado": 86.16
+  },
+  "4212254": {
+    "mortalidadeInfantil": 7.91,
+    "coberturaEsf": 60.87,
+    "coberturaVacinal": 62.89,
+    "internacoesCsap": 741.98,
+    "gastoSaudePerCapita": 434.96,
+    "prenatalAdequado": 67.83
+  },
+  "4212270": {
+    "mortalidadeInfantil": 10.3,
+    "coberturaEsf": 66.58,
+    "coberturaVacinal": 88.4,
+    "internacoesCsap": 995.42,
+    "gastoSaudePerCapita": 928.99,
+    "prenatalAdequado": 68.65
+  },
+  "4212304": {
+    "mortalidadeInfantil": 8.98,
+    "coberturaEsf": 75.27,
+    "coberturaVacinal": 73.01,
+    "internacoesCsap": 434.64,
+    "gastoSaudePerCapita": 935.91,
+    "prenatalAdequado": 73.39
+  },
+  "4212403": {
+    "mortalidadeInfantil": 5.48,
+    "coberturaEsf": 97.86,
+    "coberturaVacinal": 79.67,
+    "internacoesCsap": 1088.23,
+    "gastoSaudePerCapita": 785.82,
+    "prenatalAdequado": 65.52
+  },
+  "4212502": {
+    "mortalidadeInfantil": 7.94,
+    "coberturaEsf": 75.79,
+    "coberturaVacinal": 76.43,
+    "internacoesCsap": 1299.61,
+    "gastoSaudePerCapita": 1195.3,
+    "prenatalAdequado": 62.83
+  },
+  "4212601": {
+    "mortalidadeInfantil": 5.36,
+    "coberturaEsf": 40.22,
+    "coberturaVacinal": 95.14,
+    "internacoesCsap": 824.27,
+    "gastoSaudePerCapita": 958.52,
+    "prenatalAdequado": 91.2
+  },
+  "4212650": {
+    "mortalidadeInfantil": 12.52,
+    "coberturaEsf": 73.54,
+    "coberturaVacinal": 75.37,
+    "internacoesCsap": 952.43,
+    "gastoSaudePerCapita": 872.97,
+    "prenatalAdequado": 82.2
+  },
+  "4212700": {
+    "mortalidadeInfantil": 5.07,
+    "coberturaEsf": 73.65,
+    "coberturaVacinal": 65.8,
+    "internacoesCsap": 918.83,
+    "gastoSaudePerCapita": 1098.76,
+    "prenatalAdequado": 98
+  },
+  "4212809": {
+    "mortalidadeInfantil": 13.75,
+    "coberturaEsf": 100,
+    "coberturaVacinal": 60.75,
+    "internacoesCsap": 654.48,
+    "gastoSaudePerCapita": 1036.62,
+    "prenatalAdequado": 69.86
+  },
+  "4212908": {
+    "mortalidadeInfantil": 14.37,
+    "coberturaEsf": 92.22,
+    "coberturaVacinal": 65.84,
+    "internacoesCsap": 581.05,
+    "gastoSaudePerCapita": 772.44,
+    "prenatalAdequado": 76.24
+  },
+  "4213005": {
+    "mortalidadeInfantil": 8.64,
+    "coberturaEsf": 95.46,
+    "coberturaVacinal": 56.37,
+    "internacoesCsap": 292.34,
+    "gastoSaudePerCapita": 533.38,
+    "prenatalAdequado": 85.75
+  },
+  "4213104": {
+    "mortalidadeInfantil": 7.3,
+    "coberturaEsf": 67.41,
+    "coberturaVacinal": 79.78,
+    "internacoesCsap": 776.84,
+    "gastoSaudePerCapita": 737.1,
+    "prenatalAdequado": 49.82
+  },
+  "4213153": {
+    "mortalidadeInfantil": 9.53,
+    "coberturaEsf": 79.04,
+    "coberturaVacinal": 60.25,
+    "internacoesCsap": 1411.91,
+    "gastoSaudePerCapita": 985.81,
+    "prenatalAdequado": 90.06
+  },
+  "4213203": {
+    "mortalidadeInfantil": 6.7,
+    "coberturaEsf": 64.15,
+    "coberturaVacinal": 81.18,
+    "internacoesCsap": 562.81,
+    "gastoSaudePerCapita": 734.01,
+    "prenatalAdequado": 83.37
+  },
+  "4213302": {
+    "mortalidadeInfantil": 4.75,
+    "coberturaEsf": 81.53,
+    "coberturaVacinal": 82.77,
+    "internacoesCsap": 1199,
+    "gastoSaudePerCapita": 924.69,
+    "prenatalAdequado": 86.98
+  },
+  "4213351": {
+    "mortalidadeInfantil": 9.44,
+    "coberturaEsf": 64.4,
+    "coberturaVacinal": 82.86,
+    "internacoesCsap": 880.05,
+    "gastoSaudePerCapita": 1041.09,
+    "prenatalAdequado": 81.3
+  },
+  "4213401": {
+    "mortalidadeInfantil": 8.78,
+    "coberturaEsf": 100,
+    "coberturaVacinal": 85.19,
+    "internacoesCsap": 669.78,
+    "gastoSaudePerCapita": 862.06,
+    "prenatalAdequado": 87.83
+  },
+  "4213500": {
+    "mortalidadeInfantil": 6.4,
+    "coberturaEsf": 84.33,
+    "coberturaVacinal": 72.66,
+    "internacoesCsap": 722.62,
+    "gastoSaudePerCapita": 1256.89,
+    "prenatalAdequado": 66.33
+  },
+  "4213609": {
+    "mortalidadeInfantil": 13.24,
+    "coberturaEsf": 97.63,
+    "coberturaVacinal": 55.96,
+    "internacoesCsap": 870.29,
+    "gastoSaudePerCapita": 1336.99,
+    "prenatalAdequado": 76.69
+  },
+  "4213708": {
+    "mortalidadeInfantil": 10.81,
+    "coberturaEsf": 66.59,
+    "coberturaVacinal": 54.86,
+    "internacoesCsap": 903.57,
+    "gastoSaudePerCapita": 877.46,
+    "prenatalAdequado": 64.25
+  },
+  "4213807": {
+    "mortalidadeInfantil": 9.05,
+    "coberturaEsf": 57.52,
+    "coberturaVacinal": 80.94,
+    "internacoesCsap": 249.36,
+    "gastoSaudePerCapita": 789.6,
+    "prenatalAdequado": 89.83
+  },
+  "4213906": {
+    "mortalidadeInfantil": 9.86,
+    "coberturaEsf": 83.66,
+    "coberturaVacinal": 83.76,
+    "internacoesCsap": 1230.82,
+    "gastoSaudePerCapita": 399.62,
+    "prenatalAdequado": 52.63
+  },
+  "4214003": {
+    "mortalidadeInfantil": 5.7,
+    "coberturaEsf": 74.9,
+    "coberturaVacinal": 84.16,
+    "internacoesCsap": 875.02,
+    "gastoSaudePerCapita": 1171.36,
+    "prenatalAdequado": 50.92
+  },
+  "4214102": {
+    "mortalidadeInfantil": 10.36,
+    "coberturaEsf": 94.27,
+    "coberturaVacinal": 67.05,
+    "internacoesCsap": 1047.69,
+    "gastoSaudePerCapita": 692.11,
+    "prenatalAdequado": 74.27
+  },
+  "4214151": {
+    "mortalidadeInfantil": 11.9,
+    "coberturaEsf": 100,
+    "coberturaVacinal": 68.69,
+    "internacoesCsap": 722.03,
+    "gastoSaudePerCapita": 1009.7,
+    "prenatalAdequado": 68.9
+  },
+  "4214201": {
+    "mortalidadeInfantil": 7.09,
+    "coberturaEsf": 72.19,
+    "coberturaVacinal": 67.91,
+    "internacoesCsap": 1230.48,
+    "gastoSaudePerCapita": 1014.6,
+    "prenatalAdequado": 70.49
+  },
+  "4214300": {
+    "mortalidadeInfantil": 4.77,
+    "coberturaEsf": 78.81,
+    "coberturaVacinal": 70.04,
+    "internacoesCsap": 1244.78,
+    "gastoSaudePerCapita": 788.2,
+    "prenatalAdequado": 86.51
+  },
+  "4214409": {
+    "mortalidadeInfantil": 10.52,
+    "coberturaEsf": 85.07,
+    "coberturaVacinal": 63.78,
+    "internacoesCsap": 1125.52,
+    "gastoSaudePerCapita": 854.32,
+    "prenatalAdequado": 95.1
+  },
+  "4214508": {
+    "mortalidadeInfantil": 8.56,
+    "coberturaEsf": 94.11,
+    "coberturaVacinal": 77.5,
+    "internacoesCsap": 438.78,
+    "gastoSaudePerCapita": 914.44,
+    "prenatalAdequado": 85.13
+  },
+  "4214607": {
+    "mortalidadeInfantil": 9.2,
+    "coberturaEsf": 91.35,
+    "coberturaVacinal": 86.15,
+    "internacoesCsap": 762.67,
+    "gastoSaudePerCapita": 770.18,
+    "prenatalAdequado": 83.17
+  },
+  "4214706": {
+    "mortalidadeInfantil": 5.49,
+    "coberturaEsf": 90.31,
+    "coberturaVacinal": 79.25,
+    "internacoesCsap": 1052.73,
+    "gastoSaudePerCapita": 957.64,
+    "prenatalAdequado": 83.95
+  },
+  "4214805": {
+    "mortalidadeInfantil": 8.65,
+    "coberturaEsf": 92.18,
+    "coberturaVacinal": 68.49,
+    "internacoesCsap": 1189.55,
+    "gastoSaudePerCapita": 651.43,
+    "prenatalAdequado": 71.91
+  },
+  "4214904": {
+    "mortalidadeInfantil": 1.49,
+    "coberturaEsf": 100,
+    "coberturaVacinal": 76.32,
+    "internacoesCsap": 1191.01,
+    "gastoSaudePerCapita": 1240.14,
+    "prenatalAdequado": 58.79
+  },
+  "4215000": {
+    "mortalidadeInfantil": 15.99,
+    "coberturaEsf": 75.18,
+    "coberturaVacinal": 80.27,
+    "internacoesCsap": 786.77,
+    "gastoSaudePerCapita": 1136.81,
+    "prenatalAdequado": 66.82
+  },
+  "4215059": {
+    "mortalidadeInfantil": 11.69,
+    "coberturaEsf": 96.29,
+    "coberturaVacinal": 64.84,
+    "internacoesCsap": 1190.04,
+    "gastoSaudePerCapita": 1060.51,
+    "prenatalAdequado": 67.19
+  },
+  "4215075": {
+    "mortalidadeInfantil": 10.25,
+    "coberturaEsf": 87.21,
+    "coberturaVacinal": 65.83,
+    "internacoesCsap": 113.28,
+    "gastoSaudePerCapita": 635.14,
+    "prenatalAdequado": 56.14
+  },
+  "4215109": {
+    "mortalidadeInfantil": 5.92,
+    "coberturaEsf": 100,
+    "coberturaVacinal": 58.97,
+    "internacoesCsap": 919.57,
+    "gastoSaudePerCapita": 1076.61,
+    "prenatalAdequado": 60.09
+  },
+  "4215208": {
+    "mortalidadeInfantil": 4.61,
+    "coberturaEsf": 83.24,
+    "coberturaVacinal": 70.5,
+    "internacoesCsap": 750.06,
+    "gastoSaudePerCapita": 320.86,
+    "prenatalAdequado": 68.35
+  },
+  "4215307": {
+    "mortalidadeInfantil": 8.58,
+    "coberturaEsf": 100,
+    "coberturaVacinal": 84.91,
+    "internacoesCsap": 647.64,
+    "gastoSaudePerCapita": 758.45,
+    "prenatalAdequado": 69.66
+  },
+  "4215356": {
+    "mortalidadeInfantil": 11.83,
+    "coberturaEsf": 93.93,
+    "coberturaVacinal": 90.83,
+    "internacoesCsap": 1072.25,
+    "gastoSaudePerCapita": 435.86,
+    "prenatalAdequado": 62.48
+  },
+  "4215406": {
+    "mortalidadeInfantil": 6.3,
+    "coberturaEsf": 82.05,
+    "coberturaVacinal": 66.68,
+    "internacoesCsap": 934.31,
+    "gastoSaudePerCapita": 492.72,
+    "prenatalAdequado": 79.87
+  },
+  "4215455": {
+    "mortalidadeInfantil": 12.47,
+    "coberturaEsf": 82.62,
+    "coberturaVacinal": 62.45,
+    "internacoesCsap": 805.22,
+    "gastoSaudePerCapita": 793.17,
+    "prenatalAdequado": 87.94
+  },
+  "4215505": {
+    "mortalidadeInfantil": 4.19,
+    "coberturaEsf": 53.6,
+    "coberturaVacinal": 75,
+    "internacoesCsap": 1557.4,
+    "gastoSaudePerCapita": 856.56,
+    "prenatalAdequado": 49.78
+  },
+  "4215554": {
+    "mortalidadeInfantil": 14.83,
+    "coberturaEsf": 84.83,
+    "coberturaVacinal": 72.01,
+    "internacoesCsap": 936.55,
+    "gastoSaudePerCapita": 795.39,
+    "prenatalAdequado": 65.88
+  },
+  "4215604": {
+    "mortalidadeInfantil": 13.35,
+    "coberturaEsf": 68.37,
+    "coberturaVacinal": 44.95,
+    "internacoesCsap": 1102.19,
+    "gastoSaudePerCapita": 1031.39,
+    "prenatalAdequado": 69.76
+  },
+  "4215653": {
+    "mortalidadeInfantil": null,
+    "coberturaEsf": 75.9,
+    "coberturaVacinal": 65.77,
+    "internacoesCsap": 858.12,
+    "gastoSaudePerCapita": 535.58,
+    "prenatalAdequado": 68.64
+  },
+  "4215679": {
+    "mortalidadeInfantil": 5.63,
+    "coberturaEsf": 83.49,
+    "coberturaVacinal": 65.75,
+    "internacoesCsap": 800.99,
+    "gastoSaudePerCapita": 1286.05,
+    "prenatalAdequado": 51.4
+  },
+  "4215687": {
+    "mortalidadeInfantil": 9.41,
+    "coberturaEsf": 84.23,
+    "coberturaVacinal": 67.54,
+    "internacoesCsap": 1306.73,
+    "gastoSaudePerCapita": 950.92,
+    "prenatalAdequado": 80
+  },
+  "4215695": {
+    "mortalidadeInfantil": 8.69,
+    "coberturaEsf": 100,
+    "coberturaVacinal": 77.29,
+    "internacoesCsap": 804.25,
+    "gastoSaudePerCapita": 990.5,
+    "prenatalAdequado": 69.92
+  },
+  "4215703": {
+    "mortalidadeInfantil": 21.02,
+    "coberturaEsf": 100,
+    "coberturaVacinal": 63.94,
+    "internacoesCsap": 1148.31,
+    "gastoSaudePerCapita": 842.58,
+    "prenatalAdequado": 71.19
+  },
+  "4215752": {
+    "mortalidadeInfantil": 12.8,
+    "coberturaEsf": 73.47,
+    "coberturaVacinal": 54.48,
+    "internacoesCsap": 915.8,
+    "gastoSaudePerCapita": 697.85,
+    "prenatalAdequado": 83.53
+  },
+  "4215802": {
+    "mortalidadeInfantil": 11.9,
+    "coberturaEsf": 99.44,
+    "coberturaVacinal": 65.32,
+    "internacoesCsap": 1137.52,
+    "gastoSaudePerCapita": 832.95,
+    "prenatalAdequado": 98
+  },
+  "4215901": {
+    "mortalidadeInfantil": 13.5,
+    "coberturaEsf": 81.09,
+    "coberturaVacinal": 57.68,
+    "internacoesCsap": 1331,
+    "gastoSaudePerCapita": 1107.18,
+    "prenatalAdequado": 92.34
+  },
+  "4216008": {
+    "mortalidadeInfantil": 8.07,
+    "coberturaEsf": 90.8,
+    "coberturaVacinal": 86.16,
+    "internacoesCsap": 883.15,
+    "gastoSaudePerCapita": 894.27,
+    "prenatalAdequado": 87.6
+  },
+  "4216057": {
+    "mortalidadeInfantil": 11.91,
+    "coberturaEsf": 100,
+    "coberturaVacinal": 73.66,
+    "internacoesCsap": 918.5,
+    "gastoSaudePerCapita": 1282.1,
+    "prenatalAdequado": 79.18
+  },
+  "4216107": {
+    "mortalidadeInfantil": 7,
+    "coberturaEsf": 69.12,
+    "coberturaVacinal": 92.93,
+    "internacoesCsap": 537.68,
+    "gastoSaudePerCapita": 864.55,
+    "prenatalAdequado": 71.05
+  },
+  "4216206": {
+    "mortalidadeInfantil": 12.45,
+    "coberturaEsf": 62.14,
+    "coberturaVacinal": 71.59,
+    "internacoesCsap": 707.03,
+    "gastoSaudePerCapita": 506.45,
+    "prenatalAdequado": 67.06
+  },
+  "4216255": {
+    "mortalidadeInfantil": 10.94,
+    "coberturaEsf": 75.89,
+    "coberturaVacinal": 70.69,
+    "internacoesCsap": 1069.84,
+    "gastoSaudePerCapita": 950.74,
+    "prenatalAdequado": 82.79
+  },
+  "4216305": {
+    "mortalidadeInfantil": 7.86,
+    "coberturaEsf": 96.55,
+    "coberturaVacinal": 82.04,
+    "internacoesCsap": 1203.83,
+    "gastoSaudePerCapita": 657.16,
+    "prenatalAdequado": 89.53
+  },
+  "4216354": {
+    "mortalidadeInfantil": 11.71,
+    "coberturaEsf": 100,
+    "coberturaVacinal": 80.06,
+    "internacoesCsap": 525.66,
+    "gastoSaudePerCapita": 926.95,
+    "prenatalAdequado": 67.02
+  },
+  "4216404": {
+    "mortalidadeInfantil": 12.26,
+    "coberturaEsf": 85.73,
+    "coberturaVacinal": 69.77,
+    "internacoesCsap": 785.07,
+    "gastoSaudePerCapita": 1104.28,
+    "prenatalAdequado": 66.42
+  },
+  "4216503": {
+    "mortalidadeInfantil": 14.49,
+    "coberturaEsf": 81.31,
+    "coberturaVacinal": 82.17,
+    "internacoesCsap": 651.12,
+    "gastoSaudePerCapita": 965.74,
+    "prenatalAdequado": 94.77
+  },
+  "4216602": {
+    "mortalidadeInfantil": 18.22,
+    "coberturaEsf": 84.01,
+    "coberturaVacinal": 95.88,
+    "internacoesCsap": 845.01,
+    "gastoSaudePerCapita": 797.31,
+    "prenatalAdequado": 62.94
+  },
+  "4216701": {
+    "mortalidadeInfantil": 12.54,
+    "coberturaEsf": 74.16,
+    "coberturaVacinal": 100,
+    "internacoesCsap": 1202.44,
+    "gastoSaudePerCapita": 555.49,
+    "prenatalAdequado": 91.36
+  },
+  "4216800": {
+    "mortalidadeInfantil": 8.15,
+    "coberturaEsf": 100,
+    "coberturaVacinal": 87.5,
+    "internacoesCsap": 707.83,
+    "gastoSaudePerCapita": 908.5,
+    "prenatalAdequado": 78.66
+  },
+  "4216909": {
+    "mortalidadeInfantil": 6.59,
+    "coberturaEsf": 96.8,
+    "coberturaVacinal": 73.54,
+    "internacoesCsap": 1310.95,
+    "gastoSaudePerCapita": 1230.35,
+    "prenatalAdequado": 86.76
+  },
+  "4217006": {
+    "mortalidadeInfantil": null,
+    "coberturaEsf": 100,
+    "coberturaVacinal": 95.07,
+    "internacoesCsap": 1153.93,
+    "gastoSaudePerCapita": 399.59,
+    "prenatalAdequado": 79.7
+  },
+  "4217105": {
+    "mortalidadeInfantil": 9.58,
+    "coberturaEsf": 82.87,
+    "coberturaVacinal": 73.25,
+    "internacoesCsap": 984.96,
+    "gastoSaudePerCapita": 776.19,
+    "prenatalAdequado": 65.68
+  },
+  "4217154": {
+    "mortalidadeInfantil": 13.07,
+    "coberturaEsf": 82.69,
+    "coberturaVacinal": 67.12,
+    "internacoesCsap": 1638.31,
+    "gastoSaudePerCapita": 1244.42,
+    "prenatalAdequado": 74.38
+  },
+  "4217204": {
+    "mortalidadeInfantil": 9.5,
+    "coberturaEsf": 61,
+    "coberturaVacinal": 54.74,
+    "internacoesCsap": 1170.34,
+    "gastoSaudePerCapita": 609.39,
+    "prenatalAdequado": 74.44
+  },
+  "4217253": {
+    "mortalidadeInfantil": 10.63,
+    "coberturaEsf": 53.42,
+    "coberturaVacinal": 94.79,
+    "internacoesCsap": 859.74,
+    "gastoSaudePerCapita": 629.28,
+    "prenatalAdequado": 69.67
+  },
+  "4217303": {
+    "mortalidadeInfantil": 12.05,
+    "coberturaEsf": 84.96,
+    "coberturaVacinal": 67.9,
+    "internacoesCsap": 750.52,
+    "gastoSaudePerCapita": 1213.62,
+    "prenatalAdequado": 78.51
+  },
+  "4217402": {
+    "mortalidadeInfantil": 14.42,
+    "coberturaEsf": 100,
+    "coberturaVacinal": 73.58,
+    "internacoesCsap": 1039.2,
+    "gastoSaudePerCapita": 560.58,
+    "prenatalAdequado": 68.32
+  },
+  "4217501": {
+    "mortalidadeInfantil": 17.76,
+    "coberturaEsf": 72.98,
+    "coberturaVacinal": 54.19,
+    "internacoesCsap": 846.92,
+    "gastoSaudePerCapita": 626.52,
+    "prenatalAdequado": 66.34
+  },
+  "4217550": {
+    "mortalidadeInfantil": 3.56,
+    "coberturaEsf": 84.77,
+    "coberturaVacinal": 71.81,
+    "internacoesCsap": 975.5,
+    "gastoSaudePerCapita": 750.86,
+    "prenatalAdequado": 93.26
+  },
+  "4217600": {
+    "mortalidadeInfantil": 12.4,
+    "coberturaEsf": 47.45,
+    "coberturaVacinal": 76.84,
+    "internacoesCsap": 664.86,
+    "gastoSaudePerCapita": 1030.15,
+    "prenatalAdequado": 80.45
+  },
+  "4217709": {
+    "mortalidadeInfantil": 7.83,
+    "coberturaEsf": 75.43,
+    "coberturaVacinal": 70.69,
+    "internacoesCsap": 880.7,
+    "gastoSaudePerCapita": 928.69,
+    "prenatalAdequado": 65.85
+  },
+  "4217758": {
+    "mortalidadeInfantil": 9.49,
+    "coberturaEsf": 72.02,
+    "coberturaVacinal": 64.44,
+    "internacoesCsap": 538.34,
+    "gastoSaudePerCapita": 666.58,
+    "prenatalAdequado": 66.86
+  },
+  "4217808": {
+    "mortalidadeInfantil": 7.44,
+    "coberturaEsf": 60.92,
+    "coberturaVacinal": 87.59,
+    "internacoesCsap": 922.32,
+    "gastoSaudePerCapita": 363.32,
+    "prenatalAdequado": 70.17
+  },
+  "4217907": {
+    "mortalidadeInfantil": 5.52,
+    "coberturaEsf": 86.31,
+    "coberturaVacinal": 91.82,
+    "internacoesCsap": 1376.61,
+    "gastoSaudePerCapita": 1073.1,
+    "prenatalAdequado": 71.85
+  },
+  "4217956": {
+    "mortalidadeInfantil": 14.37,
+    "coberturaEsf": 77.99,
+    "coberturaVacinal": 100,
+    "internacoesCsap": 1133.27,
+    "gastoSaudePerCapita": 1306.32,
+    "prenatalAdequado": 86.76
+  },
+  "4218004": {
+    "mortalidadeInfantil": 13.35,
+    "coberturaEsf": 87.43,
+    "coberturaVacinal": 66.77,
+    "internacoesCsap": 953.57,
+    "gastoSaudePerCapita": 249.22,
+    "prenatalAdequado": 54.63
+  },
+  "4218103": {
+    "mortalidadeInfantil": 15.31,
+    "coberturaEsf": 80.8,
+    "coberturaVacinal": 87.39,
+    "internacoesCsap": 644.36,
+    "gastoSaudePerCapita": 955.28,
+    "prenatalAdequado": 60.63
+  },
+  "4218202": {
+    "mortalidadeInfantil": 10.08,
+    "coberturaEsf": 80.05,
+    "coberturaVacinal": 86.38,
+    "internacoesCsap": 1267.73,
+    "gastoSaudePerCapita": 1292.41,
+    "prenatalAdequado": 81.56
+  },
+  "4218251": {
+    "mortalidadeInfantil": 9.82,
+    "coberturaEsf": 60.57,
+    "coberturaVacinal": 82.24,
+    "internacoesCsap": 1047.62,
+    "gastoSaudePerCapita": 770.71,
+    "prenatalAdequado": 62.9
+  },
+  "4218301": {
+    "mortalidadeInfantil": 13.35,
+    "coberturaEsf": 80.26,
+    "coberturaVacinal": 64.47,
+    "internacoesCsap": 951.62,
+    "gastoSaudePerCapita": 848.35,
+    "prenatalAdequado": 61.44
+  },
+  "4218350": {
+    "mortalidadeInfantil": 5.87,
+    "coberturaEsf": 75.96,
+    "coberturaVacinal": 52.62,
+    "internacoesCsap": 838.61,
+    "gastoSaudePerCapita": 1040.08,
+    "prenatalAdequado": 79.24
+  },
+  "4218400": {
+    "mortalidadeInfantil": 15.86,
+    "coberturaEsf": 71.77,
+    "coberturaVacinal": 83.68,
+    "internacoesCsap": 1235.17,
+    "gastoSaudePerCapita": 886.11,
+    "prenatalAdequado": 75.93
+  },
+  "4218509": {
+    "mortalidadeInfantil": 1.16,
+    "coberturaEsf": 68.06,
+    "coberturaVacinal": 82.15,
+    "internacoesCsap": 454.3,
+    "gastoSaudePerCapita": 952.46,
+    "prenatalAdequado": 64.64
+  },
+  "4218608": {
+    "mortalidadeInfantil": 6.46,
+    "coberturaEsf": 67.07,
+    "coberturaVacinal": 75.57,
+    "internacoesCsap": 336.65,
+    "gastoSaudePerCapita": 1150.52,
+    "prenatalAdequado": 68.12
+  },
+  "4218707": {
+    "mortalidadeInfantil": 8.55,
+    "coberturaEsf": 85.84,
+    "coberturaVacinal": 70.92,
+    "internacoesCsap": 621.41,
+    "gastoSaudePerCapita": 536.52,
+    "prenatalAdequado": 57.01
+  },
+  "4218756": {
+    "mortalidadeInfantil": 11.4,
+    "coberturaEsf": 85.9,
+    "coberturaVacinal": 84,
+    "internacoesCsap": 1085.24,
+    "gastoSaudePerCapita": 734.98,
+    "prenatalAdequado": 78.34
+  },
+  "4218806": {
+    "mortalidadeInfantil": 10.63,
+    "coberturaEsf": 80.95,
+    "coberturaVacinal": 77.52,
+    "internacoesCsap": 694.77,
+    "gastoSaudePerCapita": 733.29,
+    "prenatalAdequado": 71.81
+  },
+  "4218855": {
+    "mortalidadeInfantil": 12.56,
+    "coberturaEsf": 76.94,
+    "coberturaVacinal": 73.28,
+    "internacoesCsap": 1115.23,
+    "gastoSaudePerCapita": 488.4,
+    "prenatalAdequado": 78.54
+  },
+  "4218905": {
+    "mortalidadeInfantil": 6.06,
+    "coberturaEsf": 87.71,
+    "coberturaVacinal": 88.76,
+    "internacoesCsap": 1189.8,
+    "gastoSaudePerCapita": 645.15,
+    "prenatalAdequado": 98
+  },
+  "4218954": {
+    "mortalidadeInfantil": 14.66,
+    "coberturaEsf": 78.76,
+    "coberturaVacinal": 61.73,
+    "internacoesCsap": 1150.69,
+    "gastoSaudePerCapita": 1279.88,
+    "prenatalAdequado": 59.69
+  },
+  "4219002": {
+    "mortalidadeInfantil": 4.39,
+    "coberturaEsf": 92.87,
+    "coberturaVacinal": 56.37,
+    "internacoesCsap": 1227.91,
+    "gastoSaudePerCapita": 1235.92,
+    "prenatalAdequado": 74.68
+  },
+  "4219101": {
+    "mortalidadeInfantil": 10.33,
+    "coberturaEsf": 100,
+    "coberturaVacinal": 79.45,
+    "internacoesCsap": 1467.64,
+    "gastoSaudePerCapita": 1053.15,
+    "prenatalAdequado": 72.85
+  },
+  "4219150": {
+    "mortalidadeInfantil": 7.97,
+    "coberturaEsf": 100,
+    "coberturaVacinal": 79.02,
+    "internacoesCsap": 857.99,
+    "gastoSaudePerCapita": 668.89,
+    "prenatalAdequado": 78.87
+  },
+  "4219176": {
+    "mortalidadeInfantil": 12.01,
+    "coberturaEsf": 89.48,
+    "coberturaVacinal": 100,
+    "internacoesCsap": 489.47,
+    "gastoSaudePerCapita": 1056.34,
+    "prenatalAdequado": 69.81
+  },
+  "4219200": {
+    "mortalidadeInfantil": 11.62,
+    "coberturaEsf": 77.66,
+    "coberturaVacinal": 88.75,
+    "internacoesCsap": 1184.67,
+    "gastoSaudePerCapita": 1171.02,
+    "prenatalAdequado": 74.94
+  },
+  "4219309": {
+    "mortalidadeInfantil": 5.72,
+    "coberturaEsf": 83.86,
+    "coberturaVacinal": 41.96,
+    "internacoesCsap": 514.27,
+    "gastoSaudePerCapita": 372.09,
+    "prenatalAdequado": 47.5
+  },
+  "4219358": {
+    "mortalidadeInfantil": 13.17,
+    "coberturaEsf": 73.75,
+    "coberturaVacinal": 73.16,
+    "internacoesCsap": 978.53,
+    "gastoSaudePerCapita": 677.65,
+    "prenatalAdequado": 85.46
+  },
+  "4219408": {
+    "mortalidadeInfantil": 1.87,
+    "coberturaEsf": 88.39,
+    "coberturaVacinal": 71.55,
+    "internacoesCsap": 596.9,
+    "gastoSaudePerCapita": 1077.96,
+    "prenatalAdequado": 47.85
+  },
+  "4219507": {
+    "mortalidadeInfantil": 9.66,
+    "coberturaEsf": 71.02,
+    "coberturaVacinal": 87.36,
+    "internacoesCsap": 832.04,
+    "gastoSaudePerCapita": 1239.59,
+    "prenatalAdequado": 43.01
+  },
+  "4219606": {
+    "mortalidadeInfantil": 11.19,
+    "coberturaEsf": 77.77,
+    "coberturaVacinal": 58,
+    "internacoesCsap": 1120.07,
+    "gastoSaudePerCapita": 663.91,
+    "prenatalAdequado": 88.08
+  },
+  "4219705": {
+    "mortalidadeInfantil": 9.54,
+    "coberturaEsf": 97.84,
+    "coberturaVacinal": 100,
+    "internacoesCsap": 695.85,
+    "gastoSaudePerCapita": 884.05,
+    "prenatalAdequado": 45.78
+  },
+  "4219853": {
+    "mortalidadeInfantil": 12.41,
+    "coberturaEsf": 71.47,
+    "coberturaVacinal": 76.88,
+    "internacoesCsap": 913.49,
+    "gastoSaudePerCapita": 791.41,
+    "prenatalAdequado": 65.31
+  },
+  "4220000": {
+    "mortalidadeInfantil": 0.11,
+    "coberturaEsf": 65.11,
+    "coberturaVacinal": 96.1,
+    "internacoesCsap": 1090.47,
+    "gastoSaudePerCapita": 648.51,
+    "prenatalAdequado": 81.11
+  }
+}

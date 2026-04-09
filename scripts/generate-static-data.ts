@@ -1,12 +1,15 @@
 /**
- * Gera dados estáticos IDEB 2023 e SNIS 2022 para os 295 municípios de SC.
+ * ⚠️ DADOS ESTIMADOS — NÃO USAR EM PRODUÇÃO ⚠️
  *
- * Usa distribuições realistas baseadas em benchmarks estaduais:
+ * Gera dados estáticos IDEB 2023 e SNIS 2022 para os 295 municípios de SC.
+ * Os valores são SINTÉTICOS (distribuição normal seeded), NÃO são dados reais.
+ *
+ * Para produção, substituir por dados reais via BigQuery (Base dos Dados):
+ *   npx tsx scripts/fetch-real-data.ts
+ *
+ * Benchmarks usados (apenas para distribuição plausível):
  * - IDEB SC 2023: média anos iniciais ~6.2, anos finais ~5.0
  * - SNIS SC 2022: cobertura água ~95%, esgoto ~40%, tratamento ~70%
- *
- * Para produção, substituir por dados reais dos Excel/CSV oficiais.
- * Este script gera dados determinísticos (seed baseada no ibgeCode).
  *
  * Uso: npx tsx scripts/generate-static-data.ts
  */
@@ -28,7 +31,13 @@ function seededRandom(seed: string): () => number {
 }
 
 // Gera valor com distribuição normal aproximada (Box-Muller simplificado)
-function normalish(rng: () => number, mean: number, stddev: number, min: number, max: number): number {
+function normalish(
+  rng: () => number,
+  mean: number,
+  stddev: number,
+  min: number,
+  max: number,
+): number {
   const u1 = rng();
   const u2 = rng();
   const z = Math.sqrt(-2 * Math.log(Math.max(u1, 0.001))) * Math.cos(2 * Math.PI * u2);
@@ -59,10 +68,7 @@ for (const mun of SC_MUNICIPALITIES) {
   };
 }
 
-writeFileSync(
-  "shared/data/ideb_2023.json",
-  JSON.stringify(idebData, null, 2) + "\n",
-);
+writeFileSync("shared/data/ideb_2023.json", JSON.stringify(idebData, null, 2) + "\n");
 console.log(`IDEB 2023: ${Object.keys(idebData).length} municípios gerados`);
 
 // ─── SNIS 2022 ───────────────────────────────────────────────────────────────
@@ -91,8 +97,5 @@ for (const mun of SC_MUNICIPALITIES) {
   };
 }
 
-writeFileSync(
-  "shared/data/snis_2022.json",
-  JSON.stringify(snisData, null, 2) + "\n",
-);
+writeFileSync("shared/data/snis_2022.json", JSON.stringify(snisData, null, 2) + "\n");
 console.log(`SNIS 2022: ${Object.keys(snisData).length} municípios gerados`);
