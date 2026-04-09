@@ -1,6 +1,6 @@
 # Backlog — IOC ESG Municipal
 
-Atualizado: 2026-04-07 — itens 1-3 concluidos, proximo: item 4 (simulador <-> recomendacoes)
+Atualizado: 2026-04-09 — Fase 4D (IEPS) concluida, 15 coletores, proximo: dados reais BigQuery
 
 **Escopo:** Santa Catarina (295 municípios). Escala nacional adiada.
 **Escala de agentes:** Maximizar paralelismo com múltiplos agentes Claude em cada fase.

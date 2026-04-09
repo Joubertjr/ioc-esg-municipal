@@ -1,15 +1,15 @@
 # Estado do Projeto — IOC ESG Municipal
 
-Atualizado: 2026-04-07 — 6 fases completas, 7 paginas frontend, 17/17 ODS, 14 coletores, recomendacoes inteligentes, onboarding, deploy-ready, 918+ testes, Obsidian vault integrado, 21 agentes especializados
+Atualizado: 2026-04-09 — 6 fases completas, 7 paginas frontend, 17/17 ODS, 15 coletores, recomendacoes inteligentes, onboarding, deploy-ready, 954+ testes, Obsidian vault integrado, 21 agentes especializados
 
 ## Status geral
 
 **Fases 1-4 + 6 concluidas.** Fase 5 (escala nacional) adiada — foco em SC (295 municipios).
-14 coletores + ODS Score + History + Simulador FPM + Reports + Benchmarks + Recomendacoes Inteligentes + Onboarding. Frontend com 7 paginas (Login, Dashboard, Simulador, Relatorios, Monitoramento, Benchmark, Onboarding). Auth JWT completo com refresh token rotation. Docker production-ready com nginx reverse proxy. CI/CD com deploy automatico.
+15 coletores + ODS Score + History + Simulador FPM + Reports + Benchmarks + Recomendacoes Inteligentes + Onboarding. Frontend com 7 paginas (Login, Dashboard, Simulador, Relatorios, Monitoramento, Benchmark, Onboarding). Auth JWT completo com refresh token rotation. Docker production-ready com nginx reverse proxy. CI/CD com deploy automatico.
 
 ---
 
-## Coletores (14/14 implementados)
+## Coletores (15/15 implementados)
 
 | Coletor   | Fonte                      | ODS cobertos       | Testes |
 | --------- | -------------------------- | ------------------ | ------ |
@@ -27,6 +27,7 @@ Atualizado: 2026-04-07 — 6 fases completas, 7 paginas frontend, 17/17 ODS, 14 
 | Convenios | convenios.gov.br           | 17                 | 22     |
 | ANATEL    | anatel.gov.br              | 9                  | 24     |
 | SISVAN    | sisvan.datasus.gov.br      | 2                  | 21     |
+| IEPS      | iepsdata.org.br (BigQuery) | 3                  | 36     |
 
 ---
 
@@ -34,7 +35,7 @@ Atualizado: 2026-04-07 — 6 fases completas, 7 paginas frontend, 17/17 ODS, 14 
 
 | Servico       | Funcionalidade                                         |
 | ------------- | ------------------------------------------------------ |
-| ODS Score     | Orquestra 14 coletores, calcula scores 0-100           |
+| ODS Score     | Orquestra 15 coletores, calcula scores 0-100           |
 | ODS History   | Auto-persist + GET /history endpoint                   |
 | Simulador FPM | Projeta impacto de investimento nos ODS                |
 | Relatorio ESG | Relatorio executivo com recomendacoes rule-based       |
@@ -126,7 +127,7 @@ Atualizado: 2026-04-07 — 6 fases completas, 7 paginas frontend, 17/17 ODS, 14 
 
 ## Testes
 
-- 918+ testes passando (885 originais + 33 novos para fases 3-6)
+- 954+ testes passando (918 anteriores + 36 novos IEPS)
 - TSC clean (frontend e backend)
 - Playwright E2E configurado
 
@@ -139,10 +140,12 @@ Atualizado: 2026-04-07 — 6 fases completas, 7 paginas frontend, 17/17 ODS, 14 
 | 1   | Testes para fases 3-6 (33 novos testes)                         | Concluido |
 | 2   | Fix debitos tecnicos (AuthContext + simulator tsc)              | Concluido |
 | 3   | Memoria longo prazo (Obsidian vault + MCP + memory-manager)     | Concluido |
-| 4   | Integracao simulador <-> recomendacoes (auto-preencher cenario) | Proximo   |
-| 5   | Multi-tenant: isolamento de dados por municipio                 | Planejado |
-| 6   | Exportar relatorio PDF                                          | Backlog   |
-| 7   | Dashboard admin (gestao de usuarios, metricas uso)              | Backlog   |
+| 4   | Integracao simulador <-> recomendacoes (auto-preencher cenario) | Concluido |
+| 5   | Coletor IEPS Data (ODS 3 saude — 6 indicadores, BigQuery)       | Concluido |
+| 6   | Scripts BigQuery dados reais (IDEB, SNIS, IEPS)                 | Concluido |
+| 7   | Multi-tenant: isolamento de dados por municipio                 | Planejado |
+| 8   | Exportar relatorio PDF                                          | Backlog   |
+| 9   | Dashboard admin (gestao de usuarios, metricas uso)              | Backlog   |
 
 ---
 
@@ -150,4 +153,4 @@ Atualizado: 2026-04-07 — 6 fases completas, 7 paginas frontend, 17/17 ODS, 14 
 
 - Branch: main
 - Remote: https://github.com/Joubertjr/ioc-esg-municipal (publico)
-- Ultimo commit: feat: memoria longo prazo — Obsidian vault + memory-manager agent
+- Ultimo commit: feat(ieps): fase 4D — coletor IEPS Data para ODS 3 + scripts BigQuery
