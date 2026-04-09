@@ -3,3 +3,4 @@ export { generateDataset, generateDatasetByCategory } from "./dataset-generator.
 export { LongMemEvalJudge } from "./judge.js";
 export { runEvaluation, type RunnerOptions } from "./runner.js";
 export { aggregateMetrics, generateMarkdownReport, saveReport } from "./reporter.js";
+export { type SystemUnderTest, RealServiceAdapter, BaselineAdapter } from "./adapters.js";

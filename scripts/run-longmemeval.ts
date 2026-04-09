@@ -5,8 +5,8 @@
  *
  * Uso:
  *   npx tsx scripts/run-longmemeval.ts
- *   npx tsx scripts/run-longmemeval.ts --category extraction --limit 5
- *   npx tsx scripts/run-longmemeval.ts --category abstention
+ *   npx tsx scripts/run-longmemeval.ts --adapter real
+ *   npx tsx scripts/run-longmemeval.ts --adapter baseline --category extraction --limit 5
  *   npx tsx scripts/run-longmemeval.ts --limit 10 --output docs/evaluation
  */
 
@@ -17,6 +17,8 @@ import {
   saveReport,
   generateMarkdownReport,
 } from "../backend/evaluation/longmemeval/reporter.js";
+import { RealServiceAdapter, BaselineAdapter } from "../backend/evaluation/longmemeval/adapters.js";
+import type { SystemUnderTest } from "../backend/evaluation/longmemeval/adapters.js";
 import type { QuestionCategory } from "../backend/evaluation/longmemeval/types.js";
 
 // ─── Parse CLI args ─────────────────────────────────────────────────────────
@@ -27,6 +29,7 @@ function parseArgs() {
     category?: QuestionCategory;
     limit?: number;
     output?: string;
+    adapter?: string;
   } = {};
 
   for (let i = 0; i < args.length; i++) {
@@ -36,6 +39,8 @@ function parseArgs() {
       options.limit = parseInt(args[++i], 10);
     } else if (args[i] === "--output" && args[i + 1]) {
       options.output = args[++i];
+    } else if (args[i] === "--adapter" && args[i + 1]) {
+      options.adapter = args[++i];
     } else if (args[i] === "--help" || args[i] === "-h") {
       console.log(`
 LongMemEval-ESG — Benchmark de Memória de Longo Prazo
@@ -44,10 +49,16 @@ Uso:
   npx tsx scripts/run-longmemeval.ts [opções]
 
 Opções:
+  --adapter <type>  Adapter: "real" (testa serviços reais, requer Redis) ou "baseline" (heurística local)
+                    Default: baseline
   --category <cat>  Filtrar por categoria (extraction, multi_session, temporal, knowledge_update, abstention)
   --limit <n>       Limitar a N instâncias
   --output <dir>    Diretório de saída (default: docs/evaluation)
   --help, -h        Mostrar esta ajuda
+
+Adapters:
+  real      Injeta dados no Redis → consulta calculateMunicipalOds() → testa pipeline real
+  baseline  Heurística local (NÃO testa o sistema real — resultado de ~100% é esperado)
 `);
       process.exit(0);
     }
@@ -56,15 +67,37 @@ Opções:
   return options;
 }
 
+function createAdapter(adapterName?: string): SystemUnderTest {
+  switch (adapterName) {
+    case "real":
+      return new RealServiceAdapter();
+    case "baseline":
+    case undefined:
+      return new BaselineAdapter();
+    default:
+      console.error(`Adapter desconhecido: "${adapterName}". Use "real" ou "baseline".`);
+      process.exit(1);
+  }
+}
+
 // ─── Main ───────────────────────────────────────────────────────────────────
 
 async function main() {
   const options = parseArgs();
+  const adapter = createAdapter(options.adapter);
 
   console.log("═══════════════════════════════════════════════════════════════");
   console.log("  LongMemEval-ESG — Benchmark de Memória de Longo Prazo");
+  console.log(`  Adapter: ${adapter.name}`);
   console.log("═══════════════════════════════════════════════════════════════");
   console.log("");
+
+  if (adapter.name === "baseline-heuristic") {
+    console.log("⚠️  AVISO: usando adapter baseline (heurística local).");
+    console.log("   Resultados ~100% são esperados e NÃO testam o sistema real.");
+    console.log("   Use --adapter real para testar o pipeline de produção.");
+    console.log("");
+  }
 
   // Gerar dataset
   const dataset = generateDataset();
@@ -81,6 +114,7 @@ async function main() {
   const results = await runEvaluation(dataset, {
     category: options.category,
     limit: options.limit,
+    adapter,
   });
 
   // Agregar métricas
@@ -90,6 +124,7 @@ async function main() {
   console.log("");
   console.log("═══════════════════════════════════════════════════════════════");
   console.log(`  RESULTADO: ${report.globalAccuracy}% acurácia global`);
+  console.log(`  Adapter: ${adapter.name}`);
   console.log(`  (${results.filter((r) => r.isCorrect).length}/${results.length} corretas)`);
   console.log("═══════════════════════════════════════════════════════════════");
   console.log("");
