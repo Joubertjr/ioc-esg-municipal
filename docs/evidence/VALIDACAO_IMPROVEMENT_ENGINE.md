@@ -17,16 +17,17 @@ O Claude Code construiu a "fábrica", mas os "operários" ainda não rodaram na 
 
 A arquitetura dos novos agentes é de classe mundial e segue as melhores práticas de IA autônoma:
 
-*   **`improvement-coordinator`:** Lê o `AUDIT_REPORT.md`, categoriza os achados e gera um "Dispatch Manifest". O roteamento é inteligente (ex: IDOR vai para `security-auditor` + `api-developer`).
-*   **`fix-verifier`:** Faz a re-auditoria *dirigida* (apenas do que foi tocado), comparando o estado antes/depois, garantindo que o fix não quebrou os testes (`vitest`) ou a tipagem (`tsc`).
-*   **`resolution-reporter`:** Fecha o ciclo documentando as lições aprendidas (compounding de conhecimento).
-*   **Gate de Aprovação:** A regra crítica que exige `APPROVED` humano para vulnerabilidades de segurança (IDOR, SSRF) antes do dispatch é uma excelente prática de segurança.
+- **`improvement-coordinator`:** Lê o `AUDIT_REPORT.md`, categoriza os achados e gera um "Dispatch Manifest". O roteamento é inteligente (ex: IDOR vai para `security-auditor` + `api-developer`).
+- **`fix-verifier`:** Faz a re-auditoria _dirigida_ (apenas do que foi tocado), comparando o estado antes/depois, garantindo que o fix não quebrou os testes (`vitest`) ou a tipagem (`tsc`).
+- **`resolution-reporter`:** Fecha o ciclo documentando as lições aprendidas (compounding de conhecimento).
+- **Gate de Aprovação:** A regra crítica que exige `APPROVED` humano para vulnerabilidades de segurança (IDOR, SSRF) antes do dispatch é uma excelente prática de segurança.
 
 ---
 
 ## 2. Análise da Execução dos Fixes (Falha ❌)
 
 O log do terminal indicou que o Claude Code lançou 3 fixes em paralelo:
+
 1.  `fix-c2-axios` (Upgrade axios)
 2.  `fix-a5-deps` (Upgrade minimatch/lodash)
 3.  Implementação direta do middleware `requireMunicipalityScope` para corrigir o IDOR (C1).
@@ -37,7 +38,8 @@ O log do terminal indicou que o Claude Code lançou 3 fixes em paralelo:
 2.  **Dependências Desatualizadas:** O `package.json` ainda lista o `axios` na versão vulnerável `^1.6.2`. O upgrade para `>=1.15.0` não ocorreu.
 
 ### Causa Raiz Provável
-O Claude Code estava no meio do processo de raciocínio (pensando em como implementar o middleware e buscando as relações no Prisma) quando a execução foi interrompida ou ele concluiu a criação dos agentes de infraestrutura sem aplicar o patch final no código-fonte. O commit `d69bbbd` contém *apenas* os arquivos markdown dos agentes na pasta `.claude/`.
+
+O Claude Code estava no meio do processo de raciocínio (pensando em como implementar o middleware e buscando as relações no Prisma) quando a execução foi interrompida ou ele concluiu a criação dos agentes de infraestrutura sem aplicar o patch final no código-fonte. O commit `d69bbbd` contém _apenas_ os arquivos markdown dos agentes na pasta `.claude/`.
 
 ---
 
@@ -52,6 +54,6 @@ O framework está pronto e perfeito. Agora precisamos apenas dar o comando para 
 
 No entanto, notei que os fixes práticos (C1 IDOR, C2 Axios, A5 Deps) que você começou a analisar ainda não foram aplicados no código-fonte (o commit atual só tem os .md dos agentes).
 
-Por favor, execute o comando `/audit-fix critical` para testar o seu novo engine na prática. 
+Por favor, execute o comando `/audit-fix critical` para testar o seu novo engine na prática.
 O objetivo é que o improvement-coordinator despache o C1 (IDOR) e C2 (Axios) para os agentes corretivos, o fix-verifier valide, e o código real das rotas e do package.json seja alterado.
 ```

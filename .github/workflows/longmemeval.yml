@@ -4,7 +4,7 @@ name: LongMemEval-ESG — Benchmark de Memória de Longo Prazo
 # longa usando o adapter REAL (Redis + calculateMunicipalOds) e publica
 # artefatos em docs/evaluation/.
 #
-# Referência: docs/PLANO_LONGMEMEVAL.md + docs/RELATORIO_MEMORIA_LONGO_PRAZO.md
+# Referência: docs/plans/PLANO_LONGMEMEVAL.md + docs/methodology/RELATORIO_MEMORIA_LONGO_PRAZO.md
 
 on:
   schedule:

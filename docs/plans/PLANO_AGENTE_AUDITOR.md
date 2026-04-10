@@ -114,7 +114,7 @@ Para iniciar a implementação, copie e cole o bloco abaixo no terminal do Claud
 ```text
 Você atuará como Arquiteto de Qualidade de Software. Sua missão é implementar o `audit-agent`, um subagente autônomo de classe mundial para o Claude Code, focado em auditoria contínua.
 
-Leia o documento `docs/PLANO_AGENTE_AUDITOR.md` para entender a arquitetura e os requisitos.
+Leia o documento `docs/plans/PLANO_AGENTE_AUDITOR.md` para entender a arquitetura e os requisitos.
 
 Inicie a execução iterativa das Fases 1 a 3 descritas no documento:
 1. Crie o arquivo `.claude/agents/audit-agent.md` com as restrições de ferramentas (somente leitura/execução) e o roteiro de auditoria rigoroso.

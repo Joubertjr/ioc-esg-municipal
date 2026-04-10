@@ -159,7 +159,7 @@ Para iniciar a implementação, copie e cole o bloco abaixo no terminal do Claud
 ```text
 Você atuará como Engenheiro de Avaliação de IA. Sua missão é implementar o módulo LongMemEval-ESG no backend do projeto, seguindo estritamente a arquitetura SOTA baseada no Mastra OM, Hindsight e conceitos de roteamento do SelRoute.
 
-Leia o documento `docs/PLANO_LONGMEMEVAL.md` para entender a fundamentação teórica e os requisitos de negócio.
+Leia o documento `docs/plans/PLANO_LONGMEMEVAL.md` para entender a fundamentação teórica e os requisitos de negócio.
 
 Inicie a execução iterativa das Fases 1 a 6 descritas no documento.
 Regras estritas:

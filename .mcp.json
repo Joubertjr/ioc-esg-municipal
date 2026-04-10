@@ -1,12 +1,8 @@
 {
   "mcpServers": {
     "obsidian-vault": {
-      "command": "npx",
-      "args": [
-        "-y",
-        "@modelcontextprotocol/server-filesystem",
-        "/Users/joubert/obsidian-vault/ioc-esg-municipal"
-      ]
+      "command": "bash",
+      "args": ["scripts/mcp-vault-server.sh"]
     }
   }
 }

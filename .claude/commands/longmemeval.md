@@ -6,8 +6,8 @@ prazo do sistema (recall, temporal reasoning, multi-session, abstention).
 Referências:
 
 - Paper: arxiv:2410.10813 (LongMemEval)
-- Plano: `docs/PLANO_LONGMEMEVAL.md`
-- Relatório de memória: `docs/RELATORIO_MEMORIA_LONGO_PRAZO.md`
+- Plano: `docs/plans/PLANO_LONGMEMEVAL.md`
+- Relatório de memória: `docs/methodology/RELATORIO_MEMORIA_LONGO_PRAZO.md`
 - Workflow CI semanal: `.github/workflows/longmemeval.yml`
 
 ## Execute:
