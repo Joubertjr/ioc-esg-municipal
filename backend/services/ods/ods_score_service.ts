@@ -25,8 +25,11 @@ import { IepsCollector, mapToOdsIndicators as mapIepsOds } from "../../agents/ie
 import { ODS_DEFINITIONS, getOdsDefinition } from "../../../shared/constants/ods.js";
 import {
   getOdsStatus,
+  classifyStaleness,
   type OdsIndicator,
   type OdsStatus,
+  type DataFreshness,
+  type SourceFreshness,
 } from "../../../shared/types/domain/ods.js";
 import { logger } from "../../utils/logger.js";
 import { withCache } from "../../utils/cache.js";
@@ -73,6 +76,7 @@ export interface OdsSummary {
   status: OdsStatus | null;
   indicators: OdsIndicator[];
   sources: string[];
+  dataFreshness: DataFreshness;
 }
 
 export interface MunicipalOdsReport {
@@ -84,7 +88,58 @@ export interface MunicipalOdsReport {
   geometricScore: number | null;
   geometricStatus: OdsStatus | null;
   odsCount: { total: number; withData: number; verde: number; amarelo: number; vermelho: number };
+  dataFreshness: DataFreshness;
   ods: OdsSummary[];
+}
+
+/**
+ * Calcula freshness a partir de um conjunto de indicadores.
+ * Usa o ano corrente (new Date().getFullYear()) como baseline.
+ * Quando não há indicadores, retorna `unknown`.
+ */
+function buildDataFreshness(indicators: OdsIndicator[]): DataFreshness {
+  if (indicators.length === 0) {
+    return {
+      newestYear: null,
+      oldestYear: null,
+      ageYears: null,
+      staleness: "unknown",
+      sources: [],
+    };
+  }
+
+  const currentYear = new Date().getFullYear();
+
+  // Agrupa por fonte, mantendo o ano mais recente por fonte
+  const yearBySource = new Map<string, number>();
+  for (const ind of indicators) {
+    const prev = yearBySource.get(ind.source);
+    if (prev === undefined || ind.referenceYear > prev) {
+      yearBySource.set(ind.source, ind.referenceYear);
+    }
+  }
+
+  const sources: SourceFreshness[] = Array.from(yearBySource.entries())
+    .map(([name, year]) => {
+      const age = currentYear - year;
+      return {
+        name,
+        referenceYear: year,
+        ageYears: age,
+        staleness: classifyStaleness(age),
+      };
+    })
+    .sort((a, b) => a.ageYears - b.ageYears);
+
+  const years = sources.map((s) => s.referenceYear);
+  const newestYear = Math.max(...years);
+  const oldestYear = Math.min(...years);
+  // Idade representativa = a do dado MAIS ANTIGO, porque o ODS só é
+  // tão fresco quanto seu indicador mais desatualizado.
+  const ageYears = currentYear - oldestYear;
+  const staleness = classifyStaleness(ageYears);
+
+  return { newestYear, oldestYear, ageYears, staleness, sources };
 }
 
 const ibgeCollector = new IbgeCollector();
@@ -259,6 +314,7 @@ async function _fetchAndCalculate(ibgeCode: string): Promise<MunicipalOdsReport 
       status,
       indicators,
       sources,
+      dataFreshness: buildDataFreshness(indicators),
     };
   });
 
@@ -316,6 +372,7 @@ async function _fetchAndCalculate(ibgeCode: string): Promise<MunicipalOdsReport 
       amarelo: amareloCount,
       vermelho: vermelhoCount,
     },
+    dataFreshness: buildDataFreshness(allIndicators),
     ods: odsSummaries,
   };
 }

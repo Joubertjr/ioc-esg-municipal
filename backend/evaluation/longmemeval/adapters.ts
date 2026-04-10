@@ -343,8 +343,44 @@ async function buildReport(
   sessions: ContextSession[],
 ): Promise<import("../../services/ods/ods_score_service.js").MunicipalOdsReport> {
   const { ODS_DEFINITIONS, getOdsDefinition } = await import("../../../shared/constants/ods.js");
-  const { getOdsStatus } = await import("../../../shared/types/domain/ods.js");
+  const { getOdsStatus, classifyStaleness } = await import("../../../shared/types/domain/ods.js");
   const { calculateGeometricMean } = await import("../../services/ods/ods_score_service.js");
+
+  // Freshness helper local — adapter mantém-se isolado do service real.
+  const buildFreshness = (
+    inds: import("../../../shared/types/domain/ods.js").OdsIndicator[],
+  ): import("../../../shared/types/domain/ods.js").DataFreshness => {
+    if (inds.length === 0) {
+      return {
+        newestYear: null,
+        oldestYear: null,
+        ageYears: null,
+        staleness: "unknown",
+        sources: [],
+      };
+    }
+    const currentYear = new Date().getFullYear();
+    const yearBySource = new Map<string, number>();
+    for (const ind of inds) {
+      const prev = yearBySource.get(ind.source);
+      if (prev === undefined || ind.referenceYear > prev) {
+        yearBySource.set(ind.source, ind.referenceYear);
+      }
+    }
+    const sources = Array.from(yearBySource.entries())
+      .map(([name, year]) => ({
+        name,
+        referenceYear: year,
+        ageYears: currentYear - year,
+        staleness: classifyStaleness(currentYear - year),
+      }))
+      .sort((a, b) => a.ageYears - b.ageYears);
+    const years = sources.map((s) => s.referenceYear);
+    const newestYear = Math.max(...years);
+    const oldestYear = Math.min(...years);
+    const ageYears = currentYear - oldestYear;
+    return { newestYear, oldestYear, ageYears, staleness: classifyStaleness(ageYears), sources };
+  };
 
   const referenceYear = Math.max(...sessions.map((s) => s.referenceYear), 0);
 
@@ -392,6 +428,7 @@ async function buildReport(
       status,
       indicators,
       sources,
+      dataFreshness: buildFreshness(indicators),
     };
   });
 
@@ -447,6 +484,7 @@ async function buildReport(
       amarelo: amareloCount,
       vermelho: vermelhoCount,
     },
+    dataFreshness: buildFreshness(allIndicators),
     ods: odsSummaries,
   };
 }
