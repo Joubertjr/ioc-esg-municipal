@@ -1,0 +1,41 @@
+# =============================================================================
+# IOC ESG Municipal — Override local para validar a stack de PRODUÇÃO
+# =============================================================================
+# USO:
+#   scripts/prod-up-local.sh                                      # wrapper
+#   # ou manualmente:
+#   docker compose -f docker-compose.prod.yml \
+#                  -f docker-compose.prod.local.yml \
+#                  --env-file .env.prod.local up -d
+#
+# POR QUE EXISTE:
+#   O docker-compose.prod.yml referencia
+#   "${REGISTRY:-ghcr.io/seu-org}/ioc-esg-municipal:${IMAGE_TAG:-latest}",
+#   que aponta para uma imagem de registry que não existe em dev local.
+#   Também requer certs TLS em ./nginx/ssl/ que só existem em prod real.
+#
+#   Este override:
+#     1. Força a imagem local "ioc-esg-municipal:latest"
+#     2. Expõe a API em 127.0.0.1:8080 (evita conflito com `pnpm dev` na 3000)
+#     3. Remove nginx (sem certs em dev) usando o profile "tls" que só ativa
+#        quando explicitamente solicitado
+#
+# NÃO USE EM PRODUÇÃO REAL — só serve para smoke test local da imagem.
+# =============================================================================
+
+services:
+  api:
+    image: ioc-esg-municipal:latest
+    container_name: ioc_api_prod_local
+    ports:
+      - "127.0.0.1:8080:3000"
+    environment:
+      # REDIS_PASSWORD é validado pelo env-validator em produção (>=8 chars).
+      # O compose de prod só passa REDIS_URL; aqui garantimos que a variável
+      # também esteja presente para que a validação passe.
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+
+  # Move nginx para um profile opcional — `up` sem --profile tls não sobe nginx.
+  nginx:
+    profiles:
+      - tls
