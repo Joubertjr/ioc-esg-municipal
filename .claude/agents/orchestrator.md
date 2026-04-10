@@ -142,6 +142,43 @@ FASE 4 — MEMORIA (apos tudo):
 └── memory-manager     → Persistir decisoes, gotchas, licoes no vault
 ```
 
+### Sequencia IMPROVEMENT LOOP (Ciclo de Melhoria Continua)
+
+```
+FASE 0 — COORDINACAO (sempre primeiro):
+└── improvement-coordinator → le audit report, cria dispatch manifest, tasks
+    Output: docs/evidence/audit/DISPATCH_YYYY-MM-DD.md
+
+[GATE DE APROVACAO HUMANA — somente para achados criticos de seguranca]
+Se o dispatch contem achados 🔴 de seguranca: exiba para o usuario e aguarde APPROVED/SKIP.
+
+FASE 1 — FIXES (paralelo por grupo, sem dependencia entre grupos):
+├── Grupo A (seguranca): security-auditor → spec de correcao (read-only)
+├── Grupo B (deps):      devops-engineer → upgrade deps, fix configs
+├── Grupo C (testes):    test-writer → testes faltantes
+├── Grupo D (dados):     ods-analyst + data-collector → freshness, completude
+├── Grupo E (codigo):    code-reviewer → identificar + api-developer → corrigir
+└── Grupo F (infra):     observability-engineer + devops-engineer
+
+FASE 2 — IMPLEMENTACAO (depende de Fase 1 para seguranca):
+└── api-developer → implementar specs de security-auditor (Grupo A)
+    Branch: fix/finding-<ID> + PR (nunca commit direto em main para criticos)
+
+FASE 3 — VERIFICACAO (depende de todas as fases anteriores):
+└── fix-verifier → re-auditoria dirigida dos achados modificados
+    Output: docs/evidence/audit/VERIFICATION_YYYY-MM-DD.md
+
+FASE 4 — RELATORIO (depende de Fase 3):
+└── resolution-reporter → consolidar + persistir no vault Obsidian
+    Output: docs/evidence/audit/cycles/CYCLE_YYYY-MM-DD.md
+```
+
+**Instrucoes de dispatch para cada agente:**
+
+- Forneca o finding ID, descricao, arquivos afetados e remediation esperada
+- Instrua: "Fix ONLY finding [ID]. Touch ONLY the files listed. Se descobrir issue fora de escopo, documente mas NAO corrija."
+- Para achados Critico: instrua criacao de branch `fix/finding-<ID>`
+
 ### Sequencia INICIO DE SESSAO
 
 ```

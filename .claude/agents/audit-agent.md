@@ -151,3 +151,26 @@ Entregue o relatório em Markdown com esta estrutura exata:
 ```
 
 Salve o relatório em `docs/evidence/audit/AUDIT_YYYY-MM-DD.md`.
+
+## Auto-Dispatch Trigger
+
+**OBRIGATORIO:** Ao final do relatório, SEMPRE adicione este bloco para alimentar o ciclo de melhoria continua:
+
+```markdown
+---
+
+## AUTO-DISPATCH TRIGGER
+
+| Campo              | Valor                                   |
+| :----------------- | :-------------------------------------- |
+| FINDINGS_CRITICAL  | <contagem de achados 🔴>                |
+| FINDINGS_WARNING   | <contagem de achados 🟡>                |
+| REPORT_PATH        | docs/evidence/audit/AUDIT_YYYY-MM-DD.md |
+| NEXT_ACTION        | /audit-fix                              |
+| NEXT_ACTION_FILTER | critical (se houver criticos) ou all    |
+
+Para executar as correcoes automaticamente, rode:
+`/audit-fix` (todos) ou `/audit-fix critical` (apenas criticos)
+```
+
+Este bloco permite que o `improvement-coordinator` detecte e processe achados automaticamente.

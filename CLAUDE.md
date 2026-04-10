@@ -293,28 +293,35 @@ Regras:
 | `/screenshot <feature>` | Capturar evidências visuais (desktop+mobile, light+dark)      |
 | `/visual-qa <feature>`  | Ciclo completo: screenshots + auditoria + staging atômico     |
 | `/audit [dimensão]`     | Auditoria autônoma (5 dimensões ou foco em uma)               |
+| `/audit-fix [filtro]`   | Processa achados do audit e despacha para agentes corretivos  |
+| `/audit-and-fix [dim]`  | Ciclo completo: audit → fix → verify → report                 |
+| `/fix-status`           | Status dos fixes em andamento                                 |
+| `/verify-fix <ID>`      | Verificação dirigida de um achado específico                  |
 
 ### Agentes (invoque com: "Use o agente X para...")
 
-| Tier   | Agente               | Quando                                                            |
-| ------ | -------------------- | ----------------------------------------------------------------- |
-| Opus   | `orchestrator`       | Feature multi-camada — coordena todos                             |
-| Opus   | `backend-architect`  | Design de API ou serviço                                          |
-| Opus   | `database-architect` | Schema ou migration                                               |
-| Opus   | `frontend-architect` | UI complexa                                                       |
-| Opus   | `security-auditor`   | Antes de deploy, auth, dados sensíveis                            |
-| Opus   | `code-reviewer`      | Após qualquer feature — contexto limpo                            |
-| Sonnet | `data-collector`     | Implementar/debugar coletor de API gov                            |
-| Sonnet | `ods-analyst`        | Scores e indicadores dos 17 ODS                                   |
-| Sonnet | `api-developer`      | Implementar endpoints a partir de specs                           |
-| Sonnet | `test-writer`        | Cobertura de testes                                               |
-| Sonnet | `debugger`           | Bug persistente                                                   |
-| Sonnet | `docs-writer`        | README, documentação de API                                       |
-| Haiku  | `devops-engineer`    | Docker, CI/CD, infra                                              |
-| Opus   | `project-monitor`    | Monitoramento continuo, KPIs, coerencia, riscos                   |
-| Sonnet | `memory-manager`     | Obsidian vault: sync, ADRs, gotchas, daily logs                   |
-| Sonnet | `visual-qa-auditor`  | Auditar screenshots contra checklist Visual QA                    |
-| Sonnet | `audit-agent`        | Auditoria autônoma: código, arquitetura, dados, testes, segurança |
+| Tier   | Agente                    | Quando                                                            |
+| ------ | ------------------------- | ----------------------------------------------------------------- |
+| Opus   | `orchestrator`            | Feature multi-camada — coordena todos                             |
+| Opus   | `backend-architect`       | Design de API ou serviço                                          |
+| Opus   | `database-architect`      | Schema ou migration                                               |
+| Opus   | `frontend-architect`      | UI complexa                                                       |
+| Opus   | `security-auditor`        | Antes de deploy, auth, dados sensíveis                            |
+| Opus   | `code-reviewer`           | Após qualquer feature — contexto limpo                            |
+| Sonnet | `data-collector`          | Implementar/debugar coletor de API gov                            |
+| Sonnet | `ods-analyst`             | Scores e indicadores dos 17 ODS                                   |
+| Sonnet | `api-developer`           | Implementar endpoints a partir de specs                           |
+| Sonnet | `test-writer`             | Cobertura de testes                                               |
+| Sonnet | `debugger`                | Bug persistente                                                   |
+| Sonnet | `docs-writer`             | README, documentação de API                                       |
+| Haiku  | `devops-engineer`         | Docker, CI/CD, infra                                              |
+| Opus   | `project-monitor`         | Monitoramento continuo, KPIs, coerencia, riscos                   |
+| Sonnet | `memory-manager`          | Obsidian vault: sync, ADRs, gotchas, daily logs                   |
+| Sonnet | `visual-qa-auditor`       | Auditar screenshots contra checklist Visual QA                    |
+| Sonnet | `audit-agent`             | Auditoria autônoma: código, arquitetura, dados, testes, segurança |
+| Opus   | `improvement-coordinator` | Cérebro: parseia audit, roteia achados, cria dispatch manifest    |
+| Sonnet | `fix-verifier`            | Re-auditoria dirigida dos achados corrigidos                      |
+| Sonnet | `resolution-reporter`     | Fecha ciclo: consolida resultado + persiste no vault              |
 
 ### Slash commands
 
@@ -324,6 +331,10 @@ Regras:
 | `/checkpoint <desc>`  | Commit de segurança                   |
 | `/state`              | Atualiza PROJECT_STATE.md             |
 | `/decisions <título>` | Registra ADR                          |
+| `/audit-fix [filtro]` | Despacha achados do audit para fixes  |
+| `/audit-and-fix`      | Ciclo completo audit→fix→verify       |
+| `/fix-status`         | Status dos fixes em andamento         |
+| `/verify-fix <ID>`    | Verifica fix de achado específico     |
 
 ---
 
