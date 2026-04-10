@@ -20,6 +20,15 @@ FPM com impacto nos 17 ODS da ONU, eliminando o R$20-40B desperdiçado anualment
 - Testes: Vitest (unit/integration) + Playwright (e2e)
 - Infra: Docker Compose + GitHub Actions
 
+**⚠️ DOIS AMBIENTES — NÃO CONFUNDIR:**
+
+| Ambiente          | Onde roda                 | Comando                                           | Composição                                                                                   |
+| :---------------- | :------------------------ | :------------------------------------------------ | :------------------------------------------------------------------------------------------- |
+| **Dev (local)**   | `pnpm dev` no host macOS  | `pnpm dev`                                        | `docker-compose.yml` (só postgres + redis + adminer)                                         |
+| **Prod (Docker)** | `docker-compose.prod.yml` | `docker compose -f docker-compose.prod.yml up -d` | Dockerfile multi-stage (deps → builder → fe-builder → production) + nginx + postgres + redis |
+
+**Regra operacional:** toda feature backend que altera rota, tipo ou service **deve** ser validada em `docker build` antes de ser marcada como concluída. "Funciona no pnpm dev" não é prova de que funciona em produção. Reporte explícito na mensagem de conclusão: `docker build: OK | tsc: OK | tests: OK`.
+
 **Estado atual:** !`cat docs/PROJECT_STATE.md 2>/dev/null | head -10 || echo "Setup inicial — documentação completa disponível em docs/especificacao/"`
 
 ---
@@ -65,15 +74,40 @@ Para qualquer task > 15 minutos:
 
 ## COMANDOS DO PROJETO
 
+### Dev (host local)
+
 ```bash
-pnpm dev              # backend (3000) + frontend (5173)
+pnpm docker:up        # sobe Postgres + Redis + Adminer (docker-compose.yml)
+pnpm dev              # backend (3000) + frontend (5173) no host
 pnpm test             # unit + integration
 pnpm test:e2e         # playwright
 pnpm lint && pnpm format
 pnpm db:migrate       # prisma migrate dev
 pnpm db:seed          # seed 295 municípios SC
 pnpm db:studio        # Prisma Studio UI
-pnpm docker:up        # PostgreSQL + Redis + Adminer
+```
+
+### Produção (Docker end-to-end)
+
+```bash
+# 1. Build da imagem multi-stage
+docker build -t ioc-esg-municipal:latest .
+
+# 2. Validação local da imagem (opcional, mas recomendado antes de push)
+docker run --rm ioc-esg-municipal:latest node -e "console.log('image OK')"
+
+# 3. Subir stack de produção (api + nginx + postgres + redis)
+docker compose -f docker-compose.prod.yml up -d
+
+# 4. Verificar health e logs
+docker compose -f docker-compose.prod.yml ps
+docker compose -f docker-compose.prod.yml logs -f api
+```
+
+**Regra:** toda alteração em `backend/`, `shared/types/`, `prisma/` ou rotas exige rebuild da imagem antes de ser considerada concluída. O comando rápido de validação é:
+
+```bash
+docker build -t ioc-esg-municipal:$(git rev-parse --short HEAD) . && echo "prod build OK"
 ```
 
 ---
@@ -264,10 +298,12 @@ Regras:
 
 - [ ] `pnpm build` sem erros TypeScript
 - [ ] `pnpm test` passando
+- [ ] **`docker build -t ioc-esg-municipal:<tag> .` concluído com sucesso** (produção)
 - [ ] Novos testes escritos para nova funcionalidade
 - [ ] Sem credenciais hardcoded
 - [ ] Erros tratados explicitamente (nunca silencioso)
 - [ ] Cache Redis implementado se chamar API externa
+- [ ] Evidência visual em `docs/evidence/` para mudanças de UI
 
 ---
 

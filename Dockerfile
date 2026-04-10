@@ -22,13 +22,18 @@ COPY package.json pnpm-lock.yaml ./
 # ── Stage 2: deps — instala dependências de produção (backend) ────────────────
 FROM base AS deps
 
-RUN pnpm install --frozen-lockfile --prod
+# --ignore-scripts: evita rodar `prepare` (husky) que só existe em dev.
+# HUSKY=0: belt-and-suspenders para o caso de outro script tentar invocá-lo.
+ENV HUSKY=0
+RUN pnpm install --frozen-lockfile --prod --ignore-scripts
 
 # ── Stage 3: builder — compila TypeScript (backend) ───────────────────────────
 FROM base AS builder
 
-# Instala TODAS as deps (dev incluídas) para compilar
-RUN pnpm install --frozen-lockfile
+# Instala TODAS as deps (dev incluídas) para compilar.
+# --ignore-scripts também evita husky no builder (git não existe na imagem).
+ENV HUSKY=0
+RUN pnpm install --frozen-lockfile --ignore-scripts
 
 # Copia código-fonte
 COPY tsconfig.json ./
@@ -54,12 +59,14 @@ WORKDIR /app
 # Copia manifests do root (para instalar zod, decimal.js, etc. que shared/ precisa)
 COPY package.json pnpm-lock.yaml ./
 
-# Instala deps do root (apenas as que o TSC precisa para type-check de shared/)
-RUN pnpm install --frozen-lockfile
+# Instala deps do root (apenas as que o TSC precisa para type-check de shared/).
+# --ignore-scripts evita husky/prepare que requer .git não presente na imagem.
+ENV HUSKY=0
+RUN pnpm install --frozen-lockfile --ignore-scripts
 
 # Copia manifests do frontend e instala suas deps
 COPY frontend/package.json frontend/pnpm-lock.yaml ./frontend/
-RUN cd frontend && pnpm install --frozen-lockfile
+RUN cd frontend && pnpm install --frozen-lockfile --ignore-scripts
 
 # Copia shared/ e frontend/
 COPY shared/ ./shared/
