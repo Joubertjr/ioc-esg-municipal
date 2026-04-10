@@ -1,0 +1,45 @@
+{
+  "runDate": "2026-04-10T03:53:10.764Z",
+  "totalInstances": 3,
+  "globalAccuracy": 100,
+  "categoryMetrics": [
+    {
+      "category": "extraction",
+      "total": 3,
+      "correct": 3,
+      "accuracy": 100
+    }
+  ],
+  "results": [
+    {
+      "instanceId": "ext-datasus-mort-4205407",
+      "category": "extraction",
+      "question": "Qual foi a taxa de mortalidade infantil (DATASUS) reportada para o município de Florianópolis no ciclo de coleta de 2022?",
+      "expectedAnswer": "A taxa de mortalidade infantil de Florianópolis em 2022 foi de 8.2 por 1.000 nascidos vivos.",
+      "actualAnswer": "De acordo com dados do DATASUS para Florianópolis em 2022, a mortalidade infantil foi de 8.2 por 1.000 nascidos vivos.",
+      "isCorrect": true,
+      "reasoning": "Heuristic judge: 96% match (3/3 números, 8/9 palavras-chave).",
+      "latencyMs": 0
+    },
+    {
+      "instanceId": "ext-datasus-mort-4209102",
+      "category": "extraction",
+      "question": "Qual foi a taxa de mortalidade infantil (DATASUS) reportada para o município de Joinville no ciclo de coleta de 2022?",
+      "expectedAnswer": "A taxa de mortalidade infantil de Joinville em 2022 foi de 9.5 por 1.000 nascidos vivos.",
+      "actualAnswer": "De acordo com dados do DATASUS para Joinville em 2022, a mortalidade infantil foi de 9.5 por 1.000 nascidos vivos.",
+      "isCorrect": true,
+      "reasoning": "Heuristic judge: 96% match (3/3 números, 8/9 palavras-chave).",
+      "latencyMs": 0
+    },
+    {
+      "instanceId": "ext-datasus-mort-4202404",
+      "category": "extraction",
+      "question": "Qual foi a taxa de mortalidade infantil (DATASUS) reportada para o município de Blumenau no ciclo de coleta de 2022?",
+      "expectedAnswer": "A taxa de mortalidade infantil de Blumenau em 2022 foi de 10.1 por 1.000 nascidos vivos.",
+      "actualAnswer": "De acordo com dados do DATASUS para Blumenau em 2022, a mortalidade infantil foi de 10.1 por 1.000 nascidos vivos.",
+      "isCorrect": true,
+      "reasoning": "Heuristic judge: 96% match (3/3 números, 9/10 palavras-chave).",
+      "latencyMs": 0
+    }
+  ]
+}

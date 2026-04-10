@@ -1,0 +1,150 @@
+name: LongMemEval-ESG — Benchmark de Memória de Longo Prazo
+
+# Roda semanalmente e sob demanda. Gera um relatório de qualidade de memória
+# longa usando o adapter REAL (Redis + calculateMunicipalOds) e publica
+# artefatos em docs/evaluation/.
+#
+# Referência: docs/PLANO_LONGMEMEVAL.md + docs/RELATORIO_MEMORIA_LONGO_PRAZO.md
+
+on:
+  schedule:
+    # Segunda-feira 7h UTC (4h BRT) — antes do briefing diário
+    - cron: "17 7 * * 1"
+  workflow_dispatch:
+    inputs:
+      adapter:
+        description: "Adapter (real | baseline)"
+        required: false
+        default: "real"
+        type: choice
+        options:
+          - real
+          - baseline
+      limit:
+        description: "Número máximo de instâncias (vazio = todas)"
+        required: false
+        type: string
+      category:
+        description: "Categoria (vazio = todas)"
+        required: false
+        type: choice
+        default: ""
+        options:
+          - ""
+          - extraction
+          - multi_session
+          - temporal
+          - knowledge_update
+          - abstention
+
+concurrency:
+  group: longmemeval-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  longmemeval:
+    name: LongMemEval ${{ github.event.inputs.adapter || 'real' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    services:
+      postgres:
+        image: postgres:15-alpine
+        env:
+          POSTGRES_USER: test
+          POSTGRES_PASSWORD: test
+          POSTGRES_DB: ioc_esg_test
+        options: >-
+          --health-cmd pg_isready --health-interval 10s
+          --health-timeout 5s --health-retries 5
+        ports: ["5432:5432"]
+      redis:
+        image: redis:7-alpine
+        options: >-
+          --health-cmd "redis-cli ping" --health-interval 10s
+          --health-timeout 5s --health-retries 5
+        ports: ["6379:6379"]
+
+    env:
+      DATABASE_URL: postgresql://test:test@localhost:5432/ioc_esg_test
+      REDIS_URL: redis://localhost:6379
+      NODE_ENV: test
+      # ANTHROPIC_API_KEY é opcional — sem ela, o judge cai pro fallback heurístico.
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+      ADAPTER: ${{ github.event.inputs.adapter || 'real' }}
+      LIMIT: ${{ github.event.inputs.limit }}
+      CATEGORY: ${{ github.event.inputs.category }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v3
+        with: { version: 8 }
+
+      - uses: actions/setup-node@v4
+        with: { node-version: "20", cache: "pnpm" }
+
+      - name: Install deps
+        run: pnpm install --frozen-lockfile
+
+      - name: Prisma migrate
+        run: pnpm prisma migrate deploy
+
+      - name: Seed mínimo (apenas dados referenciais)
+        run: pnpm db:seed || echo "seed opcional — continuando"
+
+      - name: Build args do runner
+        id: args
+        run: |
+          ARGS="--adapter ${ADAPTER} --output docs/evaluation"
+          if [ -n "${LIMIT}" ]; then ARGS="$ARGS --limit ${LIMIT}"; fi
+          if [ -n "${CATEGORY}" ]; then ARGS="$ARGS --category ${CATEGORY}"; fi
+          echo "args=$ARGS" >> "$GITHUB_OUTPUT"
+
+      - name: Run LongMemEval-ESG
+        id: run
+        run: |
+          set -o pipefail
+          npx tsx scripts/run-longmemeval.ts ${{ steps.args.outputs.args }} | tee longmemeval.log
+          # Captura o último relatório markdown gerado
+          REPORT=$(ls -1t docs/evaluation/longmemeval_report_*.md 2>/dev/null | head -1)
+          echo "report=$REPORT" >> "$GITHUB_OUTPUT"
+
+      - name: Upload relatórios
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: longmemeval-${{ github.run_number }}
+          path: |
+            docs/evaluation/longmemeval_report_*.md
+            docs/evaluation/longmemeval_results_*.json
+            longmemeval.log
+          retention-days: 90
+
+      - name: Guardar histórico (commit no main quando schedule)
+        if: github.event_name == 'schedule' && steps.run.outputs.report != ''
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config user.name "longmemeval-bot"
+          git config user.email "longmemeval-bot@users.noreply.github.com"
+          git add docs/evaluation/longmemeval_report_*.md docs/evaluation/longmemeval_results_*.json
+          if git diff --cached --quiet; then
+            echo "Sem mudanças no histórico."
+          else
+            git commit -m "chore(evaluation): longmemeval weekly run #${{ github.run_number }}
+
+          Adapter: ${ADAPTER}
+          Report: ${{ steps.run.outputs.report }}
+          "
+            git push origin HEAD:main || echo "push falhou — provavelmente branch protegida; artefato fica no upload"
+          fi
+
+      - name: Resumo no job summary
+        if: always() && steps.run.outputs.report != ''
+        run: |
+          echo "## LongMemEval-ESG — Relatório" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Adapter: \`${ADAPTER}\`" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          cat "${{ steps.run.outputs.report }}" >> $GITHUB_STEP_SUMMARY

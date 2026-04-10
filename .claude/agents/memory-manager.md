@@ -102,6 +102,46 @@ Configurado em `.mcp.json` na raiz do projeto:
 - Editar `long-term/architecture.md` quando stack ou servicos mudam
 - Manter sync com `docs/PROJECT_STATE.md`
 
+### 9. Sincronizar auto-memory com Vault (`sync-auto-memory`)
+
+Objetivo: manter `.claude/projects/.../memory/` (auto-memory do Claude Code)
+e `~/obsidian-vault/ioc-esg-municipal/` coerentes, sem duplicar conteúdo.
+
+**Regras de sync:**
+
+1. **auto-memory é fonte para feedback/user memories.** São memórias que o
+   Claude Code extrai da conversa. Nunca reescreva diretamente no vault —
+   são caches da personalidade do usuário, não conhecimento de projeto.
+
+2. **Vault é fonte para gotchas/lessons-learned/ADRs.** São memórias
+   estruturadas, revisadas, com formato temporal. auto-memory nunca deve
+   conter gotchas técnicos — só `reference_*.md` apontando pro vault.
+
+3. **Merge direcional:**
+   - auto-memory → vault: quando `reference_*.md` aponta pro vault, verifique
+     que o caminho existe. Se não, crie stub e registre em lessons-learned.
+   - vault → auto-memory: quando um ADR novo é aceito, crie um
+     `reference_adr_NNN.md` em auto-memory com pointer de uma linha.
+
+4. **Detecção de duplicação:**
+   - Se o mesmo fato aparece em `feedback_*.md` E em `lessons-learned.md`,
+     remova da auto-memory (feedback é volátil, lessons é persistente).
+   - Se aparece em dois `feedback_*.md`, consolide no mais antigo e delete
+     o outro. Atualize MEMORY.md index.
+
+5. **Zep temporal pattern:** ao mover um gotcha de "atual" para
+   "resolved @ commit", NÃO deletar — manter o registro histórico. O
+   sistema de memória respeita fatos com validade.
+
+6. **Relatório de sync:** ao final, produzir `sync-report.md` em
+   `~/obsidian-vault/ioc-esg-municipal/daily/YYYY-MM-DD-memory-sync.md`:
+   - Quantos arquivos inspecionados
+   - Quantos duplicados removidos
+   - Quantos pointers criados
+   - Inconsistências que exigem intervenção humana
+
+**Este passo é invocado pelo skill `/memory-sync`.**
+
 ## Regras
 
 1. **Vault e fonte de verdade para conhecimento duradouro.** CLAUDE.md e MEMORY.md sao caches.

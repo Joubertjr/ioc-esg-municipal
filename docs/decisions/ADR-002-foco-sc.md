@@ -1,3 +1,15 @@
+---
+id: ADR-002
+title: Foco em Santa Catarina — Escala Nacional Adiada
+date: 2026-04-01
+status: active
+affects: [scope, product, seed, municipalities]
+domain: product
+supersedes: null
+superseded_by: null
+decisors: [joubert, claude]
+---
+
 # ADR-002: Foco em Santa Catarina — Escala Nacional Adiada
 
 **Data:** 2026-04-01

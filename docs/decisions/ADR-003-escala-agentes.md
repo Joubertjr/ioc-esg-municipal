@@ -1,3 +1,15 @@
+---
+id: ADR-003
+title: Escala = Paralelismo de Agentes, Não Expansão Geográfica
+date: 2026-04-01
+status: active
+affects: [process, orchestration, claude-agents]
+domain: process
+supersedes: null
+superseded_by: null
+decisors: [joubert, claude]
+---
+
 # ADR-003: Escala = Paralelismo de Agentes, Não Expansão Geográfica
 
 **Data:** 2026-04-01

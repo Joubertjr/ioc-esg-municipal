@@ -311,28 +311,31 @@ Regras:
 
 ### Skills (invoque com `/nome`)
 
-| Skill                   | Quando usar                                                   |
-| ----------------------- | ------------------------------------------------------------- |
-| `/setup`                | Setup inicial completo — execute UMA VEZ                      |
-| `/new-agent <api>`      | Novo coletor (ibge, siconfi, datasus, inep, snis, inpe, pncp) |
-| `/new-ods <1-17>`       | Calculator de score para um ODS                               |
-| `/full-stack <feature>` | Feature completa backend+frontend                             |
-| `/tdd <feature>`        | Red-Green-Refactor rigoroso                                   |
-| `/bug-fix`              | Diagnóstico + correção + teste de regressão                   |
-| `/refactor`             | Refatoração segura com cobertura                              |
-| `/pre-deploy`           | Checklist antes de qualquer deploy                            |
-| `/pr-summary`           | Sumário estruturado de PR                                     |
-| `/health-check`         | Monitor de saúde (use com `/loop 15m`)                        |
-| `/morning-briefing`     | Standup autônomo diário                                       |
-| `/context-save`         | Salva estado antes de `/compact`                              |
-| `/research <tópico>`    | Pesquisa técnica para decisão                                 |
-| `/screenshot <feature>` | Capturar evidências visuais (desktop+mobile, light+dark)      |
-| `/visual-qa <feature>`  | Ciclo completo: screenshots + auditoria + staging atômico     |
-| `/audit [dimensão]`     | Auditoria autônoma (5 dimensões ou foco em uma)               |
-| `/audit-fix [filtro]`   | Processa achados do audit e despacha para agentes corretivos  |
-| `/audit-and-fix [dim]`  | Ciclo completo: audit → fix → verify → report                 |
-| `/fix-status`           | Status dos fixes em andamento                                 |
-| `/verify-fix <ID>`      | Verificação dirigida de um achado específico                  |
+| Skill                    | Quando usar                                                      |
+| ------------------------ | ---------------------------------------------------------------- |
+| `/setup`                 | Setup inicial completo — execute UMA VEZ                         |
+| `/new-agent <api>`       | Novo coletor (ibge, siconfi, datasus, inep, snis, inpe, pncp)    |
+| `/new-ods <1-17>`        | Calculator de score para um ODS                                  |
+| `/full-stack <feature>`  | Feature completa backend+frontend                                |
+| `/tdd <feature>`         | Red-Green-Refactor rigoroso                                      |
+| `/bug-fix`               | Diagnóstico + correção + teste de regressão                      |
+| `/refactor`              | Refatoração segura com cobertura                                 |
+| `/pre-deploy`            | Checklist antes de qualquer deploy                               |
+| `/pr-summary`            | Sumário estruturado de PR                                        |
+| `/health-check`          | Monitor de saúde (use com `/loop 15m`)                           |
+| `/morning-briefing`      | Standup autônomo diário                                          |
+| `/context-save`          | Salva estado antes de `/compact`                                 |
+| `/research <tópico>`     | Pesquisa técnica para decisão                                    |
+| `/screenshot <feature>`  | Capturar evidências visuais (desktop+mobile, light+dark)         |
+| `/visual-qa <feature>`   | Ciclo completo: screenshots + auditoria + staging atômico        |
+| `/audit [dimensão]`      | Auditoria autônoma (5 dimensões ou foco em uma)                  |
+| `/audit-fix [filtro]`    | Processa achados do audit e despacha para agentes corretivos     |
+| `/audit-and-fix [dim]`   | Ciclo completo: audit → fix → verify → report                    |
+| `/fix-status`            | Status dos fixes em andamento                                    |
+| `/verify-fix <ID>`       | Verificação dirigida de um achado específico                     |
+| `/longmemeval [adapter]` | Benchmark LongMemEval-ESG (baseline/real) — qualidade da memória |
+| `/monthly-reflection`    | Sintetiza daily logs do mês em long-term/reflections/            |
+| `/memory-sync`           | Sincroniza auto-memory ↔ Obsidian vault (Zep temporal)           |
 
 ### Agentes (invoque com: "Use o agente X para...")
 
