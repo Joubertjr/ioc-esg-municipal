@@ -12,7 +12,11 @@
 FROM node:20-alpine AS base
 
 # Instala pnpm via corepack (versão fixada no package.json)
-RUN corepack enable && corepack prepare pnpm@8.15.0 --activate
+# Retry 3x: corepack baixa pnpm de github.com, rede do Docker Desktop é flaky.
+RUN for i in 1 2 3; do \
+      corepack enable && corepack prepare pnpm@8.15.0 --activate && break || \
+      { echo "corepack attempt $i failed, retrying..."; sleep 5; }; \
+    done
 
 WORKDIR /app
 
@@ -25,7 +29,11 @@ FROM base AS deps
 # --ignore-scripts: evita rodar `prepare` (husky) que só existe em dev.
 # HUSKY=0: belt-and-suspenders para o caso de outro script tentar invocá-lo.
 ENV HUSKY=0
-RUN pnpm install --frozen-lockfile --prod --ignore-scripts
+# Retry 3x: pnpm install baixa pacotes do registry + binários (prisma, etc).
+RUN for i in 1 2 3; do \
+      pnpm install --frozen-lockfile --prod --ignore-scripts && break || \
+      { echo "pnpm install attempt $i failed, retrying..."; sleep 5; }; \
+    done
 
 # ── Stage 3: builder — compila TypeScript (backend) ───────────────────────────
 FROM base AS builder
@@ -33,7 +41,10 @@ FROM base AS builder
 # Instala TODAS as deps (dev incluídas) para compilar.
 # --ignore-scripts também evita husky no builder (git não existe na imagem).
 ENV HUSKY=0
-RUN pnpm install --frozen-lockfile --ignore-scripts
+RUN for i in 1 2 3; do \
+      pnpm install --frozen-lockfile --ignore-scripts && break || \
+      { echo "pnpm install attempt $i failed, retrying..."; sleep 5; }; \
+    done
 
 # Copia código-fonte
 COPY tsconfig.json ./
@@ -42,7 +53,11 @@ COPY shared/ ./shared/
 COPY prisma/ ./prisma/
 
 # Gera o Prisma Client antes do build TypeScript
-RUN pnpm prisma generate
+# Retry 3x: baixa engine binário de binaries.prisma.sh, conhecido por ser flaky.
+RUN for i in 1 2 3; do \
+      pnpm prisma generate && break || \
+      { echo "prisma generate attempt $i failed, retrying..."; sleep 5; }; \
+    done
 
 # Compila TypeScript → dist/
 RUN pnpm build:backend
@@ -52,7 +67,10 @@ RUN pnpm build:backend
 # (importados por shared/types/) nos node_modules do root, igual ao ambiente local.
 FROM node:20-alpine AS fe-builder
 
-RUN corepack enable && corepack prepare pnpm@8.15.0 --activate
+RUN for i in 1 2 3; do \
+      corepack enable && corepack prepare pnpm@8.15.0 --activate && break || \
+      { echo "corepack attempt $i failed, retrying..."; sleep 5; }; \
+    done
 
 WORKDIR /app
 
@@ -62,11 +80,17 @@ COPY package.json pnpm-lock.yaml ./
 # Instala deps do root (apenas as que o TSC precisa para type-check de shared/).
 # --ignore-scripts evita husky/prepare que requer .git não presente na imagem.
 ENV HUSKY=0
-RUN pnpm install --frozen-lockfile --ignore-scripts
+RUN for i in 1 2 3; do \
+      pnpm install --frozen-lockfile --ignore-scripts && break || \
+      { echo "pnpm install (root) attempt $i failed, retrying..."; sleep 5; }; \
+    done
 
 # Copia manifests do frontend e instala suas deps
 COPY frontend/package.json frontend/pnpm-lock.yaml ./frontend/
-RUN cd frontend && pnpm install --frozen-lockfile --ignore-scripts
+RUN for i in 1 2 3; do \
+      cd frontend && pnpm install --frozen-lockfile --ignore-scripts && break || \
+      { echo "pnpm install (frontend) attempt $i failed, retrying..."; sleep 5; }; \
+    done
 
 # Copia shared/ e frontend/
 COPY shared/ ./shared/
@@ -84,8 +108,14 @@ ENV NODE_ENV=production
 
 # Instala dependências de sistema: dumb-init (PID 1), netcat (healthcheck DB),
 # openssl (requerido pelo Prisma engine em Alpine para migrate/generate)
-RUN apk add --no-cache dumb-init netcat-openbsd openssl && \
-    corepack enable && corepack prepare pnpm@8.15.0 --activate
+RUN for i in 1 2 3; do \
+      apk add --no-cache dumb-init netcat-openbsd openssl && break || \
+      { echo "apk add attempt $i failed, retrying..."; sleep 5; }; \
+    done && \
+    for i in 1 2 3; do \
+      corepack enable && corepack prepare pnpm@8.15.0 --activate && break || \
+      { echo "corepack (prod) attempt $i failed, retrying..."; sleep 5; }; \
+    done
 
 WORKDIR /app
 
@@ -105,7 +135,10 @@ COPY --chown=nodeuser:nodejs package.json ./
 
 # Gera Prisma Client no contexto de produção e corrige ownership dos artefatos
 # Nota: com pnpm, o client fica em node_modules/.pnpm/ (não em .prisma)
-RUN pnpm prisma generate && \
+RUN for i in 1 2 3; do \
+      pnpm prisma generate && break || \
+      { echo "prisma generate (prod) attempt $i failed, retrying..."; sleep 5; }; \
+    done && \
     chown -R nodeuser:nodejs /app/node_modules
 
 # Copia arquivos JSON de shared/data — lidos em runtime pelos coletores

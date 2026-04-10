@@ -7,6 +7,7 @@ import {
   findTradeOffs,
 } from "../services/graph/graph_service.js";
 import { personalizedPageRank } from "../services/graph/ppr_service.js";
+import { semanticSearch, findSimilarEntities } from "../services/graph/hipporag_service.js";
 import { logger } from "../utils/logger.js";
 
 const router: RouterType = Router();
@@ -50,6 +51,27 @@ const pprBodySchema = z.object({
   iterations: z.number().int().min(1).max(50).optional(),
   dampingFactor: z.number().min(0.1).max(0.99).optional(),
   edgeTypes: z.array(z.string().min(1)).optional(),
+});
+
+const queryBodySchema = z.object({
+  query: z
+    .string()
+    .min(3, "query deve ter ao menos 3 caracteres")
+    .max(500, "query deve ter no máximo 500 caracteres"),
+  topK: z.number().int().min(1).max(50).optional(),
+  pprSeeds: z.number().int().min(1).max(20).optional(),
+  alpha: z.number().min(0).max(1).optional(),
+  entityTypeFilter: z.string().min(1).optional(),
+  edgeTypes: z.array(z.string().min(1)).optional(),
+});
+
+const similarBodySchema = z.object({
+  query: z
+    .string()
+    .min(3, "query deve ter ao menos 3 caracteres")
+    .max(500, "query deve ter no máximo 500 caracteres"),
+  topK: z.number().int().min(1).max(50).optional(),
+  entityTypeFilter: z.string().min(1).optional(),
 });
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -223,6 +245,87 @@ router.post("/ppr", async (req: Request, res: Response) => {
       error: error instanceof Error ? error.message : String(error),
     });
     res.status(500).json({ error: "Erro interno ao executar PPR" });
+  }
+});
+
+/**
+ * POST /api/graph/query
+ * Body: { query, topK?, pprSeeds?, alpha?, entityTypeFilter?, edgeTypes? }
+ *
+ * HippoRAG semantic search: embed da query → cosine vs nós → top-K seeds
+ * → Personalized PageRank → blend (alpha * semantic + (1-alpha) * structural).
+ *
+ * Exemplo:
+ *   POST /api/graph/query
+ *   { "query": "como melhorar saneamento básico em municípios pequenos?", "topK": 5 }
+ */
+router.post("/query", async (req: Request, res: Response) => {
+  const parsed = queryBodySchema.safeParse(req.body);
+
+  if (!parsed.success) {
+    res.status(400).json({ error: "Body inválido", details: parsed.error.flatten() });
+    return;
+  }
+
+  const { query, topK, pprSeeds, alpha, entityTypeFilter, edgeTypes } = parsed.data;
+
+  try {
+    const results = await semanticSearch(query, {
+      ...(topK !== undefined ? { topK } : {}),
+      ...(pprSeeds !== undefined ? { pprSeeds } : {}),
+      ...(alpha !== undefined ? { alpha } : {}),
+      ...(entityTypeFilter !== undefined ? { entityTypeFilter } : {}),
+      ...(edgeTypes !== undefined ? { edgeTypes } : {}),
+    });
+
+    res.json({
+      query,
+      total: results.length,
+      results,
+    });
+  } catch (error) {
+    logger.error("[graph] semanticSearch error", {
+      query,
+      error: error instanceof Error ? error.message : String(error),
+    });
+    res.status(500).json({ error: "Erro interno ao executar busca semântica" });
+  }
+});
+
+/**
+ * POST /api/graph/similar
+ * Body: { query, topK?, entityTypeFilter? }
+ *
+ * Busca semântica pura (alpha=1.0): top-K entidades mais similares à query
+ * sem propagação estrutural. Útil para autocomplete e sugestão direta.
+ */
+router.post("/similar", async (req: Request, res: Response) => {
+  const parsed = similarBodySchema.safeParse(req.body);
+
+  if (!parsed.success) {
+    res.status(400).json({ error: "Body inválido", details: parsed.error.flatten() });
+    return;
+  }
+
+  const { query, topK, entityTypeFilter } = parsed.data;
+
+  try {
+    const results = await findSimilarEntities(query, {
+      ...(topK !== undefined ? { topK } : {}),
+      ...(entityTypeFilter !== undefined ? { entityTypeFilter } : {}),
+    });
+
+    res.json({
+      query,
+      total: results.length,
+      results,
+    });
+  } catch (error) {
+    logger.error("[graph] findSimilarEntities error", {
+      query,
+      error: error instanceof Error ? error.message : String(error),
+    });
+    res.status(500).json({ error: "Erro interno ao buscar similares" });
   }
 });
 
