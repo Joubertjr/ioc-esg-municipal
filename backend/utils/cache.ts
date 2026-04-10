@@ -92,3 +92,17 @@ export async function isCached(key: string): Promise<boolean> {
     return false;
   }
 }
+
+/**
+ * Fecha o cliente Redis singleton. Necessário em scripts standalone (tsx)
+ * para que o processo consiga sair limpo — o connection pool interno do
+ * `redis` mantém handles abertos e bloqueia o event loop após o trabalho.
+ * No servidor Express, o processo vive para sempre, então isso não é usado.
+ */
+export async function closeRedisClient(): Promise<void> {
+  if (client?.isReady === true) {
+    await client.quit();
+  }
+  client = null;
+  connectingPromise = null;
+}

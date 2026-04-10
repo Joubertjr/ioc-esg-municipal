@@ -9,6 +9,7 @@
 
 import { semanticSearch } from "../backend/services/graph/hipporag_service.js";
 import { prisma } from "../backend/lib/prisma.js";
+import { closeRedisClient } from "../backend/utils/cache.js";
 
 const QUERIES = [
   "Como melhorar o saneamento básico em municípios pequenos?",
@@ -55,9 +56,17 @@ async function main(): Promise<void> {
   console.log("Smoke test concluído.");
 
   await prisma.$disconnect();
+  await closeRedisClient();
 }
 
-main().catch((err: unknown) => {
-  console.error("Smoke test failed:", err);
-  process.exit(1);
-});
+main()
+  .then(() => {
+    // Belt-and-suspenders: o runtime ONNX do @huggingface/transformers cria
+    // workers em background que não fecham com o fim de main(). Force-exit
+    // garante que o processo termina mesmo assim.
+    process.exit(0);
+  })
+  .catch((err: unknown) => {
+    console.error("Smoke test failed:", err);
+    process.exit(1);
+  });
