@@ -1,6 +1,7 @@
 import { type Request, type Response, type NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import { logger } from "../utils/logger.js";
+import { prisma } from "../lib/prisma.js";
 
 // ─── Tipos ───────────────────────────────────────────────────────────────────
 
@@ -17,6 +18,7 @@ export interface JwtPayload {
 
 // Extende Request do Express para incluir user autenticado
 declare global {
+  // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace Express {
     interface Request {
       user?: JwtPayload;
@@ -49,7 +51,10 @@ function extractBearerToken(authHeader: string | undefined): string | null {
 
 function getAllowedOrigins(): string[] {
   const raw = process.env["ALLOWED_ORIGINS"] ?? "http://localhost:5173";
-  return raw.split(",").map((o) => o.trim()).filter(Boolean);
+  return raw
+    .split(",")
+    .map((o) => o.trim())
+    .filter(Boolean);
 }
 
 /**
@@ -86,19 +91,21 @@ function verifyCsrf(req: Request): boolean {
  * Para autenticação via cookie em métodos não-GET, valida CSRF via Origin/Referer.
  * Retorna 401 se token ausente, inválido ou expirado.
  */
-export function authenticateToken(
-  req: Request,
-  res: Response,
-  next: NextFunction,
-): void {
-  const cookieToken = (req as Request & { cookies?: Record<string, string> }).cookies?.["token"];
+export function authenticateToken(req: Request, res: Response, next: NextFunction): void {
+  const cookieToken = (req as Request & { cookies?: Record<string, string> }).cookies?.["token"] as
+    | string
+    | undefined;
   const headerToken = extractBearerToken(req.headers.authorization);
   const usingCookie = Boolean(cookieToken) && !headerToken;
-  const token = cookieToken ?? headerToken;
+  const token: string | null | undefined = cookieToken ?? headerToken;
 
   // CSRF check: apenas para auth via cookie (não via Authorization header)
   if (usingCookie && !verifyCsrf(req)) {
-    logger.warn("CSRF check falhou", { path: req.path, method: req.method, origin: req.headers["origin"] });
+    logger.warn("CSRF check falhou", {
+      path: req.path,
+      method: req.method,
+      origin: req.headers["origin"],
+    });
     res.status(403).json({ error: "Requisição rejeitada: CSRF check falhou" });
     return;
   }
@@ -120,7 +127,7 @@ export function authenticateToken(
   }
 
   try {
-    const payload = jwt.verify(token, secret) as JwtPayload;
+    const payload = jwt.verify(token, secret) as unknown as JwtPayload;
     req.user = payload;
     logger.info("Token autenticado com sucesso", {
       userId: payload.sub,
@@ -174,6 +181,60 @@ export function requireRole(...roles: UserRole[]) {
       });
       res.status(403).json({
         error: "Acesso negado. Permissão insuficiente para esta operação.",
+      });
+      return;
+    }
+
+    next();
+  };
+}
+
+// ─── Middleware requireMunicipalityScope ──────────────────────────────────────
+
+/**
+ * Garante que o usuário autenticado só acessa dados do seu próprio município.
+ * Admins podem acessar qualquer município.
+ * Extrai ibgeCode de req.params[paramName] e valida contra req.user.municipalityId.
+ * Deve ser usado após authenticateToken.
+ */
+export function requireMunicipalityScope(paramName = "ibgeCode") {
+  return async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    if (!req.user) {
+      res.status(401).json({ error: "Não autenticado" });
+      return;
+    }
+
+    if (req.user.role === "admin") {
+      next();
+      return;
+    }
+
+    const ibgeCode = req.params[paramName];
+    if (!ibgeCode) {
+      next();
+      return;
+    }
+
+    const municipality = await prisma.municipality.findUnique({
+      where: { ibgeCode },
+      select: { id: true },
+    });
+
+    if (!municipality) {
+      res.status(404).json({ error: `Município ${ibgeCode} não encontrado` });
+      return;
+    }
+
+    if (req.user.municipalityId !== municipality.id) {
+      logger.warn("IDOR bloqueado: acesso a município não autorizado", {
+        userId: req.user.sub,
+        userMunicipality: req.user.municipalityId,
+        requestedMunicipality: municipality.id,
+        ibgeCode,
+        path: req.path,
+      });
+      res.status(403).json({
+        error: "Acesso negado. Você só pode consultar dados do seu município.",
       });
       return;
     }

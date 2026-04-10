@@ -3,7 +3,7 @@ import { calculateMunicipalOds } from "../services/ods/index.js";
 import { calculateAndPersistScores, getScoreHistory } from "../services/ods/ods_history_service.js";
 import { logger } from "../utils/logger.js";
 import { batchLimiter } from "../middleware/rate-limit.js";
-import { requireRole } from "../middleware/auth.js";
+import { requireRole, requireMunicipalityScope } from "../middleware/auth.js";
 import { withCache } from "../utils/cache.js";
 import { prisma } from "../lib/prisma.js";
 
@@ -13,7 +13,7 @@ const router: RouterType = Router();
  * GET /api/ods/:ibgeCode
  * Retorna score ODS consolidado (todas as fontes) para um município.
  */
-router.get("/:ibgeCode", async (req: Request, res: Response) => {
+router.get("/:ibgeCode", requireMunicipalityScope(), async (req: Request, res: Response) => {
   const ibgeCode = req.params["ibgeCode"];
 
   if (!ibgeCode || !/^\d{7}$/.test(ibgeCode)) {
@@ -73,42 +73,46 @@ router.get("/:ibgeCode", async (req: Request, res: Response) => {
  * Retorna histórico de scores ODS persistidos para um município.
  * Query param opcional: odsNumber (filtra por ODS específico, 0-17)
  */
-router.get("/:ibgeCode/history", async (req: Request, res: Response) => {
-  const ibgeCode = req.params["ibgeCode"];
+router.get(
+  "/:ibgeCode/history",
+  requireMunicipalityScope(),
+  async (req: Request, res: Response) => {
+    const ibgeCode = req.params["ibgeCode"];
 
-  if (!ibgeCode || !/^\d{7}$/.test(ibgeCode)) {
-    res.status(400).json({ error: "ibgeCode deve ter 7 dígitos numéricos" });
-    return;
-  }
-
-  const rawOdsNumber = req.query["odsNumber"];
-  let odsNumber: number | undefined;
-
-  if (rawOdsNumber !== undefined) {
-    const parsed = Number(rawOdsNumber);
-    if (!Number.isInteger(parsed) || parsed < 0 || parsed > 17) {
-      res.status(400).json({ error: "odsNumber deve ser um inteiro entre 0 e 17" });
+    if (!ibgeCode || !/^\d{7}$/.test(ibgeCode)) {
+      res.status(400).json({ error: "ibgeCode deve ter 7 dígitos numéricos" });
       return;
     }
-    odsNumber = parsed;
-  }
 
-  try {
-    const history = await getScoreHistory(ibgeCode, odsNumber);
+    const rawOdsNumber = req.query["odsNumber"];
+    let odsNumber: number | undefined;
 
-    res.json({
-      ibgeCode,
-      total: history.length,
-      history,
-    });
-  } catch (error) {
-    logger.error("Error fetching ODS history", {
-      ibgeCode,
-      error: error instanceof Error ? error.message : String(error),
-    });
-    res.status(500).json({ error: "Erro interno ao buscar histórico ODS" });
-  }
-});
+    if (rawOdsNumber !== undefined) {
+      const parsed = Number(rawOdsNumber);
+      if (!Number.isInteger(parsed) || parsed < 0 || parsed > 17) {
+        res.status(400).json({ error: "odsNumber deve ser um inteiro entre 0 e 17" });
+        return;
+      }
+      odsNumber = parsed;
+    }
+
+    try {
+      const history = await getScoreHistory(ibgeCode, odsNumber);
+
+      res.json({
+        ibgeCode,
+        total: history.length,
+        history,
+      });
+    } catch (error) {
+      logger.error("Error fetching ODS history", {
+        ibgeCode,
+        error: error instanceof Error ? error.message : String(error),
+      });
+      res.status(500).json({ error: "Erro interno ao buscar histórico ODS" });
+    }
+  },
+);
 
 /**
  * POST /api/ods/compare

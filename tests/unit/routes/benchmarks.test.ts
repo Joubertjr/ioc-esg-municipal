@@ -26,10 +26,8 @@ vi.mock("../../../backend/utils/logger.js", () => ({
 // Auth middleware passthrough — testes unitários de rota não testam auth
 vi.mock("../../../backend/middleware/auth.js", () => ({
   authenticateToken: (_req: unknown, _res: unknown, next: () => void) => next(),
-  requireRole:
-    () =>
-    (_req: unknown, _res: unknown, next: () => void) =>
-      next(),
+  requireRole: () => (_req: unknown, _res: unknown, next: () => void) => next(),
+  requireMunicipalityScope: () => (_req: unknown, _res: unknown, next: () => void) => next(),
 }));
 
 // Prisma mock — não utilizado diretamente pela rota, mas importado transitivamente
@@ -67,8 +65,20 @@ const MOCK_BENCHMARK_RESULT = {
   municipalityCount: 3,
   municipalities: [
     MOCK_MUNICIPALITY_BENCHMARK,
-    { ibgeCode: "4205407", municipalityName: "Florianópolis", globalScore: 70, globalStatus: "verde", odsScores: {} },
-    { ibgeCode: "4209102", municipalityName: "Joinville", globalScore: 55, globalStatus: "amarelo", odsScores: {} },
+    {
+      ibgeCode: "4205407",
+      municipalityName: "Florianópolis",
+      globalScore: 70,
+      globalStatus: "verde",
+      odsScores: {},
+    },
+    {
+      ibgeCode: "4209102",
+      municipalityName: "Joinville",
+      globalScore: 55,
+      globalStatus: "amarelo",
+      odsScores: {},
+    },
   ],
   ranking: [
     { position: 1, ibgeCode: "4205407", municipalityName: "Florianópolis", globalScore: 70 },
@@ -111,9 +121,7 @@ describe("POST /api/benchmarks", () => {
   it("retorna 200 com resultado de benchmark para ibgeCodes válidos", async () => {
     const app = buildApp();
 
-    const res = await request(app)
-      .post("/api/benchmarks")
-      .send({ ibgeCodes: VALID_IBGE_CODES });
+    const res = await request(app).post("/api/benchmarks").send({ ibgeCodes: VALID_IBGE_CODES });
 
     expect(res.status).toBe(200);
     expect(res.body.municipalityCount).toBe(3);
@@ -126,9 +134,7 @@ describe("POST /api/benchmarks", () => {
   it("retorna 400 quando ibgeCodes está vazio", async () => {
     const app = buildApp();
 
-    const res = await request(app)
-      .post("/api/benchmarks")
-      .send({ ibgeCodes: [] });
+    const res = await request(app).post("/api/benchmarks").send({ ibgeCodes: [] });
 
     expect(res.status).toBe(400);
     expect(res.body).toHaveProperty("error");
@@ -174,9 +180,7 @@ describe("POST /api/benchmarks", () => {
   it("retorna 400 quando ibgeCodes está ausente no payload", async () => {
     const app = buildApp();
 
-    const res = await request(app)
-      .post("/api/benchmarks")
-      .send({});
+    const res = await request(app).post("/api/benchmarks").send({});
 
     expect(res.status).toBe(400);
     expect(res.body).toHaveProperty("error");
@@ -187,9 +191,7 @@ describe("POST /api/benchmarks", () => {
     mockGenerateBenchmark.mockRejectedValue(new Error("Timeout na API do IBGE"));
     const app = buildApp();
 
-    const res = await request(app)
-      .post("/api/benchmarks")
-      .send({ ibgeCodes: VALID_IBGE_CODES });
+    const res = await request(app).post("/api/benchmarks").send({ ibgeCodes: VALID_IBGE_CODES });
 
     expect(res.status).toBe(500);
     expect(res.body.error).toContain("Erro interno");
@@ -252,12 +254,10 @@ describe("POST /api/benchmarks/compare", () => {
   it("retorna 400 quando benchmarkCodes está vazio (mínimo é 1)", async () => {
     const app = buildApp();
 
-    const res = await request(app)
-      .post("/api/benchmarks/compare")
-      .send({
-        ibgeCode: "4204202",
-        benchmarkCodes: [],
-      });
+    const res = await request(app).post("/api/benchmarks/compare").send({
+      ibgeCode: "4204202",
+      benchmarkCodes: [],
+    });
 
     expect(res.status).toBe(400);
     expect(res.body).toHaveProperty("error");
@@ -267,9 +267,7 @@ describe("POST /api/benchmarks/compare", () => {
   it("retorna 400 quando benchmarkCodes está ausente", async () => {
     const app = buildApp();
 
-    const res = await request(app)
-      .post("/api/benchmarks/compare")
-      .send({ ibgeCode: "4204202" });
+    const res = await request(app).post("/api/benchmarks/compare").send({ ibgeCode: "4204202" });
 
     expect(res.status).toBe(400);
     expect(res.body).toHaveProperty("error");

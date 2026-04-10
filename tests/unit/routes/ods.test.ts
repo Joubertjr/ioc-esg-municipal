@@ -65,6 +65,7 @@ vi.mock("../../../backend/middleware/rate-limit.js", () => ({
 vi.mock("../../../backend/middleware/auth.js", () => ({
   authenticateToken: (_req: unknown, _res: unknown, next: () => void) => next(),
   requireRole: () => (_req: unknown, _res: unknown, next: () => void) => next(),
+  requireMunicipalityScope: () => (_req: unknown, _res: unknown, next: () => void) => next(),
 }));
 
 // Prisma mock — por padrão simula município existente; testes individuais podem sobrescrever

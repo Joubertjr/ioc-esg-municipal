@@ -1,5 +1,6 @@
 import { Router, type Request, type Response, type Router as RouterType } from "express";
 import { generateEsgReport } from "../services/reports/report_service.js";
+import { requireMunicipalityScope } from "../middleware/auth.js";
 import { logger } from "../utils/logger.js";
 const router: RouterType = Router();
 
@@ -7,7 +8,7 @@ const router: RouterType = Router();
  * GET /api/reports/:ibgeCode
  * Gera relatório ESG completo para um município.
  */
-router.get("/:ibgeCode", async (req: Request, res: Response) => {
+router.get("/:ibgeCode", requireMunicipalityScope(), async (req: Request, res: Response) => {
   const ibgeCode = req.params["ibgeCode"];
 
   if (!ibgeCode || !/^\d{7}$/.test(ibgeCode)) {

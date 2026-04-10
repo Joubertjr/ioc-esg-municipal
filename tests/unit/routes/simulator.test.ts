@@ -22,10 +22,8 @@ vi.mock("../../../backend/utils/logger.js", () => ({
 // Auth middleware passthrough — testes unitários de rota não testam auth
 vi.mock("../../../backend/middleware/auth.js", () => ({
   authenticateToken: (_req: unknown, _res: unknown, next: () => void) => next(),
-  requireRole:
-    () =>
-    (_req: unknown, _res: unknown, next: () => void) =>
-      next(),
+  requireRole: () => (_req: unknown, _res: unknown, next: () => void) => next(),
+  requireMunicipalityScope: () => (_req: unknown, _res: unknown, next: () => void) => next(),
 }));
 
 // Prisma mock
@@ -94,13 +92,11 @@ describe("POST /api/simulator/simulate", () => {
   it("retorna 200 com resultado de simulação válido", async () => {
     const app = buildApp();
 
-    const res = await request(app)
-      .post("/api/simulator/simulate")
-      .send({
-        ibgeCode: "4204202",
-        totalAmount: 5000000,
-        allocation: DEFAULT_ALLOCATION,
-      });
+    const res = await request(app).post("/api/simulator/simulate").send({
+      ibgeCode: "4204202",
+      totalAmount: 5000000,
+      allocation: DEFAULT_ALLOCATION,
+    });
 
     expect(res.status).toBe(200);
     expect(res.body.ibgeCode).toBe("4204202");
@@ -111,13 +107,11 @@ describe("POST /api/simulator/simulate", () => {
   it("retorna 400 quando ibgeCode é inválido", async () => {
     const app = buildApp();
 
-    const res = await request(app)
-      .post("/api/simulator/simulate")
-      .send({
-        ibgeCode: "abc",
-        totalAmount: 5000000,
-        allocation: DEFAULT_ALLOCATION,
-      });
+    const res = await request(app).post("/api/simulator/simulate").send({
+      ibgeCode: "abc",
+      totalAmount: 5000000,
+      allocation: DEFAULT_ALLOCATION,
+    });
 
     expect(res.status).toBe(400);
   });
@@ -125,12 +119,10 @@ describe("POST /api/simulator/simulate", () => {
   it("retorna 400 quando totalAmount está ausente", async () => {
     const app = buildApp();
 
-    const res = await request(app)
-      .post("/api/simulator/simulate")
-      .send({
-        ibgeCode: "4204202",
-        allocation: DEFAULT_ALLOCATION,
-      });
+    const res = await request(app).post("/api/simulator/simulate").send({
+      ibgeCode: "4204202",
+      allocation: DEFAULT_ALLOCATION,
+    });
 
     expect(res.status).toBe(400);
   });
@@ -152,13 +144,11 @@ describe("POST /api/simulator/simulate", () => {
   it("retorna 400 quando totalAmount é negativo", async () => {
     const app = buildApp();
 
-    const res = await request(app)
-      .post("/api/simulator/simulate")
-      .send({
-        ibgeCode: "4204202",
-        totalAmount: -100,
-        allocation: DEFAULT_ALLOCATION,
-      });
+    const res = await request(app).post("/api/simulator/simulate").send({
+      ibgeCode: "4204202",
+      totalAmount: -100,
+      allocation: DEFAULT_ALLOCATION,
+    });
 
     expect(res.status).toBe(400);
   });
@@ -166,12 +156,10 @@ describe("POST /api/simulator/simulate", () => {
   it("retorna 400 quando allocation está ausente", async () => {
     const app = buildApp();
 
-    const res = await request(app)
-      .post("/api/simulator/simulate")
-      .send({
-        ibgeCode: "4204202",
-        totalAmount: 5000000,
-      });
+    const res = await request(app).post("/api/simulator/simulate").send({
+      ibgeCode: "4204202",
+      totalAmount: 5000000,
+    });
 
     expect(res.status).toBe(400);
   });
@@ -180,13 +168,11 @@ describe("POST /api/simulator/simulate", () => {
     mockRunSimulation.mockRejectedValue(new Error("DB down"));
     const app = buildApp();
 
-    const res = await request(app)
-      .post("/api/simulator/simulate")
-      .send({
-        ibgeCode: "4204202",
-        totalAmount: 5000000,
-        allocation: DEFAULT_ALLOCATION,
-      });
+    const res = await request(app).post("/api/simulator/simulate").send({
+      ibgeCode: "4204202",
+      totalAmount: 5000000,
+      allocation: DEFAULT_ALLOCATION,
+    });
 
     expect(res.status).toBe(500);
     expect(res.body.error).toContain("Erro interno");
@@ -208,12 +194,30 @@ describe("POST /api/simulator/compare", () => {
         {
           ibgeCode: "4204202",
           totalAmount: 5000000,
-          allocation: { education: 25, health: 25, sanitation: 15, environment: 10, security: 5, energy: 10, urbanization: 5, governance: 5 },
+          allocation: {
+            education: 25,
+            health: 25,
+            sanitation: 15,
+            environment: 10,
+            security: 5,
+            energy: 10,
+            urbanization: 5,
+            governance: 5,
+          },
         },
         {
           ibgeCode: "4204202",
           totalAmount: 5000000,
-          allocation: { education: 10, health: 10, sanitation: 25, environment: 25, security: 10, energy: 10, urbanization: 5, governance: 5 },
+          allocation: {
+            education: 10,
+            health: 10,
+            sanitation: 25,
+            environment: 25,
+            security: 10,
+            energy: 10,
+            urbanization: 5,
+            governance: 5,
+          },
         },
       ]);
 
@@ -230,9 +234,7 @@ describe("POST /api/simulator/compare", () => {
       allocation: DEFAULT_ALLOCATION,
     }));
 
-    const res = await request(app)
-      .post("/api/simulator/compare")
-      .send(scenarios);
+    const res = await request(app).post("/api/simulator/compare").send(scenarios);
 
     expect(res.status).toBe(400);
   });

@@ -22,10 +22,8 @@ vi.mock("../../../backend/utils/logger.js", () => ({
 // Auth middleware passthrough — testes unitários de rota não testam auth
 vi.mock("../../../backend/middleware/auth.js", () => ({
   authenticateToken: (_req: unknown, _res: unknown, next: () => void) => next(),
-  requireRole:
-    () =>
-    (_req: unknown, _res: unknown, next: () => void) =>
-      next(),
+  requireRole: () => (_req: unknown, _res: unknown, next: () => void) => next(),
+  requireMunicipalityScope: () => (_req: unknown, _res: unknown, next: () => void) => next(),
 }));
 
 vi.mock("../../../shared/data/ideb_2023.json", () => ({ default: {} }));

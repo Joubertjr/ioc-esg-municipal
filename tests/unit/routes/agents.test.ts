@@ -168,18 +168,14 @@ vi.mock("../../../backend/middleware/rate-limit.js", () => ({
 // Auth middleware passthrough — testes unitários de rota não testam auth
 vi.mock("../../../backend/middleware/auth.js", () => ({
   authenticateToken: (_req: unknown, _res: unknown, next: () => void) => next(),
-  requireRole:
-    () =>
-    (_req: unknown, _res: unknown, next: () => void) =>
-      next(),
+  requireRole: () => (_req: unknown, _res: unknown, next: () => void) => next(),
+  requireMunicipalityScope: () => (_req: unknown, _res: unknown, next: () => void) => next(),
 }));
 
 // ─── App de teste ─────────────────────────────────────────────────────────────
 
 async function buildApp() {
-  const { default: agentsRouter } = await import(
-    "../../../backend/routes/agents.js"
-  );
+  const { default: agentsRouter } = await import("../../../backend/routes/agents.js");
   const app = express();
   app.use(express.json());
   app.use("/", agentsRouter);
@@ -280,9 +276,7 @@ describe("POST /ibge/batch", () => {
     mockIbgeCollectBatch.mockResolvedValue(batchMap);
 
     // Act
-    const res = await request(app)
-      .post("/ibge/batch")
-      .send({ ibgeCodes: codes });
+    const res = await request(app).post("/ibge/batch").send({ ibgeCodes: codes });
 
     // Assert
     expect(res.status).toBe(200);
@@ -305,14 +299,10 @@ describe("POST /ibge/batch", () => {
 
   it("deve retornar 400 quando ibgeCodes tem mais de 50 códigos", async () => {
     // Arrange — gera 51 códigos de 7 dígitos
-    const codes = Array.from({ length: 51 }, (_, i) =>
-      String(4200000 + i).padStart(7, "0"),
-    );
+    const codes = Array.from({ length: 51 }, (_, i) => String(4200000 + i).padStart(7, "0"));
 
     // Act
-    const res = await request(app)
-      .post("/ibge/batch")
-      .send({ ibgeCodes: codes });
+    const res = await request(app).post("/ibge/batch").send({ ibgeCodes: codes });
 
     // Assert
     expect(res.status).toBe(400);
@@ -322,9 +312,7 @@ describe("POST /ibge/batch", () => {
 
   it("deve retornar 400 quando ibgeCodes é array vazio", async () => {
     // Act
-    const res = await request(app)
-      .post("/ibge/batch")
-      .send({ ibgeCodes: [] });
+    const res = await request(app).post("/ibge/batch").send({ ibgeCodes: [] });
 
     // Assert
     expect(res.status).toBe(400);
