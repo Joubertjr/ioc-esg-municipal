@@ -113,3 +113,45 @@ model RefreshToken {
 
   @@index([userId])
 }
+
+/// Entity no Knowledge Graph ESG. Pode representar ODS, Município, Indicador, Fonte, Política, etc.
+model Entity {
+  id         String   @id @default(cuid())
+  /// Discriminador: "ods" | "municipality" | "indicator" | "source" | "policy" | "investment" | "benchmark" | "recommendation" | "goal"
+  type       String
+  /// Identificador externo estável (ex: "1" para ODS 1, código IBGE para município). Opcional.
+  externalId String?
+  /// Propriedades livres (nome, shortName, weight, etc)
+  props      Json     @default("{}")
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  outEdges Relationship[] @relation("EntityFrom")
+  inEdges  Relationship[] @relation("EntityTo")
+
+  @@unique([type, externalId])
+  @@index([type])
+}
+
+/// Aresta direcionada entre dois Entity. Suporta TKG (validFrom/validUntil).
+model Relationship {
+  id         String    @id @default(cuid())
+  /// "SINERGIA" | "TRADE_OFF" | "SIMILAR_A" | "MEDIDO_POR" | "COMPOE" | "COLETADO_DE" | "PERTENCE_A" | "IMPACTA" | "EXECUTA" | "REFERENCIA" | "ESTABELECE"
+  type       String
+  fromId     String
+  toId       String
+  /// Peso normalizado -1.0 a +1.0 (sinergia positiva, trade-off negativo), confidence 0-1, source, notes
+  props      Json      @default("{}")
+  /// Temporal validity (TKG / Zep Graphiti)
+  validFrom  DateTime
+  validUntil DateTime?
+  createdAt  DateTime  @default(now())
+
+  from Entity @relation("EntityFrom", fields: [fromId], references: [id], onDelete: Cascade)
+  to   Entity @relation("EntityTo",   fields: [toId],   references: [id], onDelete: Cascade)
+
+  @@index([type, fromId])
+  @@index([type, toId])
+  @@index([fromId, toId])
+  @@index([validFrom, validUntil])
+}

@@ -4,6 +4,7 @@ import { ODS_DEFINITIONS, getOdsDefinition } from "../../../shared/constants/ods
 import { getOdsStatus, type OdsStatus } from "../../../shared/types/domain/ods.js";
 import { logger } from "../../utils/logger.js";
 import { prisma } from "../../lib/prisma.js";
+import { findTradeOffs, findSynergies } from "../graph/graph_service.js";
 
 // ─── Tipos públicos ────────────────────────────────────────────────────────────
 
@@ -40,6 +41,16 @@ export interface OdsSimulationResult {
   projectedStatus: OdsStatus | null;
 }
 
+export interface SimulationWarning {
+  type: "trade_off" | "synergy";
+  fromOds: number;
+  toOds: number;
+  weight: number;
+  confidence: number;
+  message: string;
+  source?: string;
+}
+
 export interface SimulationResult {
   ibgeCode: string;
   municipalityName: string | null;
@@ -49,6 +60,7 @@ export interface SimulationResult {
   projectedGlobalScore: number | null;
   globalDelta: number | null;
   ods: OdsSimulationResult[];
+  warnings: SimulationWarning[];
 }
 
 // ─── Tipo interno de alocação (mantém a lógica de mapeamento existente) ────────
@@ -279,6 +291,10 @@ export async function runSimulation(input: SimulationInput): Promise<SimulationR
     globalDelta,
   });
 
+  // 7. Detectar trade-offs e sinergias via Knowledge Graph ESG
+  const primaryOdsNumbers = internalAllocations.flatMap((a) => AREA_ODS_MAPPING[a.area].primary);
+  const warnings: SimulationWarning[] = await buildGraphWarnings(primaryOdsNumbers);
+
   const simulationResult: SimulationResult = {
     ibgeCode,
     municipalityName: report.municipalityName ?? null,
@@ -288,6 +304,7 @@ export async function runSimulation(input: SimulationInput): Promise<SimulationR
     projectedGlobalScore,
     globalDelta,
     ods: odsResults,
+    warnings,
   };
 
   // Persistência fire-and-forget — não bloqueia a resposta ao cliente
@@ -402,6 +419,69 @@ function calculateGlobalScore(
   return weightTotal > 0 ? Math.round(weightedSum / weightTotal) : null;
 }
 
+/**
+ * Consulta o Knowledge Graph ESG para detectar trade-offs e sinergias
+ * nos ODS primários afetados pelo investimento.
+ *
+ * Filtros aplicados:
+ * - trade-off: |weight| >= 0.35 e confidence >= 0.70
+ * - sinergia: weight >= 0.70 e confidence >= 0.80
+ *
+ * Resultado ordenado por |weight| * confidence desc, truncado em 10 itens.
+ * Em caso de falha do grafo: retorna array vazio (não propaga erro).
+ */
+async function buildGraphWarnings(primaryOdsNumbers: number[]): Promise<SimulationWarning[]> {
+  if (primaryOdsNumbers.length === 0) return [];
+
+  try {
+    const [tradeOffEdges, synergyEdges] = await Promise.all([
+      findTradeOffs(primaryOdsNumbers),
+      findSynergies(primaryOdsNumbers),
+    ]);
+
+    const warnings: SimulationWarning[] = [];
+
+    for (const edge of tradeOffEdges) {
+      if (Math.abs(edge.weight) < 0.35 || edge.confidence < 0.7) continue;
+      const fromName = getOdsDefinition(edge.fromOds)?.shortName ?? `ODS ${edge.fromOds}`;
+      const toName = getOdsDefinition(edge.toOds)?.shortName ?? `ODS ${edge.toOds}`;
+      const sourceText = edge.source ? ` (fonte: ${edge.source})` : "";
+      warnings.push({
+        type: "trade_off",
+        fromOds: edge.fromOds,
+        toOds: edge.toOds,
+        weight: edge.weight,
+        confidence: edge.confidence,
+        source: edge.source,
+        message: `Investir em ODS ${edge.fromOds} (${fromName}) pode prejudicar ODS ${edge.toOds} (${toName}) — impacto estimado ${edge.weight.toFixed(2)}${sourceText}`,
+      });
+    }
+
+    for (const edge of synergyEdges) {
+      if (edge.weight < 0.7 || edge.confidence < 0.8) continue;
+      const fromName = getOdsDefinition(edge.fromOds)?.shortName ?? `ODS ${edge.fromOds}`;
+      const toName = getOdsDefinition(edge.toOds)?.shortName ?? `ODS ${edge.toOds}`;
+      const sourceText = edge.source ? ` (fonte: ${edge.source})` : "";
+      warnings.push({
+        type: "synergy",
+        fromOds: edge.fromOds,
+        toOds: edge.toOds,
+        weight: edge.weight,
+        confidence: edge.confidence,
+        source: edge.source,
+        message: `Investimento em ODS ${edge.fromOds} (${fromName}) reforça positivamente ODS ${edge.toOds} (${toName}) — sinergia +${edge.weight.toFixed(2)}${sourceText}`,
+      });
+    }
+
+    // Ordenar por relevância (|weight| * confidence) desc, truncar em 10
+    warnings.sort((a, b) => Math.abs(b.weight) * b.confidence - Math.abs(a.weight) * a.confidence);
+    return warnings.slice(0, 10);
+  } catch (err) {
+    logger.warn("[simulator] graph lookup failed — seguindo sem warnings", { err });
+    return [];
+  }
+}
+
 /** Resultado degenerado quando nenhum dado ODS está disponível para o município. */
 function buildDegenerateResult(
   ibgeCode: string,
@@ -429,5 +509,6 @@ function buildDegenerateResult(
     projectedGlobalScore: null,
     globalDelta: null,
     ods,
+    warnings: [],
   };
 }
