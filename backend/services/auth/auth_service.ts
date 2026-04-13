@@ -142,7 +142,7 @@ export class AuthService {
       throw new AuthCredentialsError("Credenciais inválidas");
     }
 
-    const token = this.generateToken(user);
+    const token = this.generateNewToken(user);
     const refreshToken = await this.createRefreshToken(user.id);
 
     logger.info("Login realizado com sucesso", { userId: user.id, role: user.role });
@@ -188,7 +188,7 @@ export class AuthService {
       data: { revokedAt: new Date() },
     });
 
-    const newToken = this.generateToken(stored.user);
+    const newToken = this.generateNewToken(stored.user);
     const newRefreshToken = await this.createRefreshToken(stored.userId);
 
     logger.info("Tokens renovados com sucesso", { userId: stored.userId });
@@ -261,7 +261,11 @@ export class AuthService {
     });
   }
 
-  private generateToken(user: {
+  /**
+   * Gera JWT para um usuário. Usado internamente e pelo handler de PATCH /me
+   * para emitir novo token após atualização de município.
+   */
+  generateNewToken(user: {
     id: string;
     email: string;
     role: string;

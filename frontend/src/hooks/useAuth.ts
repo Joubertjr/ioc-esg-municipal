@@ -1,18 +1,9 @@
 import { useCallback, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { apiPost, apiPatch, setRefreshToken, getRefreshToken } from "../lib/api";
-import { useAuthContext } from "../contexts/AuthContext";
+import { useAuthContext, type AuthUser } from "../contexts/AuthContext";
 
-// ─── Tipos ────────────────────────────────────────────────────────────────────
-
-export interface AuthUser {
-  id: string;
-  name: string;
-  email: string;
-  role: string;
-  municipalityId: string | null;
-  createdAt: string;
-}
+export type { AuthUser };
 
 interface LoginPayload {
   email: string;
@@ -33,6 +24,7 @@ interface AuthResponse {
 
 interface UpdateMeResponse {
   user: AuthUser;
+  token: string;
 }
 
 // ─── Hook ─────────────────────────────────────────────────────────────────────
@@ -40,7 +32,7 @@ interface UpdateMeResponse {
 export function useAuth() {
   const navigate = useNavigate();
   const [user, setUser] = useState<AuthUser | null>(null);
-  const { setAuthenticated } = useAuthContext();
+  const { setAuthenticated, setCurrentUser } = useAuthContext();
 
   const login = useCallback(
     async (email: string, password: string): Promise<void> => {
@@ -50,6 +42,7 @@ export function useAuth() {
 
       const authenticatedUser = result.user ?? null;
       setUser(authenticatedUser);
+      setCurrentUser(authenticatedUser);
       setAuthenticated(true);
 
       if (!authenticatedUser || authenticatedUser.municipalityId === null) {
@@ -58,7 +51,7 @@ export function useAuth() {
         navigate("/dashboard");
       }
     },
-    [navigate, setAuthenticated],
+    [navigate, setAuthenticated, setCurrentUser],
   );
 
   const register = useCallback(
@@ -69,6 +62,7 @@ export function useAuth() {
 
       const registeredUser = result.user ?? null;
       setUser(registeredUser);
+      setCurrentUser(registeredUser);
       setAuthenticated(true);
 
       // Novo usuário sempre vai para onboarding (município ainda não definido)
@@ -78,7 +72,7 @@ export function useAuth() {
         navigate("/dashboard");
       }
     },
-    [navigate, setAuthenticated],
+    [navigate, setAuthenticated, setCurrentUser],
   );
 
   const logout = useCallback(async (): Promise<void> => {
@@ -88,15 +82,20 @@ export function useAuth() {
     } finally {
       setRefreshToken(null);
       setUser(null);
+      setCurrentUser(null);
       setAuthenticated(false);
       navigate("/login");
     }
-  }, [navigate, setAuthenticated]);
+  }, [navigate, setAuthenticated, setCurrentUser]);
 
-  const updateMunicipality = useCallback(async (municipalityId: string): Promise<void> => {
-    const result = await apiPatch<UpdateMeResponse>("/api/auth/me", { municipalityId });
-    setUser(result.user);
-  }, []);
+  const updateMunicipality = useCallback(
+    async (ibgeCode: string): Promise<void> => {
+      const result = await apiPatch<UpdateMeResponse>("/api/auth/me", { ibgeCode });
+      setUser(result.user);
+      setCurrentUser(result.user);
+    },
+    [setCurrentUser],
+  );
 
   return { user, login, register, logout, updateMunicipality };
 }

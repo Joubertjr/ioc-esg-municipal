@@ -42,6 +42,8 @@ const {
   mockRefreshAccessToken,
   mockRevokeRefreshToken,
   mockUserUpdate,
+  mockMunicipalityFindUnique,
+  mockGenerateNewToken,
 } = vi.hoisted(() => ({
   mockRegister: vi.fn(),
   mockLogin: vi.fn(),
@@ -50,6 +52,8 @@ const {
   mockRefreshAccessToken: vi.fn(),
   mockRevokeRefreshToken: vi.fn(),
   mockUserUpdate: vi.fn(),
+  mockMunicipalityFindUnique: vi.fn(),
+  mockGenerateNewToken: vi.fn(),
 }));
 
 // AuthService: mock da classe inteira via factory
@@ -97,6 +101,7 @@ vi.mock("../../../backend/services/auth/auth_service.js", () => {
       countUsers: mockCountUsers,
       refreshAccessToken: mockRefreshAccessToken,
       revokeRefreshToken: mockRevokeRefreshToken,
+      generateNewToken: mockGenerateNewToken,
     })),
     RegisterSchema,
     LoginSchema,
@@ -136,6 +141,9 @@ vi.mock("../../../backend/lib/prisma.js", () => ({
   prisma: {
     user: {
       update: mockUserUpdate,
+    },
+    municipality: {
+      findUnique: mockMunicipalityFindUnique,
     },
   },
 }));
@@ -236,6 +244,8 @@ describe("POST /api/auth/login", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     mockLogin.mockResolvedValue(MOCK_LOGIN_RESULT);
+    // Login agora resolve municipalityId → ibgeCode
+    mockMunicipalityFindUnique.mockResolvedValue({ ibgeCode: "4201307" });
   });
 
   it("retorna 200 com token, refreshToken e dados do usuário quando credenciais são válidas", async () => {
@@ -419,6 +429,8 @@ describe("GET /api/auth/me", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     mockFindById.mockResolvedValue(MOCK_SAFE_USER);
+    // GET /me agora resolve municipalityId → ibgeCode
+    mockMunicipalityFindUnique.mockResolvedValue({ ibgeCode: "4201307" });
 
     // Middleware autentica e injeta req.user por padrão
     vi.mocked(authenticateToken).mockImplementation((req, _res, next) => {
@@ -483,23 +495,26 @@ describe("PATCH /api/auth/me", () => {
       next();
     });
 
-    // Cenário default: update bem-sucedido
+    // Cenário default: municipality encontrada pelo ibgeCode
+    mockMunicipalityFindUnique.mockResolvedValue({ id: "mun-42", ibgeCode: "4201307" });
+    // Update bem-sucedido
     mockUserUpdate.mockResolvedValue(UPDATED_USER);
+    // Token gerado após update
+    mockGenerateNewToken.mockReturnValue("novo.jwt.token");
   });
 
-  it("retorna 200 e user atualizado quando municipalityId válido é enviado", async () => {
-    // Arrange
+  it("retorna 200 e user atualizado quando ibgeCode válido é enviado", async () => {
     const app = buildApp();
 
-    // Act
     const res = await request(app)
       .patch("/api/auth/me")
       .set("Authorization", "Bearer jwt.token.assinado")
-      .send({ municipalityId: "mun-42" });
+      .send({ ibgeCode: "4201307" });
 
-    // Assert
     expect(res.status).toBe(200);
     expect(res.body.user.municipalityId).toBe("mun-42");
+    expect(res.body.user.ibgeCode).toBe("4201307");
+    expect(res.body.token).toBe("novo.jwt.token");
     expect(mockUserUpdate).toHaveBeenCalledTimes(1);
     expect(mockUserUpdate).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -510,73 +525,71 @@ describe("PATCH /api/auth/me", () => {
   });
 
   it("retorna 400 quando body está ausente", async () => {
-    // Arrange — Zod rejeita body vazio: municipalityId é obrigatório
     const app = buildApp();
 
-    // Act
     const res = await request(app)
       .patch("/api/auth/me")
       .set("Authorization", "Bearer jwt.token.assinado")
       .send({});
 
-    // Assert
     expect(res.status).toBe(400);
     expect(res.body.error).toBe("Dados inválidos");
     expect(mockUserUpdate).not.toHaveBeenCalled();
   });
 
-  it("retorna 400 quando municipalityId é string vazia", async () => {
-    // Arrange — Zod valida min(1): string vazia deve ser rejeitada
+  it("retorna 400 quando ibgeCode não tem 7 dígitos", async () => {
     const app = buildApp();
 
-    // Act
     const res = await request(app)
       .patch("/api/auth/me")
       .set("Authorization", "Bearer jwt.token.assinado")
-      .send({ municipalityId: "" });
+      .send({ ibgeCode: "123" });
 
-    // Assert
     expect(res.status).toBe(400);
     expect(res.body.error).toBe("Dados inválidos");
-    expect(res.body.details).toBeDefined();
+    expect(mockUserUpdate).not.toHaveBeenCalled();
+  });
+
+  it("retorna 404 quando município não existe no banco", async () => {
+    mockMunicipalityFindUnique.mockResolvedValue(null);
+    const app = buildApp();
+
+    const res = await request(app)
+      .patch("/api/auth/me")
+      .set("Authorization", "Bearer jwt.token.assinado")
+      .send({ ibgeCode: "9999999" });
+
+    expect(res.status).toBe(404);
+    expect(res.body.error).toContain("não encontrado");
     expect(mockUserUpdate).not.toHaveBeenCalled();
   });
 
   it("retorna 401 quando requisição não está autenticada", async () => {
-    // Arrange — middleware rejeita sem token, mesmo padrão do GET /me
     vi.mocked(authenticateToken).mockImplementation((_req, res, _next) => {
       (res as express.Response).status(401).json({ error: "Token de autenticação ausente" });
     });
 
     const app = buildApp();
 
-    // Act — sem header Authorization
-    const res = await request(app).patch("/api/auth/me").send({ municipalityId: "mun-42" });
+    const res = await request(app).patch("/api/auth/me").send({ ibgeCode: "4201307" });
 
-    // Assert
     expect(res.status).toBe(401);
     expect(res.body.error).toContain("Token");
     expect(mockUserUpdate).not.toHaveBeenCalled();
   });
 
   it("retorna 500 quando prisma não encontra o usuário (P2025)", async () => {
-    // Arrange — prisma.user.update lança erro quando record não existe.
-    // A rota não trata P2025 separadamente: cai no catch genérico → 500.
-    // Nota: para expor 404 neste caso, a rota precisaria inspecionar
-    // err.code === "P2025" — isso é uma melhoria futura a registrar como ADR.
     mockUserUpdate.mockRejectedValue(
       Object.assign(new Error("Record to update not found."), { code: "P2025" }),
     );
 
     const app = buildApp();
 
-    // Act
     const res = await request(app)
       .patch("/api/auth/me")
       .set("Authorization", "Bearer jwt.token.assinado")
-      .send({ municipalityId: "mun-inexistente" });
+      .send({ ibgeCode: "4201307" });
 
-    // Assert — comportamento atual da rota: erro interno, não 404
     expect(res.status).toBe(500);
     expect(res.body.error).toContain("Erro interno");
     expect(mockUserUpdate).toHaveBeenCalledTimes(1);

@@ -108,10 +108,20 @@ router.post("/login", authLimiter, async (req: Request, res: Response) => {
       path: "/",
     });
 
+    // Resolver municipalityId → ibgeCode para o frontend
+    let ibgeCode: string | null = null;
+    if (result.user.municipalityId) {
+      const municipality = await prisma.municipality.findUnique({
+        where: { id: result.user.municipalityId },
+        select: { ibgeCode: true },
+      });
+      ibgeCode = municipality?.ibgeCode ?? null;
+    }
+
     res.json({
       token: result.token,
       refreshToken: result.refreshToken,
-      user: result.user,
+      user: { ...result.user, ibgeCode },
     });
   } catch (err) {
     if (err instanceof AuthCredentialsError) {
@@ -211,7 +221,17 @@ router.get("/me", authenticateToken, async (req: Request, res: Response) => {
       return;
     }
 
-    res.json({ user });
+    // Resolver municipalityId (CUID) → ibgeCode para o frontend
+    let ibgeCode: string | null = null;
+    if (user.municipalityId) {
+      const municipality = await prisma.municipality.findUnique({
+        where: { id: user.municipalityId },
+        select: { ibgeCode: true },
+      });
+      ibgeCode = municipality?.ibgeCode ?? null;
+    }
+
+    res.json({ user: { ...user, ibgeCode } });
   } catch (err) {
     logger.error("Erro ao buscar dados do usuário autenticado", {
       userId,
@@ -224,7 +244,7 @@ router.get("/me", authenticateToken, async (req: Request, res: Response) => {
 // ─── PATCH /api/auth/me ───────────────────────────────────────────────────────
 
 const UpdateMeSchema = z.object({
-  municipalityId: z.string().min(1, "municipalityId é obrigatório"),
+  ibgeCode: z.string().regex(/^\d{7}$/, "ibgeCode deve ter 7 dígitos"),
 });
 
 /**
@@ -242,12 +262,23 @@ router.patch("/me", authenticateToken, async (req: Request, res: Response) => {
     return;
   }
 
-  const { municipalityId } = parsed.data;
+  const { ibgeCode } = parsed.data;
 
   try {
-    const user = await prisma.user.update({
+    // Resolver ibgeCode → Municipality CUID
+    const municipality = await prisma.municipality.findUnique({
+      where: { ibgeCode },
+      select: { id: true, ibgeCode: true },
+    });
+
+    if (!municipality) {
+      res.status(404).json({ error: `Município com ibgeCode ${ibgeCode} não encontrado` });
+      return;
+    }
+
+    const updated = await prisma.user.update({
       where: { id: userId },
-      data: { municipalityId },
+      data: { municipalityId: municipality.id },
       select: {
         id: true,
         email: true,
@@ -258,12 +289,36 @@ router.patch("/me", authenticateToken, async (req: Request, res: Response) => {
       },
     });
 
-    logger.info("municipalityId atualizado com sucesso", { userId, municipalityId });
-    res.json({ user });
+    // Gerar novo JWT com municipalityId correto (CUID)
+    const token = authService.generateNewToken({
+      id: updated.id,
+      email: updated.email,
+      role: updated.role,
+      municipalityId: updated.municipalityId,
+    });
+
+    // Atualizar cookie httpOnly com novo JWT
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: process.env["NODE_ENV"] === "production",
+      sameSite: "lax",
+      maxAge: 24 * 60 * 60 * 1000,
+      path: "/",
+    });
+
+    logger.info("municipalityId atualizado com sucesso", {
+      userId,
+      ibgeCode,
+      municipalityId: municipality.id,
+    });
+    res.json({
+      user: { ...updated, ibgeCode: municipality.ibgeCode },
+      token,
+    });
   } catch (err) {
     logger.error("Erro ao atualizar município do usuário", {
       userId,
-      municipalityId,
+      ibgeCode,
       error: err instanceof Error ? err.message : String(err),
     });
     res.status(500).json({ error: "Erro interno ao atualizar município" });
