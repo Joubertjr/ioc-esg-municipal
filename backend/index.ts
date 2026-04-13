@@ -23,6 +23,7 @@ import { requestLoggerMiddleware } from "./middleware/request-logger.js";
 import { logger } from "./utils/logger.js";
 import { env } from "./utils/env-validator.js";
 import { registry } from "./utils/metrics.js";
+import { getRedisClient } from "./utils/cache.js";
 import { prisma } from "./lib/prisma.js";
 import { swaggerSpec } from "./docs/swagger.js";
 
@@ -97,12 +98,27 @@ app.use(express.json({ limit: "10kb" }));
 
 // ─── Rotas ────────────────────────────────────────────────────────────────────
 
-app.get("/health", (_req, res) => {
-  res.json({
-    status: "ok",
+app.get("/health", async (_req, res) => {
+  const checks = await Promise.allSettled([
+    prisma.$queryRaw`SELECT 1`,
+    getRedisClient().then((c) => c.ping()),
+  ]);
+
+  const db = checks[0].status === "fulfilled" ? "ok" : "degraded";
+  const redis = checks[1].status === "fulfilled" ? "ok" : "degraded";
+  const overall = db === "ok" && redis === "ok" ? "ok" : "degraded";
+  const mem = process.memoryUsage();
+
+  res.status(overall === "ok" ? 200 : 503).json({
+    status: overall,
     service: "ioc-esg-municipal",
-    timestamp: new Date().toISOString(),
+    checks: { db, redis },
+    memory: {
+      heapUsedMb: Math.round(mem.heapUsed / 1_048_576),
+      rssMb: Math.round(mem.rss / 1_048_576),
+    },
     uptime: process.uptime(),
+    timestamp: new Date().toISOString(),
   });
 });
 
@@ -152,7 +168,7 @@ app.use("/api/graph", authenticateToken, graphRouter);
   // para que o React Router trate o roteamento no cliente.
   app.get("*", (req, res, next) => {
     // Não interceptar rotas de API nem health check
-    if (req.path.startsWith("/api") || req.path === "/health") {
+    if (req.path.startsWith("/api") || req.path === "/health" || req.path === "/metrics") {
       return next();
     }
     res.sendFile(path.join(frontendDist, "index.html"), (err) => {
