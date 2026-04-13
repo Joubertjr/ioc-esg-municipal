@@ -15,6 +15,11 @@ import reportsRouter from "./routes/reports.js";
 import benchmarksRouter from "./routes/benchmarks.js";
 import recommendationsRouter from "./routes/recommendations.js";
 import graphRouter from "./routes/graph.js";
+import ingestionRouter from "./routes/ingestion.js";
+import {
+  startIngestionScheduler,
+  stopIngestionScheduler,
+} from "./services/ingestion/ingestion_scheduler.js";
 import { generalLimiter } from "./middleware/rate-limit.js";
 import { authenticateToken } from "./middleware/auth.js";
 import { globalErrorHandler, notFoundHandler } from "./middleware/error-handler.js";
@@ -167,6 +172,7 @@ app.use("/api/reports", authenticateToken, reportsRouter);
 app.use("/api/benchmarks", authenticateToken, benchmarksRouter);
 app.use("/api/recommendations", authenticateToken, recommendationsRouter);
 app.use("/api/graph", authenticateToken, graphRouter);
+app.use("/api/ingestion", authenticateToken, ingestionRouter);
 
 // ─── Frontend estático (SPA) ──────────────────────────────────────────────────
 // Serve frontend/dist quando compilado (Docker ou pnpm build + pnpm start).
@@ -211,12 +217,21 @@ app.use(globalErrorHandler);
 
 const server = app.listen(PORT, () => {
   logger.info(`IOC ESG Municipal API running on port ${PORT}`);
+
+  // Inicializar scheduler de ingestão (após servidor ouvindo)
+  startIngestionScheduler().catch((err) => {
+    logger.error("[startup] failed to start ingestion scheduler", {
+      error: err instanceof Error ? err.message : String(err),
+    });
+  });
 });
 
 // ─── Graceful shutdown ────────────────────────────────────────────────────────
 
 function gracefulShutdown(signal: string): void {
   logger.info(`Received ${signal}. Starting graceful shutdown...`);
+
+  stopIngestionScheduler();
 
   server.close(() => {
     logger.info("HTTP server closed");

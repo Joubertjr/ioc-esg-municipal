@@ -90,6 +90,8 @@ export interface MunicipalOdsReport {
   odsCount: { total: number; withData: number; verde: number; amarelo: number; vermelho: number };
   dataFreshness: DataFreshness;
   ods: OdsSummary[];
+  dataSource?: "database" | "realtime";
+  dataCollectedAt?: string | null;
 }
 
 /**
@@ -176,9 +178,26 @@ const iepsCollector = new IepsCollector();
 const ODS_REPORT_CACHE_TTL = 3_600;
 
 export async function calculateMunicipalOds(ibgeCode: string): Promise<MunicipalOdsReport | null> {
-  return withCache(`ods:report:${ibgeCode}`, ODS_REPORT_CACHE_TTL, () =>
-    _fetchAndCalculate(ibgeCode),
-  );
+  return withCache(`ods:report:${ibgeCode}`, ODS_REPORT_CACHE_TTL, async () => {
+    // ADR-011: Try database first → fallback to real-time if empty
+    const { readOdsReportFromDatabase } = await import("../ingestion/ods_score_reader.js");
+    const dbReport = await readOdsReportFromDatabase(ibgeCode);
+    if (dbReport) {
+      logger.debug(`[ods] serving ${ibgeCode} from database`);
+      return dbReport;
+    }
+
+    // Fallback: real-time collection (pre-ingestion or first access)
+    logger.debug(`[ods] no database data for ${ibgeCode}, falling back to real-time`);
+    const realtimeReport = await _fetchAndCalculate(ibgeCode);
+    if (!realtimeReport) return null;
+
+    return {
+      ...realtimeReport,
+      dataSource: "realtime" as const,
+      dataCollectedAt: null,
+    };
+  });
 }
 
 async function _fetchAndCalculate(ibgeCode: string): Promise<MunicipalOdsReport | null> {

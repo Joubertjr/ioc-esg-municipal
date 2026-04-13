@@ -61,6 +61,37 @@ export const frontendApiDuration = new client.Histogram({
   registers: [registry],
 });
 
+// ─── Ingestion pipeline metrics ──────────────────────────────────────────────
+
+export const ingestionDuration = new client.Histogram({
+  name: "ingestion_duration_ms",
+  help: "Duration of source ingestion in ms",
+  labelNames: ["source", "status"] as const,
+  buckets: [1000, 5000, 10000, 30000, 60000, 120000, 300000],
+  registers: [registry],
+});
+
+export const ingestionIndicatorsUpserted = new client.Counter({
+  name: "ingestion_indicators_upserted_total",
+  help: "Total ODS indicators upserted during ingestion",
+  labelNames: ["source"] as const,
+  registers: [registry],
+});
+
+export const ingestionMunicipalitiesFailed = new client.Counter({
+  name: "ingestion_municipalities_failed_total",
+  help: "Total municipalities that failed during ingestion",
+  labelNames: ["source"] as const,
+  registers: [registry],
+});
+
+export const ingestionLastSuccess = new client.Gauge({
+  name: "ingestion_last_success_timestamp",
+  help: "Unix timestamp of last successful ingestion per source",
+  labelNames: ["source"] as const,
+  registers: [registry],
+});
+
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
 const IBGE_CODE_RE = /\b\d{7}\b/g;

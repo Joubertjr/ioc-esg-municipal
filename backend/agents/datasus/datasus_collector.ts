@@ -74,8 +74,14 @@ export class DatasusCollector {
     }
   }
 
-  async collectBatch(ibgeCodes: string[]): Promise<(DatasusMunicipalData | null)[]> {
-    return Promise.all(ibgeCodes.map((code) => this.collect(code)));
+  async collectBatch(ibgeCodes: string[]): Promise<Map<string, DatasusMunicipalData>> {
+    const results = await Promise.all(ibgeCodes.map((code) => this.collect(code)));
+    const map = new Map<string, DatasusMunicipalData>();
+    for (let i = 0; i < ibgeCodes.length; i++) {
+      const data = results[i];
+      if (data) map.set(ibgeCodes[i], data);
+    }
+    return map;
   }
 
   private async fetchPrevineBrasil(
@@ -140,11 +146,18 @@ export class DatasusCollector {
     const cancerColoUterino = getAvg(50);
     const saudeBucal = getAvg(70);
 
-    const allValues = [prenatal, diabetes, hipertensao, crescimentoInfantil, cancerColoUterino, saudeBucal]
-      .filter((v): v is number => v !== null);
-    const mediaGeral = allValues.length > 0
-      ? Math.round((allValues.reduce((a, b) => a + b, 0) / allValues.length) * 100) / 100
-      : null;
+    const allValues = [
+      prenatal,
+      diabetes,
+      hipertensao,
+      crescimentoInfantil,
+      cancerColoUterino,
+      saudeBucal,
+    ].filter((v): v is number => v !== null);
+    const mediaGeral =
+      allValues.length > 0
+        ? Math.round((allValues.reduce((a, b) => a + b, 0) / allValues.length) * 100) / 100
+        : null;
 
     return {
       prenatal,

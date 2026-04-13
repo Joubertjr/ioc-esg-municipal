@@ -8,61 +8,71 @@ datasource db {
 }
 
 model Municipality {
-  id          String    @id @default(cuid())
-  ibgeCode    String    @unique /// 7 dígitos (ex: 4204202)
-  siconfiCode String    @unique /// 6 dígitos sem verificador (ex: 420420)
-  name        String
-  state       String    @default("SC")
-  population  Int?
-  fpmAnnual   Decimal?  @db.Decimal(15, 2)
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  deletedAt   DateTime?
-
-  indicators  OdsIndicator[]
-  odsScores   OdsScore[]
-  simulations Simulation[]
+  id            String         @id @default(cuid())
+  /// 7 dígitos (ex: 4204202)
+  ibgeCode      String         @unique
+  /// 6 dígitos sem verificador (ex: 420420)
+  siconfiCode   String         @unique
+  name          String
+  state         String         @default("SC")
+  population    Int?
+  fpmAnnual     Decimal?       @db.Decimal(15, 2)
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  deletedAt     DateTime?
+  ingestionLogs IngestionLog[]
+  indicators    OdsIndicator[]
+  odsScores     OdsScore[]
+  simulations   Simulation[]
 
   @@index([state])
   @@index([deletedAt])
-  @@index([name])
 }
 
 model OdsIndicator {
-  id             String   @id @default(cuid())
+  id             String       @id @default(cuid())
   municipalityId String
-  odsNumber      Int /// 1-17
+  /// 1-17
+  odsNumber      Int
   indicatorName  String
-  value          Decimal? @db.Decimal(12, 4)
-  score          Int? /// 0-100, null = sem dados
-  status         String? /// verde|amarelo|vermelho
+  value          Decimal?     @db.Decimal(12, 4)
+  /// 0-100, null = sem dados
+  score          Int?
+  /// verde|amarelo|vermelho
+  status         String?
   source         String
   referenceYear  Int
   referenceDate  DateTime
-  dataAvailable  Boolean  @default(true)
-  createdAt      DateTime @default(now())
-
-  municipality Municipality @relation(fields: [municipalityId], references: [id])
+  dataAvailable  Boolean      @default(true)
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @default(now()) @updatedAt
+  municipality   Municipality @relation(fields: [municipalityId], references: [id])
 
   @@unique([municipalityId, indicatorName, referenceYear])
   @@index([municipalityId, odsNumber])
   @@index([municipalityId, referenceYear])
   @@index([referenceDate])
+  @@index([source, referenceYear])
 }
 
 model OdsScore {
-  id             String   @id @default(cuid())
+  id             String       @id @default(cuid())
   municipalityId String
-  odsNumber      Int /// 1-17 (0 = global)
-  score          Int? /// 0-100, null = sem dados
-  geometricScore Int? /// 0-100, média geométrica ponderada (padrão IDHM/ONU)
-  status         String? /// verde|amarelo|vermelho
-  indicatorCount Int      @default(0)
+  /// 1-17 (0 = global)
+  odsNumber      Int
+  /// 0-100, null = sem dados
+  score          Int?
+  /// verde|amarelo|vermelho
+  status         String?
+  indicatorCount Int          @default(0)
   referenceYear  Int
-  calculatedAt   DateTime @default(now())
-  sources        String[] /// ex: ["ibge","siconfi"]
-
-  municipality Municipality @relation(fields: [municipalityId], references: [id])
+  calculatedAt   DateTime     @default(now())
+  /// ex: ["ibge","siconfi"]
+  sources        String[]
+  /// 0-100, média geométrica ponderada (padrão IDHM/ONU)
+  geometricScore Int?
+  updatedAt      DateTime     @default(now()) @updatedAt
+  municipality   Municipality @relation(fields: [municipalityId], references: [id])
 
   @@unique([municipalityId, odsNumber, referenceYear])
   @@index([municipalityId, referenceYear])
@@ -71,32 +81,32 @@ model OdsScore {
 }
 
 model Simulation {
-  id               String    @id @default(cuid())
+  id               String       @id @default(cuid())
   municipalityId   String
   scenarioName     String
-  investmentAmount Decimal   @db.Decimal(15, 2)
-  investmentType   String /// education|health|sanitation|security|environment
+  investmentAmount Decimal      @db.Decimal(15, 2)
+  /// education|health|sanitation|security|environment
+  investmentType   String
   targetOds        Int[]
   projectedImpact  Json
-  status           String    @default("pending")
-  createdAt        DateTime  @default(now())
+  status           String       @default("pending")
+  createdAt        DateTime     @default(now())
   completedAt      DateTime?
-
-  municipality Municipality @relation(fields: [municipalityId], references: [id])
+  municipality     Municipality @relation(fields: [municipalityId], references: [id])
 
   @@index([municipalityId])
 }
 
 model User {
-  id             String   @id @default(cuid())
-  email          String   @unique
-  name           String
+  id             String         @id @default(cuid())
+  email          String         @unique
   passwordHash   String
-  role           String /// admin|prefeito|secretario|viewer
+  /// admin|prefeito|secretario|viewer
+  role           String
   municipalityId String?
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
-
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+  name           String         @default("")
   refreshTokens  RefreshToken[]
 
   @@index([municipalityId])
@@ -106,28 +116,71 @@ model RefreshToken {
   id        String    @id @default(uuid())
   token     String    @unique
   userId    String
-  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   expiresAt DateTime
   createdAt DateTime  @default(now())
   revokedAt DateTime?
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
+  @@index([token])
+}
+
+/// Registra cada execução do pipeline de ingestão por fonte de dados.
+/// Uma execução cobre todos os 295 municípios de SC para uma fonte específica.
+model IngestionRun {
+  id                  String         @id @default(cuid())
+  /// Identificador da fonte: ibge|siconfi|datasus|pncp|inpe|ieps|inep|snis|sisvan|anatel|aneel|convenios|tse|ana|snis_rs
+  source              String
+  /// running|completed|partial|failed
+  status              String
+  startedAt           DateTime       @default(now())
+  completedAt         DateTime?
+  durationMs          Int?
+  totalMunicipalities Int            @default(0)
+  successCount        Int            @default(0)
+  failureCount        Int            @default(0)
+  skippedCount        Int            @default(0)
+  indicatorsWritten   Int            @default(0)
+  errorSummary        String?
+  referenceYear       Int?
+  logs                IngestionLog[]
+
+  @@index([source, status, completedAt])
+  @@index([startedAt])
+  @@index([status, startedAt])
+}
+
+/// Registra falhas individuais de municípios dentro de um IngestionRun.
+/// Apenas rows de falha são gravadas — municípios com sucesso são contados em IngestionRun.successCount.
+model IngestionLog {
+  id              String       @id @default(cuid())
+  ingestionRunId  String
+  municipalityId  String
+  success         Boolean      @default(false)
+  errorMessage    String?
+  indicatorsCount Int          @default(0)
+  createdAt       DateTime     @default(now())
+  ingestionRun    IngestionRun @relation(fields: [ingestionRunId], references: [id], onDelete: Cascade)
+  municipality    Municipality @relation(fields: [municipalityId], references: [id])
+
+  @@unique([ingestionRunId, municipalityId])
+  @@index([ingestionRunId])
+  @@index([municipalityId, createdAt])
 }
 
 /// Entity no Knowledge Graph ESG. Pode representar ODS, Município, Indicador, Fonte, Política, etc.
 model Entity {
-  id         String   @id @default(cuid())
+  id         String         @id @default(cuid())
   /// Discriminador: "ods" | "municipality" | "indicator" | "source" | "policy" | "investment" | "benchmark" | "recommendation" | "goal"
   type       String
   /// Identificador externo estável (ex: "1" para ODS 1, código IBGE para município). Opcional.
   externalId String?
   /// Propriedades livres (nome, shortName, weight, etc)
-  props      Json     @default("{}")
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-
-  outEdges Relationship[] @relation("EntityFrom")
-  inEdges  Relationship[] @relation("EntityTo")
+  props      Json           @default("{}")
+  createdAt  DateTime       @default(now())
+  updatedAt  DateTime       @updatedAt
+  outEdges   Relationship[] @relation("EntityFrom")
+  inEdges    Relationship[] @relation("EntityTo")
 
   @@unique([type, externalId])
   @@index([type])
@@ -146,9 +199,8 @@ model Relationship {
   validFrom  DateTime
   validUntil DateTime?
   createdAt  DateTime  @default(now())
-
-  from Entity @relation("EntityFrom", fields: [fromId], references: [id], onDelete: Cascade)
-  to   Entity @relation("EntityTo",   fields: [toId],   references: [id], onDelete: Cascade)
+  from       Entity    @relation("EntityFrom", fields: [fromId], references: [id], onDelete: Cascade)
+  to         Entity    @relation("EntityTo", fields: [toId], references: [id], onDelete: Cascade)
 
   @@index([type, fromId])
   @@index([type, toId])
