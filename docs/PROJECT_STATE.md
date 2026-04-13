@@ -1,11 +1,15 @@
 # Estado do Projeto — IOC ESG Municipal
 
-Atualizado: 2026-04-09 — 6 fases completas, 7 paginas frontend, 17/17 ODS, 15 coletores, recomendacoes inteligentes, onboarding, deploy-ready, 954+ testes, Obsidian vault integrado, 21 agentes especializados
+Atualizado: 2026-04-13 — PRONTO PARA DEPLOY SC. 6 fases completas, 7 paginas frontend, 17/17 ODS, 15 coletores, GAPs 1+2 resolvidos, nginx HTTP-only, scripts de atualizacao de dados, 540+ testes, docker build OK.
+
+## Premissa de negocio
+
+**FOCO EXCLUSIVO: Santa Catarina (295 municipios).** Nenhuma feature, arquitetura ou escopo sera desenvolvido que nao seja demanda direta do usuario final de SC. Expansao nacional adiada indefinidamente ate aprovacao do produto em SC pelo cliente final.
 
 ## Status geral
 
-**Fases 1-4 + 6 concluidas.** Fase 5 (escala nacional) adiada — foco em SC (295 municipios).
-15 coletores + ODS Score + History + Simulador FPM + Reports + Benchmarks + Recomendacoes Inteligentes + Onboarding. Frontend com 7 paginas (Login, Dashboard, Simulador, Relatorios, Monitoramento, Benchmark, Onboarding). Auth JWT completo com refresh token rotation. Docker production-ready com nginx reverse proxy. CI/CD com deploy automatico.
+**Fases 1-4 + 6 concluidas. GAPs de producao resolvidos (2026-04-13).**
+15 coletores + ODS Score + History + Simulador FPM + Reports + Benchmarks + Recomendacoes Inteligentes + Onboarding. Frontend com 7 paginas (Login, Dashboard, Simulador, Relatorios, Monitoramento, Benchmark, Onboarding). Auth JWT completo com refresh token rotation. Docker production-ready com nginx HTTP-only (SSL como override opcional). CI/CD com deploy automatico.
 
 ---
 
@@ -89,15 +93,17 @@ Atualizado: 2026-04-09 — 6 fases completas, 7 paginas frontend, 17/17 ODS, 15 
 
 ## Infraestrutura
 
-- Dockerfile multi-stage (Node 20, dumb-init, non-root, healthcheck)
-- docker-compose.yml (dev: postgres + redis)
-- docker-compose.prod.yml (postgres + redis + api + nginx)
-- nginx reverse proxy (HTTPS, security headers, gzip)
+- Dockerfile multi-stage 5 estagios (Node 20, dumb-init, non-root, healthcheck)
+- docker-compose.yml (dev: postgres + redis + adminer)
+- docker-compose.prod.yml (postgres + redis + api + nginx HTTP-only)
+- docker-compose.prod.ssl.yml (override para SSL com certbot)
+- nginx HTTP-only por default (sem SSL, sem HSTS) — compativel com LB
+- scripts/setup-ssl.sh para provisionar certificados quando necessario
 - GitHub Actions: CI (lint+test+build) + Docker build GHCR + Deploy SSH
 - Redis cache com TTL por fonte
 - Graceful shutdown
+- 7 scripts de atualizacao de dados (`pnpm data:update:all`)
 - Obsidian vault (~/obsidian-vault/ioc-esg-municipal/) + MCP filesystem server
-- Memoria de longo prazo: architecture, decisions, gotchas, lessons-learned
 
 ---
 
@@ -127,25 +133,53 @@ Atualizado: 2026-04-09 — 6 fases completas, 7 paginas frontend, 17/17 ODS, 15 
 
 ## Testes
 
-- 954+ testes passando (918 anteriores + 36 novos IEPS)
-- TSC clean (frontend e backend)
+- 540+ testes passando (14 suites)
+- TSC clean (zero erros)
+- Docker build: OK (imagem multi-stage produz imagem funcional)
 - Playwright E2E configurado
 
 ---
 
-## Proximos passos (ver docs/BACKLOG.md)
+## GAPs resolvidos (2026-04-13)
 
-| #   | Item                                                            | Status    |
-| --- | --------------------------------------------------------------- | --------- |
-| 1   | Testes para fases 3-6 (33 novos testes)                         | Concluido |
-| 2   | Fix debitos tecnicos (AuthContext + simulator tsc)              | Concluido |
-| 3   | Memoria longo prazo (Obsidian vault + MCP + memory-manager)     | Concluido |
-| 4   | Integracao simulador <-> recomendacoes (auto-preencher cenario) | Concluido |
-| 5   | Coletor IEPS Data (ODS 3 saude — 6 indicadores, BigQuery)       | Concluido |
-| 6   | Scripts BigQuery dados reais (IDEB, SNIS, IEPS)                 | Concluido |
-| 7   | Multi-tenant: isolamento de dados por municipio                 | Planejado |
-| 8   | Exportar relatorio PDF                                          | Backlog   |
-| 9   | Dashboard admin (gestao de usuarios, metricas uso)              | Backlog   |
+| GAP         | Problema                                      | Solucao                                                                              |
+| ----------- | --------------------------------------------- | ------------------------------------------------------------------------------------ |
+| GAP 1       | 8 coletores liam JSONs estaticos sem \_\_meta | 7 JSONs renomeados para \*\_latest.json + \_\_meta injetado + scripts de atualizacao |
+| GAP 2       | nginx crashava sem cert.pem/key.pem           | nginx HTTP-only por default, SSL como docker-compose override                        |
+| Armadilha 1 | HSTS no nginx HTTP-only                       | Removido Strict-Transport-Security                                                   |
+| Armadilha 2 | IEPS script gerava dados fake                 | Reescrito com CSV-first + fallback JSON existente                                    |
+| Armadilha 3 | Scripts gravavam JSON sem validacao           | Zod safeParse obrigatorio antes de writeFile                                         |
+
+---
+
+## Dados estaticos (cobertura SC)
+
+| JSON                  | Ano ref | Municipios | Notas                                   |
+| --------------------- | ------- | ---------- | --------------------------------------- |
+| snis_latest.json      | 2022    | 284/295    | 11 mun. sem dados SNIS                  |
+| ideb_latest.json      | 2023    | 295/295    | Completo                                |
+| sisvan_latest.json    | 2023    | 284/295    | 11 mun. sem dados SISVAN                |
+| anatel_latest.json    | 2023    | 295/295    | Completo                                |
+| aneel_latest.json     | 2023    | 295/295    | Completo                                |
+| convenios_latest.json | 2023    | 295/295    | Completo                                |
+| ieps_latest.json      | 2021    | 295/295    | Completo (dados IEPS mais recentes)     |
+| tse_2024.json         | 2024    | 295/295    | Fixo ate 2028 (proximo ciclo eleitoral) |
+| ibge_2022.json        | 2022    | 295/295    | Censo                                   |
+| gini_2022.json        | 2022    | 295/295    | Censo                                   |
+| ana_2022.json         | 2022    | 295/295    | ANA                                     |
+| snis_rs_2022.json     | 2022    | 295/295    | Residuos solidos                        |
+
+---
+
+## Proximos passos (SOMENTE demandas de uso SC)
+
+| #   | Item                                                     | Status            |
+| --- | -------------------------------------------------------- | ----------------- |
+| 1   | Deploy em servidor de producao para teste com cliente SC | Proximo           |
+| 2   | Feedback do cliente SC → ajustes                         | Aguardando deploy |
+| 3   | Multi-tenant: isolamento de dados por municipio          | Pos-aprovacao     |
+| 4   | Exportar relatorio PDF                                   | Pos-aprovacao     |
+| 5   | Dashboard admin (gestao de usuarios, metricas uso)       | Pos-aprovacao     |
 
 ---
 
@@ -153,4 +187,4 @@ Atualizado: 2026-04-09 — 6 fases completas, 7 paginas frontend, 17/17 ODS, 15 
 
 - Branch: main
 - Remote: https://github.com/Joubertjr/ioc-esg-municipal (publico)
-- Ultimo commit: feat(ieps): fase 4D — coletor IEPS Data para ODS 3 + scripts BigQuery
+- Ultimo commit: fix(agents): ESM compat nos scripts + injeta \_\_meta nos 7 JSONs
