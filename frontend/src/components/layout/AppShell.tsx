@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { NavLink } from "react-router-dom";
-import { Grid3X3, Sun, Moon, Monitor } from "lucide-react";
+import { Grid3X3, Sun, Moon } from "lucide-react";
 import { SC_MUNICIPALITIES } from "../../../../shared/constants/municipalities-sc";
 import { useAuth } from "../../hooks/useAuth";
 import { useTheme } from "../../hooks/useTheme";
@@ -19,47 +19,30 @@ function getMunicipalityName(ibgeCode: string): string {
   return SC_MUNICIPALITIES.find((m) => m.ibgeCode === ibgeCode)?.name ?? ibgeCode;
 }
 
-// ---- Theme Toggle ----
-
-const THEME_CYCLE = ["light", "dark", "system"] as const;
-type Theme = (typeof THEME_CYCLE)[number];
-
-function themeLabel(theme: Theme): string {
-  if (theme === "light") return "Modo claro — clique para escuro";
-  if (theme === "dark") return "Modo escuro — clique para sistema";
-  return "Tema do sistema — clique para claro";
-}
+// ---- Theme Toggle (2-state: light ↔ dark) ----
 
 function ThemeToggle() {
-  const { theme, setTheme, resolvedTheme } = useTheme();
+  const { resolvedTheme, setTheme } = useTheme();
 
-  function cycleTheme() {
-    const idx = THEME_CYCLE.indexOf(theme as Theme);
-    const next = THEME_CYCLE[(idx + 1) % THEME_CYCLE.length];
-    setTheme(next);
+  function toggleTheme() {
+    setTheme(resolvedTheme === "dark" ? "light" : "dark");
   }
 
-  const icon =
-    theme === "system" ? (
-      <Monitor className="size-4" />
-    ) : resolvedTheme === "dark" ? (
-      <Sun className="size-4" />
-    ) : (
-      <Moon className="size-4" />
-    );
+  const isDark = resolvedTheme === "dark";
+  const label = isDark ? "Mudar para modo claro" : "Mudar para modo escuro";
 
   return (
     <button
       type="button"
-      onClick={cycleTheme}
-      title={themeLabel(theme as Theme)}
+      onClick={toggleTheme}
+      title={label}
       className={cn(
         "shrink-0 p-1.5 rounded-md transition-colors",
         "text-muted-foreground hover:text-foreground hover:bg-accent",
       )}
-      aria-label={themeLabel(theme as Theme)}
+      aria-label={label}
     >
-      {icon}
+      {isDark ? <Sun className="size-4" /> : <Moon className="size-4" />}
     </button>
   );
 }

@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useRecommendations } from "../../hooks/useRecommendations";
 import { useRecommendedScenario } from "../../hooks/useRecommendedScenario";
@@ -47,6 +48,7 @@ export function RecommendationPanel({ ibgeCode, compact = false }: Recommendatio
   const { data: report, isLoading, isError, error } = useRecommendations(ibgeCode);
   const { fetchScenario, isPending } = useRecommendedScenario();
   const navigate = useNavigate();
+  const [expanded, setExpanded] = useState(false);
 
   const handleSimulateScenario = async () => {
     try {
@@ -69,7 +71,8 @@ export function RecommendationPanel({ ibgeCode, compact = false }: Recommendatio
       )
     : [];
 
-  const displayedRecommendations = compact
+  const isCompact = compact && !expanded;
+  const displayedRecommendations = isCompact
     ? sortedRecommendations.slice(0, 1)
     : sortedRecommendations;
 
@@ -227,9 +230,15 @@ export function RecommendationPanel({ ibgeCode, compact = false }: Recommendatio
             ))}
           </div>
           {compact && sortedRecommendations.length > 1 && (
-            <p className="text-sm text-primary mt-3">
-              + {sortedRecommendations.length - 1} outras recomendações disponíveis
-            </p>
+            <button
+              type="button"
+              onClick={() => setExpanded(!expanded)}
+              className="text-sm text-primary hover:text-primary/80 font-medium mt-3 transition-colors cursor-pointer"
+            >
+              {expanded
+                ? "Mostrar menos"
+                : `+ ${sortedRecommendations.length - 1} outras recomendações disponíveis`}
+            </button>
           )}
         </>
       )}
