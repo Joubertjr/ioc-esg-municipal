@@ -4,13 +4,18 @@ import {
   IdebDataFileSchema,
   type InepMunicipalData,
 } from "../../../shared/types/agents/inep.types.js";
-import idebRawData from "../../../shared/data/ideb_2023.json" with { type: "json" };
+import idebRawData from "../../../shared/data/ideb_latest.json" with { type: "json" };
+
+// Extrai metadados de atualização (inseridos por scripts/update-inep-data.ts)
+const _idebRawRecord = idebRawData as Record<string, unknown>;
+const _idebMeta = _idebRawRecord["__meta"] as { referenceYear?: number } | undefined;
+const { __meta: _idebMetaIgnored, ...idebEntries } = _idebRawRecord;
 
 // Validação na carga do módulo — falha graceful para não crashar o Express
-const _inepParseResult = IdebDataFileSchema.safeParse(idebRawData);
+const _inepParseResult = IdebDataFileSchema.safeParse(idebEntries);
 if (!_inepParseResult.success) {
   logger.error(
-    "ideb_2023.json validation failed — collector will return null for all municipalities",
+    "ideb_latest.json validation failed — collector will return null for all municipalities",
     {
       errors: _inepParseResult.error.errors.slice(0, 3),
     },
@@ -18,8 +23,8 @@ if (!_inepParseResult.success) {
 }
 const IDEB_DATA = _inepParseResult.success ? _inepParseResult.data : null;
 
-const REFERENCE_YEAR = 2023;
-const REFERENCE_DATE = new Date("2023-12-31");
+const REFERENCE_YEAR = _idebMeta?.referenceYear ?? 2023;
+const REFERENCE_DATE = new Date(`${REFERENCE_YEAR}-12-31`);
 
 export class InepCollector {
   async collect(ibgeCode: string): Promise<InepMunicipalData | null> {

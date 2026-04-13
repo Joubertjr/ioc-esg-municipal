@@ -4,13 +4,18 @@ import {
   ConveniosDataFileSchema,
   type ConveniosMunicipalData,
 } from "../../../shared/types/agents/convenios.types.js";
-import conveniosRawData from "../../../shared/data/convenios_2023.json" with { type: "json" };
+import conveniosRawData from "../../../shared/data/convenios_latest.json" with { type: "json" };
+
+// Extrai metadados de atualização (inseridos por scripts/update-convenios-data.ts)
+const _conveniosRawRecord = conveniosRawData as Record<string, unknown>;
+const _conveniosMeta = _conveniosRawRecord["__meta"] as { referenceYear?: number } | undefined;
+const { __meta: _conveniosMetaIgnored, ...conveniosEntries } = _conveniosRawRecord;
 
 // Validação na carga do módulo — falha graceful para não crashar o Express
-const _conveniosParseResult = ConveniosDataFileSchema.safeParse(conveniosRawData);
+const _conveniosParseResult = ConveniosDataFileSchema.safeParse(conveniosEntries);
 if (!_conveniosParseResult.success) {
   logger.error(
-    "convenios_2023.json validation failed — collector will return null for all municipalities",
+    "convenios_latest.json validation failed — collector will return null for all municipalities",
     {
       errors: _conveniosParseResult.error.errors.slice(0, 3),
     },
@@ -18,8 +23,8 @@ if (!_conveniosParseResult.success) {
 }
 const CONVENIOS_DATA = _conveniosParseResult.success ? _conveniosParseResult.data : null;
 
-const REFERENCE_YEAR = 2023;
-const REFERENCE_DATE = new Date("2023-12-31");
+const REFERENCE_YEAR = _conveniosMeta?.referenceYear ?? 2023;
+const REFERENCE_DATE = new Date(`${REFERENCE_YEAR}-12-31`);
 
 export class ConveniosCollector {
   async collect(ibgeCode: string): Promise<ConveniosMunicipalData | null> {

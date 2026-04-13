@@ -4,13 +4,18 @@ import {
   AnatelDataFileSchema,
   type AnatelMunicipalData,
 } from "../../../shared/types/agents/anatel.types.js";
-import anatelRawData from "../../../shared/data/anatel_2023.json" with { type: "json" };
+import anatelRawData from "../../../shared/data/anatel_latest.json" with { type: "json" };
+
+// Extrai metadados de atualização (inseridos por scripts/update-anatel-data.ts)
+const _anatelRawRecord = anatelRawData as Record<string, unknown>;
+const _anatelMeta = _anatelRawRecord["__meta"] as { referenceYear?: number } | undefined;
+const { __meta: _anatelMetaIgnored, ...anatelEntries } = _anatelRawRecord;
 
 // Validação na carga do módulo — falha graceful para não crashar o Express
-const _anatelParseResult = AnatelDataFileSchema.safeParse(anatelRawData);
+const _anatelParseResult = AnatelDataFileSchema.safeParse(anatelEntries);
 if (!_anatelParseResult.success) {
   logger.error(
-    "anatel_2023.json validation failed — collector will return null for all municipalities",
+    "anatel_latest.json validation failed — collector will return null for all municipalities",
     {
       errors: _anatelParseResult.error.errors.slice(0, 3),
     },
@@ -18,8 +23,8 @@ if (!_anatelParseResult.success) {
 }
 const ANATEL_DATA = _anatelParseResult.success ? _anatelParseResult.data : null;
 
-const REFERENCE_YEAR = 2023;
-const REFERENCE_DATE = new Date("2023-12-31");
+const REFERENCE_YEAR = _anatelMeta?.referenceYear ?? 2023;
+const REFERENCE_DATE = new Date(`${REFERENCE_YEAR}-12-31`);
 
 export class AnatelCollector {
   async collect(ibgeCode: string): Promise<AnatelMunicipalData | null> {

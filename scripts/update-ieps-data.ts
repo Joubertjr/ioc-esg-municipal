@@ -1,5 +1,5 @@
 /**
- * Gera shared/data/ieps_2021.json com dados REAIS do IEPS Data.
+ * Gera shared/data/ieps_latest.json com dados REAIS do IEPS Data.
  *
  * Fonte: Base dos Dados (basedosdados.org) → Google BigQuery
  * Tabela: basedosdados-dev.br_ieps_saude.municipio
@@ -38,7 +38,7 @@
  *         "prenatalAdequado": None if pd.isna(row['pct_prenatal_adeq']) else round(float(row['pct_prenatal_adeq']), 1),
  *     }
  *
- * with open('shared/data/ieps_2021.json', 'w') as f:
+ * with open('shared/data/ieps_latest.json', 'w') as f:
  *     json.dump(output, f, indent=2, ensure_ascii=False)
  * print(f"IEPS 2021: {len(output)} municípios exportados")
  * ```
@@ -117,7 +117,17 @@ for (const mun of SC_MUNICIPALITIES) {
   };
 }
 
-writeFileSync("shared/data/ieps_2021.json", JSON.stringify(iepsData, null, 2) + "\n");
+const iepsOutput = {
+  __meta: {
+    lastUpdated: new Date().toISOString(),
+    referenceYear: 2021,
+    sourceUrl: "https://iepsdata.org.br/",
+    municipalities: Object.keys(iepsData).length,
+    note: "Dados estimados baseados em benchmarks SC. Substituir por BigQuery quando credenciais disponíveis.",
+  },
+  ...iepsData,
+};
+writeFileSync("shared/data/ieps_latest.json", JSON.stringify(iepsOutput, null, 2) + "\n");
 console.log(
   `IEPS 2021: ${Object.keys(iepsData).length} municípios SC gerados (dados estimados — substituir por BigQuery)`,
 );
@@ -159,7 +169,7 @@ async function fetchIepsFromBigQuery(): Promise<void> {
   }
 
   writeFileSync(
-    "shared/data/ieps_2021.json",
+    "shared/data/ieps_latest.json",
     JSON.stringify(output, null, 2) + "\n",
   );
   console.log(`IEPS 2021: ${Object.keys(output).length} municípios SC exportados do BigQuery`);

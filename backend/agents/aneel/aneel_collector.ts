@@ -4,13 +4,18 @@ import {
   AneelDataFileSchema,
   type AneelMunicipalData,
 } from "../../../shared/types/agents/aneel.types.js";
-import aneelRawData from "../../../shared/data/aneel_gd_2023.json" with { type: "json" };
+import aneelRawData from "../../../shared/data/aneel_latest.json" with { type: "json" };
+
+// Extrai metadados de atualização (inseridos por scripts/update-aneel-data.ts)
+const _aneelRawRecord = aneelRawData as Record<string, unknown>;
+const _aneelMeta = _aneelRawRecord["__meta"] as { referenceYear?: number } | undefined;
+const { __meta: _aneelMetaIgnored, ...aneelEntries } = _aneelRawRecord;
 
 // Validação na carga do módulo — falha graceful para não crashar o Express
-const _aneelParseResult = AneelDataFileSchema.safeParse(aneelRawData);
+const _aneelParseResult = AneelDataFileSchema.safeParse(aneelEntries);
 if (!_aneelParseResult.success) {
   logger.error(
-    "aneel_gd_2023.json validation failed — collector will return null for all municipalities",
+    "aneel_latest.json validation failed — collector will return null for all municipalities",
     {
       errors: _aneelParseResult.error.errors.slice(0, 3),
     },
@@ -18,8 +23,8 @@ if (!_aneelParseResult.success) {
 }
 const ANEEL_DATA = _aneelParseResult.success ? _aneelParseResult.data : null;
 
-const REFERENCE_YEAR = 2023;
-const REFERENCE_DATE = new Date("2023-12-31");
+const REFERENCE_YEAR = _aneelMeta?.referenceYear ?? 2023;
+const REFERENCE_DATE = new Date(`${REFERENCE_YEAR}-12-31`);
 
 export class AneelCollector {
   async collect(ibgeCode: string): Promise<AneelMunicipalData | null> {

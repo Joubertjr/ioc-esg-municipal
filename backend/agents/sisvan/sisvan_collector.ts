@@ -4,13 +4,18 @@ import {
   SisvanDataFileSchema,
   type SisvanMunicipalData,
 } from "../../../shared/types/agents/sisvan.types.js";
-import sisvanRawData from "../../../shared/data/sisvan_2023.json" with { type: "json" };
+import sisvanRawData from "../../../shared/data/sisvan_latest.json" with { type: "json" };
+
+// Extrai metadados de atualização (inseridos por scripts/update-sisvan-data.ts)
+const _sisvanRawRecord = sisvanRawData as Record<string, unknown>;
+const _sisvanMeta = _sisvanRawRecord["__meta"] as { referenceYear?: number } | undefined;
+const { __meta: _sisvanMetaIgnored, ...sisvanEntries } = _sisvanRawRecord;
 
 // Validação na carga do módulo — falha graceful para não crashar o Express
-const _sisvanParseResult = SisvanDataFileSchema.safeParse(sisvanRawData);
+const _sisvanParseResult = SisvanDataFileSchema.safeParse(sisvanEntries);
 if (!_sisvanParseResult.success) {
   logger.error(
-    "sisvan_2023.json validation failed — collector will return null for all municipalities",
+    "sisvan_latest.json validation failed — collector will return null for all municipalities",
     {
       errors: _sisvanParseResult.error.errors.slice(0, 3),
     },
@@ -18,8 +23,8 @@ if (!_sisvanParseResult.success) {
 }
 const SISVAN_DATA = _sisvanParseResult.success ? _sisvanParseResult.data : null;
 
-const REFERENCE_YEAR = 2023;
-const REFERENCE_DATE = new Date("2023-12-31");
+const REFERENCE_YEAR = _sisvanMeta?.referenceYear ?? 2023;
+const REFERENCE_DATE = new Date(`${REFERENCE_YEAR}-12-31`);
 
 export class SisvanCollector {
   async collect(ibgeCode: string): Promise<SisvanMunicipalData | null> {

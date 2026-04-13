@@ -4,19 +4,27 @@ import {
   IepsDataFileSchema,
   type IepsMunicipalData,
 } from "../../../shared/types/agents/ieps.types.js";
-import iepsRawData from "../../../shared/data/ieps_2021.json" with { type: "json" };
+import iepsRawData from "../../../shared/data/ieps_latest.json" with { type: "json" };
+
+// Extrai metadados de atualização (inseridos por scripts/update-ieps-data.ts)
+const _iepsRawRecord = iepsRawData as Record<string, unknown>;
+const _iepsMeta = _iepsRawRecord["__meta"] as { referenceYear?: number } | undefined;
+const { __meta: _iepsMetaIgnored, ...iepsEntries } = _iepsRawRecord;
 
 // Validação na carga do módulo — falha graceful para não crashar o Express
-const _iepsParseResult = IepsDataFileSchema.safeParse(iepsRawData);
+const _iepsParseResult = IepsDataFileSchema.safeParse(iepsEntries);
 if (!_iepsParseResult.success) {
-  logger.error("ieps_2021.json validation failed — IEPS indicators will be unavailable for ODS 3", {
-    errors: _iepsParseResult.error.errors.slice(0, 3),
-  });
+  logger.error(
+    "ieps_latest.json validation failed — IEPS indicators will be unavailable for ODS 3",
+    {
+      errors: _iepsParseResult.error.errors.slice(0, 3),
+    },
+  );
 }
 const IEPS_DATA = _iepsParseResult.success ? _iepsParseResult.data : null;
 
-const REFERENCE_YEAR = 2021;
-const REFERENCE_DATE = new Date("2021-12-31");
+const REFERENCE_YEAR = _iepsMeta?.referenceYear ?? 2021;
+const REFERENCE_DATE = new Date(`${REFERENCE_YEAR}-12-31`);
 
 /**
  * Coletor de dados de saúde municipal via IEPS Data.
@@ -27,8 +35,8 @@ const REFERENCE_DATE = new Date("2021-12-31");
  * Vantagem sobre DATASUS direto: dados já limpos, padronizados e
  * disponíveis por município desde 2010.
  *
- * Dados carregados de JSON estático (shared/data/ieps_2021.json).
- * Para atualizar com dados reais: npx tsx scripts/fetch-ieps-data.ts
+ * Dados carregados de JSON estático (shared/data/ieps_latest.json).
+ * Para atualizar com dados reais: npx tsx scripts/update-ieps-data.ts
  *
  * Gotchas:
  * - Dados deflacionados (gastoSaudePerCapita) usam R$ 2019 como base

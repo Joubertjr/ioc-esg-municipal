@@ -34,6 +34,14 @@
     "madge:circular": "madge --circular --extensions ts backend/",
     "madge:orphans": "madge --orphans --extensions ts backend/",
     "madge:graph": "madge --extensions ts --image /tmp/ioc-dep-graph.svg backend/",
+    "data:update:snis": "tsx scripts/update-snis-data.ts",
+    "data:update:inep": "tsx scripts/update-inep-data.ts",
+    "data:update:sisvan": "tsx scripts/update-sisvan-data.ts",
+    "data:update:anatel": "tsx scripts/update-anatel-data.ts",
+    "data:update:aneel": "tsx scripts/update-aneel-data.ts",
+    "data:update:convenios": "tsx scripts/update-convenios-data.ts",
+    "data:update:ieps": "tsx scripts/update-ieps-data.ts",
+    "data:update:all": "pnpm data:update:snis && pnpm data:update:inep && pnpm data:update:sisvan && pnpm data:update:anatel && pnpm data:update:aneel && pnpm data:update:convenios && pnpm data:update:ieps",
     "prepare": "husky"
   },
   "dependencies": {

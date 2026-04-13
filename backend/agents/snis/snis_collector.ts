@@ -4,13 +4,18 @@ import {
   SnisDataFileSchema,
   type SnisMunicipalData,
 } from "../../../shared/types/agents/snis.types.js";
-import snisRawData from "../../../shared/data/snis_2022.json" with { type: "json" };
+import snisRawData from "../../../shared/data/snis_latest.json" with { type: "json" };
+
+// Extrai metadados de atualização (inseridos por scripts/update-snis-data.ts)
+const _snisRawRecord = snisRawData as Record<string, unknown>;
+const _snisMeta = _snisRawRecord["__meta"] as { referenceYear?: number } | undefined;
+const { __meta: _snisMetaIgnored, ...snisEntries } = _snisRawRecord;
 
 // Validação na carga do módulo — falha graceful para não crashar o Express
-const _snisParseResult = SnisDataFileSchema.safeParse(snisRawData);
+const _snisParseResult = SnisDataFileSchema.safeParse(snisEntries);
 if (!_snisParseResult.success) {
   logger.error(
-    "snis_2022.json validation failed — collector will return null for all municipalities",
+    "snis_latest.json validation failed — collector will return null for all municipalities",
     {
       errors: _snisParseResult.error.errors.slice(0, 3),
     },
@@ -18,8 +23,8 @@ if (!_snisParseResult.success) {
 }
 const SNIS_DATA = _snisParseResult.success ? _snisParseResult.data : null;
 
-const REFERENCE_YEAR = 2022;
-const REFERENCE_DATE = new Date("2022-12-31");
+const REFERENCE_YEAR = _snisMeta?.referenceYear ?? 2022;
+const REFERENCE_DATE = new Date(`${REFERENCE_YEAR}-12-31`);
 
 export class SnisCollector {
   async collect(ibgeCode: string): Promise<SnisMunicipalData | null> {
