@@ -12,13 +12,13 @@ on:
   issues:
     types: [opened, labeled]
   schedule:
-    - cron: '0 9 * * 1-5'   # Briefing diário 9h UTC (6h BRT)
-    - cron: '0 13 * * *'    # Verificação APIs gov 10h BRT
-    - cron: '0 10 * * 1'    # Security audit segunda 7h BRT
+    - cron: "0 9 * * 1-5" # Briefing diário 9h UTC (6h BRT)
+    - cron: "0 13 * * *" # Verificação APIs gov 10h BRT
+    - cron: "0 10 * * 1" # Security audit segunda 7h BRT
   workflow_dispatch:
     inputs:
       prompt:
-        description: 'Prompt para Claude Code'
+        description: "Prompt para Claude Code"
         required: true
         type: string
 
@@ -57,7 +57,7 @@ jobs:
       - uses: pnpm/action-setup@v3
         with: { version: 8 }
       - uses: actions/setup-node@v4
-        with: { node-version: '20', cache: 'pnpm' }
+        with: { node-version: "20", cache: "pnpm" }
       - run: pnpm install --frozen-lockfile
       - run: pnpm tsc --noEmit
       - run: pnpm lint
@@ -109,7 +109,7 @@ jobs:
       - uses: pnpm/action-setup@v3
         with: { version: 8 }
       - uses: actions/setup-node@v4
-        with: { node-version: '20', cache: 'pnpm' }
+        with: { node-version: "20", cache: "pnpm" }
       - run: pnpm install --frozen-lockfile
       - name: Install Playwright browsers
         run: npx playwright install --with-deps chromium
@@ -151,6 +151,13 @@ jobs:
           done
           echo "Frontend did not start in time" >&2
           exit 1
+      - name: Smoke test (end-to-end validation)
+        run: bash scripts/smoke-test-stack.sh custom "$API" "$FRONTEND"
+        env:
+          API: http://localhost:3000
+          FRONTEND: http://localhost:5173
+          SMOKE_EMAIL: admin@ioc.local
+          SMOKE_PASSWORD: Admin@2026
       - name: Run E2E tests
         # PLAYWRIGHT_SKIP_WEBSERVER=1 tells playwright.config.ts not to spawn extra
         # dev servers — backend and frontend are already running from the steps above.
