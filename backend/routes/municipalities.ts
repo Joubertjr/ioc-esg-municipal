@@ -28,11 +28,11 @@ const IbgeCodeSchema = z
 // ---------------------------------------------------------------------------
 
 const PageSchema = z.coerce.number().int().min(1).default(1);
-const PageSizeSchema = z.coerce.number().int().min(1).max(100).default(50);
+const PageSizeSchema = z.coerce.number().int().min(1).max(300).default(50);
 
 /**
  * Retorna municípios paginados, ordenados por nome.
- * Query params: page (default 1), pageSize (default 50, max 100).
+ * Query params: page (default 1), pageSize (default 50, max 300).
  */
 router.get("/", async (req: Request, res: Response) => {
   const page = PageSchema.safeParse(req.query["page"]).data ?? 1;
