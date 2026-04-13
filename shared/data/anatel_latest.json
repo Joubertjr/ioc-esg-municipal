@@ -1178,5 +1178,11 @@
   "4220000": {
     "acessosBandaLargaPor100hab": 12.6,
     "cobertura4gPercentual": 82.4
+  },
+  "__meta": {
+    "lastUpdated": "2026-04-13T16:34:05.340Z",
+    "referenceYear": 2023,
+    "sourceUrl": "https://dados.anatel.gov.br/",
+    "municipalities": 295
   }
 }

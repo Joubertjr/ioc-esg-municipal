@@ -17,7 +17,11 @@
  */
 
 import { writeFileSync, readFileSync } from "node:fs";
-import { resolve } from "node:path";
+import { resolve, dirname } from "node:path";
+import { fileURLToPath } from "node:url";
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+
 import { SnisDataFileSchema } from "../shared/types/agents/snis.types.js";
 
 const OUTPUT_PATH = resolve(__dirname, "../shared/data/snis_latest.json");

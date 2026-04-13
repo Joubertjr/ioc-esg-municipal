@@ -2358,5 +2358,11 @@
     "internacoesCsap": 1090.47,
     "gastoSaudePerCapita": 648.51,
     "prenatalAdequado": 81.11
+  },
+  "__meta": {
+    "lastUpdated": "2026-04-13T16:34:06.476Z",
+    "referenceYear": 2021,
+    "sourceUrl": "https://iepsdata.org.br/",
+    "municipalities": 295
   }
 }

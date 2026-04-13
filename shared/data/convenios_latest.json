@@ -1,7 +1,7 @@
 {
   "4200051": {
     "conveniosFederaisAtivos": 6,
-    "pctOrcamentoConvenios": 0.0,
+    "pctOrcamentoConvenios": 0,
     "consorciosIntermunicipais": 2
   },
   "4200101": {
@@ -11,7 +11,7 @@
   },
   "4200200": {
     "conveniosFederaisAtivos": 4,
-    "pctOrcamentoConvenios": 0.0,
+    "pctOrcamentoConvenios": 0,
     "consorciosIntermunicipais": 4
   },
   "4200309": {
@@ -106,7 +106,7 @@
   },
   "4201653": {
     "conveniosFederaisAtivos": 4,
-    "pctOrcamentoConvenios": 6.0,
+    "pctOrcamentoConvenios": 6,
     "consorciosIntermunicipais": 4
   },
   "4201703": {
@@ -156,7 +156,7 @@
   },
   "4202107": {
     "conveniosFederaisAtivos": 0,
-    "pctOrcamentoConvenios": 5.0,
+    "pctOrcamentoConvenios": 5,
     "consorciosIntermunicipais": 7
   },
   "4202131": {
@@ -186,7 +186,7 @@
   },
   "4202438": {
     "conveniosFederaisAtivos": 2,
-    "pctOrcamentoConvenios": 7.0,
+    "pctOrcamentoConvenios": 7,
     "consorciosIntermunicipais": 5
   },
   "4202453": {
@@ -226,7 +226,7 @@
   },
   "4202859": {
     "conveniosFederaisAtivos": 8,
-    "pctOrcamentoConvenios": 11.0,
+    "pctOrcamentoConvenios": 11,
     "consorciosIntermunicipais": 1
   },
   "4202875": {
@@ -246,7 +246,7 @@
   },
   "4203105": {
     "conveniosFederaisAtivos": 5,
-    "pctOrcamentoConvenios": 3.0,
+    "pctOrcamentoConvenios": 3,
     "consorciosIntermunicipais": 6
   },
   "4203154": {
@@ -281,7 +281,7 @@
   },
   "4203600": {
     "conveniosFederaisAtivos": 1,
-    "pctOrcamentoConvenios": 10.0,
+    "pctOrcamentoConvenios": 10,
     "consorciosIntermunicipais": 6
   },
   "4203709": {
@@ -301,7 +301,7 @@
   },
   "4203956": {
     "conveniosFederaisAtivos": 4,
-    "pctOrcamentoConvenios": 10.0,
+    "pctOrcamentoConvenios": 10,
     "consorciosIntermunicipais": 7
   },
   "4204004": {
@@ -316,7 +316,7 @@
   },
   "4204152": {
     "conveniosFederaisAtivos": 1,
-    "pctOrcamentoConvenios": 9.0,
+    "pctOrcamentoConvenios": 9,
     "consorciosIntermunicipais": 8
   },
   "4204178": {
@@ -361,7 +361,7 @@
   },
   "4204509": {
     "conveniosFederaisAtivos": 4,
-    "pctOrcamentoConvenios": 4.0,
+    "pctOrcamentoConvenios": 4,
     "consorciosIntermunicipais": 5
   },
   "4204558": {
@@ -371,7 +371,7 @@
   },
   "4204608": {
     "conveniosFederaisAtivos": 4,
-    "pctOrcamentoConvenios": 0.0,
+    "pctOrcamentoConvenios": 0,
     "consorciosIntermunicipais": 7
   },
   "4204707": {
@@ -426,7 +426,7 @@
   },
   "4205308": {
     "conveniosFederaisAtivos": 8,
-    "pctOrcamentoConvenios": 4.0,
+    "pctOrcamentoConvenios": 4,
     "consorciosIntermunicipais": 2
   },
   "4205357": {
@@ -436,7 +436,7 @@
   },
   "4205407": {
     "conveniosFederaisAtivos": 6,
-    "pctOrcamentoConvenios": 7.0,
+    "pctOrcamentoConvenios": 7,
     "consorciosIntermunicipais": 4
   },
   "4205431": {
@@ -491,7 +491,7 @@
   },
   "4206207": {
     "conveniosFederaisAtivos": 3,
-    "pctOrcamentoConvenios": 7.0,
+    "pctOrcamentoConvenios": 7,
     "consorciosIntermunicipais": 2
   },
   "4206306": {
@@ -541,7 +541,7 @@
   },
   "4207007": {
     "conveniosFederaisAtivos": 2,
-    "pctOrcamentoConvenios": 25.0,
+    "pctOrcamentoConvenios": 25,
     "consorciosIntermunicipais": 0
   },
   "4207106": {
@@ -551,7 +551,7 @@
   },
   "4207205": {
     "conveniosFederaisAtivos": 6,
-    "pctOrcamentoConvenios": 30.0,
+    "pctOrcamentoConvenios": 30,
     "consorciosIntermunicipais": 7
   },
   "4207304": {
@@ -601,7 +601,7 @@
   },
   "4207809": {
     "conveniosFederaisAtivos": 3,
-    "pctOrcamentoConvenios": 0.0,
+    "pctOrcamentoConvenios": 0,
     "consorciosIntermunicipais": 5
   },
   "4207858": {
@@ -616,7 +616,7 @@
   },
   "4208005": {
     "conveniosFederaisAtivos": 4,
-    "pctOrcamentoConvenios": 0.0,
+    "pctOrcamentoConvenios": 0,
     "consorciosIntermunicipais": 5
   },
   "4208104": {
@@ -626,7 +626,7 @@
   },
   "4208203": {
     "conveniosFederaisAtivos": 5,
-    "pctOrcamentoConvenios": 0.0,
+    "pctOrcamentoConvenios": 0,
     "consorciosIntermunicipais": 4
   },
   "4208302": {
@@ -646,7 +646,7 @@
   },
   "4208500": {
     "conveniosFederaisAtivos": 2,
-    "pctOrcamentoConvenios": 1.0,
+    "pctOrcamentoConvenios": 1,
     "consorciosIntermunicipais": 4
   },
   "4208609": {
@@ -696,12 +696,12 @@
   },
   "4209201": {
     "conveniosFederaisAtivos": 1,
-    "pctOrcamentoConvenios": 30.0,
+    "pctOrcamentoConvenios": 30,
     "consorciosIntermunicipais": 3
   },
   "4209300": {
     "conveniosFederaisAtivos": 4,
-    "pctOrcamentoConvenios": 6.0,
+    "pctOrcamentoConvenios": 6,
     "consorciosIntermunicipais": 3
   },
   "4209409": {
@@ -746,17 +746,17 @@
   },
   "4210001": {
     "conveniosFederaisAtivos": 6,
-    "pctOrcamentoConvenios": 4.0,
+    "pctOrcamentoConvenios": 4,
     "consorciosIntermunicipais": 7
   },
   "4210035": {
     "conveniosFederaisAtivos": 1,
-    "pctOrcamentoConvenios": 12.0,
+    "pctOrcamentoConvenios": 12,
     "consorciosIntermunicipais": 5
   },
   "4210050": {
     "conveniosFederaisAtivos": 6,
-    "pctOrcamentoConvenios": 10.0,
+    "pctOrcamentoConvenios": 10,
     "consorciosIntermunicipais": 6
   },
   "4210100": {
@@ -786,7 +786,7 @@
   },
   "4210555": {
     "conveniosFederaisAtivos": 4,
-    "pctOrcamentoConvenios": 13.0,
+    "pctOrcamentoConvenios": 13,
     "consorciosIntermunicipais": 4
   },
   "4210605": {
@@ -826,7 +826,7 @@
   },
   "4211108": {
     "conveniosFederaisAtivos": 5,
-    "pctOrcamentoConvenios": 7.0,
+    "pctOrcamentoConvenios": 7,
     "consorciosIntermunicipais": 1
   },
   "4211207": {
@@ -891,7 +891,7 @@
   },
   "4211876": {
     "conveniosFederaisAtivos": 15,
-    "pctOrcamentoConvenios": 8.0,
+    "pctOrcamentoConvenios": 8,
     "consorciosIntermunicipais": 1
   },
   "4211892": {
@@ -906,7 +906,7 @@
   },
   "4212007": {
     "conveniosFederaisAtivos": 15,
-    "pctOrcamentoConvenios": 30.0,
+    "pctOrcamentoConvenios": 30,
     "consorciosIntermunicipais": 2
   },
   "4212056": {
@@ -941,7 +941,7 @@
   },
   "4212304": {
     "conveniosFederaisAtivos": 4,
-    "pctOrcamentoConvenios": 9.0,
+    "pctOrcamentoConvenios": 9,
     "consorciosIntermunicipais": 5
   },
   "4212403": {
@@ -981,7 +981,7 @@
   },
   "4213005": {
     "conveniosFederaisAtivos": 3,
-    "pctOrcamentoConvenios": 16.0,
+    "pctOrcamentoConvenios": 16,
     "consorciosIntermunicipais": 2
   },
   "4213104": {
@@ -996,7 +996,7 @@
   },
   "4213203": {
     "conveniosFederaisAtivos": 4,
-    "pctOrcamentoConvenios": 20.0,
+    "pctOrcamentoConvenios": 20,
     "consorciosIntermunicipais": 6
   },
   "4213302": {
@@ -1101,7 +1101,7 @@
   },
   "4215059": {
     "conveniosFederaisAtivos": 2,
-    "pctOrcamentoConvenios": 4.0,
+    "pctOrcamentoConvenios": 4,
     "consorciosIntermunicipais": 6
   },
   "4215075": {
@@ -1126,7 +1126,7 @@
   },
   "4215356": {
     "conveniosFederaisAtivos": 25,
-    "pctOrcamentoConvenios": 7.0,
+    "pctOrcamentoConvenios": 7,
     "consorciosIntermunicipais": 5
   },
   "4215406": {
@@ -1136,7 +1136,7 @@
   },
   "4215455": {
     "conveniosFederaisAtivos": 0,
-    "pctOrcamentoConvenios": 10.0,
+    "pctOrcamentoConvenios": 10,
     "consorciosIntermunicipais": 7
   },
   "4215505": {
@@ -1281,7 +1281,7 @@
   },
   "4217253": {
     "conveniosFederaisAtivos": 2,
-    "pctOrcamentoConvenios": 19.0,
+    "pctOrcamentoConvenios": 19,
     "consorciosIntermunicipais": 6
   },
   "4217303": {
@@ -1291,7 +1291,7 @@
   },
   "4217402": {
     "conveniosFederaisAtivos": 6,
-    "pctOrcamentoConvenios": 0.0,
+    "pctOrcamentoConvenios": 0,
     "consorciosIntermunicipais": 6
   },
   "4217501": {
@@ -1336,7 +1336,7 @@
   },
   "4218004": {
     "conveniosFederaisAtivos": 3,
-    "pctOrcamentoConvenios": 30.0,
+    "pctOrcamentoConvenios": 30,
     "consorciosIntermunicipais": 3
   },
   "4218103": {
@@ -1466,12 +1466,18 @@
   },
   "4219853": {
     "conveniosFederaisAtivos": 2,
-    "pctOrcamentoConvenios": 5.0,
+    "pctOrcamentoConvenios": 5,
     "consorciosIntermunicipais": 5
   },
   "4220000": {
     "conveniosFederaisAtivos": 2,
     "pctOrcamentoConvenios": 6.4,
     "consorciosIntermunicipais": 4
+  },
+  "__meta": {
+    "lastUpdated": "2026-04-13T16:34:05.907Z",
+    "referenceYear": 2023,
+    "sourceUrl": "https://plataformamaisbrasil.gov.br/download-de-dados",
+    "municipalities": 295
   }
 }

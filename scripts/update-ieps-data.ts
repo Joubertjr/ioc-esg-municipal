@@ -29,7 +29,11 @@
  */
 
 import { writeFileSync, readFileSync, existsSync } from "node:fs";
-import { resolve } from "node:path";
+import { resolve, dirname } from "node:path";
+import { fileURLToPath } from "node:url";
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+
 import { IepsDataFileSchema } from "../shared/types/agents/ieps.types.js";
 
 const OUTPUT_PATH = resolve(__dirname, "../shared/data/ieps_latest.json");

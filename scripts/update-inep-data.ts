@@ -19,7 +19,11 @@
  */
 
 import { writeFileSync, readFileSync, existsSync } from "node:fs";
-import { resolve } from "node:path";
+import { resolve, dirname } from "node:path";
+import { fileURLToPath } from "node:url";
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+
 import { IdebDataFileSchema } from "../shared/types/agents/inep.types.js";
 
 const OUTPUT_PATH = resolve(__dirname, "../shared/data/ideb_latest.json");
