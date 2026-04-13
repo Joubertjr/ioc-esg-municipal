@@ -16,6 +16,7 @@ A plataforma IOC ESG Municipal encontra-se **pronta para uso em ambiente de prod
 | **Onboarding de Usuários**       | ✅ Operacional | Fluxo restrito aos 295 municípios de SC. Usuários vinculam-se via código IBGE.                                                         |
 | **Integração de Dados Reais**    | ✅ Operacional | 7 coletores via API em tempo real + 7 coletores estáticos (com scripts de atualização automatizada e `__meta.referenceYear` dinâmico). |
 | **Dashboard e Simulação**        | ✅ Operacional | Interface responsiva, simulação de FPM, ranking SC (Benchmark) e relatórios de recomendações por IA.                                   |
+| **Observabilidade**              | ✅ Operacional | Prometheus + Grafana + prom-client. Métricas: latência p95, cache hit/miss, APIs gov, Core Web Vitals. Alertas automáticos.            |
 
 ---
 
@@ -53,12 +54,12 @@ _Nota: Todos os 7 JSONs possuem a chave `__meta` com o `referenceYear` lido dina
 
 Auditoria end-to-end como prefeito de Florianópolis identificou e corrigiu:
 
-| Bug | Impacto | Commit |
-|-----|---------|--------|
-| ibgeCode não sincroniza com auth async | Prefeito de outra cidade via Florianópolis por default | `bec945a` |
-| Trend dead-band ±0.5 inconsistente | "→ 1 pts" quando deveria mostrar seta direcional | `bec945a` |
-| Benchmark skeleton infinito | Compound isLoading bloqueava seções independentes | `e4020ef` |
-| Ranking "—" no Dashboard | Backend exclui target do ranking, frontend não calculava | `e4020ef` |
+| Bug                                    | Impacto                                                  | Commit    |
+| -------------------------------------- | -------------------------------------------------------- | --------- |
+| ibgeCode não sincroniza com auth async | Prefeito de outra cidade via Florianópolis por default   | `bec945a` |
+| Trend dead-band ±0.5 inconsistente     | "→ 1 pts" quando deveria mostrar seta direcional         | `bec945a` |
+| Benchmark skeleton infinito            | Compound isLoading bloqueava seções independentes        | `e4020ef` |
+| Ranking "—" no Dashboard               | Backend exclui target do ranking, frontend não calculava | `e4020ef` |
 
 Rotina de auditoria permanente criada: `/audit` (skill) + `scripts/audit.sh` + `tests/e2e/audit.spec.ts` (`5cf899a`).
 
