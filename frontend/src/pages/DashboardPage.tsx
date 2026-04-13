@@ -11,12 +11,14 @@ import { OdsDetailPanel } from "../components/ods/OdsDetailPanel";
 import { OdsHistoryChart } from "../components/charts/OdsHistoryChart";
 import { RecommendationPanel } from "../components/recommendations/RecommendationPanel";
 import { useToast } from "../components/ui/Toast";
+import { useAuthContext } from "../contexts/AuthContext";
 import type { OdsSummary } from "../types/api";
 
-const DEFAULT_IBGE_CODE = "4205407"; // Florianopolis
+const DEFAULT_IBGE_CODE = "4205407"; // Florianopolis (fallback para admin sem município)
 
 export function DashboardPage() {
-  const [ibgeCode, setIbgeCode] = useState(DEFAULT_IBGE_CODE);
+  const { currentUser } = useAuthContext();
+  const [ibgeCode, setIbgeCode] = useState(currentUser?.ibgeCode ?? DEFAULT_IBGE_CODE);
   const [selectedOds, setSelectedOds] = useState<OdsSummary | null>(null);
   const { data: report, isLoading, isError, error, refetch } = useOdsReport(ibgeCode);
   const { data: benchmark, isLoading: isBenchmarkLoading } = useStateBenchmark(ibgeCode);

@@ -3,6 +3,7 @@ import { useLocation } from "react-router-dom";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { AppShell } from "../components/layout/AppShell";
 import { useToast } from "../components/ui/Toast";
+import { useAuthContext } from "../contexts/AuthContext";
 import { apiGet, apiPost } from "../lib/api";
 import type {
   InvestmentArea,
@@ -16,7 +17,7 @@ import type {
 import { INVESTMENT_AREA_LABELS } from "../types/api";
 import { ODS_DEFINITIONS } from "../../../shared/constants/ods";
 
-const DEFAULT_IBGE_CODE = "4205407"; // Florianópolis
+const DEFAULT_IBGE_CODE = "4205407"; // Florianópolis (fallback)
 
 const INVESTMENT_AREAS = Object.keys(INVESTMENT_AREA_LABELS) as InvestmentArea[];
 
@@ -220,7 +221,8 @@ function EmptyResultsPlaceholder() {
 
 export function SimulatorPage() {
   const location = useLocation();
-  const [ibgeCode, setIbgeCode] = useState(DEFAULT_IBGE_CODE);
+  const { currentUser } = useAuthContext();
+  const [ibgeCode, setIbgeCode] = useState(currentUser?.ibgeCode ?? DEFAULT_IBGE_CODE);
   const [totalAmountRaw, setTotalAmountRaw] = useState("1000000");
   const [displayValue, setDisplayValue] = useState("1.000.000");
   const [isFocused, setIsFocused] = useState(false);
@@ -262,7 +264,7 @@ export function SimulatorPage() {
     Error
   >({
     queryKey: ["municipalities"],
-    queryFn: () => apiGet<{ data: MunicipalityListItem[]; total: number }>("/api/municipalities"),
+    queryFn: () => apiGet<{ data: MunicipalityListItem[]; total: number }>("/api/municipalities?pageSize=300"),
     staleTime: 60 * 60 * 1000,
   });
 

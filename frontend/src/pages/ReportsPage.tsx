@@ -2,10 +2,11 @@ import { useState, useCallback, useEffect } from "react";
 import { useOdsReport } from "../hooks/useOdsReport";
 import { AppShell } from "../components/layout/AppShell";
 import { useToast } from "../components/ui/Toast";
+import { useAuthContext } from "../contexts/AuthContext";
 import type { OdsSummary, OdsStatus } from "../types/api";
 import { getIndicatorMeta } from "../../../shared/constants/ods-descriptions";
 
-const DEFAULT_IBGE_CODE = "4205407"; // Florianópolis
+const DEFAULT_IBGE_CODE = "4205407"; // Florianópolis (fallback)
 
 // Nomes completos dos ODS em pt-BR com acentuação correta
 const ODS_FULL_NAMES: Record<number, string> = {
@@ -259,7 +260,8 @@ function AccordionRow({ ods }: AccordionRowProps) {
 }
 
 export function ReportsPage() {
-  const [ibgeCode, setIbgeCode] = useState(DEFAULT_IBGE_CODE);
+  const { currentUser } = useAuthContext();
+  const [ibgeCode, setIbgeCode] = useState(currentUser?.ibgeCode ?? DEFAULT_IBGE_CODE);
   const { data: report, isLoading, isError, error, refetch } = useOdsReport(ibgeCode);
   const { showToast } = useToast();
 

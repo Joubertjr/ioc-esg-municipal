@@ -3,9 +3,10 @@ import { useOdsReport } from "../hooks/useOdsReport";
 import { useOdsHistory } from "../hooks/useOdsHistory";
 import { AppShell } from "../components/layout/AppShell";
 import { useToast } from "../components/ui/Toast";
+import { useAuthContext } from "../contexts/AuthContext";
 import type { OdsSummary, OdsStatus, OdsScoreRecord } from "../types/api";
 
-const DEFAULT_IBGE_CODE = "4205407"; // Florianópolis
+const DEFAULT_IBGE_CODE = "4205407"; // Florianópolis (fallback)
 const DEFAULT_TARGET = 70;
 
 type SortKey = "odsNumber" | "scoreAsc" | "gapDesc";
@@ -249,7 +250,8 @@ function SummaryStats({
 }
 
 export function MonitoringPage() {
-  const [ibgeCode, setIbgeCode] = useState(DEFAULT_IBGE_CODE);
+  const { currentUser } = useAuthContext();
+  const [ibgeCode, setIbgeCode] = useState(currentUser?.ibgeCode ?? DEFAULT_IBGE_CODE);
   const [target, setTarget] = useState(DEFAULT_TARGET);
   const [filterStatus, setFilterStatus] = useState<FilterStatus>("all");
   const [sortKey, setSortKey] = useState<SortKey>("odsNumber");

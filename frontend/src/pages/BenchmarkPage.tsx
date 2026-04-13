@@ -9,8 +9,9 @@ import { OdsComparisonTable } from "../components/benchmark/OdsComparisonTable";
 import { useBenchmark, useCompare } from "../hooks/useBenchmark";
 import { usePeers } from "../hooks/usePeers";
 import { getMunicipalityName } from "../lib/municipalityLookup";
+import { useAuthContext } from "../contexts/AuthContext";
 
-const DEFAULT_IBGE_CODE = "4205407"; // Florianópolis
+const DEFAULT_IBGE_CODE = "4205407"; // Florianópolis (fallback)
 const DEFAULT_SELECTED_CODES = [
   "4205407", // Florianópolis
   "4209102", // Joinville
@@ -108,7 +109,8 @@ function SummaryCard({ label, value, sub, highlight = "neutral" }: SummaryCardPr
 // ---- Main Page ----
 
 export function BenchmarkPage() {
-  const [ibgeCode, setIbgeCode] = useState(DEFAULT_IBGE_CODE);
+  const { currentUser } = useAuthContext();
+  const [ibgeCode, setIbgeCode] = useState(currentUser?.ibgeCode ?? DEFAULT_IBGE_CODE);
   const [selectedCodes, setSelectedCodes] = useState<string[]>(DEFAULT_SELECTED_CODES);
   const [suggestedCodes, setSuggestedCodes] = useState<string[]>([]);
 
