@@ -64,7 +64,9 @@ async function fetchWithRefresh(path: string, init: RequestInit): Promise<Respon
   // 401 — try to refresh once
   const refreshed = await triggerRefresh();
   if (!refreshed) {
-    window.location.href = "/login";
+    if (window.location.pathname !== "/login") {
+      window.location.href = "/login";
+    }
     return res;
   }
 

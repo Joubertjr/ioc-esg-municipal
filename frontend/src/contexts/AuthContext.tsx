@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect, useCallback, type ReactNode } from "react";
-import { apiGet } from "../lib/api";
+import { apiGet, checkSession } from "../lib/api";
 
 export interface AuthUser {
   id: string;
@@ -36,9 +36,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
+  // Inicialização: usa checkSession (fetch direto, sem interceptor de 401)
+  // para evitar loop de redirect quando não há sessão ativa
   useEffect(() => {
-    refreshCurrentUser();
-  }, [refreshCurrentUser]);
+    checkSession().then((ok) => {
+      if (ok) {
+        refreshCurrentUser();
+      } else {
+        setAuthenticated(false);
+        setCurrentUser(null);
+      }
+    });
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <AuthContext.Provider
