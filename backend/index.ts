@@ -22,7 +22,7 @@ import { requestIdMiddleware } from "./middleware/request-id.js";
 import { requestLoggerMiddleware } from "./middleware/request-logger.js";
 import { logger } from "./utils/logger.js";
 import { env } from "./utils/env-validator.js";
-import { registry } from "./utils/metrics.js";
+import { registry, webVitals, frontendApiDuration, normalizeRoute } from "./utils/metrics.js";
 import { getRedisClient } from "./utils/cache.js";
 import { prisma } from "./lib/prisma.js";
 import { swaggerSpec } from "./docs/swagger.js";
@@ -132,9 +132,25 @@ app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // Telemetria frontend — público, sem auth (beacon API não envia cookies)
 app.post("/api/telemetry", (req, res) => {
-  const body = req.body as { events?: unknown[] };
+  const body = req.body as {
+    events?: Array<{ type: string; name: string; value: number; page?: string }>;
+  };
   if (Array.isArray(body?.events)) {
-    logger.info("[telemetry] frontend batch", { count: body.events.length, events: body.events });
+    for (const evt of body.events) {
+      if (evt.type === "web-vital" && evt.name && typeof evt.value === "number") {
+        webVitals.set({ metric: evt.name, page: evt.page ?? "unknown" }, evt.value);
+      } else if (evt.type === "api-timing" && evt.name && typeof evt.value === "number") {
+        // name format: "200 /api/ods/4205407" → extract status and path
+        const match = evt.name.match(/^(\d{3})\s+(.+)$/);
+        if (match) {
+          frontendApiDuration.observe(
+            { path: normalizeRoute(match[2]), status_code: match[1] },
+            evt.value,
+          );
+        }
+      }
+    }
+    logger.debug("[telemetry] frontend batch", { count: body.events.length });
   }
   res.status(204).end();
 });

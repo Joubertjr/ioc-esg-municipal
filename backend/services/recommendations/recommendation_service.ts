@@ -176,24 +176,26 @@ export async function generateRecommendations(
 }
 
 async function _computeRecommendations(ibgeCode: string): Promise<RecommendationReport | null> {
-  // 1. Relatório ESG base
-  const report = await generateEsgReport(ibgeCode);
+  // 1. Relatório ESG + Benchmark em paralelo (são independentes)
+  const peerCodes = SC_BENCHMARK_CODES.filter((c) => c !== ibgeCode);
+
+  const [report, comparisonResult] = await Promise.all([
+    generateEsgReport(ibgeCode),
+    compareAgainstBenchmark(ibgeCode, [...peerCodes]).catch((err) => {
+      logger.warn(
+        "[recommendations] falha ao obter benchmark estadual, continuando sem comparação",
+        {
+          ibgeCode,
+          error: err instanceof Error ? err.message : String(err),
+        },
+      );
+      return null;
+    }),
+  ]);
+
   if (!report) {
     logger.warn("[recommendations] sem dados ESG para município", { ibgeCode });
     return null;
-  }
-
-  // 2. Benchmark estadual (peers excluem o próprio município)
-  const peerCodes = SC_BENCHMARK_CODES.filter((c) => c !== ibgeCode);
-  let comparisonResult: Awaited<ReturnType<typeof compareAgainstBenchmark>> | null = null;
-
-  try {
-    comparisonResult = await compareAgainstBenchmark(ibgeCode, [...peerCodes]);
-  } catch (err) {
-    logger.warn("[recommendations] falha ao obter benchmark estadual, continuando sem comparação", {
-      ibgeCode,
-      error: err instanceof Error ? err.message : String(err),
-    });
   }
 
   // Indexar comparações por ODS para acesso O(1)

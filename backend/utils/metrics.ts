@@ -44,6 +44,23 @@ export const cacheOperations = new client.Counter({
   registers: [registry],
 });
 
+// ─── Frontend telemetry metrics ──────────────────────────────────────────────
+
+export const webVitals = new client.Gauge({
+  name: "frontend_web_vital",
+  help: "Core Web Vitals reported by the browser (LCP, INP, CLS, FCP, TTFB)",
+  labelNames: ["metric", "page"] as const,
+  registers: [registry],
+});
+
+export const frontendApiDuration = new client.Histogram({
+  name: "frontend_api_duration_ms",
+  help: "API call duration as seen by the browser",
+  labelNames: ["path", "status_code"] as const,
+  buckets: [50, 100, 250, 500, 1000, 2500, 5000, 10000, 30000],
+  registers: [registry],
+});
+
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
 const IBGE_CODE_RE = /\b\d{7}\b/g;
