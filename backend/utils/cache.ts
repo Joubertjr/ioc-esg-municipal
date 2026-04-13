@@ -1,5 +1,6 @@
 import { createClient, type RedisClientType } from "redis";
 import { logger } from "./logger.js";
+import { cacheOperations } from "./metrics.js";
 
 let client: RedisClientType | null = null;
 let connectingPromise: Promise<RedisClientType> | null = null;
@@ -61,17 +62,23 @@ export async function withCache<T>(
     const redis = await getRedisClient();
     const cached = await redis.get(key);
 
+    const prefix = key.split(":")[0];
+
     if (cached !== null) {
       logger.debug(`Cache HIT: ${key}`);
+      cacheOperations.inc({ operation: "HIT", key_prefix: prefix });
       return JSON.parse(cached) as T;
     }
 
     logger.debug(`Cache MISS: ${key}`);
+    cacheOperations.inc({ operation: "MISS", key_prefix: prefix });
     const result = await fn();
     await redis.setEx(key, ttlSeconds, JSON.stringify(result));
     return result;
   } catch (error) {
     // Redis indisponível — executa sem cache
+    const prefix = key.split(":")[0];
+    cacheOperations.inc({ operation: "ERROR", key_prefix: prefix });
     logger.warn(`Cache unavailable for key ${key}, fetching directly`, {
       error: String(error),
     });

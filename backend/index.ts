@@ -22,6 +22,7 @@ import { requestIdMiddleware } from "./middleware/request-id.js";
 import { requestLoggerMiddleware } from "./middleware/request-logger.js";
 import { logger } from "./utils/logger.js";
 import { env } from "./utils/env-validator.js";
+import { registry } from "./utils/metrics.js";
 import { prisma } from "./lib/prisma.js";
 import { swaggerSpec } from "./docs/swagger.js";
 
@@ -103,6 +104,11 @@ app.get("/health", (_req, res) => {
     timestamp: new Date().toISOString(),
     uptime: process.uptime(),
   });
+});
+
+app.get("/metrics", async (_req, res) => {
+  res.set("Content-Type", registry.contentType);
+  res.end(await registry.metrics());
 });
 
 // Documentação interativa (sem auth)

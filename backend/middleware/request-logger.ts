@@ -1,16 +1,13 @@
 import { type Request, type Response, type NextFunction } from "express";
 import { logger } from "../utils/logger.js";
+import { httpRequestDuration, httpErrors, normalizeRoute } from "../utils/metrics.js";
 
 /**
  * Loga cada requisição HTTP com método, path, status e tempo de resposta.
  * Nível de log varia pelo status: debug (2xx/3xx), warn (4xx), error (5xx).
  * Inclui requestId gerado pelo requestIdMiddleware para rastreabilidade.
  */
-export function requestLoggerMiddleware(
-  req: Request,
-  res: Response,
-  next: NextFunction,
-): void {
+export function requestLoggerMiddleware(req: Request, res: Response, next: NextFunction): void {
   const startAt = process.hrtime.bigint();
 
   res.on("finish", () => {
@@ -23,6 +20,16 @@ export function requestLoggerMiddleware(
       status,
       durationMs: Math.round(durationMs * 100) / 100,
     };
+
+    // Prometheus metrics
+    const normalizedRoute = normalizeRoute(req.path);
+    httpRequestDuration.observe(
+      { method: req.method, route: normalizedRoute, status_code: String(status) },
+      durationMs,
+    );
+    if (status >= 400) {
+      httpErrors.inc({ method: req.method, route: normalizedRoute, status_code: String(status) });
+    }
 
     const message = `${req.method} ${req.path} ${status} ${payload.durationMs}ms`;
 
