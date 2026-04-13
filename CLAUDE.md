@@ -9,7 +9,13 @@
 **IOC ESG Municipal** = Plataforma SaaS B2G que ajuda prefeitos brasileiros a investir
 FPM com impacto nos 17 ODS da ONU, eliminando o R$20-40B desperdiçado anualmente.
 
-**Mercado inicial:** 295 municípios de Santa Catarina → 5.570 no Brasil
+**Mercado inicial:** 295 municípios de Santa Catarina (FOCO EXCLUSIVO)
+
+**⚠️ PREMISSA DE NEGÓCIO INEGOCIÁVEL:**
+O foco absoluto e exclusivo no momento é entregar o software funcionando perfeitamente para os usuários de **Santa Catarina (SC)**.
+- NÃO implemente nenhuma funcionalidade que não seja necessária para o usuário final de SC usar a plataforma.
+- NÃO evolua arquitetura ou escopo se não for uma demanda de uso direto do usuário de SC.
+- O objetivo é usar o software em SC até aprovar tudo com o cliente final. Só depois de aprovar o produto em SC pensaremos em expansão nacional ou novas features.
 **Modelo:** Assinatura R$12k–200k/ano por município, 80%+ de margem
 **Diferencial:** Dados públicos + simulação multi-agente + recomendação por IA
 
