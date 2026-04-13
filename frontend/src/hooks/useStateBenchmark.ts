@@ -26,15 +26,20 @@ export function useStateBenchmark(ibgeCode: string) {
         : null;
 
     const ranking = data.benchmark.ranking;
-    const myEntry = ranking.find((r) => r.ibgeCode === ibgeCode);
-    const rankingPosition = myEntry?.position ?? null;
+    // Backend excludes target from ranking to avoid self-reference bias.
+    // Calculate position by counting peers with higher globalScore.
+    let rankingPosition: number | null = null;
+    if (myScore !== null) {
+      const peersAbove = ranking.filter((r) => (r.globalScore ?? 0) > myScore).length;
+      rankingPosition = peersAbove + 1;
+    }
 
     return {
       globalScore: myScore,
       stateAverage,
       deltaVsState,
       rankingPosition,
-      totalInBenchmark: ranking.length,
+      totalInBenchmark: ranking.length + 1,
       aboveStateAverage: deltaVsState !== null ? deltaVsState > 0 : null,
     };
   }, [data, ibgeCode]);

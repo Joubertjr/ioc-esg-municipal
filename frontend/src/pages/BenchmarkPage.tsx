@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent } from "../components/ui/card";
 import { Skeleton } from "../components/ui/skeleton";
 import { AppShell } from "../components/layout/AppShell";
@@ -113,6 +113,12 @@ export function BenchmarkPage() {
   const [ibgeCode, setIbgeCode] = useState(currentUser?.ibgeCode ?? DEFAULT_IBGE_CODE);
   const [selectedCodes, setSelectedCodes] = useState<string[]>(DEFAULT_SELECTED_CODES);
   const [suggestedCodes, setSuggestedCodes] = useState<string[]>([]);
+
+  useEffect(() => {
+    if (currentUser?.ibgeCode) {
+      setIbgeCode(currentUser.ibgeCode);
+    }
+  }, [currentUser?.ibgeCode]);
 
   const { data: peersData, isLoading: isPeersLoading } = usePeers(ibgeCode);
 
@@ -278,7 +284,7 @@ export function BenchmarkPage() {
         {/* Summary cards */}
         {canCompare && (
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-            {isLoading ? (
+            {isBenchmarkLoading || isCompareLoading ? (
               <>
                 <SummaryCardSkeleton />
                 <SummaryCardSkeleton />
@@ -329,7 +335,7 @@ export function BenchmarkPage() {
         {canCompare && (
           <section>
             <h2 className="text-base font-semibold text-foreground mb-3">Ranking do grupo</h2>
-            {isLoading ? (
+            {isBenchmarkLoading ? (
               <RankingSkeleton />
             ) : benchmark ? (
               <RankingTable
@@ -347,7 +353,7 @@ export function BenchmarkPage() {
             <h2 className="text-base font-semibold text-foreground mb-3">Análise por ODS</h2>
             <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
               {/* Left: radar */}
-              {isLoading ? (
+              {isCompareLoading ? (
                 <RadarSkeleton />
               ) : compare ? (
                 <ComparisonRadar
@@ -357,11 +363,13 @@ export function BenchmarkPage() {
                   }
                 />
               ) : (
-                <RadarSkeleton />
+                <div className="flex items-center justify-center h-64 text-sm text-muted-foreground">
+                  Dados de comparação indisponíveis
+                </div>
               )}
 
               {/* Right: ODS comparison table */}
-              {isLoading ? (
+              {isCompareLoading ? (
                 <TableSkeleton />
               ) : compare ? (
                 <OdsComparisonTable
@@ -369,7 +377,9 @@ export function BenchmarkPage() {
                   averages={benchmark?.averages ?? []}
                 />
               ) : (
-                <TableSkeleton />
+                <div className="flex items-center justify-center h-64 text-sm text-muted-foreground">
+                  Dados de comparação indisponíveis
+                </div>
               )}
             </div>
           </section>
