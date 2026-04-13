@@ -231,6 +231,12 @@ export function SimulatorPage() {
   const [showScenarioBanner, setShowScenarioBanner] = useState(false);
   const { showToast } = useToast();
 
+  useEffect(() => {
+    if (currentUser?.ibgeCode) {
+      setIbgeCode(currentUser.ibgeCode);
+    }
+  }, [currentUser?.ibgeCode]);
+
   // Ler cenário pré-preenchido das recomendações (via navigate state)
   useEffect(() => {
     const state = location.state as {

@@ -27,6 +27,12 @@ export function DashboardPage() {
   const { showToast } = useToast();
 
   useEffect(() => {
+    if (currentUser?.ibgeCode) {
+      setIbgeCode(currentUser.ibgeCode);
+    }
+  }, [currentUser?.ibgeCode]);
+
+  useEffect(() => {
     if (isError && error) {
       showToast(error.message ?? "Erro ao carregar dados ODS.", "error");
     }

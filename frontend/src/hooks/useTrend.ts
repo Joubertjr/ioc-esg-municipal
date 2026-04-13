@@ -55,7 +55,7 @@ export function useTrend(ibgeCode: string) {
     data: {
       delta,
       direction:
-        delta > 0.5 ? ("up" as const) : delta < -0.5 ? ("down" as const) : ("neutral" as const),
+        delta >= 0.5 ? ("up" as const) : delta <= -0.5 ? ("down" as const) : ("neutral" as const),
       sparklineData,
       latestYear: latest.year,
       previousYear: previous.year,
