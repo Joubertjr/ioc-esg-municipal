@@ -49,7 +49,22 @@ _Nota: Todos os 7 JSONs possuem a chave `__meta` com o `referenceYear` lido dina
 
 ---
 
-## 3. Próximos Passos Imediatos (Go-Live SC)
+## 3. Bugs UX Corrigidos (2026-04-13 — Auditoria Funcional)
+
+Auditoria end-to-end como prefeito de Florianópolis identificou e corrigiu:
+
+| Bug | Impacto | Commit |
+|-----|---------|--------|
+| ibgeCode não sincroniza com auth async | Prefeito de outra cidade via Florianópolis por default | `bec945a` |
+| Trend dead-band ±0.5 inconsistente | "→ 1 pts" quando deveria mostrar seta direcional | `bec945a` |
+| Benchmark skeleton infinito | Compound isLoading bloqueava seções independentes | `e4020ef` |
+| Ranking "—" no Dashboard | Backend exclui target do ranking, frontend não calculava | `e4020ef` |
+
+Rotina de auditoria permanente criada: `/audit` (skill) + `scripts/audit.sh` + `tests/e2e/audit.spec.ts` (`5cf899a`).
+
+---
+
+## 4. Próximos Passos Imediatos (Go-Live SC)
 
 A plataforma não requer mais código para funcionar em SC. Os próximos passos são puramente operacionais:
 
@@ -63,7 +78,7 @@ A plataforma não requer mais código para funcionar em SC. Os próximos passos 
 
 ---
 
-## 4. O Que NÃO Fazer (Regras de Ouro)
+## 5. O Que NÃO Fazer (Regras de Ouro)
 
 Até que o cliente final (Prefeitura em SC) valide e aprove o produto em produção:
 
