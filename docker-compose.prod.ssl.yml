@@ -1,0 +1,35 @@
+# =============================================================================
+# IOC ESG Municipal — Override SSL para deploy direto com Let's Encrypt
+# =============================================================================
+# USO:
+#   docker compose -f docker-compose.prod.yml -f docker-compose.prod.ssl.yml up -d
+#
+# PRE-REQUISITOS:
+#   - Certificados em nginx/ssl/ (cert.pem + key.pem)
+#   - Ou executar scripts/setup-ssl.sh para provisionar via Certbot
+# =============================================================================
+
+services:
+  nginx:
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/ssl:/etc/nginx/ssl:ro
+      - certbot_www:/var/www/certbot:ro
+
+  certbot:
+    image: certbot/certbot
+    container_name: ioc_certbot
+    profiles:
+      - ssl
+    volumes:
+      - ./nginx/ssl:/etc/letsencrypt
+      - certbot_www:/var/www/certbot
+    command: renew --quiet
+    restart: "no"
+
+volumes:
+  certbot_www:
+    driver: local
