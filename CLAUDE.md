@@ -1,119 +1,149 @@
 # IOC ESG Municipal — CLAUDE.md
 
-> Leia inteiro antes de agir. Cada regra é operacional, não sugestão.
+> **Leia inteiro antes de agir. Cada regra é operacional, não sugestão.**
+
+---
+
+## ⛔ PREMISSA ABSOLUTA E INEGOCIÁVEL — LEIA PRIMEIRO
+
+```
+O ÚNICO OBJETIVO ATUAL É:
+Entregar o software funcionando para os usuários de Santa Catarina (SC)
+e obter a aprovação do cliente final.
+
+NÃO FAÇA NADA QUE NÃO SEJA NECESSÁRIO PARA O USUÁRIO FINAL DE SC USAR A PLATAFORMA.
+```
+
+**O que isso significa na prática:**
+
+- **NÃO** implemente funcionalidades novas que não sejam demanda direta de uso do usuário de SC.
+- **NÃO** evolua arquitetura, adicione camadas ou refatore se não for um bloqueador para o usuário de SC.
+- **NÃO** expanda o escopo para outros estados, municípios fora de SC ou funcionalidades "nice to have".
+- **NÃO** trabalhe em itens do backlog marcados como "Planejado" ou "Backlog" sem instrução explícita.
+- **SIM** corrija bugs que impeçam o usuário de SC de usar a plataforma.
+- **SIM** melhore estabilidade, dados e UX se for bloqueador para o uso real em SC.
+
+**Só depois de aprovado o produto em SC pensaremos em expansão nacional, novas features ou evolução arquitetural.**
+
+Documento de estado atual: `docs/ESTADO_ATUAL_SC.md` — leia sempre ao iniciar uma sessão.
 
 ---
 
 ## CONTEXTO DO PROJETO
 
-**IOC ESG Municipal** = Plataforma SaaS B2G que ajuda prefeitos brasileiros a investir
-FPM com impacto nos 17 ODS da ONU, eliminando o R$20-40B desperdiçado anualmente.
+**IOC ESG Municipal** = Plataforma SaaS B2G que ajuda prefeitos de Santa Catarina a investir FPM com impacto nos 17 ODS da ONU, com dados públicos reais, simulação de políticas e recomendação por IA.
 
-**Mercado inicial:** 295 municípios de Santa Catarina (FOCO EXCLUSIVO)
+**Mercado atual:** 295 municípios de Santa Catarina (FOCO EXCLUSIVO)
 
-**⚠️ PREMISSA DE NEGÓCIO INEGOCIÁVEL:**
-O foco absoluto e exclusivo no momento é entregar o software funcionando perfeitamente para os usuários de **Santa Catarina (SC)**.
-- NÃO implemente nenhuma funcionalidade que não seja necessária para o usuário final de SC usar a plataforma.
-- NÃO evolua arquitetura ou escopo se não for uma demanda de uso direto do usuário de SC.
-- O objetivo é usar o software em SC até aprovar tudo com o cliente final. Só depois de aprovar o produto em SC pensaremos em expansão nacional ou novas features.
 **Modelo:** Assinatura R$12k–200k/ano por município, 80%+ de margem
-**Diferencial:** Dados públicos + simulação multi-agente + recomendação por IA
+
+**Diferencial:** Dados públicos reais + simulação multi-agente + recomendação por IA
 
 **Stack aprovada:**
 
-- Backend: Node.js 18 + TypeScript strict + Express + Prisma ORM + PostgreSQL + Redis + Bull
+- Backend: Node.js 20 + TypeScript strict + Express + Prisma ORM + PostgreSQL + Redis
 - Frontend: React 18 + TypeScript + Vite + Tailwind CSS + Shadcn/ui + Recharts
 - Testes: Vitest (unit/integration) + Playwright (e2e)
-- Infra: Docker Compose + GitHub Actions
+- Infra: Docker Compose (dev e prod)
 
-**⚠️ DOIS AMBIENTES — NÃO CONFUNDIR:**
+---
 
-| Ambiente          | Onde roda                 | Comando                                           | Composição                                                                                   |
-| :---------------- | :------------------------ | :------------------------------------------------ | :------------------------------------------------------------------------------------------- |
-| **Dev (local)**   | `pnpm dev` no host macOS  | `pnpm dev`                                        | `docker-compose.yml` (só postgres + redis + adminer)                                         |
-| **Prod (Docker)** | `docker-compose.prod.yml` | `docker compose -f docker-compose.prod.yml up -d` | Dockerfile multi-stage (deps → builder → fe-builder → production) + nginx + postgres + redis |
+## ESTADO ATUAL DO PROJETO
 
-**Regra operacional:** toda feature backend que altera rota, tipo ou service **deve** ser validada em `docker build` antes de ser marcada como concluída. "Funciona no pnpm dev" não é prova de que funciona em produção. Reporte explícito na mensagem de conclusão: `docker build: OK | tsc: OK | tests: OK`.
+**Leia sempre:** `docs/ESTADO_ATUAL_SC.md`
 
-**Estado atual:** !`cat docs/PROJECT_STATE.md 2>/dev/null | head -10 || echo "Setup inicial — documentação completa disponível em docs/especificacao/"`
+**Resumo rápido (atualizado em 2026-04-13):**
+
+| Componente                                    | Status                                 |
+| --------------------------------------------- | -------------------------------------- |
+| Autenticação JWT + anti-IDOR                  | ✅ Pronto                              |
+| Onboarding restrito a 295 municípios SC       | ✅ Pronto                              |
+| 7 coletores com APIs reais                    | ✅ Pronto                              |
+| 7 coletores com JSONs estáticos atualizáveis  | ✅ Pronto (scripts update-\*-data.ts)  |
+| `__meta.referenceYear` dinâmico nos coletores | ✅ Pronto                              |
+| Nginx HTTP-only para produção                 | ✅ Pronto                              |
+| SSL opt-in via docker-compose.prod.ssl.yml    | ✅ Pronto                              |
+| Dashboard, Simulador, Relatórios, Benchmark   | ✅ Pronto                              |
+| Docker prod (`docker-compose.prod.yml up -d`) | ✅ Pronto                              |
+| Smoke test com todos os 295 municípios        | ⚠️ Pendente — executar antes do deploy |
+| Domínio + SSL em produção                     | ⚠️ Requer decisão externa (domínio)    |
 
 ---
 
 ## INÍCIO DE SESSÃO — execute sempre
 
 ```bash
-git log --oneline -5 2>/dev/null || echo "repo novo"
-git status --short 2>/dev/null | head -5
-cat docs/PROJECT_STATE.md 2>/dev/null | head -30
+git log --oneline -5
+git status --short | head -5
+cat docs/ESTADO_ATUAL_SC.md
 ```
-
-Memoria de longo prazo: ler `~/obsidian-vault/ioc-esg-municipal/long-term/gotchas.md` e `short-term/current-task.md`.
-Ou invoque o agente `memory-manager` para sincronizar automaticamente.
 
 Reporte: **feito / em progresso / próximo passo exato**
 
 ---
 
-## IDENTIDADE
+## AMBIENTES — NÃO CONFUNDIR
 
-Você é o **arquiteto-executor** deste projeto. Não espera instrução óbvia.
+| Ambiente          | Comando                                                                          | Composição                                                                           |
+| ----------------- | -------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
+| **Dev (local)**   | `docker compose up --build`                                                      | `docker-compose.yml` — 4 containers: postgres, redis, backend (HMR), frontend (Vite) |
+| **Prod (Docker)** | `docker compose -f docker-compose.prod.yml up -d`                                | Imagem multi-stage + nginx HTTP-only + postgres + redis                              |
+| **Prod SSL**      | `docker compose -f docker-compose.prod.yml -f docker-compose.prod.ssl.yml up -d` | Override com certificados Let's Encrypt                                              |
 
-- Toma decisões técnicas e documenta como ADR em `docs/decisions/`
-- Propõe arquitetura ANTES de implementar qualquer coisa
-- Questiona requisitos ambíguos antes de codificar
-- Dúvida entre velocidade e qualidade: **escolha qualidade**
+**Regra operacional:** toda alteração em `backend/`, `shared/types/`, `prisma/` ou rotas exige rebuild da imagem antes de ser considerada concluída:
 
----
+```bash
+docker build -t ioc-esg-municipal:$(git rev-parse --short HEAD) . && echo "prod build OK"
+```
 
-## PROTOCOLO OBRIGATÓRIO: PLAN BEFORE CODE
-
-Para qualquer task > 15 minutos:
-
-1. Ative Plan Mode (Shift+Tab 2×) ou pense explicitamente
-2. Leia os arquivos relevantes — **nunca assuma estrutura**
-3. Produza: o quê, como, por quê, arquivos afetados, riscos
-4. Aguarde aprovação antes de executar
-5. Checkpoint: `git add -A && git commit -m "checkpoint: antes de [feature]"`
-6. Salve plano em `docs/plans/<feature>.md`
+Reporte explícito na mensagem de conclusão: `docker build: OK | tsc: OK | tests: OK`.
 
 ---
 
 ## COMANDOS DO PROJETO
 
-### Dev (host local)
+### Dev (Docker)
 
 ```bash
-pnpm docker:up        # sobe Postgres + Redis + Adminer (docker-compose.yml)
-pnpm dev              # backend (3000) + frontend (5173) no host
-pnpm test             # unit + integration
-pnpm test:e2e         # playwright
+docker compose up --build        # sobe os 4 containers com HMR
+docker compose down
+docker compose logs -f backend
+pnpm db:seed                     # seed 295 municípios SC
+pnpm db:migrate                  # prisma migrate dev
+pnpm test                        # unit + integration
+pnpm test:e2e                    # playwright
 pnpm lint && pnpm format
-pnpm db:migrate       # prisma migrate dev
-pnpm db:seed          # seed 295 municípios SC
-pnpm db:studio        # Prisma Studio UI
 ```
 
-### Produção (Docker end-to-end)
+### Produção
 
 ```bash
-# 1. Build da imagem multi-stage
+# Build da imagem multi-stage
 docker build -t ioc-esg-municipal:latest .
 
-# 2. Validação local da imagem (opcional, mas recomendado antes de push)
-docker run --rm ioc-esg-municipal:latest node -e "console.log('image OK')"
-
-# 3. Subir stack de produção (api + nginx + postgres + redis)
+# Subir stack de produção HTTP-only
 docker compose -f docker-compose.prod.yml up -d
 
-# 4. Verificar health e logs
+# Verificar saúde
 docker compose -f docker-compose.prod.yml ps
 docker compose -f docker-compose.prod.yml logs -f api
+
+# SSL opt-in (requer domínio configurado)
+DOMAIN=app.ioc.com.br EMAIL=admin@ioc.com.br ./scripts/setup-ssl.sh
+docker compose -f docker-compose.prod.yml -f docker-compose.prod.ssl.yml up -d
 ```
 
-**Regra:** toda alteração em `backend/`, `shared/types/`, `prisma/` ou rotas exige rebuild da imagem antes de ser considerada concluída. O comando rápido de validação é:
+### Atualização de dados estáticos
 
 ```bash
-docker build -t ioc-esg-municipal:$(git rev-parse --short HEAD) . && echo "prod build OK"
+pnpm data:update:snis        # SNIS — saneamento
+pnpm data:update:inep        # IDEB — educação
+pnpm data:update:sisvan      # SISVAN — nutrição
+pnpm data:update:anatel      # Anatel — conectividade
+pnpm data:update:aneel       # ANEEL — energia
+pnpm data:update:convenios   # Convênios — transferências
+pnpm data:update:ieps        # IEPS — saúde
+pnpm data:update:all         # todos os 7 scripts em sequência
 ```
 
 ---
@@ -123,40 +153,49 @@ docker build -t ioc-esg-municipal:$(git rev-parse --short HEAD) . && echo "prod 
 ```
 ioc-esg-municipal/
 ├── backend/
-│   ├── agents/          # Coletores de APIs governamentais
+│   ├── agents/          # 14+ coletores de dados (APIs reais + JSONs estáticos)
 │   │   ├── ibge/        # Dados demográficos — servicodados.ibge.gov.br/api/v1
 │   │   ├── siconfi/     # FPM e finanças — api.siconfi.tesouro.gov.br/v1
 │   │   ├── datasus/     # Saúde — datasus.saude.gov.br
-│   │   ├── inep/        # IDEB — inep.gov.br (download Excel, sem REST)
-│   │   ├── snis/        # Saneamento — snis.gov.br (download anual)
 │   │   ├── inpe/        # Florestal — terrabrasilis.dpi.inpe.br/api/v1
-│   │   └── pncp/        # Licitações — pncp.gov.br/api/pncp
+│   │   ├── pncp/        # Licitações — pncp.gov.br/api/pncp
+│   │   ├── ana/         # Água — API ANA
+│   │   ├── snis-rs/     # Saneamento — SNIS RS
+│   │   ├── ieps/        # Saúde — ieps_latest.json (update-ieps-data.ts)
+│   │   ├── inep/        # IDEB — ideb_latest.json (update-inep-data.ts)
+│   │   ├── snis/        # Saneamento — snis_latest.json (update-snis-data.ts)
+│   │   ├── sisvan/      # Nutrição — sisvan_latest.json (update-sisvan-data.ts)
+│   │   ├── anatel/      # Conectividade — anatel_latest.json (update-anatel-data.ts)
+│   │   ├── aneel/       # Energia — aneel_latest.json (update-aneel-data.ts)
+│   │   ├── convenios/   # Transferências — convenios_latest.json (update-convenios-data.ts)
+│   │   └── tse/         # Eleições — tse_latest.json
 │   ├── services/
 │   │   ├── ods/         # Calculators de score 0-100 por ODS
-│   │   ├── simulator/   # Motor de simulação de políticas públicas
+│   │   ├── simulator/   # Motor de simulação FPM
 │   │   ├── reports/     # Gerador de relatórios ESG
-│   │   └── benchmarks/  # Comparativo entre municípios SC
-│   ├── models/          # Schemas Prisma
-│   ├── routes/          # Express routers
+│   │   ├── benchmarks/  # Comparativo entre municípios SC
+│   │   └── recommendations/ # Recomendações inteligentes por gap analysis
+│   ├── routes/          # Express routers (auth, ods, simulator, reports, benchmarks)
 │   └── middleware/      # Auth JWT, rate limit, logging Winston
 ├── frontend/
-│   ├── pages/
-│   │   ├── dashboard/   # ODS overview do município (prefeito)
-│   │   ├── simulator/   # Simulador de cenários de investimento
-│   │   ├── reports/     # Relatórios de impacto ESG
-│   │   └── monitoring/  # Acompanhamento de metas
-│   └── components/
-│       ├── ods/         # Cards e gauges dos 17 ODS
-│       └── charts/      # Recharts wrappers
+│   └── src/pages/
+│       ├── LoginPage.tsx
+│       ├── OnboardingPage.tsx   # Restrito a 295 municípios SC
+│       ├── DashboardPage.tsx    # ODS overview + recomendações
+│       ├── SimulatorPage.tsx    # Simulador de cenários FPM
+│       ├── ReportsPage.tsx      # Relatórios ESG
+│       ├── MonitoringPage.tsx   # Acompanhamento de metas
+│       └── BenchmarkPage.tsx    # Ranking e comparativo SC
 ├── shared/
 │   ├── types/           # Interfaces TypeScript (Município, ODS, Simulação)
-│   └── constants/       # ODS 1-17, APIs, 295 municípios SC
-├── docs/
-│   ├── especificacao/   # Documentação completa do projeto
-│   ├── plans/           # Planos aprovados por feature
-│   ├── decisions/       # ADRs (Architecture Decision Records)
-│   └── PROJECT_STATE.md # Estado atual — atualizar todo fim de sessão
-└── .claude/             # Claude Code config
+│   ├── constants/       # ODS 1-17, APIs, 295 municípios SC
+│   └── data/            # JSONs estáticos (*_latest.json com __meta)
+├── scripts/             # update-*-data.ts (7 scripts de atualização)
+├── nginx/               # nginx-http.conf (HTTP-only) + nginx.conf (SSL)
+├── prisma/              # Schema + seed 295 municípios SC
+└── docs/
+    ├── ESTADO_ATUAL_SC.md   # ← LEIA SEMPRE AO INICIAR SESSÃO
+    └── decisions/           # ADRs
 ```
 
 ---
@@ -175,18 +214,6 @@ ioc-esg-municipal/
 - Verde ≥70 | Amarelo 40–69 | Vermelho <40
 - Score global = média ponderada dos 17 ODS
 
-### APIs governamentais (todos os dados são públicos e gratuitos)
-
-| API     | URL                              | Dados                   | Cache TTL |
-| ------- | -------------------------------- | ----------------------- | --------- |
-| IBGE    | servicodados.ibge.gov.br/api/v1  | Pop, renda, desemprego  | 24h       |
-| SICONFI | api.siconfi.tesouro.gov.br/v1    | FPM, receitas, despesas | 6h        |
-| DATASUS | datasus.saude.gov.br             | Saúde, mortalidade      | 12h       |
-| INEP    | inep.gov.br (download)           | IDEB (bienal)           | 7 dias    |
-| SNIS    | snis.gov.br (download)           | Água, esgoto (anual)    | 7 dias    |
-| INPE    | terrabrasilis.dpi.inpe.br/api/v1 | Florestal, desmatamento | 24h       |
-| PNCP    | pncp.gov.br/api/pncp             | Licitações (tempo real) | 1h        |
-
 ### Gotchas críticos do domínio
 
 - Código IBGE: 7 dígitos (ex: 4204202). SICONFI usa 6 dígitos sem verificador (420420)
@@ -194,7 +221,8 @@ ioc-esg-municipal/
 - IDEB: bienal (anos pares). Interpole para anos intermediários
 - DATASUS: cai com frequência. Sempre timeout=30s + retry 3x + backoff exponencial
 - SNIS: dados chegam com ~18 meses de atraso. Sempre informe o ano de referência
-- Municípios <5k hab: muitos indicadores são amostral ou suprimidos por privacidade
+- Municípios <5k hab: muitos indicadores são amostrais ou suprimidos por privacidade
+- SISVAN e SNIS têm dados para 284/295 municípios SC (11 municípios sem cobertura na base federal — comportamento esperado)
 
 ---
 
@@ -205,7 +233,7 @@ ioc-esg-municipal/
 - `strict: true` sempre, zero `any`, use `unknown` + type guards
 - Zod para validar TODA resposta de APIs externas antes de usar
 - Decimal.js para valores financeiros (FPM, investimentos)
-- Interfaces para domínio (Municipio, ODS, Indicador, Simulacao)
+- ESM nativo: use `import.meta.url` + `fileURLToPath` para `__dirname`
 
 ### Backend
 
@@ -215,9 +243,15 @@ ioc-esg-municipal/
 - Retry com backoff exponencial: 1s, 2s, 4s (3 tentativas)
 - Rate limiting: máx 2 req/segundo para APIs governamentais
 
+### Coletores de dados estáticos
+
+- Padrão: importar `*_latest.json`, extrair `__meta`, remover `__meta`, validar com `safeParse` Zod
+- `REFERENCE_YEAR = _meta?.referenceYear ?? <fallback>`
+- Scripts de atualização: `scripts/update-*-data.ts` — padrão CSV-first com fallback para JSON existente
+
 ### Frontend
 
-- React Query para server state, Zustand para client state mínimo
+- React Query para server state
 - Componentes funcionais, tipagem explícita de props
 - Lazy loading para páginas
 - Skeleton loaders para dados assíncronos
@@ -236,7 +270,19 @@ ioc-esg-municipal/
 - NUNCA loga PII (dados pessoais), apenas dados agregados por município
 - Validação Zod em toda rota antes de processar
 - Rate limiting em rotas públicas
-- `.env` no `.gitignore`, `.env.example` sempre atualizado
+- IDOR corrigido: prefeito só acessa dados do próprio município (JWT + middleware)
+
+---
+
+## QUALIDADE — checklist antes de "concluído"
+
+- [ ] `tsc --noEmit` sem erros TypeScript
+- [ ] `pnpm test` passando
+- [ ] `docker build -t ioc-esg-municipal:<tag> .` concluído com sucesso
+- [ ] Novos testes escritos para nova funcionalidade
+- [ ] Sem credenciais hardcoded
+- [ ] Erros tratados explicitamente (nunca silencioso)
+- [ ] Cache Redis implementado se chamar API externa
 
 ---
 
@@ -249,137 +295,9 @@ ioc-esg-municipal/
 ```
 
 Tipos: `feat` `fix` `refactor` `test` `docs` `chore` `perf` `ci`
-Escopos: `ibge` `siconfi` `datasus` `inep` `snis` `inpe` `pncp` `ods` `simulator` `dashboard` `auth` `db` `infra`
+Escopos: `ibge` `siconfi` `datasus` `inep` `snis` `inpe` `pncp` `ods` `simulator` `dashboard` `auth` `db` `infra` `agents`
 
 Nunca: `fix bug` `update` `changes` `wip`
-
----
-
-## MEMÓRIA DE LONGO PRAZO (Obsidian Vault)
-
-Vault: `~/obsidian-vault/ioc-esg-municipal/`
-MCP Server: `@modelcontextprotocol/server-filesystem` configurado em `.mcp.json`
-
-Estrutura:
-
-```
-~/obsidian-vault/ioc-esg-municipal/
-├── long-term/
-│   ├── architecture.md      # Stack, principios, escopo
-│   ├── decisions-log.md     # ADRs
-│   ├── gotchas.md           # Bugs conhecidos, armadilhas de dominio
-│   └── lessons-learned.md   # Padroes validados, licoes
-├── short-term/
-│   └── current-task.md      # Tarefa em andamento
-└── daily/
-    └── YYYY-MM-DD.md        # Log diario
-```
-
-Hierarquia de memória:
-
-- **CLAUDE.md** (~50 linhas ativas) = registradores — sempre em contexto
-- **MEMORY.md** (~30 linhas) = cache — índice/ponteiros, sem conteúdo
-- **Vault Obsidian** (ilimitado) = RAM/disco — base de conhecimento persistente
-
-Regras:
-
-- Início de sessão: ler `long-term/architecture.md` e `long-term/gotchas.md`
-- Fim de sessão: atualizar `daily/YYYY-MM-DD.md` e `short-term/current-task.md`
-- Decisões arquiteturais: adicionar em `long-term/decisions-log.md`
-- Nunca poluir vault com outputs temporários — esses ficam em `~/.claude/`
-
----
-
-## GESTÃO DE CONTEXTO
-
-- `/compact` quando contexto atingir **70%** — nunca espere 90%
-- `/context-save` antes de qualquer compactação
-- `/btw <pergunta>` para dúvidas rápidas sem poluir contexto
-- `/clear` entre features não relacionadas
-- Antes de limpar: salve em `docs/PROJECT_STATE.md`
-
----
-
-## QUALIDADE — checklist antes de "concluído"
-
-- [ ] `pnpm build` sem erros TypeScript
-- [ ] `pnpm test` passando
-- [ ] **`docker build -t ioc-esg-municipal:<tag> .` concluído com sucesso** (produção)
-- [ ] Novos testes escritos para nova funcionalidade
-- [ ] Sem credenciais hardcoded
-- [ ] Erros tratados explicitamente (nunca silencioso)
-- [ ] Cache Redis implementado se chamar API externa
-- [ ] Evidência visual em `docs/evidence/` para mudanças de UI
-
----
-
-## RECURSOS DO PROJETO
-
-### Skills (invoque com `/nome`)
-
-| Skill                    | Quando usar                                                      |
-| ------------------------ | ---------------------------------------------------------------- |
-| `/setup`                 | Setup inicial completo — execute UMA VEZ                         |
-| `/new-agent <api>`       | Novo coletor (ibge, siconfi, datasus, inep, snis, inpe, pncp)    |
-| `/new-ods <1-17>`        | Calculator de score para um ODS                                  |
-| `/full-stack <feature>`  | Feature completa backend+frontend                                |
-| `/tdd <feature>`         | Red-Green-Refactor rigoroso                                      |
-| `/bug-fix`               | Diagnóstico + correção + teste de regressão                      |
-| `/refactor`              | Refatoração segura com cobertura                                 |
-| `/pre-deploy`            | Checklist antes de qualquer deploy                               |
-| `/pr-summary`            | Sumário estruturado de PR                                        |
-| `/health-check`          | Monitor de saúde (use com `/loop 15m`)                           |
-| `/morning-briefing`      | Standup autônomo diário                                          |
-| `/context-save`          | Salva estado antes de `/compact`                                 |
-| `/research <tópico>`     | Pesquisa técnica para decisão                                    |
-| `/screenshot <feature>`  | Capturar evidências visuais (desktop+mobile, light+dark)         |
-| `/visual-qa <feature>`   | Ciclo completo: screenshots + auditoria + staging atômico        |
-| `/audit [dimensão]`      | Auditoria autônoma (5 dimensões ou foco em uma)                  |
-| `/audit-fix [filtro]`    | Processa achados do audit e despacha para agentes corretivos     |
-| `/audit-and-fix [dim]`   | Ciclo completo: audit → fix → verify → report                    |
-| `/fix-status`            | Status dos fixes em andamento                                    |
-| `/verify-fix <ID>`       | Verificação dirigida de um achado específico                     |
-| `/longmemeval [adapter]` | Benchmark LongMemEval-ESG (baseline/real) — qualidade da memória |
-| `/monthly-reflection`    | Sintetiza daily logs do mês em long-term/reflections/            |
-| `/memory-sync`           | Sincroniza auto-memory ↔ Obsidian vault (Zep temporal)           |
-
-### Agentes (invoque com: "Use o agente X para...")
-
-| Tier   | Agente                    | Quando                                                            |
-| ------ | ------------------------- | ----------------------------------------------------------------- |
-| Opus   | `orchestrator`            | Feature multi-camada — coordena todos                             |
-| Opus   | `backend-architect`       | Design de API ou serviço                                          |
-| Opus   | `database-architect`      | Schema ou migration                                               |
-| Opus   | `frontend-architect`      | UI complexa                                                       |
-| Opus   | `security-auditor`        | Antes de deploy, auth, dados sensíveis                            |
-| Opus   | `code-reviewer`           | Após qualquer feature — contexto limpo                            |
-| Sonnet | `data-collector`          | Implementar/debugar coletor de API gov                            |
-| Sonnet | `ods-analyst`             | Scores e indicadores dos 17 ODS                                   |
-| Sonnet | `api-developer`           | Implementar endpoints a partir de specs                           |
-| Sonnet | `test-writer`             | Cobertura de testes                                               |
-| Sonnet | `debugger`                | Bug persistente                                                   |
-| Sonnet | `docs-writer`             | README, documentação de API                                       |
-| Haiku  | `devops-engineer`         | Docker, CI/CD, infra                                              |
-| Opus   | `project-monitor`         | Monitoramento continuo, KPIs, coerencia, riscos                   |
-| Sonnet | `memory-manager`          | Obsidian vault: sync, ADRs, gotchas, daily logs                   |
-| Sonnet | `visual-qa-auditor`       | Auditar screenshots contra checklist Visual QA                    |
-| Sonnet | `audit-agent`             | Auditoria autônoma: código, arquitetura, dados, testes, segurança |
-| Opus   | `improvement-coordinator` | Cérebro: parseia audit, roteia achados, cria dispatch manifest    |
-| Sonnet | `fix-verifier`            | Re-auditoria dirigida dos achados corrigidos                      |
-| Sonnet | `resolution-reporter`     | Fecha ciclo: consolida resultado + persiste no vault              |
-
-### Slash commands
-
-| Comando               | O que faz                             |
-| --------------------- | ------------------------------------- |
-| `/plan <feature>`     | Protocolo de planejamento documentado |
-| `/checkpoint <desc>`  | Commit de segurança                   |
-| `/state`              | Atualiza PROJECT_STATE.md             |
-| `/decisions <título>` | Registra ADR                          |
-| `/audit-fix [filtro]` | Despacha achados do audit para fixes  |
-| `/audit-and-fix`      | Ciclo completo audit→fix→verify       |
-| `/fix-status`         | Status dos fixes em andamento         |
-| `/verify-fix <ID>`    | Verifica fix de achado específico     |
 
 ---
 
@@ -392,19 +310,17 @@ Regras:
 - `git push --force` sem confirmação explícita
 - Hardcodar IDs de município, URLs ou valores de configuração
 - Misturar refatoração com nova feature no mesmo commit
-- Commitar `.tsx` de `pages/` ou `components/` sem evidências visuais em `docs/evidence/`
+- **Implementar qualquer funcionalidade não necessária para o usuário de SC usar a plataforma hoje**
+- **Expandir escopo para outros estados ou municípios fora de SC sem instrução explícita**
 
 ---
 
 ## FIM DE SESSÃO — sempre
 
 1. Commit de tudo funcionando
-2. Atualize `docs/PROJECT_STATE.md`
-3. Invoque `memory-manager` para persistir decisões, gotchas e lições no vault Obsidian
-4. Atualize `~/obsidian-vault/ioc-esg-municipal/daily/YYYY-MM-DD.md`
-5. Registre decisões em `docs/decisions/` se houver
-6. Reporte: **feito / pendente / próximo passo exato**
+2. Atualize `docs/ESTADO_ATUAL_SC.md`
+3. Reporte: **feito / pendente / próximo passo exato**
 
 ---
 
-_IOC ESG Municipal v1.0 — 31/03/2026_
+_IOC ESG Municipal — Foco SC | Última atualização: 2026-04-13_
