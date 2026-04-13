@@ -1,0 +1,44 @@
+# =============================================================================
+# Dockerfile.dev — Imagem de desenvolvimento com hot reload
+# =============================================================================
+# Reutilizada por backend (tsx watch) e frontend (vite --host) via command
+# diferente no docker-compose.yml. Bind-mounts sobrescrevem código-fonte em
+# runtime; node_modules fica na imagem (binários Linux, isolados do host macOS).
+# =============================================================================
+
+FROM node:20-bookworm-slim
+
+# openssl (Prisma needs libssl) + wget (healthcheck) + pnpm
+RUN apt-get update -y && apt-get install -y openssl libssl-dev wget --no-install-recommends \
+    && rm -rf /var/lib/apt/lists/* \
+    && corepack enable && corepack prepare pnpm@8.15.0 --activate
+
+# Prisma: gerar engine para OpenSSL 3.0 (Debian bookworm)
+ENV PRISMA_ENGINES_MIRROR="https://binaries.prisma.sh"
+
+WORKDIR /app
+
+# Instalar dependências root (layer cache: só rebuilda se lock mudar)
+COPY package.json pnpm-lock.yaml ./
+COPY frontend/package.json frontend/pnpm-lock.yaml ./frontend/
+RUN pnpm install --frozen-lockfile
+
+# Frontend deps (pacote independente, não workspace)
+RUN cd frontend && pnpm install --frozen-lockfile
+
+# Prisma generate (necessário para tsx watch do backend)
+COPY prisma ./prisma/
+RUN pnpm prisma generate
+
+# tsconfig necessário para tsx
+COPY tsconfig.json ./
+
+# Frontend source + configs (para que a imagem funcione standalone;
+# bind-mounts sobrescrevem estes arquivos em dev)
+COPY frontend/index.html frontend/vite.config.ts frontend/tsconfig.json ./frontend/
+COPY frontend/tailwind.config.js frontend/postcss.config.js frontend/components.json ./frontend/
+COPY frontend/src ./frontend/src/
+COPY frontend/pages ./frontend/pages/
+COPY frontend/components ./frontend/components/
+COPY frontend/hooks ./frontend/hooks/
+COPY frontend/lib ./frontend/lib/

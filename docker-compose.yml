@@ -1,11 +1,16 @@
 # =============================================================================
-# IOC ESG Municipal — Docker Compose DESENVOLVIMENTO LOCAL
+# IOC ESG Municipal — Docker Compose DESENVOLVIMENTO
 # =============================================================================
 # USO:
-#   docker compose up -d
+#   docker compose up -d          # sobe tudo (postgres + redis + backend + frontend)
+#   docker compose up --build     # rebuild + logs (após mudar Dockerfile.dev ou deps)
 #
-# Inicia apenas PostgreSQL e Redis. O backend e frontend rodam localmente
-# via pnpm dev (backend :3000 + frontend :5173).
+# Tudo roda em container. Hot reload via bind-mounts:
+#   - backend: tsx watch (recarrega ao editar backend/ shared/ prisma/)
+#   - frontend: vite HMR (recarrega ao editar frontend/ shared/)
+#
+# Para subir apenas infra (postgres+redis) e rodar backend/frontend no host:
+#   docker compose up -d postgres redis && pnpm dev
 # =============================================================================
 
 services:
@@ -38,6 +43,68 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: ioc_backend
+    command: sh -c "npx prisma migrate deploy && npx tsx prisma/seed.ts && pnpm dev:backend"
+    volumes:
+      - ./backend:/app/backend
+      - ./shared:/app/shared
+      - ./prisma:/app/prisma
+      - /app/node_modules
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: development
+      PORT: "3000"
+      DATABASE_URL: postgresql://ioc:ioc_dev_2026@postgres:5432/ioc_esg?schema=public
+      REDIS_URL: redis://redis:6379
+      JWT_SECRET: dev-jwt-secret-docker-only
+      ALLOWED_ORIGINS: http://localhost:5173
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:3000/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 15s
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: ioc_frontend
+    command: sh -c "cd frontend && pnpm exec vite --host"
+    volumes:
+      # Source dirs — bind-mount para HMR (editar no host → Vite recarrega)
+      - ./frontend/src:/app/frontend/src
+      - ./frontend/pages:/app/frontend/pages
+      - ./frontend/components:/app/frontend/components
+      - ./frontend/hooks:/app/frontend/hooks
+      - ./frontend/lib:/app/frontend/lib
+      # Config files — bind-mount para mudanças de config sem rebuild
+      - ./frontend/index.html:/app/frontend/index.html
+      - ./frontend/vite.config.ts:/app/frontend/vite.config.ts
+      - ./frontend/tailwind.config.js:/app/frontend/tailwind.config.js
+      - ./frontend/postcss.config.js:/app/frontend/postcss.config.js
+      - ./frontend/tsconfig.json:/app/frontend/tsconfig.json
+      # Shared types (usado por imports @shared/)
+      - ./shared:/app/shared
+      # Preservar node_modules da imagem (binários Linux)
+      - /app/node_modules
+    ports:
+      - "5173:5173"
+    environment:
+      VITE_API_URL: http://backend:3000
+    depends_on:
+      - backend
 
 volumes:
   pgdata:

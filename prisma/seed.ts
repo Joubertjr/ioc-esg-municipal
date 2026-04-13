@@ -12,6 +12,7 @@
 
 import { PrismaClient } from "@prisma/client";
 import { Decimal } from "decimal.js";
+import bcrypt from "bcryptjs";
 
 const prisma = new PrismaClient();
 
@@ -55,16 +56,31 @@ function scoreToStatus(score: number): "verde" | "amarelo" | "vermelho" {
  * Fontes de dados por ODS.
  */
 const ODS_SOURCES: Record<number, string[]> = {
-  0:  ["ibge", "siconfi", "datasus", "inep", "snis", "inpe", "pncp", "tse", "aneel", "snis-rs", "ana", "convenios", "anatel", "sisvan"],
-  1:  ["ibge"],
-  2:  ["ibge", "sisvan"],
-  3:  ["siconfi", "datasus"],
-  4:  ["siconfi", "inep"],
-  5:  ["tse"],
-  6:  ["snis"],
-  7:  ["aneel"],
-  8:  ["ibge"],
-  9:  ["ibge", "anatel"],
+  0: [
+    "ibge",
+    "siconfi",
+    "datasus",
+    "inep",
+    "snis",
+    "inpe",
+    "pncp",
+    "tse",
+    "aneel",
+    "snis-rs",
+    "ana",
+    "convenios",
+    "anatel",
+    "sisvan",
+  ],
+  1: ["ibge"],
+  2: ["ibge", "sisvan"],
+  3: ["siconfi", "datasus"],
+  4: ["siconfi", "inep"],
+  5: ["tse"],
+  6: ["snis"],
+  7: ["aneel"],
+  8: ["ibge"],
+  9: ["ibge", "anatel"],
   10: ["ibge"],
   11: ["ibge", "siconfi"],
   12: ["snis-rs"],
@@ -79,16 +95,16 @@ const ODS_SOURCES: Record<number, string[]> = {
  * Número de indicadores por ODS usado no seed (estimativa).
  */
 const ODS_INDICATOR_COUNT: Record<number, number> = {
-  0:  17,
-  1:  4,
-  2:  3,
-  3:  5,
-  4:  4,
-  5:  3,
-  6:  4,
-  7:  2,
-  8:  4,
-  9:  3,
+  0: 17,
+  1: 4,
+  2: 3,
+  3: 5,
+  4: 4,
+  5: 3,
+  6: 4,
+  7: 2,
+  8: 4,
+  9: 3,
   10: 3,
   11: 5,
   12: 3,
@@ -104,18 +120,63 @@ const ODS_INDICATOR_COUNT: Record<number, number> = {
  * Variações são adicionadas por município individualmente.
  */
 const ODS_BASE_SCORES_LARGE: Record<number, number> = {
-  1: 68, 2: 62, 3: 72, 4: 74, 5: 60, 6: 71, 7: 65, 8: 70,
-  9: 66, 10: 55, 11: 68, 12: 58, 13: 54, 14: 45, 15: 52, 16: 67, 17: 63,
+  1: 68,
+  2: 62,
+  3: 72,
+  4: 74,
+  5: 60,
+  6: 71,
+  7: 65,
+  8: 70,
+  9: 66,
+  10: 55,
+  11: 68,
+  12: 58,
+  13: 54,
+  14: 45,
+  15: 52,
+  16: 67,
+  17: 63,
 };
 
 const ODS_BASE_SCORES_MEDIUM: Record<number, number> = {
-  1: 54, 2: 50, 3: 58, 4: 60, 5: 48, 6: 56, 7: 52, 8: 55,
-  9: 50, 10: 44, 11: 53, 12: 46, 13: 42, 14: 38, 15: 43, 16: 52, 17: 49,
+  1: 54,
+  2: 50,
+  3: 58,
+  4: 60,
+  5: 48,
+  6: 56,
+  7: 52,
+  8: 55,
+  9: 50,
+  10: 44,
+  11: 53,
+  12: 46,
+  13: 42,
+  14: 38,
+  15: 43,
+  16: 52,
+  17: 49,
 };
 
 const ODS_BASE_SCORES_SMALL: Record<number, number> = {
-  1: 42, 2: 38, 3: 46, 4: 48, 5: 36, 6: 44, 7: 40, 8: 43,
-  9: 38, 10: 34, 11: 41, 12: 36, 13: 33, 14: 30, 15: 35, 16: 40, 17: 37,
+  1: 42,
+  2: 38,
+  3: 46,
+  4: 48,
+  5: 36,
+  6: 44,
+  7: 40,
+  8: 43,
+  9: 38,
+  10: 34,
+  11: 41,
+  12: 36,
+  13: 33,
+  14: 30,
+  15: 35,
+  16: 40,
+  17: 37,
 };
 
 /**
@@ -131,10 +192,10 @@ function deterministicVariation(ibgeCode: string, odsNumber: number): number {
 type MunicipalityProfile = "large" | "medium" | "small";
 
 const TOP_20_PROFILES: Record<string, MunicipalityProfile> = {
-  "4209102": "large",  // Joinville
-  "4205407": "large",  // Florianópolis
-  "4202404": "large",  // Blumenau
-  "4216602": "large",  // São José
+  "4209102": "large", // Joinville
+  "4205407": "large", // Florianópolis
+  "4202404": "large", // Blumenau
+  "4216602": "large", // São José
   "4208203": "medium", // Itajaí
   "4204202": "medium", // Chapecó
   "4204608": "medium", // Criciúma
@@ -143,20 +204,20 @@ const TOP_20_PROFILES: Record<string, MunicipalityProfile> = {
   "4209300": "medium", // Lages
   "4201307": "medium", // Araquari
   "4218202": "medium", // Tubarão
-  "4211306": "small",  // Navegantes
-  "4202305": "small",  // Biguaçu
-  "4203006": "small",  // Caçador
-  "4207502": "small",  // Indaial
-  "4205902": "small",  // Gaspar
-  "4210100": "small",  // Mafra
-  "4206504": "small",  // Guaramirim
-  "4210506": "small",  // Maravilha
+  "4211306": "small", // Navegantes
+  "4202305": "small", // Biguaçu
+  "4203006": "small", // Caçador
+  "4207502": "small", // Indaial
+  "4205902": "small", // Gaspar
+  "4210100": "small", // Mafra
+  "4206504": "small", // Guaramirim
+  "4210506": "small", // Maravilha
 };
 
 const BASE_SCORES_BY_PROFILE: Record<MunicipalityProfile, Record<number, number>> = {
-  large:  ODS_BASE_SCORES_LARGE,
+  large: ODS_BASE_SCORES_LARGE,
   medium: ODS_BASE_SCORES_MEDIUM,
-  small:  ODS_BASE_SCORES_SMALL,
+  small: ODS_BASE_SCORES_SMALL,
 };
 
 /**
@@ -200,26 +261,26 @@ function buildOdsScores(ibgeCode: string): OdsScoreInput[] {
 // ---------------------------------------------------------------------------
 
 const TOP_20: Record<string, { name: string; population: number; fpmAnnual: number }> = {
-  "4209102": { name: "Joinville",            population: 616323, fpmAnnual: 200_000_000 },
-  "4205407": { name: "Florianópolis",        population: 537213, fpmAnnual: 180_000_000 },
-  "4202404": { name: "Blumenau",             population: 365549, fpmAnnual: 140_000_000 },
-  "4216602": { name: "São José",             population: 256923, fpmAnnual: 115_000_000 },
-  "4208203": { name: "Itajaí",               population: 249706, fpmAnnual: 110_000_000 },
-  "4204202": { name: "Chapecó",              population: 230932, fpmAnnual: 100_000_000 },
-  "4204608": { name: "Criciúma",             population: 221676, fpmAnnual:  95_000_000 },
-  "4211900": { name: "Palhoça",              population: 189671, fpmAnnual:  82_000_000 },
-  "4208906": { name: "Jaraguá do Sul",       population: 183278, fpmAnnual:  80_000_000 },
-  "4209300": { name: "Lages",                population: 158732, fpmAnnual:  75_000_000 },
-  "4201307": { name: "Araquari",             population: 152078, fpmAnnual:  72_000_000 },
-  "4218202": { name: "Tubarão",              population: 107861, fpmAnnual:  55_000_000 },
-  "4211306": { name: "Navegantes",           population:  92798, fpmAnnual:  48_000_000 },
-  "4202305": { name: "Biguaçu",              population:  85477, fpmAnnual:  45_000_000 },
-  "4203006": { name: "Caçador",              population:  79489, fpmAnnual:  40_000_000 },
-  "4207502": { name: "Indaial",              population:  75651, fpmAnnual:  39_000_000 },
-  "4205902": { name: "Gaspar",               population:  72842, fpmAnnual:  38_000_000 },
-  "4210100": { name: "Mafra",                population:  57706, fpmAnnual:  32_000_000 },
-  "4206504": { name: "Guaramirim",           population:  49734, fpmAnnual:  28_000_000 },
-  "4210506": { name: "Maravilha",            population:  25354, fpmAnnual:  18_000_000 },
+  "4209102": { name: "Joinville", population: 616323, fpmAnnual: 200_000_000 },
+  "4205407": { name: "Florianópolis", population: 537213, fpmAnnual: 180_000_000 },
+  "4202404": { name: "Blumenau", population: 365549, fpmAnnual: 140_000_000 },
+  "4216602": { name: "São José", population: 256923, fpmAnnual: 115_000_000 },
+  "4208203": { name: "Itajaí", population: 249706, fpmAnnual: 110_000_000 },
+  "4204202": { name: "Chapecó", population: 230932, fpmAnnual: 100_000_000 },
+  "4204608": { name: "Criciúma", population: 221676, fpmAnnual: 95_000_000 },
+  "4211900": { name: "Palhoça", population: 189671, fpmAnnual: 82_000_000 },
+  "4208906": { name: "Jaraguá do Sul", population: 183278, fpmAnnual: 80_000_000 },
+  "4209300": { name: "Lages", population: 158732, fpmAnnual: 75_000_000 },
+  "4201307": { name: "Araquari", population: 152078, fpmAnnual: 72_000_000 },
+  "4218202": { name: "Tubarão", population: 107861, fpmAnnual: 55_000_000 },
+  "4211306": { name: "Navegantes", population: 92798, fpmAnnual: 48_000_000 },
+  "4202305": { name: "Biguaçu", population: 85477, fpmAnnual: 45_000_000 },
+  "4203006": { name: "Caçador", population: 79489, fpmAnnual: 40_000_000 },
+  "4207502": { name: "Indaial", population: 75651, fpmAnnual: 39_000_000 },
+  "4205902": { name: "Gaspar", population: 72842, fpmAnnual: 38_000_000 },
+  "4210100": { name: "Mafra", population: 57706, fpmAnnual: 32_000_000 },
+  "4206504": { name: "Guaramirim", population: 49734, fpmAnnual: 28_000_000 },
+  "4210506": { name: "Maravilha", population: 25354, fpmAnnual: 18_000_000 },
 };
 
 // ---------------------------------------------------------------------------
@@ -536,7 +597,11 @@ const ALL_SC_MUNICIPALITIES: Array<{ ibgeCode: string; siconfiCode: string; name
  */
 const FPM_COEFF = 600;
 
-function buildRecord(m: { ibgeCode: string; siconfiCode: string; name: string }): MunicipalityRecord {
+function buildRecord(m: {
+  ibgeCode: string;
+  siconfiCode: string;
+  name: string;
+}): MunicipalityRecord {
   const top20 = TOP_20[m.ibgeCode];
 
   if (top20 !== undefined) {
@@ -615,7 +680,9 @@ async function seedOdsScores(tx: TransactionClient): Promise<void> {
   const REFERENCE_YEAR = 2023;
   const top20IbgeCodes = Object.keys(TOP_20_PROFILES);
 
-  console.log(`[seed] Iniciando seed de OdsScore para ${top20IbgeCodes.length} municípios top-20...`);
+  console.log(
+    `[seed] Iniciando seed de OdsScore para ${top20IbgeCodes.length} municípios top-20...`,
+  );
 
   let upserted = 0;
   let failed = 0;
@@ -683,6 +750,26 @@ async function seedOdsScores(tx: TransactionClient): Promise<void> {
   }
 }
 
+async function seedAdminUser(tx: TransactionClient): Promise<void> {
+  const email = "admin@ioc.local";
+  const existing = await tx.user.findUnique({ where: { email } });
+  if (existing) {
+    console.log(`[seed] Admin user ${email} já existe — pulando.`);
+    return;
+  }
+
+  const passwordHash = await bcrypt.hash("Admin@2026", 12);
+  await tx.user.create({
+    data: {
+      email,
+      name: "Admin",
+      passwordHash,
+      role: "admin",
+    },
+  });
+  console.log(`[seed] Admin user ${email} criado com role=admin.`);
+}
+
 async function main(): Promise<void> {
   console.log("[seed] Iniciando transação atômica...");
 
@@ -690,10 +777,11 @@ async function main(): Promise<void> {
     async (tx) => {
       await seedMunicipalities(tx);
       await seedOdsScores(tx);
+      await seedAdminUser(tx);
     },
     {
-      maxWait: 10_000,  // aguarda até 10s para adquirir conexão
-      timeout: 60_000,  // timeout da transação: 60s (seed é lento)
+      maxWait: 10_000, // aguarda até 10s para adquirir conexão
+      timeout: 60_000, // timeout da transação: 60s (seed é lento)
     },
   );
 
