@@ -8,42 +8,47 @@ if (import.meta.env.PROD && !import.meta.env.VITE_API_URL) {
   );
 }
 
-// In-memory refresh token — not persisted to localStorage (XSS protection).
-// Populated on login, cleared on logout or failed refresh.
-let refreshToken: string | null = null;
+// Refresh token persisted in sessionStorage — survives page reloads within the same tab.
+// sessionStorage is tab-scoped (not shared across tabs like localStorage) and cleared on tab close.
+const RT_KEY = "ioc_rt";
 
 export function setRefreshToken(token: string | null): void {
-  refreshToken = token;
+  if (token === null) {
+    sessionStorage.removeItem(RT_KEY);
+  } else {
+    sessionStorage.setItem(RT_KEY, token);
+  }
 }
 
 export function getRefreshToken(): string | null {
-  return refreshToken;
+  return sessionStorage.getItem(RT_KEY);
 }
 
 // Promise lock: prevents multiple concurrent refresh attempts.
 let refreshPromise: Promise<boolean> | null = null;
 
 async function attemptRefresh(): Promise<boolean> {
-  if (!refreshToken) return false;
+  const currentToken = getRefreshToken();
+  if (!currentToken) return false;
 
   try {
     const res = await fetch(`${BASE_URL}/api/auth/refresh`, {
       method: "POST",
       credentials: "include",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ refreshToken }),
+      body: JSON.stringify({ refreshToken: currentToken }),
     });
 
     if (!res.ok) {
-      refreshToken = null;
+      setRefreshToken(null);
       return false;
     }
 
     const data = (await res.json()) as { token: string; refreshToken: string };
-    refreshToken = data.refreshToken;
+    setRefreshToken(data.refreshToken);
     return true;
   } catch {
-    refreshToken = null;
+    setRefreshToken(null);
     return false;
   }
 }
@@ -132,7 +137,21 @@ export async function checkSession(): Promise<boolean> {
       credentials: "include",
       headers: { "Content-Type": "application/json" },
     });
-    return res.ok;
+    if (res.ok) return true;
+
+    // Access token expired — try refresh before giving up
+    if (res.status === 401 && getRefreshToken()) {
+      const refreshed = await triggerRefresh();
+      if (refreshed) {
+        const retry = await fetch(`${BASE_URL}/api/auth/me`, {
+          method: "GET",
+          credentials: "include",
+          headers: { "Content-Type": "application/json" },
+        });
+        return retry.ok;
+      }
+    }
+    return false;
   } catch {
     return false;
   }

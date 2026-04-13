@@ -1,4 +1,5 @@
-import { calculateMunicipalOds, type MunicipalOdsReport } from "../ods/ods_score_service.js";
+import type { MunicipalOdsReport } from "../ods/ods_score_service.js";
+import { readOdsReportsForCodes } from "../ingestion/ods_score_reader.js";
 import { logger } from "../../utils/logger.js";
 import { withCache } from "../../utils/cache.js";
 
@@ -61,21 +62,10 @@ export async function generateBenchmark(ibgeCodes: string[]): Promise<BenchmarkR
 }
 
 async function _computeBenchmark(ibgeCodes: string[]): Promise<BenchmarkResult> {
-  const reports = await Promise.all(
-    ibgeCodes.map(async (code) => {
-      try {
-        return await calculateMunicipalOds(code);
-      } catch (err) {
-        logger.warn("[benchmarks] falha ao calcular ODS", {
-          ibgeCode: code,
-          error: err instanceof Error ? err.message : String(err),
-        });
-        return null;
-      }
-    }),
-  );
-
-  const validReports = reports.filter((r): r is MunicipalOdsReport => r !== null);
+  const reportsMap = await readOdsReportsForCodes(ibgeCodes);
+  const validReports = ibgeCodes
+    .map((code) => reportsMap.get(code))
+    .filter((r): r is MunicipalOdsReport => r !== null && r !== undefined);
 
   const municipalities = validReports.map(toBenchmark);
   const ranking = buildRanking(validReports);

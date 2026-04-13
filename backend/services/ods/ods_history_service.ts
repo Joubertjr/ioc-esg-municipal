@@ -11,7 +11,7 @@ export async function calculateAndPersistScores(
   ibgeCode: string,
   existingReport?: MunicipalOdsReport,
 ): Promise<MunicipalOdsReport | null> {
-  const report = existingReport ?? await calculateMunicipalOds(ibgeCode);
+  const report = existingReport ?? (await calculateMunicipalOds(ibgeCode));
   if (!report) return null;
 
   const municipality = await prisma.municipality.findUnique({
@@ -63,6 +63,7 @@ export async function calculateAndPersistScores(
       },
       update: {
         score: report.globalScore,
+        geometricScore: report.geometricScore,
         status: report.globalStatus,
         indicatorCount: report.odsCount.withData,
         sources: ["global"],
@@ -72,6 +73,7 @@ export async function calculateAndPersistScores(
         municipalityId: municipality.id,
         odsNumber: 0,
         score: report.globalScore,
+        geometricScore: report.geometricScore,
         status: report.globalStatus,
         indicatorCount: report.odsCount.withData,
         referenceYear: report.referenceYear,
@@ -94,11 +96,7 @@ export async function calculateAndPersistScores(
 /**
  * Busca histórico de scores ODS de um município.
  */
-export async function getScoreHistory(
-  ibgeCode: string,
-  odsNumber?: number,
-  limit = 100,
-) {
+export async function getScoreHistory(ibgeCode: string, odsNumber?: number, limit = 100) {
   // Single query via nested select — evita round-trip extra de findUnique
   const municipality = await prisma.municipality.findUnique({
     where: { ibgeCode },

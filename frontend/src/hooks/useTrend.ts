@@ -9,25 +9,14 @@ export interface TrendData {
 }
 
 export function useTrend(ibgeCode: string) {
-  const { data, isLoading, isError } = useOdsHistory(ibgeCode);
+  const { data, isLoading, isError } = useOdsHistory(ibgeCode, 0);
 
   if (!data) return { data: undefined as TrendData | undefined, isLoading, isError };
 
-  // Group by referenceYear, compute average score per year
-  const yearMap = new Map<number, { sum: number; count: number }>();
-  for (const record of data.history) {
-    if (record.score === null) continue;
-    const existing = yearMap.get(record.referenceYear);
-    if (existing) {
-      existing.sum += record.score;
-      existing.count += 1;
-    } else {
-      yearMap.set(record.referenceYear, { sum: record.score, count: 1 });
-    }
-  }
-
-  const sorted = Array.from(yearMap.entries())
-    .map(([year, { sum, count }]) => ({ year, score: Math.round((sum / count) * 10) / 10 }))
+  // odsNumber=0 = pre-computed global score, one per referenceYear — no averaging needed
+  const sorted = data.history
+    .filter((r) => r.score !== null)
+    .map((r) => ({ year: r.referenceYear, score: r.score as number }))
     .sort((a, b) => a.year - b.year);
 
   const sparklineData = sorted.slice(-4);

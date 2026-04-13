@@ -81,7 +81,7 @@ const TopNSchema = z.coerce.number().int().min(1).max(20).default(5);
  *
  * Query params: topN (default 5, min 1, max 20)
  */
-router.get("/:ibgeCode/peers", (req: Request, res: Response) => {
+router.get("/:ibgeCode/peers", async (req: Request, res: Response) => {
   const rawCode = req.params["ibgeCode"];
 
   const parsedCode = IbgeCodeSchema.safeParse(rawCode);
@@ -99,7 +99,7 @@ router.get("/:ibgeCode/peers", (req: Request, res: Response) => {
   logger.info("GET /api/municipalities/:ibgeCode/peers", { ibgeCode, topN });
 
   try {
-    const peers = findPeerMunicipalities(ibgeCode, topN);
+    const peers = await findPeerMunicipalities(ibgeCode, topN);
 
     if (peers.length === 0) {
       res

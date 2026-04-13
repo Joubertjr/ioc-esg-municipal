@@ -1,4 +1,9 @@
-import { calculateMunicipalOds, type MunicipalOdsReport, type OdsSummary } from "../ods/ods_score_service.js";
+import {
+  calculateMunicipalOds,
+  type MunicipalOdsReport,
+  type OdsSummary,
+} from "../ods/ods_score_service.js";
+import { readOdsReportFromDatabase } from "../ingestion/ods_score_reader.js";
 import { logger } from "../../utils/logger.js";
 
 // ─── Tipos ────────────────────────────────────────────────────────────────────
@@ -73,7 +78,8 @@ const ODS_INVESTMENT_AREA: Record<number, string> = {
 export async function generateEsgReport(ibgeCode: string): Promise<EsgReport | null> {
   logger.info("[reports] gerando relatório ESG", { ibgeCode });
 
-  const report = await calculateMunicipalOds(ibgeCode);
+  const report =
+    (await readOdsReportFromDatabase(ibgeCode)) ?? (await calculateMunicipalOds(ibgeCode));
   if (!report) {
     logger.warn("[reports] sem dados para relatório", { ibgeCode });
     return null;
@@ -173,7 +179,9 @@ function identifyWeaknesses(report: MunicipalOdsReport): string[] {
   return report.ods
     .filter((ods): ods is OdsSummary & { score: number } => ods.score !== null && ods.score < 40)
     .sort((a, b) => a.score - b.score)
-    .map((ods) => `${ods.shortName} (ODS ${ods.odsNumber}): score ${ods.score}/100 — requer atenção`);
+    .map(
+      (ods) => `${ods.shortName} (ODS ${ods.odsNumber}): score ${ods.score}/100 — requer atenção`,
+    );
 }
 
 function buildExecutiveSummary(
@@ -187,11 +195,12 @@ function buildExecutiveSummary(
     return "Dados insuficientes para gerar resumo executivo.";
   }
 
-  const statusText = globalStatus === "verde"
-    ? "desempenho satisfatório"
-    : globalStatus === "amarelo"
-      ? "desempenho moderado, com oportunidades de melhoria"
-      : "desempenho crítico, requerendo ação imediata";
+  const statusText =
+    globalStatus === "verde"
+      ? "desempenho satisfatório"
+      : globalStatus === "amarelo"
+        ? "desempenho moderado, com oportunidades de melhoria"
+        : "desempenho crítico, requerendo ação imediata";
 
   const parts: string[] = [
     `O município apresenta score ESG global de ${globalScore}/100, indicando ${statusText}.`,

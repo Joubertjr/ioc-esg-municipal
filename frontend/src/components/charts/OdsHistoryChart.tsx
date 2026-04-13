@@ -69,7 +69,7 @@ function CustomTooltip({ active, payload }: TooltipProps<number, string>) {
 }
 
 export function OdsHistoryChart({ ibgeCode }: OdsHistoryChartProps) {
-  const { data, isLoading } = useOdsHistory(ibgeCode);
+  const { data, isLoading } = useOdsHistory(ibgeCode, 0);
   const { resolvedTheme } = useTheme();
 
   const colors = useMemo(() => {
@@ -97,28 +97,10 @@ export function OdsHistoryChart({ ibgeCode }: OdsHistoryChartProps) {
     );
   }
 
-  // Aggregate: group by referenceYear, compute mean global score per year
-  // Records with odsNumber === 0 represent global score; otherwise average all ODS scores
-  const yearMap = new Map<number, { sum: number; count: number }>();
-
-  if (data?.history) {
-    for (const record of data.history) {
-      if (record.score === null) continue;
-      const existing = yearMap.get(record.referenceYear);
-      if (existing) {
-        existing.sum += record.score;
-        existing.count += 1;
-      } else {
-        yearMap.set(record.referenceYear, { sum: record.score, count: 1 });
-      }
-    }
-  }
-
-  const chartData: YearDataPoint[] = Array.from(yearMap.entries())
-    .map(([year, { sum, count }]) => ({
-      year,
-      score: Math.round((sum / count) * 10) / 10,
-    }))
+  // odsNumber=0 = pre-computed global score, one per referenceYear — no averaging needed
+  const chartData: YearDataPoint[] = (data?.history ?? [])
+    .filter((r) => r.score !== null)
+    .map((r) => ({ year: r.referenceYear, score: r.score as number }))
     .sort((a, b) => a.year - b.year);
 
   if (chartData.length < 2) {
