@@ -38,6 +38,9 @@ dependencies:
   tailwind-merge:
     specifier: ^2.2.0
     version: 2.6.1
+  web-vitals:
+    specifier: ^5.2.0
+    version: 5.2.0
   zustand:
     specifier: ^4.4.7
     version: 4.5.7(@types/react@18.3.28)(react@18.3.1)
@@ -2694,6 +2697,10 @@ packages:
     dependencies:
       xml-name-validator: 5.0.0
     dev: true
+
+  /web-vitals@5.2.0:
+    resolution: {integrity: sha512-i2z98bEmaCqSDiHEDu+gHl/dmR4Q+TxFmG3/13KkMO+o8UxQzCqWaDRCiLgEa41nlO4VpXSI0ASa1xWmO9sBlA==}
+    dev: false
 
   /webidl-conversions@8.0.1:
     resolution: {integrity: sha512-BMhLD/Sw+GbJC21C/UgyaZX41nPt8bUTg+jWyDeg7e7YN4xOM05YPSIXceACnXVtqyEw/LMClUQMtMZ+PGGpqQ==}

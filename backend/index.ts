@@ -130,6 +130,15 @@ app.get("/metrics", async (_req, res) => {
 // Documentação interativa (sem auth)
 app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
+// Telemetria frontend — público, sem auth (beacon API não envia cookies)
+app.post("/api/telemetry", (req, res) => {
+  const body = req.body as { events?: unknown[] };
+  if (Array.isArray(body?.events)) {
+    logger.info("[telemetry] frontend batch", { count: body.events.length, events: body.events });
+  }
+  res.status(204).end();
+});
+
 // Rotas públicas
 app.use("/api/auth", authRouter);
 

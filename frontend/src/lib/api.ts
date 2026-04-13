@@ -1,3 +1,5 @@
+import { measureApiCall } from "./telemetry";
+
 const BASE_URL = import.meta.env.VITE_API_URL ?? "";
 
 if (import.meta.env.PROD && !import.meta.env.VITE_API_URL) {
@@ -57,7 +59,9 @@ function triggerRefresh(): Promise<boolean> {
 
 async function fetchWithRefresh(path: string, init: RequestInit): Promise<Response> {
   const url = `${BASE_URL}${path}`;
+  const start = Date.now();
   const res = await fetch(url, init);
+  measureApiCall(path, Date.now() - start, res.status);
 
   if (res.status !== 401) return res;
 
