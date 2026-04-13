@@ -13,7 +13,7 @@ const BenchmarkRequestSchema = z.object({
   ibgeCodes: z
     .array(z.string().regex(/^\d{7}$/))
     .min(2)
-    .max(50),
+    .max(300),
 });
 
 const CompareRequestSchema = z.object({
@@ -21,7 +21,7 @@ const CompareRequestSchema = z.object({
   benchmarkCodes: z
     .array(z.string().regex(/^\d{7}$/))
     .min(1)
-    .max(49),
+    .max(300),
 });
 
 /**

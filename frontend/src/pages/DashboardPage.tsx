@@ -30,7 +30,7 @@ export function DashboardPage() {
     if (isError && error) {
       showToast(error.message ?? "Erro ao carregar dados ODS.", "error");
     }
-  }, [isError, error, showToast]);
+  }, [isError]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleCloseDrawer = useCallback(() => setSelectedOds(null), []);
   const handleOdsClick = useCallback((ods: OdsSummary) => setSelectedOds(ods), []);
