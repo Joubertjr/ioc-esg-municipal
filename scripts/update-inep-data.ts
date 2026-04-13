@@ -20,6 +20,7 @@
 
 import { writeFileSync, readFileSync, existsSync } from "node:fs";
 import { resolve } from "node:path";
+import { IdebDataFileSchema } from "../shared/types/agents/inep.types.js";
 
 const OUTPUT_PATH = resolve(__dirname, "../shared/data/ideb_latest.json");
 const DEFAULT_FALLBACK_YEAR = 2023;
@@ -80,6 +81,17 @@ function main(): void {
     ) as Record<string, unknown>;
     const { __meta: _, ...entries } = existing;
     data = entries as Record<string, IdebEntry>;
+  }
+
+  // Validação Zod antes de gravar — garante compatibilidade com o collector
+  const validation = IdebDataFileSchema.safeParse(data);
+  if (!validation.success) {
+    console.error("[update-inep] ERRO: Output falha validação Zod. O JSON NÃO foi gravado.");
+    console.error(
+      "[update-inep] Erros:",
+      JSON.stringify(validation.error.errors.slice(0, 5), null, 2),
+    );
+    process.exit(1);
   }
 
   const output = {

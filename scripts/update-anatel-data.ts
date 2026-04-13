@@ -21,6 +21,7 @@
 
 import { writeFileSync, readFileSync, existsSync } from "node:fs";
 import { resolve } from "node:path";
+import { AnatelDataFileSchema } from "../shared/types/agents/anatel.types.js";
 
 const OUTPUT_PATH = resolve(__dirname, "../shared/data/anatel_latest.json");
 const DEFAULT_FALLBACK_YEAR = 2023;
@@ -104,6 +105,17 @@ function main(): void {
     ) as Record<string, unknown>;
     const { __meta: _, ...entries } = existing;
     data = entries as Record<string, AnatelEntry>;
+  }
+
+  // Validação Zod antes de gravar — garante compatibilidade com o collector
+  const validation = AnatelDataFileSchema.safeParse(data);
+  if (!validation.success) {
+    console.error("[update-anatel] ERRO: Output falha validação Zod. O JSON NÃO foi gravado.");
+    console.error(
+      "[update-anatel] Erros:",
+      JSON.stringify(validation.error.errors.slice(0, 5), null, 2),
+    );
+    process.exit(1);
   }
 
   const output = {

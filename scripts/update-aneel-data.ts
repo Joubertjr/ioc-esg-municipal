@@ -19,6 +19,7 @@
 
 import { writeFileSync, readFileSync, existsSync } from "node:fs";
 import { resolve } from "node:path";
+import { AneelDataFileSchema } from "../shared/types/agents/aneel.types.js";
 
 const OUTPUT_PATH = resolve(__dirname, "../shared/data/aneel_latest.json");
 const DEFAULT_FALLBACK_YEAR = 2023;
@@ -144,6 +145,17 @@ async function main(): Promise<void> {
     ) as Record<string, unknown>;
     const { __meta: _, ...entries } = existing;
     data = entries as Record<string, AneelEntry>;
+  }
+
+  // Validação Zod antes de gravar — garante compatibilidade com o collector
+  const validation = AneelDataFileSchema.safeParse(data);
+  if (!validation.success) {
+    console.error("[update-aneel] ERRO: Output falha validação Zod. O JSON NÃO foi gravado.");
+    console.error(
+      "[update-aneel] Erros:",
+      JSON.stringify(validation.error.errors.slice(0, 5), null, 2),
+    );
+    process.exit(1);
   }
 
   const output = {

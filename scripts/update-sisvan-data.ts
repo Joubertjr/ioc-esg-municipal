@@ -22,6 +22,7 @@
 
 import { writeFileSync, readFileSync, existsSync } from "node:fs";
 import { resolve } from "node:path";
+import { SisvanDataFileSchema } from "../shared/types/agents/sisvan.types.js";
 
 const OUTPUT_PATH = resolve(__dirname, "../shared/data/sisvan_latest.json");
 const DEFAULT_FALLBACK_YEAR = 2023;
@@ -92,6 +93,17 @@ function main(): void {
     ) as Record<string, unknown>;
     const { __meta: _, ...entries } = existing;
     data = entries as Record<string, SisvanEntry>;
+  }
+
+  // Validação Zod antes de gravar — garante compatibilidade com o collector
+  const validation = SisvanDataFileSchema.safeParse(data);
+  if (!validation.success) {
+    console.error("[update-sisvan] ERRO: Output falha validação Zod. O JSON NÃO foi gravado.");
+    console.error(
+      "[update-sisvan] Erros:",
+      JSON.stringify(validation.error.errors.slice(0, 5), null, 2),
+    );
+    process.exit(1);
   }
 
   const output = {

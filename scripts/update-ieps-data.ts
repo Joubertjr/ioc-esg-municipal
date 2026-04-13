@@ -1,94 +1,39 @@
 /**
- * Gera shared/data/ieps_latest.json com dados REAIS do IEPS Data.
+ * scripts/update-ieps-data.ts
  *
- * Fonte: Base dos Dados (basedosdados.org) → Google BigQuery
- * Tabela: basedosdados-dev.br_ieps_saude.municipio
+ * Atualiza shared/data/ieps_latest.json com dados do IEPS Data.
  *
- * Pré-requisitos:
- * 1. Conta Google Cloud (gratuita): https://cloud.google.com/
- * 2. Projeto GCP com BigQuery API habilitada
- * 3. Service Account com papel bigquery.dataViewer
- * 4. GOOGLE_APPLICATION_CREDENTIALS apontando para o JSON da credencial
+ * Fonte: IEPS Data (iepsdata.org.br) via Base dos Dados (basedosdados.org)
+ * Tabela original: basedosdados-dev.br_ieps_saude.municipio
  *
- * Custo: ZERO (dados públicos, free tier 1TB/mês de queries)
+ * Indicadores (todos nullable):
+ *   mortalidadeInfantil  — taxa por 1.000 NV (menor = melhor)
+ *   coberturaEsf         — % cobertura ESF (maior = melhor)
+ *   coberturaVacinal     — % vacinal polio (maior = melhor)
+ *   internacoesCsap      — por 100k hab (menor = melhor)
+ *   gastoSaudePerCapita  — R$ deflacionado 2019 (contextual)
+ *   prenatalAdequado     — % 7+ consultas (maior = melhor)
  *
- * Uso: npx tsx scripts/fetch-ieps-data.ts
+ * Uso: npx tsx scripts/update-ieps-data.ts [--year 2021]
  *
- * Alternativa sem GCP: use o script Python abaixo (requer pip install basedosdados)
+ * Fluxo:
+ * 1. Acesse https://iepsdata.org.br/ ou https://basedosdados.org/
+ * 2. Exporte CSV com colunas: id_municipio, tx_mort_inf_ibge, cob_esf,
+ *    cob_vac_polio, tx_hosp_csap, desp_tot_saude_pc_mun_def, pct_prenatal_adeq
+ * 3. Filtre por UF=SC e ano desejado
+ * 4. Salve como scripts/data/ieps_export.csv
+ * 5. Execute: npx tsx scripts/update-ieps-data.ts --year 2021
  *
- * ```python
- * import basedosdados as bd
- * import json
- *
- * df = bd.read_sql("""
- *     SELECT id_municipio, tx_mort_inf_ibge, cob_esf, cob_vac_polio,
- *            tx_hosp_csap, desp_tot_saude_pc_mun_def, pct_prenatal_adeq
- *     FROM `basedosdados-dev.br_ieps_saude.municipio`
- *     WHERE STARTS_WITH(id_municipio, '42') AND ano = 2021
- * """, billing_project_id="SEU_PROJETO_GCP")
- *
- * output = {}
- * for _, row in df.iterrows():
- *     output[str(row['id_municipio'])] = {
- *         "mortalidadeInfantil": None if pd.isna(row['tx_mort_inf_ibge']) else round(float(row['tx_mort_inf_ibge']), 2),
- *         "coberturaEsf": None if pd.isna(row['cob_esf']) else round(float(row['cob_esf']), 1),
- *         "coberturaVacinal": None if pd.isna(row['cob_vac_polio']) else round(float(row['cob_vac_polio']), 1),
- *         "internacoesCsap": None if pd.isna(row['tx_hosp_csap']) else round(float(row['tx_hosp_csap']), 1),
- *         "gastoSaudePerCapita": None if pd.isna(row['desp_tot_saude_pc_mun_def']) else round(float(row['desp_tot_saude_pc_mun_def']), 2),
- *         "prenatalAdequado": None if pd.isna(row['pct_prenatal_adeq']) else round(float(row['pct_prenatal_adeq']), 1),
- *     }
- *
- * with open('shared/data/ieps_latest.json', 'w') as f:
- *     json.dump(output, f, indent=2, ensure_ascii=False)
- * print(f"IEPS 2021: {len(output)} municípios exportados")
- * ```
+ * Alternativa: Se tiver credenciais GCP, use BigQuery diretamente:
+ *   GOOGLE_APPLICATION_CREDENTIALS=cred.json npx tsx scripts/update-ieps-data.ts
  */
 
-import { writeFileSync } from "fs";
-import { SC_MUNICIPALITIES } from "../shared/constants/municipalities-sc.js";
+import { writeFileSync, readFileSync, existsSync } from "node:fs";
+import { resolve } from "node:path";
+import { IepsDataFileSchema } from "../shared/types/agents/ieps.types.js";
 
-// ─── Geração temporária com benchmarks SC reais (até BigQuery ser configurado) ─
-
-/**
- * ATENÇÃO: Este bloco gera dados ESTIMADOS baseados em benchmarks estaduais de SC.
- * Quando as credenciais BigQuery estiverem disponíveis, substitua pelo código
- * BigQuery abaixo e re-execute o script.
- *
- * Benchmarks SC 2021 (fonte: IEPS Data portal público):
- * - Mortalidade infantil: média SC ~9.5/1000 NV (melhor que Brasil ~12)
- * - Cobertura ESF: média SC ~82% (Brasil ~64%)
- * - Cobertura vacinal polio: média SC ~75% (caiu pós-COVID)
- * - Internações CSAP: média SC ~900/100k (Brasil ~1100)
- * - Gasto saúde per capita: média SC ~R$850 (R$ 2019)
- * - Pré-natal adequado: média SC ~72% (Brasil ~58%)
- */
-
-// Seed determinística baseada no ibgeCode (mesmo padrão do generate-static-data.ts)
-function seededRandom(seed: string): () => number {
-  let hash = 0;
-  for (let i = 0; i < seed.length; i++) {
-    hash = (hash << 5) - hash + seed.charCodeAt(i);
-    hash |= 0;
-  }
-  return () => {
-    hash = (hash * 1103515245 + 12345) & 0x7fffffff;
-    return hash / 0x7fffffff;
-  };
-}
-
-function normalish(
-  rng: () => number,
-  mean: number,
-  stddev: number,
-  min: number,
-  max: number,
-): number {
-  const u1 = rng();
-  const u2 = rng();
-  const z = Math.sqrt(-2 * Math.log(Math.max(u1, 0.001))) * Math.cos(2 * Math.PI * u2);
-  const value = mean + z * stddev;
-  return Math.round(Math.max(min, Math.min(max, value)) * 100) / 100;
-}
+const OUTPUT_PATH = resolve(__dirname, "../shared/data/ieps_latest.json");
+const DEFAULT_FALLBACK_YEAR = 2021;
 
 interface IepsEntry {
   mortalidadeInfantil: number | null;
@@ -99,81 +44,147 @@ interface IepsEntry {
   prenatalAdequado: number | null;
 }
 
-const iepsData: Record<string, IepsEntry> = {};
-
-for (const mun of SC_MUNICIPALITIES) {
-  const rng = seededRandom(`ieps-${mun.ibgeCode}`);
-
-  // ~2% dos municípios muito pequenos sem dados de mortalidade (amostra insuficiente)
-  const hasMortInfantil = rng() > 0.02;
-
-  iepsData[mun.ibgeCode] = {
-    mortalidadeInfantil: hasMortInfantil ? normalish(rng, 9.5, 4.0, 0, 40) : null,
-    coberturaEsf: normalish(rng, 82, 15, 20, 100),
-    coberturaVacinal: normalish(rng, 75, 12, 30, 100),
-    internacoesCsap: normalish(rng, 900, 300, 100, 3000),
-    gastoSaudePerCapita: normalish(rng, 850, 250, 200, 2500),
-    prenatalAdequado: normalish(rng, 72, 12, 20, 98),
-  };
+function parseNum(val: string | undefined): number | null {
+  if (!val || val.trim() === "" || val === "-" || val === "NA") return null;
+  const num = parseFloat(val.replace(",", "."));
+  return isNaN(num) ? null : Math.round(num * 100) / 100;
 }
 
-const iepsOutput = {
-  __meta: {
-    lastUpdated: new Date().toISOString(),
-    referenceYear: 2021,
-    sourceUrl: "https://iepsdata.org.br/",
-    municipalities: Object.keys(iepsData).length,
-    note: "Dados estimados baseados em benchmarks SC. Substituir por BigQuery quando credenciais disponíveis.",
-  },
-  ...iepsData,
+/** Mapeia nomes de coluna da Base dos Dados / IEPS para nossos campos */
+const COLUMN_MAP: Record<string, keyof IepsEntry> = {
+  tx_mort_inf_ibge: "mortalidadeInfantil",
+  mortalidade_infantil: "mortalidadeInfantil",
+  mortalidadeinfantil: "mortalidadeInfantil",
+  cob_esf: "coberturaEsf",
+  cobertura_esf: "coberturaEsf",
+  coberturaesf: "coberturaEsf",
+  cob_vac_polio: "coberturaVacinal",
+  cobertura_vacinal: "coberturaVacinal",
+  coberturavacinal: "coberturaVacinal",
+  tx_hosp_csap: "internacoesCsap",
+  internacoes_csap: "internacoesCsap",
+  internacoescsap: "internacoesCsap",
+  desp_tot_saude_pc_mun_def: "gastoSaudePerCapita",
+  gasto_saude_percapita: "gastoSaudePerCapita",
+  gastosaudepercapita: "gastoSaudePerCapita",
+  pct_prenatal_adeq: "prenatalAdequado",
+  prenatal_adequado: "prenatalAdequado",
+  prenataladequado: "prenatalAdequado",
 };
-writeFileSync("shared/data/ieps_latest.json", JSON.stringify(iepsOutput, null, 2) + "\n");
-console.log(
-  `IEPS 2021: ${Object.keys(iepsData).length} municípios SC gerados (dados estimados — substituir por BigQuery)`,
-);
 
-// ─── Código BigQuery (descomentar quando credenciais estiverem disponíveis) ──
-/*
-import { BigQuery } from "@google-cloud/bigquery";
+function findColumn(headers: string[], ...candidates: string[]): number {
+  for (const candidate of candidates) {
+    const idx = headers.findIndex((h) => h.includes(candidate));
+    if (idx >= 0) return idx;
+  }
+  return -1;
+}
 
-const bigquery = new BigQuery();
+function main(): void {
+  const yearArg = process.argv.indexOf("--year");
+  const year = yearArg >= 0 ? parseInt(process.argv[yearArg + 1], 10) : DEFAULT_FALLBACK_YEAR;
 
-async function fetchIepsFromBigQuery(): Promise<void> {
-  const query = `
-    SELECT
-      id_municipio,
-      tx_mort_inf_ibge,
-      cob_esf,
-      cob_vac_polio,
-      tx_hosp_csap,
-      desp_tot_saude_pc_mun_def,
-      pct_prenatal_adeq
-    FROM \`basedosdados-dev.br_ieps_saude.municipio\`
-    WHERE STARTS_WITH(id_municipio, '42')
-      AND ano = 2021
-    ORDER BY id_municipio
-  `;
+  const csvPath = resolve(__dirname, "data/ieps_export.csv");
+  let data: Record<string, IepsEntry>;
 
-  const [rows] = await bigquery.query({ query });
-  const output: Record<string, IepsEntry> = {};
+  if (existsSync(csvPath)) {
+    const csv = readFileSync(csvPath, "utf-8");
+    const lines = csv.split("\n").filter((l) => l.trim());
+    const separator = lines[0].includes(";") ? ";" : ",";
+    const header = lines[0].split(separator).map((h) => h.trim().toLowerCase());
 
-  for (const row of rows) {
-    output[row.id_municipio] = {
-      mortalidadeInfantil: row.tx_mort_inf_ibge != null ? Number(Number(row.tx_mort_inf_ibge).toFixed(2)) : null,
-      coberturaEsf: row.cob_esf != null ? Number(Number(row.cob_esf).toFixed(1)) : null,
-      coberturaVacinal: row.cob_vac_polio != null ? Number(Number(row.cob_vac_polio).toFixed(1)) : null,
-      internacoesCsap: row.tx_hosp_csap != null ? Number(Number(row.tx_hosp_csap).toFixed(1)) : null,
-      gastoSaudePerCapita: row.desp_tot_saude_pc_mun_def != null ? Number(Number(row.desp_tot_saude_pc_mun_def).toFixed(2)) : null,
-      prenatalAdequado: row.pct_prenatal_adeq != null ? Number(Number(row.pct_prenatal_adeq).toFixed(1)) : null,
-    };
+    const colIbge = findColumn(header, "id_municipio", "codigo", "código", "ibge");
+    if (colIbge === -1) {
+      console.error("Coluna de código IBGE não encontrada. Headers:", header);
+      process.exit(1);
+    }
+
+    // Mapeia colunas disponíveis no CSV para campos do IepsEntry
+    const fieldColumns: Partial<Record<keyof IepsEntry, number>> = {};
+    for (let i = 0; i < header.length; i++) {
+      const mapped = COLUMN_MAP[header[i]];
+      if (mapped) {
+        fieldColumns[mapped] = i;
+      }
+    }
+
+    data = {};
+    for (const line of lines.slice(1)) {
+      const cols = line.split(separator);
+      const ibge = cols[colIbge]?.trim();
+      if (!ibge || !ibge.startsWith("42") || ibge.length !== 7) continue;
+
+      const entry: IepsEntry = {
+        mortalidadeInfantil:
+          fieldColumns.mortalidadeInfantil !== undefined
+            ? parseNum(cols[fieldColumns.mortalidadeInfantil])
+            : null,
+        coberturaEsf:
+          fieldColumns.coberturaEsf !== undefined
+            ? parseNum(cols[fieldColumns.coberturaEsf])
+            : null,
+        coberturaVacinal:
+          fieldColumns.coberturaVacinal !== undefined
+            ? parseNum(cols[fieldColumns.coberturaVacinal])
+            : null,
+        internacoesCsap:
+          fieldColumns.internacoesCsap !== undefined
+            ? parseNum(cols[fieldColumns.internacoesCsap])
+            : null,
+        gastoSaudePerCapita:
+          fieldColumns.gastoSaudePerCapita !== undefined
+            ? parseNum(cols[fieldColumns.gastoSaudePerCapita])
+            : null,
+        prenatalAdequado:
+          fieldColumns.prenatalAdequado !== undefined
+            ? parseNum(cols[fieldColumns.prenatalAdequado])
+            : null,
+      };
+
+      data[ibge] = entry;
+    }
+
+    console.log(`[update-ieps] Parsed ${Object.keys(data).length} municípios SC do CSV`);
+    console.log(
+      `[update-ieps] Campos mapeados: ${Object.keys(fieldColumns).join(", ") || "nenhum"}`,
+    );
+  } else {
+    console.log(`[update-ieps] CSV não encontrado em ${csvPath}`);
+    console.log("[update-ieps] Mantendo dados existentes, adicionando apenas __meta");
+
+    const existing: Record<string, unknown> = JSON.parse(
+      readFileSync(OUTPUT_PATH, "utf-8"),
+    ) as Record<string, unknown>;
+    const { __meta: _, ...entries } = existing;
+    data = entries as Record<string, IepsEntry>;
   }
 
-  writeFileSync(
-    "shared/data/ieps_latest.json",
-    JSON.stringify(output, null, 2) + "\n",
+  // Validação Zod antes de gravar — garante compatibilidade com o collector
+  const validation = IepsDataFileSchema.safeParse(data);
+  if (!validation.success) {
+    console.error("[update-ieps] ERRO: Output falha validação Zod. O JSON NÃO foi gravado.");
+    console.error(
+      "[update-ieps] Erros:",
+      JSON.stringify(validation.error.errors.slice(0, 5), null, 2),
+    );
+    console.error("[update-ieps] Verifique se o CSV exportado tem o formato esperado.");
+    process.exit(1);
+  }
+
+  const output = {
+    __meta: {
+      lastUpdated: new Date().toISOString(),
+      referenceYear: year,
+      sourceUrl: "https://iepsdata.org.br/",
+      municipalities: Object.keys(data).length,
+    },
+    ...data,
+  };
+
+  writeFileSync(OUTPUT_PATH, JSON.stringify(output, null, 2) + "\n");
+  console.log(
+    `[update-ieps] Gravado ${OUTPUT_PATH} (${Object.keys(data).length} municípios, ano ref: ${year})`,
   );
-  console.log(`IEPS 2021: ${Object.keys(output).length} municípios SC exportados do BigQuery`);
 }
 
-fetchIepsFromBigQuery().catch(console.error);
-*/
+main();
