@@ -9,14 +9,15 @@
 
 A plataforma IOC ESG Municipal encontra-se **pronta para uso em ambiente de produção (SC)**. Todos os bloqueadores técnicos e gaps de dados que impediam a utilização real por um prefeito catarinense foram resolvidos.
 
-| Componente Crítico               | Status         | Detalhes                                                                                                                               |
-| -------------------------------- | -------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
-| **Infraestrutura Docker (Prod)** | ✅ Operacional | `docker-compose.prod.yml` com Nginx (HTTP-only) + Node.js + Postgres + Redis. SSL opt-in configurado.                                  |
-| **Segurança e Autenticação**     | ✅ Operacional | JWT com Refresh Token, senhas hasheadas, middleware anti-IDOR (prefeito só acessa seu município).                                      |
-| **Onboarding de Usuários**       | ✅ Operacional | Fluxo restrito aos 295 municípios de SC. Usuários vinculam-se via código IBGE.                                                         |
-| **Integração de Dados Reais**    | ✅ Operacional | 7 coletores via API em tempo real + 7 coletores estáticos (com scripts de atualização automatizada e `__meta.referenceYear` dinâmico). |
-| **Dashboard e Simulação**        | ✅ Operacional | Interface responsiva, simulação de FPM, ranking SC (Benchmark) e relatórios de recomendações por IA.                                   |
-| **Observabilidade**              | ✅ Operacional | Prometheus + Grafana + prom-client. Métricas: latência p95, cache hit/miss, APIs gov, Core Web Vitals. Alertas automáticos.            |
+| Componente Crítico               | Status         | Detalhes                                                                                                                                  |
+| -------------------------------- | -------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| **Infraestrutura Docker (Prod)** | ✅ Operacional | `docker-compose.prod.yml` com Nginx (HTTP-only) + Node.js + Postgres + Redis. SSL opt-in configurado.                                     |
+| **Segurança e Autenticação**     | ✅ Operacional | JWT com Refresh Token, senhas hasheadas, middleware anti-IDOR (prefeito só acessa seu município).                                         |
+| **Onboarding de Usuários**       | ✅ Operacional | Fluxo restrito aos 295 municípios de SC. Usuários vinculam-se via código IBGE.                                                            |
+| **Integração de Dados Reais**    | ✅ Operacional | 15 coletores (7 API + 7 estáticos + TSE). Pipeline de ingestão diária (02:00 UTC) importa para PostgreSQL. Dashboard lê do banco (<50ms). |
+| **Pipeline de Ingestão**         | ✅ Operacional | node-cron 02:00 UTC, 15 fontes, IngestionRun/Log com auditoria, score recalculation, cache invalidation. Admin: GET/POST /api/ingestion.  |
+| **Dashboard e Simulação**        | ✅ Operacional | Interface responsiva, simulação de FPM, ranking SC (Benchmark) e relatórios de recomendações por IA.                                      |
+| **Observabilidade**              | ✅ Operacional | Prometheus + Grafana + prom-client. Métricas: latência p95, cache hit/miss, APIs gov, Core Web Vitals. Alertas automáticos.               |
 
 ---
 
@@ -65,7 +66,24 @@ Rotina de auditoria permanente criada: `/audit` (skill) + `scripts/audit.sh` + `
 
 ---
 
-## 4. Próximos Passos Imediatos (Go-Live SC)
+## 4. Pipeline de Ingestão (2026-04-13)
+
+Dashboard antes: **15.3s** (chamadas real-time a 15 APIs). Dashboard agora: **27ms cold / 3ms cached** (leitura do PostgreSQL).
+
+| Aspecto        | Detalhe                                                                          |
+| -------------- | -------------------------------------------------------------------------------- |
+| **Scheduler**  | node-cron `0 2 * * *` UTC, embutido no Express (ADR-010)                         |
+| **Fontes**     | 10 estáticas (paralelo, ~1s) + 5 APIs (sequencial, rate limited)                 |
+| **Auditoria**  | IngestionRun por fonte + IngestionLog apenas falhas (ADR-012)                    |
+| **Fallback**   | Dashboard sem dados no banco cai no real-time transparentemente (ADR-011)        |
+| **Response**   | `dataSource: "database"\|"realtime"` + `dataCollectedAt` em toda resposta ODS    |
+| **Admin**      | `GET /api/ingestion/status` + `POST /api/ingestion/trigger` (role admin)         |
+| **Métricas**   | 4 Prometheus: duration, indicators_upserted, municipalities_failed, last_success |
+| **Verificado** | 10 fontes estáticas: 295 municípios, 8389 indicadores, 0 falhas                  |
+
+---
+
+## 5. Próximos Passos Imediatos (Go-Live SC)
 
 A plataforma não requer mais código para funcionar em SC. Os próximos passos são puramente operacionais:
 
@@ -79,7 +97,7 @@ A plataforma não requer mais código para funcionar em SC. Os próximos passos 
 
 ---
 
-## 5. O Que NÃO Fazer (Regras de Ouro)
+## 6. O Que NÃO Fazer (Regras de Ouro)
 
 Até que o cliente final (Prefeitura em SC) valide e aprove o produto em produção:
 
