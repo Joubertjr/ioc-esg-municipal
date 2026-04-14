@@ -751,14 +751,22 @@ async function seedOdsScores(tx: TransactionClient): Promise<void> {
 }
 
 async function seedAdminUser(tx: TransactionClient): Promise<void> {
-  const email = "admin@ioc.local";
+  const email = process.env["ADMIN_EMAIL"] ?? "admin@ioc.local";
+  const password = process.env["ADMIN_PASSWORD"];
+  if (!password) {
+    console.log(
+      "[seed] ADMIN_PASSWORD não definida — pulando criação de admin. Defina ADMIN_EMAIL e ADMIN_PASSWORD para criar.",
+    );
+    return;
+  }
+
   const existing = await tx.user.findUnique({ where: { email } });
   if (existing) {
     console.log(`[seed] Admin user ${email} já existe — pulando.`);
     return;
   }
 
-  const passwordHash = await bcrypt.hash("Admin@2026", 12);
+  const passwordHash = await bcrypt.hash(password, 12);
   await tx.user.create({
     data: {
       email,

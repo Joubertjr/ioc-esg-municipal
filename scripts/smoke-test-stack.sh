@@ -49,8 +49,8 @@ case "$MODE" in
     ;;
 esac
 
-EMAIL="${SMOKE_EMAIL:-admin@ioc.local}"
-PASSWORD="${SMOKE_PASSWORD:-Admin@2026}"
+EMAIL="${SMOKE_EMAIL:?SMOKE_EMAIL é obrigatória}"
+PASSWORD="${SMOKE_PASSWORD:?SMOKE_PASSWORD é obrigatória}"
 
 PASS=0
 FAIL=0

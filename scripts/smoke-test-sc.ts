@@ -16,8 +16,12 @@ import { join } from "node:path";
 // ─── Config ──────────────────────────────────────────────────────────────────
 
 const BASE_URL = process.argv[2] ?? "http://localhost:3000";
-const ADMIN_EMAIL = process.env.SMOKE_EMAIL ?? "admin@ioc.local";
-const ADMIN_PASSWORD = process.env.SMOKE_PASSWORD ?? "Admin@2026";
+const ADMIN_EMAIL = process.env["SMOKE_EMAIL"];
+const ADMIN_PASSWORD = process.env["SMOKE_PASSWORD"];
+if (!ADMIN_EMAIL || !ADMIN_PASSWORD) {
+  console.error("SMOKE_EMAIL e SMOKE_PASSWORD são obrigatórias.");
+  process.exit(1);
+}
 
 const CANARY_CODES = ["4205407", "4209102", "4209300", "4202453", "4204202"];
 
