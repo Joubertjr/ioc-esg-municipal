@@ -37,27 +37,25 @@ test.describe("Refresh token e persistência de sessão", () => {
   });
 
   test("refresh token no sessionStorage sobrevive ao reload", async ({ page }) => {
-    // Login direto via fetch para obter refreshToken
+    // Navegar primeiro para inicializar contexto de origem (cookies)
+    await page.goto("/login");
+
+    // Login direto via fetch para obter refreshToken + cookie httpOnly
     const loginRes = await page.request.post(`${BACKEND_URL}/api/auth/login`, {
       data: { email: TEST_USER.email, password: TEST_USER.password },
     });
     expect(loginRes.ok()).toBeTruthy();
 
-    const { token, refreshToken } = (await loginRes.json()) as {
+    const { refreshToken } = (await loginRes.json()) as {
       token: string;
       refreshToken: string;
     };
     expect(refreshToken).toBeTruthy();
 
-    // Navegar e injetar tokens
-    await page.goto("/login");
-    await page.evaluate(
-      ({ jwt, rt }: { jwt: string; rt: string }) => {
-        localStorage.setItem("ioc_esg_token", jwt);
-        sessionStorage.setItem("ioc_rt", rt);
-      },
-      { jwt: token, rt: refreshToken },
-    );
+    // Injetar refresh token em sessionStorage (access token já está no cookie httpOnly)
+    await page.evaluate((rt: string) => {
+      sessionStorage.setItem("ioc_rt", rt);
+    }, refreshToken);
 
     // Navegar para dashboard
     await page.goto("/dashboard");
@@ -83,11 +81,12 @@ test.describe("Refresh token e persistência de sessão", () => {
     await page.waitForLoadState("networkidle");
     await expect(page).toHaveURL(/\/dashboard/);
 
-    // Limpar token (simula logout)
+    // Limpar tokens (simula logout)
     await page.evaluate(() => {
-      localStorage.removeItem("ioc_esg_token");
       sessionStorage.removeItem("ioc_rt");
     });
+    // Limpar cookie httpOnly via contexto do Playwright
+    await page.context().clearCookies();
 
     // Navegar novamente — deve cair no /login
     await page.goto("/dashboard");

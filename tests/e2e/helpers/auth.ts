@@ -5,9 +5,13 @@
  *  - Backend rodando em http://localhost:3000
  *  - Banco de dados com migrations aplicadas (`pnpm db:migrate`)
  *
- * A estratégia de autenticação injeta o JWT diretamente em localStorage
- * para evitar repetir o fluxo de login em todos os testes que precisam
- * de uma sessão autenticada.
+ * Estratégia de autenticação:
+ *  - O backend usa httpOnly cookies para o access token (Set-Cookie header).
+ *  - O refresh token é armazenado em sessionStorage sob a chave "ioc_rt".
+ *  - `page.request.post` ao /api/auth/login recebe o Set-Cookie e o Playwright
+ *    armazena o cookie automaticamente no contexto do navegador.
+ *  - Após o login, injetamos o refreshToken em sessionStorage para que o
+ *    mecanismo de refresh automático do frontend funcione.
  */
 
 import { type Page } from "@playwright/test";
@@ -21,6 +25,9 @@ export const TEST_USER = {
 
 /** Código IBGE de Florianópolis — usado como município padrão nos testes. */
 export const DEFAULT_IBGE_CODE = "4205407";
+
+/** Chave do refresh token em sessionStorage — deve coincidir com frontend/src/lib/api.ts */
+export const RT_KEY = "ioc_rt";
 
 const BACKEND_URL = "http://localhost:3000";
 
@@ -65,38 +72,37 @@ export async function ensureTestUser(): Promise<void> {
 
   if (!res.ok && res.status !== 409) {
     const body = await res.text();
-    throw new Error(
-      `Falha ao criar usuário de teste (${res.status}): ${body}`,
-    );
+    throw new Error(`Falha ao criar usuário de teste (${res.status}): ${body}`);
   }
 }
 
 /**
- * Obtém JWT via API de login e injeta em localStorage para que a aplicação
- * React reconheça o usuário como autenticado sem passar pelo fluxo visual.
+ * Autentica via API e configura o contexto do navegador.
+ *
+ * O `page.request.post` envia a requisição de login e o Playwright captura
+ * automaticamente o cookie httpOnly retornado pelo backend (Set-Cookie).
+ * Após isso, injetamos o refreshToken em sessionStorage para que o mecanismo
+ * de refresh automático do frontend funcione corretamente.
  *
  * Chame esta função em `test.beforeEach` nos specs que requerem sessão.
  */
 export async function loginViaApi(page: Page): Promise<void> {
-  const res = await page.request.post(
-    `${BACKEND_URL}/api/auth/login`,
-    {
-      data: { email: TEST_USER.email, password: TEST_USER.password },
-    },
-  );
+  // Navega primeiro para inicializar o contexto de origem (necessário para cookies)
+  await page.goto("/login");
+
+  const res = await page.request.post(`${BACKEND_URL}/api/auth/login`, {
+    data: { email: TEST_USER.email, password: TEST_USER.password },
+  });
 
   if (!res.ok()) {
     const body = await res.text();
     throw new Error(`Login via API falhou (${res.status()}): ${body}`);
   }
 
-  const { token } = (await res.json()) as { token: string };
+  const { refreshToken } = (await res.json()) as { token: string; refreshToken: string };
 
-  // Navega para uma página qualquer para inicializar o contexto de origem
-  await page.goto("/login");
-
-  // Injeta o token no localStorage — mesma chave usada por lib/api.ts
-  await page.evaluate((jwt: string) => {
-    localStorage.setItem("ioc_esg_token", jwt);
-  }, token);
+  // Injeta o refresh token em sessionStorage — mesma chave usada por lib/api.ts
+  await page.evaluate((rt: string) => {
+    sessionStorage.setItem("ioc_rt", rt);
+  }, refreshToken);
 }
