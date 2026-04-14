@@ -17,31 +17,38 @@ Acompanhar o fluxo do processo de ponta a ponta, identificar desvios e oportunid
 ## Processo de Analise (execute TODOS os passos)
 
 ### 1. Snapshot do Projeto
+
 ```bash
 git log --oneline -20
 git diff --stat HEAD~5..HEAD
 git shortlog -s -n --since="7 days ago"
 ```
 
-Leia `docs/PROJECT_STATE.md` para entender o estado declarado.
+Leia `docs/ESTADO_ATUAL_SC.md` para entender o estado declarado.
 
 ### 2. Saude do Codigo
 
 #### 2a. TypeScript
+
 ```bash
 npx tsc --noEmit 2>&1 | tail -5
 ```
+
 - Zero erros = verde
 - Qualquer erro = vermelho critico
 
 #### 2b. Testes
+
 ```bash
 npx vitest run 2>&1
 ```
+
 Extraia: total de testes, passando, falhando, cobertura se disponivel.
 
 #### 2c. Cobertura de Arquivos
+
 Use Glob e Grep para mapear:
+
 - Quantos arquivos `.ts` em `backend/` tem teste correspondente em `tests/`
 - Quais coletores (`backend/agents/*/`) tem testes
 - Quais services tem testes
@@ -50,22 +57,22 @@ Use Glob e Grep para mapear:
 
 Calcule e reporte cada KPI:
 
-| KPI | Como medir | Meta |
-|-----|-----------|------|
-| Cobertura ODS | ODS com dados / 17 | >= 15/17 |
-| Cobertura de testes | Arquivos testados / total | >= 80% |
-| Erros TypeScript | `tsc --noEmit` | 0 |
-| Testes passando | vitest run | 100% |
-| Coletores ativos | agents/*/ com collector.ts | >= 7 |
-| Seguranca | achados criticos abertos | 0 |
-| Docs atualizados | PROJECT_STATE.md < 3 dias | sim |
-| Planos pendentes | docs/plans/ sem implementacao | lista |
+| KPI                 | Como medir                    | Meta     |
+| ------------------- | ----------------------------- | -------- |
+| Cobertura ODS       | ODS com dados / 17            | >= 15/17 |
+| Cobertura de testes | Arquivos testados / total     | >= 80%   |
+| Erros TypeScript    | `tsc --noEmit`                | 0        |
+| Testes passando     | vitest run                    | 100%     |
+| Coletores ativos    | agents/\*/ com collector.ts   | >= 7     |
+| Seguranca           | achados criticos abertos      | 0        |
+| Docs atualizados    | ESTADO_ATUAL_SC.md < 3 dias   | sim      |
+| Planos pendentes    | docs/plans/ sem implementacao | lista    |
 
 ### 4. Validacao de Coerencia
 
-Verifique se os dados declarados em `docs/PROJECT_STATE.md` correspondem a realidade:
+Verifique se os dados declarados em `docs/ESTADO_ATUAL_SC.md` correspondem a realidade:
 
-- **ODS cobertos**: compare o que o PROJECT_STATE diz vs o que `ods_score_service.ts` realmente importa
+- **ODS cobertos**: compare o que o ESTADO_ATUAL_SC diz vs o que `ods_score_service.ts` realmente importa
 - **Numero de testes**: compare o declarado vs `npx vitest run` real
 - **Coletores listados**: compare vs diretorio `backend/agents/`
 - **Seguranca**: verifique se os achados criticos de `docs/plans/security-audit.md` foram corrigidos
@@ -76,6 +83,7 @@ Verifique se os dados declarados em `docs/PROJECT_STATE.md` correspondem a reali
 Busque ativamente:
 
 #### Riscos Tecnicos
+
 - Arquivos com `any` em TypeScript (grep por `: any` e `as any`)
 - APIs externas sem cache (grep por `fetch` sem `withCache`)
 - Funcoes sem tratamento de erro adequado
@@ -83,12 +91,14 @@ Busque ativamente:
 - Codigo morto ou nao utilizado
 
 #### Riscos de Processo
+
 - Features grandes sem plano em `docs/plans/`
 - Commits sem testes correspondentes
 - Divergencia entre planos e implementacao
 - Decisoes tecnicas nao documentadas em `docs/decisions/`
 
 #### Riscos de Dominio
+
 - Scoring inconsistente (mesma formula para ODS diferentes)
 - ODS com peso duplicado
 - Indicadores sem fonte de dados confiavel
@@ -97,6 +107,7 @@ Busque ativamente:
 ### 6. Analise de Tendencias
 
 Se dados historicos disponiveis (git log), identifique:
+
 - Velocidade de entrega (commits/dia, features/semana)
 - Evolucao da cobertura de testes ao longo do tempo
 - Padrao de bugs (concentrados em qual area?)
@@ -106,14 +117,15 @@ Se dados historicos disponiveis (git log), identifique:
 
 Para cada achado, classifique em:
 
-| Prioridade | Criterio |
-|-----------|---------|
+| Prioridade   | Criterio                                    |
+| ------------ | ------------------------------------------- |
 | P0 - Critico | Bloqueia producao ou causa dados incorretos |
-| P1 - Alto | Afeta qualidade significativamente |
-| P2 - Medio | Melhoria importante mas nao urgente |
-| P3 - Baixo | Nice to have |
+| P1 - Alto    | Afeta qualidade significativamente          |
+| P2 - Medio   | Melhoria importante mas nao urgente         |
+| P3 - Baixo   | Nice to have                                |
 
 Cada recomendacao deve ter:
+
 - **O que**: descricao clara do problema ou oportunidade
 - **Por que**: impacto se nao for resolvido
 - **Como**: acao concreta e especifica
@@ -124,33 +136,41 @@ Cada recomendacao deve ter:
 
 ```markdown
 # Relatorio de Monitoramento — IOC ESG Municipal
+
 > Data: YYYY-MM-DD | Ciclo: #N
 
 ## Dashboard de KPIs
 
-| KPI | Valor | Meta | Status |
-|-----|-------|------|--------|
-| ... | ... | ... | verde/amarelo/vermelho |
+| KPI | Valor | Meta | Status                 |
+| --- | ----- | ---- | ---------------------- |
+| ... | ...   | ...  | verde/amarelo/vermelho |
 
 ## Alertas Criticos (P0)
+
 [lista ou "Nenhum alerta critico"]
 
 ## Desvios Identificados
+
 [o que mudou vs plano/expectativa]
 
 ## Analise de Coerencia
+
 [resultado da validacao: ok / divergencia encontrada]
 
 ## Riscos Ativos
+
 [lista priorizada]
 
 ## Evolucao desde Ultimo Ciclo
+
 [o que melhorou, o que piorou]
 
 ## Recomendacoes Top 5
+
 [acao | impacto | esforco | responsavel]
 
 ## Proximos Marcos
+
 [o que deve ser entregue a seguir baseado no roadmap]
 ```
 

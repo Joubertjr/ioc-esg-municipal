@@ -100,7 +100,7 @@ Configurado em `.mcp.json` na raiz do projeto:
 ### 8. Atualizar Arquitetura
 
 - Editar `long-term/architecture.md` quando stack ou servicos mudam
-- Manter sync com `docs/PROJECT_STATE.md`
+- Manter sync com `docs/ESTADO_ATUAL_SC.md`
 
 ### 9. Sincronizar auto-memory com Vault (`sync-auto-memory`)
 

@@ -4,6 +4,7 @@ description: Checklist completo antes de qualquer deploy. Use antes de subir par
 allowed-tools: Read, Bash(pnpm *), Bash(git *), Bash(docker *)
 model: claude-sonnet-4-6
 ---
+
 # Pre-Deploy Checklist
 
 ## Execute cada item e reporte resultado
@@ -36,11 +37,13 @@ pnpm docker:build 2>&1 | tail -5
 ```
 
 ## Checklist manual
+
 - [ ] `.env.example` atualizado com novas variáveis
-- [ ] `docs/PROJECT_STATE.md` atualizado
+- [ ] `docs/ESTADO_ATUAL_SC.md` atualizado
 - [ ] CHANGELOG ou PR summary criado
 - [ ] Rollback testado (sei como reverter se der problema)
 
 ## Resultado esperado
+
 Todos os itens acima: ✅ PASSA ou justificativa clara de por que não se aplica.
 Se qualquer item falhar: não faça deploy até corrigir.

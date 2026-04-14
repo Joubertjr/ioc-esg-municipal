@@ -37,7 +37,7 @@ Invoque o agente `memory-manager` passando o roteiro abaixo. Substitua
 4. **Pontue cada item (0-10) em três dimensões:**
    - `IMPORTÂNCIA`: quanto afeta o produto ou o fluxo de trabalho.
    - `RECÊNCIA`: decaimento linear (dia final do mês = 10, dia 1 = 3).
-   - `RELEVÂNCIA`: alinhamento com a Fase atual (ler `PROJECT_STATE.md`).
+   - `RELEVÂNCIA`: alinhamento com a Fase atual (ler `ESTADO_ATUAL_SC.md`).
    - Score final = `(2*importância + recência + relevância) / 4`.
 
 5. **Sintetize os top-15 itens** num documento estruturado (template abaixo).

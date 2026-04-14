@@ -18,7 +18,7 @@ if log: parts.append(f"## Commits\n```\n{log}\n```\n")
 diff = run("git diff --stat")
 if diff: parts.append(f"## Diff\n```\n{diff[:800]}\n```\n")
 
-sf = os.path.join(os.getcwd(), "docs", "PROJECT_STATE.md")
+sf = os.path.join(os.getcwd(), "docs", "ESTADO_ATUAL_SC.md")
 if os.path.exists(sf):
     with open(sf) as f: parts.append(f"## Estado\n{f.read()[:3000]}\n")
 

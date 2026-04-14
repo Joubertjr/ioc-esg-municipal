@@ -192,7 +192,7 @@ PARALELO:
 ```
 PARALELO:
 ├── memory-manager     → Atualizar daily log, current-task, decisoes, gotchas
-└── docs-writer        → Atualizar PROJECT_STATE.md e BACKLOG.md
+└── docs-writer        → Atualizar ESTADO_ATUAL_SC.md e BACKLOG.md
 ```
 
 ## Como delegar corretamente

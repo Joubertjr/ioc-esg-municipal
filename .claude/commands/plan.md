@@ -5,11 +5,13 @@ Inicia o protocolo de planejamento documentado para a feature: $ARGUMENTS
 ## Execute os seguintes passos em ordem:
 
 ### 1. Análise de contexto
-- Leia `docs/PROJECT_STATE.md` para entender o estado atual
+
+- Leia `docs/ESTADO_ATUAL_SC.md` para entender o estado atual
 - Identifique todos os arquivos relevantes para esta feature
 - Liste dependências e integrações afetadas
 
 ### 2. Proposta estruturada
+
 Produza um documento com:
 
 **O que será implementado:**
@@ -33,9 +35,11 @@ Produza um documento com:
 **Estimativa de complexidade:** [Baixa / Média / Alta]
 
 ### 3. Aguarde aprovação
+
 Não inicie a implementação até receber confirmação explícita do usuário.
 
 ### 4. Após aprovação
+
 - Salve este plano em `docs/plans/$ARGUMENTS.md`
 - Faça checkpoint: `git add -A && git commit -m "checkpoint: antes de $ARGUMENTS"`
 - Crie branch: `git checkout -b feature/$ARGUMENTS`

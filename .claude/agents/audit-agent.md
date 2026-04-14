@@ -38,7 +38,7 @@ Execute em paralelo:
 
 ### Passo 2: Dimensão 1 — Arquitetura e Design
 
-- Leia `CLAUDE.md` e `docs/PROJECT_STATE.md` para entender o estado esperado
+- Leia `CLAUDE.md` e `docs/ESTADO_ATUAL_SC.md` para entender o estado esperado
 - Verifique se os ADRs em `docs/decisions/` estão sendo cumpridos
 - Valide separação de responsabilidades:
   - Agents (coletores) NÃO devem conter lógica de scoring

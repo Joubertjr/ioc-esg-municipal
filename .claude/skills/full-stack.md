@@ -13,6 +13,7 @@ effort: high
 ## Pipeline obrigatório
 
 ### 1. Checkpoint
+
 ```bash
 git add -A && git commit -m "checkpoint: antes de full-stack/$ARGUMENTS"
 git checkout -b feature/$ARGUMENTS
@@ -27,6 +28,7 @@ git checkout -b feature/$ARGUMENTS
 **2c.** "Use o agente frontend-architect para projetar os componentes de $ARGUMENTS. Use docs/plans/$ARGUMENTS-backend.md como referência. Produza em docs/plans/$ARGUMENTS-frontend.md"
 
 ### 3. APRESENTE o plano consolidado ao usuário
+
 **AGUARDE aprovação explícita antes de continuar.**
 
 ### 4. Implementação
@@ -44,12 +46,15 @@ git checkout -b feature/$ARGUMENTS
 **5b.** Se tocar auth/pagamentos/dados sensíveis: "Use o agente security-auditor para auditar $ARGUMENTS"
 
 ### 6. Commit e documentação
+
 ```bash
 git commit -m "feat($ARGUMENTS): [descrição]"
 ```
-Atualize docs/PROJECT_STATE.md e docs/decisions/ se houver decisões.
+
+Atualize docs/ESTADO_ATUAL_SC.md e docs/decisions/ se houver decisões.
 
 ## Relatório final
+
 ```
 Full-stack concluído: $ARGUMENTS
 Agentes: [lista com outputs]
