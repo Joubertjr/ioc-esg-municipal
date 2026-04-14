@@ -83,7 +83,22 @@ Dashboard antes: **15.3s** (chamadas real-time a 15 APIs). Dashboard agora: **27
 
 ---
 
-## 5. Próximos Passos Imediatos (Go-Live SC)
+## 5. Correções Estruturais do Diagnóstico Arquitetural (2026-04-13)
+
+Auditoria arquitetural profunda identificou 5 problemas de correção de dados e performance. Todos corrigidos no commit `3a0111e`.
+
+| Problema                                    | Impacto                                                                                                     | Correção                                                                                      |
+| ------------------------------------------- | ----------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
+| **SC_BENCHMARK_CODES errados**              | 8/10 códigos IBGE apontavam municípios incorretos — todo ranking e recomendação IA eram contra grupo errado | Corrigidos: Blumenau, Criciúma, São José, Lages, Balneário Camboriú, Chapecó, Itajaí, Palhoça |
+| **Peer clustering hardcoded 20 municípios** | 275/295 municípios retornavam 404 na rota /peers                                                            | Reescrito para ler 295 do PostgreSQL com cache 24h, z-score (população + FPM per capita)      |
+| **Trend/History misturava odsNumber**       | useTrend e OdsHistoryChart faziam média de 18 rows (global + 17 ODS) em vez de usar odsNumber=0             | Filtro odsNumber=0 no hook e componente                                                       |
+| **geometricScore não persistido**           | Calculado em ods_score_service mas nunca gravado no banco pelo history_service                              | Adicionado ao upsert do odsNumber=0                                                           |
+| **Benchmark N×4 queries**                   | benchmark_service chamava calculateMunicipalOds por município (N chamadas API)                              | Novo bulk reader readOdsReportsForCodes — 3 queries para qualquer N municípios                |
+| **Refresh token perdido no reload**         | Token armazenado em variável JS — perdido ao recarregar página                                              | Migrado para sessionStorage + checkSession tenta refresh antes de falhar                      |
+
+---
+
+## 6. Próximos Passos Imediatos (Go-Live SC)
 
 A plataforma não requer mais código para funcionar em SC. Os próximos passos são puramente operacionais:
 
@@ -97,7 +112,7 @@ A plataforma não requer mais código para funcionar em SC. Os próximos passos 
 
 ---
 
-## 6. O Que NÃO Fazer (Regras de Ouro)
+## 7. O Que NÃO Fazer (Regras de Ouro)
 
 Até que o cliente final (Prefeitura em SC) valide e aprove o produto em produção:
 

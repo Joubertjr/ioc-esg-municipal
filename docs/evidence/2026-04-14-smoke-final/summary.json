@@ -1,0 +1,9 @@
+{
+  "timestamp": "2026-04-14T00:30:55.089Z",
+  "baseUrl": "http://localhost:3000",
+  "total": 21,
+  "passed": 21,
+  "failed": 0,
+  "durationMs": 676417,
+  "verdict": "GO"
+}
