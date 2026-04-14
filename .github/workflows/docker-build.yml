@@ -1,7 +1,9 @@
 name: Docker — Build & Publish
 
 on:
-  push:
+  workflow_run:
+    workflows: ["IOC ESG Municipal — CI/CD + Automação"]
+    types: [completed]
     branches: [main]
   workflow_dispatch:
     inputs:
@@ -23,6 +25,10 @@ jobs:
     name: Build & Push Docker Image
     runs-on: ubuntu-latest
     timeout-minutes: 20
+    # Só executa se CI passou (workflow_run) ou se é dispatch manual
+    if: >
+      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success')
 
     permissions:
       contents: read
@@ -65,7 +71,7 @@ jobs:
           platforms: linux/amd64
 
       - name: Trivy vulnerability scan
-        uses: aquasecurity/trivy-action@master
+        uses: aquasecurity/trivy-action@0.28.0
         with:
           image-ref: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:scan
           format: table
