@@ -500,4 +500,4 @@ Monitore este endpoint com frequencia minima de 1 verificacao por minuto em prod
 ---
 
 _Ultima atualizacao: 2026-04-06_
-_Versao do projeto: ver `docs/PROJECT_STATE.md`_
+_Versao do projeto: ver `docs/ESTADO_ATUAL_SC.md`_
