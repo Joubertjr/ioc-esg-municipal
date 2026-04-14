@@ -88,6 +88,10 @@ function makeTrend(overrides: Partial<TrendData> = {}): TrendData {
     ],
     latestYear: 2023,
     previousYear: 2022,
+    comparable: true,
+    comparabilityReason: "ok",
+    currentCoverage: 17,
+    previousCoverage: 17,
     ...overrides,
   };
 }

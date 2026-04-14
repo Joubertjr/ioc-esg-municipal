@@ -196,9 +196,10 @@ export function KpiCards({
   let trendValue: string | number = "—";
   let trendSuffix: string | undefined;
   let trendBorder = "border-l-border";
+  let trendLabel = "Tendência";
 
   if (!isTrendLoading && trend) {
-    if (trend.delta !== null) {
+    if (trend.comparable && trend.delta !== null) {
       trendValue = Math.abs(Math.round(trend.delta));
       trendSuffix = "pts";
       if (trend.direction === "up") {
@@ -211,12 +212,20 @@ export function KpiCards({
         trendPrefix = "→";
         trendBorder = "border-l-warning";
       }
+    } else if (!trend.comparable) {
+      trendLabel = "Tendência";
+      trendValue = "—";
     }
   }
 
   const trendContext: React.ReactNode = isTrendLoading ? (
     <Skeleton className="h-3 w-24 rounded" />
-  ) : trend && trend.sparklineData.length > 1 ? (
+  ) : trend && !trend.comparable && trend.sparklineData.length > 1 ? (
+    <span className="text-[10px] text-warning">
+      Histórico não comparável ({trend.previousCoverage ?? "?"} → {trend.currentCoverage ?? "?"}/17
+      ODS)
+    </span>
+  ) : trend && trend.comparable && trend.sparklineData.length > 1 ? (
     <div className="flex items-center gap-2 mt-1">
       <div className="w-[60px] h-6 shrink-0" aria-hidden="true">
         <ResponsiveContainer width="100%" height="100%">
@@ -294,7 +303,7 @@ export function KpiCards({
 
       {/* Card 3 — Tendência */}
       <KpiCard
-        label="Tendência"
+        label={trendLabel}
         value={trendValue}
         suffix={trendSuffix}
         prefix={trendPrefix}

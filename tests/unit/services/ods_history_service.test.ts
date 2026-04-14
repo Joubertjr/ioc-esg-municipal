@@ -43,6 +43,7 @@ vi.mock("../../../backend/utils/logger.js", () => ({
 import {
   calculateAndPersistScores,
   getScoreHistory,
+  assessComparability,
 } from "../../../backend/services/ods/ods_history_service.js";
 
 // --- Fixtures ---
@@ -66,13 +67,17 @@ const MOCK_REPORT = {
   globalScore: 65,
   globalStatus: "amarelo",
   odsCount: { total: 17, withData: 2, verde: 1, amarelo: 1, vermelho: 0 },
-  ods: [makeOds(1, 75), makeOds(4, 55), ...Array.from({ length: 15 }, (_, i) => ({
-    odsNumber: i + 2 === 4 ? 99 : i + 2,
-    score: null,
-    status: null,
-    indicators: [],
-    sources: [],
-  }))].slice(0, 17),
+  ods: [
+    makeOds(1, 75),
+    makeOds(4, 55),
+    ...Array.from({ length: 15 }, (_, i) => ({
+      odsNumber: i + 2 === 4 ? 99 : i + 2,
+      score: null,
+      status: null,
+      indicators: [],
+      sources: [],
+    })),
+  ].slice(0, 17),
 };
 
 const MOCK_DB_SCORE = {
@@ -147,13 +152,16 @@ describe("calculateAndPersistScores", () => {
   it("faz upsert com campos corretos para cada ODS", async () => {
     const reportWithOneOds = {
       ...MOCK_REPORT,
-      ods: [makeOds(1, 75), ...Array.from({ length: 16 }, (_, i) => ({
-        odsNumber: i + 2,
-        score: null,
-        status: null,
-        indicators: [],
-        sources: [],
-      }))],
+      ods: [
+        makeOds(1, 75),
+        ...Array.from({ length: 16 }, (_, i) => ({
+          odsNumber: i + 2,
+          score: null,
+          status: null,
+          indicators: [],
+          sources: [],
+        })),
+      ],
     };
     mockCalculateMunicipalOds.mockResolvedValue(reportWithOneOds);
     mockMunicipalityFindUnique.mockResolvedValue(MUNICIPALITY);
@@ -298,5 +306,85 @@ describe("getScoreHistory", () => {
     );
     expect(result).toHaveLength(1);
     expect(result[0].odsNumber).toBe(0);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// assessComparability
+// ---------------------------------------------------------------------------
+
+describe("assessComparability", () => {
+  it("retorna single_point_only quando há só 1 ponto com score", () => {
+    const result = assessComparability([{ referenceYear: 2025, score: 75, indicatorCount: 17 }]);
+
+    expect(result.enabled).toBe(false);
+    expect(result.reason).toBe("single_point_only");
+    expect(result.delta).toBeNull();
+  });
+
+  it("retorna missing_global_score quando não há pontos com score", () => {
+    const result = assessComparability([{ referenceYear: 2023, score: null, indicatorCount: 0 }]);
+
+    expect(result.enabled).toBe(false);
+    expect(result.reason).toBe("missing_global_score");
+  });
+
+  it("retorna insufficient_coverage quando um ano tem < 12 ODS", () => {
+    const result = assessComparability([
+      { referenceYear: 2023, score: 52, indicatorCount: 1 },
+      { referenceYear: 2025, score: 75, indicatorCount: 17 },
+    ]);
+
+    expect(result.enabled).toBe(false);
+    expect(result.reason).toBe("insufficient_coverage");
+    expect(result.previousCoverage).toBe(1);
+    expect(result.currentCoverage).toBe(17);
+  });
+
+  it("retorna coverage_mismatch quando diferença > 2 ODS", () => {
+    const result = assessComparability([
+      { referenceYear: 2023, score: 65, indicatorCount: 12 },
+      { referenceYear: 2025, score: 75, indicatorCount: 17 },
+    ]);
+
+    expect(result.enabled).toBe(false);
+    expect(result.reason).toBe("coverage_mismatch");
+  });
+
+  it("retorna ok com delta quando ambos têm >= 12 ODS e diferença <= 2", () => {
+    const result = assessComparability([
+      { referenceYear: 2024, score: 70, indicatorCount: 16 },
+      { referenceYear: 2025, score: 75, indicatorCount: 17 },
+    ]);
+
+    expect(result.enabled).toBe(true);
+    expect(result.reason).toBe("ok");
+    expect(result.delta).toBe(5);
+    expect(result.currentYear).toBe(2025);
+    expect(result.previousYear).toBe(2024);
+  });
+
+  it("retorna ok quando cobertura é exatamente igual", () => {
+    const result = assessComparability([
+      { referenceYear: 2024, score: 80, indicatorCount: 15 },
+      { referenceYear: 2025, score: 75, indicatorCount: 15 },
+    ]);
+
+    expect(result.enabled).toBe(true);
+    expect(result.reason).toBe("ok");
+    expect(result.delta).toBe(-5);
+  });
+
+  it("considera apenas os 2 últimos pontos válidos", () => {
+    const result = assessComparability([
+      { referenceYear: 2021, score: 30, indicatorCount: 3 },
+      { referenceYear: 2024, score: 70, indicatorCount: 16 },
+      { referenceYear: 2025, score: 75, indicatorCount: 17 },
+    ]);
+
+    expect(result.enabled).toBe(true);
+    expect(result.reason).toBe("ok");
+    expect(result.previousYear).toBe(2024);
+    expect(result.currentYear).toBe(2025);
   });
 });

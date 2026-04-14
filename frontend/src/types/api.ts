@@ -198,10 +198,28 @@ export interface OdsScoreRecord {
   sources: string[];
 }
 
+export type ComparabilityReason =
+  | "ok"
+  | "insufficient_coverage"
+  | "coverage_mismatch"
+  | "single_point_only"
+  | "missing_global_score";
+
+export interface TrendAssessment {
+  enabled: boolean;
+  reason: ComparabilityReason;
+  delta: number | null;
+  currentYear: number | null;
+  previousYear: number | null;
+  currentCoverage: number | null;
+  previousCoverage: number | null;
+}
+
 export interface OdsHistoryResponse {
   ibgeCode: string;
   total: number;
   history: OdsScoreRecord[];
+  trend?: TrendAssessment;
 }
 
 // ---- Recommendations ----

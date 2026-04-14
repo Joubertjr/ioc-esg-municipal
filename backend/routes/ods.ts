@@ -1,6 +1,10 @@
 import { Router, type Request, type Response, type Router as RouterType } from "express";
 import { calculateMunicipalOds } from "../services/ods/index.js";
-import { calculateAndPersistScores, getScoreHistory } from "../services/ods/ods_history_service.js";
+import {
+  calculateAndPersistScores,
+  getScoreHistory,
+  assessComparability,
+} from "../services/ods/ods_history_service.js";
 import { logger } from "../utils/logger.js";
 import { batchLimiter } from "../middleware/rate-limit.js";
 import { requireRole, requireMunicipalityScope } from "../middleware/auth.js";
@@ -99,10 +103,26 @@ router.get(
     try {
       const history = await getScoreHistory(ibgeCode, odsNumber);
 
+      // For global score (odsNumber=0 or unfiltered), include trend comparability assessment
+      const includesTrend = odsNumber === undefined || odsNumber === 0;
+      const globalEntries = includesTrend
+        ? history
+            .filter((h) => h.odsNumber === 0)
+            .sort((a, b) => a.referenceYear - b.referenceYear)
+            .map((h) => ({
+              referenceYear: h.referenceYear,
+              score: h.score,
+              indicatorCount: h.indicatorCount,
+            }))
+        : [];
+
+      const trend = includesTrend ? assessComparability(globalEntries) : undefined;
+
       res.json({
         ibgeCode,
         total: history.length,
         history,
+        trend,
       });
     } catch (error) {
       logger.error("Error fetching ODS history", {

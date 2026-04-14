@@ -111,3 +111,94 @@ export async function getScoreHistory(ibgeCode: string, odsNumber?: number, limi
 
   return municipality?.odsScores ?? [];
 }
+
+// ---------------------------------------------------------------------------
+// Comparability assessment for global score trend (odsNumber=0)
+// ---------------------------------------------------------------------------
+
+export type ComparabilityReason =
+  | "ok"
+  | "insufficient_coverage"
+  | "coverage_mismatch"
+  | "single_point_only"
+  | "missing_global_score";
+
+export interface TrendAssessment {
+  enabled: boolean;
+  reason: ComparabilityReason;
+  delta: number | null;
+  currentYear: number | null;
+  previousYear: number | null;
+  currentCoverage: number | null;
+  previousCoverage: number | null;
+}
+
+const MIN_ODS_COVERAGE = 12;
+const MAX_COVERAGE_DIFF = 2;
+
+interface ScorePoint {
+  referenceYear: number;
+  score: number | null;
+  indicatorCount: number;
+}
+
+/**
+ * Avalia se dois pontos consecutivos do histórico global são comparáveis.
+ * Critérios:
+ *  - ambos ≥ 12/17 ODS com score
+ *  - diferença de cobertura ≤ 2 ODS
+ */
+export function assessComparability(sorted: ScorePoint[]): TrendAssessment {
+  const valid = sorted.filter((p) => p.score !== null);
+
+  if (valid.length < 2) {
+    return {
+      enabled: false,
+      reason: valid.length === 0 ? "missing_global_score" : "single_point_only",
+      delta: null,
+      currentYear: valid[valid.length - 1]?.referenceYear ?? null,
+      previousYear: null,
+      currentCoverage: valid[valid.length - 1]?.indicatorCount ?? null,
+      previousCoverage: null,
+    };
+  }
+
+  const current = valid[valid.length - 1];
+  const previous = valid[valid.length - 2];
+
+  if (current.indicatorCount < MIN_ODS_COVERAGE || previous.indicatorCount < MIN_ODS_COVERAGE) {
+    return {
+      enabled: false,
+      reason: "insufficient_coverage",
+      delta: null,
+      currentYear: current.referenceYear,
+      previousYear: previous.referenceYear,
+      currentCoverage: current.indicatorCount,
+      previousCoverage: previous.indicatorCount,
+    };
+  }
+
+  if (Math.abs(current.indicatorCount - previous.indicatorCount) > MAX_COVERAGE_DIFF) {
+    return {
+      enabled: false,
+      reason: "coverage_mismatch",
+      delta: null,
+      currentYear: current.referenceYear,
+      previousYear: previous.referenceYear,
+      currentCoverage: current.indicatorCount,
+      previousCoverage: previous.indicatorCount,
+    };
+  }
+
+  const delta = Math.round(((current.score as number) - (previous.score as number)) * 10) / 10;
+
+  return {
+    enabled: true,
+    reason: "ok",
+    delta,
+    currentYear: current.referenceYear,
+    previousYear: previous.referenceYear,
+    currentCoverage: current.indicatorCount,
+    previousCoverage: previous.indicatorCount,
+  };
+}

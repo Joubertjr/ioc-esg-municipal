@@ -22,6 +22,7 @@ interface OdsHistoryChartProps {
 interface YearDataPoint {
   year: number;
   score: number;
+  coverage: number;
 }
 
 function scoreToStatus(score: number): string {
@@ -33,6 +34,7 @@ function scoreToStatus(score: number): string {
 interface CustomTooltipPayload {
   year: number;
   score: number;
+  coverage: number;
 }
 
 function CustomTooltip({ active, payload }: TooltipProps<number, string>) {
@@ -41,7 +43,7 @@ function CustomTooltip({ active, payload }: TooltipProps<number, string>) {
   const data = payload[0]?.payload as CustomTooltipPayload | undefined;
   if (!data) return null;
 
-  const { year, score } = data;
+  const { year, score, coverage } = data;
   const status = scoreToStatus(score);
   const statusColors: Record<string, string> = {
     verde: "text-success",
@@ -55,6 +57,9 @@ function CustomTooltip({ active, payload }: TooltipProps<number, string>) {
       <p className="text-foreground">
         Score: <span className="font-bold tabular-nums">{score.toFixed(1)}</span>
         /100
+      </p>
+      <p className="text-foreground">
+        Cobertura: <span className="font-bold tabular-nums">{coverage}</span>/17 ODS
       </p>
       <p>
         Status:{" "}
@@ -91,32 +96,67 @@ export function OdsHistoryChart({ ibgeCode }: OdsHistoryChartProps) {
   if (isLoading) {
     return (
       <div>
-        <h3 className="text-base font-semibold text-foreground mb-4">Evolução do Score ESG</h3>
+        <h3 className="text-base font-semibold text-foreground mb-4">
+          Histórico do score calculado
+        </h3>
         <div className="animate-pulse h-[300px] bg-muted rounded-lg" />
       </div>
     );
   }
 
+  const trend = data?.trend;
+  const isComparable = trend?.enabled === true;
+
   // odsNumber=0 = pre-computed global score, one per referenceYear — no averaging needed
   const chartData: YearDataPoint[] = (data?.history ?? [])
     .filter((r) => r.score !== null)
-    .map((r) => ({ year: r.referenceYear, score: r.score as number }))
+    .map((r) => ({
+      year: r.referenceYear,
+      score: r.score as number,
+      coverage: r.indicatorCount,
+    }))
     .sort((a, b) => a.year - b.year);
 
+  // State 3: single point or no data
   if (chartData.length < 2) {
     return (
       <div>
-        <h3 className="text-base font-semibold text-foreground mb-4">Evolução do Score ESG</h3>
+        <h3 className="text-base font-semibold text-foreground mb-4">
+          Histórico do score calculado
+        </h3>
         <div className="flex items-center justify-center h-[300px] text-muted-foreground/60 text-sm">
-          Dados históricos insuficientes para exibir tendência
+          Ainda não há série histórica suficiente para indicar tendência
         </div>
       </div>
     );
   }
 
+  // Title depends on comparability
+  const title = isComparable ? "Evolução do Score ESG" : "Histórico do score calculado";
+
   return (
     <div>
-      <h3 className="text-base font-semibold text-foreground mb-4">Evolução do Score ESG</h3>
+      <h3 className="text-base font-semibold text-foreground mb-2">{title}</h3>
+
+      {/* State 2: not comparable — show warning */}
+      {!isComparable && trend && (
+        <div className="mb-3 px-3 py-2 bg-warning/10 border border-warning/20 rounded-lg">
+          <p className="text-xs text-warning font-medium">Série não comparável entre anos</p>
+          <p className="text-[11px] text-muted-foreground mt-0.5">
+            {trend.reason === "coverage_mismatch" || trend.reason === "insufficient_coverage"
+              ? `A cobertura de dados mudou de ${trend.previousCoverage ?? "?"}/17 para ${trend.currentCoverage ?? "?"}/17 ODS neste período. A variação entre os anos reflete também mudança na cobertura dos dados, não representa isoladamente melhora ou piora real.`
+              : "Dados insuficientes para comparação válida entre os anos."}
+          </p>
+        </div>
+      )}
+
+      {/* State 1: comparable — show tooltip hint */}
+      {isComparable && (
+        <p className="text-[10px] text-muted-foreground/60 mb-2">
+          Comparação válida: cobertura e metodologia compatíveis
+        </p>
+      )}
+
       <ResponsiveContainer width="100%" height={300}>
         <LineChart data={chartData} margin={{ top: 10, right: 24, left: 0, bottom: 0 }}>
           <CartesianGrid strokeDasharray="3 3" stroke={colors.grid} fill="transparent" />
@@ -174,6 +214,15 @@ export function OdsHistoryChart({ ibgeCode }: OdsHistoryChartProps) {
           />
         </LineChart>
       </ResponsiveContainer>
+
+      {/* Coverage annotation per year */}
+      <div className="flex justify-center gap-4 mt-2">
+        {chartData.map((d) => (
+          <span key={d.year} className="text-[10px] text-muted-foreground tabular-nums">
+            {d.year}: {d.coverage}/17 ODS
+          </span>
+        ))}
+      </div>
     </div>
   );
 }
