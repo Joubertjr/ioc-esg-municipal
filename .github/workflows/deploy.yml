@@ -57,6 +57,22 @@ jobs:
           echo "tag=${TAG}" >> "$GITHUB_OUTPUT"
           echo "Deploying tag: ${TAG}"
 
+      - name: Login no registry para verificação
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Verificar imagem no registry
+        env:
+          IMAGE_TAG: ${{ steps.tag.outputs.tag }}
+        run: |
+          echo "Verificando existência da imagem: ghcr.io/${{ github.repository }}:${IMAGE_TAG}"
+          docker manifest inspect "ghcr.io/${{ github.repository }}:${IMAGE_TAG}" > /dev/null 2>&1 \
+            || (echo "ERRO: Imagem ${IMAGE_TAG} não encontrada no registry. Verifique se o docker-build completou com sucesso." && exit 1)
+          echo "Imagem encontrada no registry."
+
       - name: Configurar SSH agent
         uses: webfactory/ssh-agent@v0.9.0
         with:
