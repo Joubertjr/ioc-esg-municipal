@@ -62,5 +62,6 @@ module.exports = {
     "*.cjs",
     "*.mjs",
     "!.eslintrc.cjs",
+    "playwright.config.ts",
   ],
 };

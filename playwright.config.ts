@@ -26,7 +26,7 @@ export default defineConfig({
     headless: true,
     screenshot: "only-on-failure",
     video: "retain-on-failure",
-    // Token JWT is stored in localStorage by the app (key: ioc_esg_token).
+    // Auth: httpOnly cookie (access token) + sessionStorage "ioc_rt" (refresh token).
     storageState: undefined,
   },
 
