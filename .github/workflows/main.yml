@@ -68,6 +68,19 @@ jobs:
           REDIS_URL: redis://localhost:6379
         run: pnpm prisma migrate deploy && pnpm test:integration
       - run: pnpm build
+      - name: Verificar evidência visual
+        if: github.event_name == 'pull_request'
+        run: |
+          UI_FILES=$(git diff --name-only ${{ github.event.pull_request.base.sha }} HEAD | grep -E 'frontend/src/(pages|components)/.*\.tsx$' || true)
+          if [ -n "$UI_FILES" ]; then
+            EVIDENCE=$(git diff --name-only ${{ github.event.pull_request.base.sha }} HEAD | grep 'docs/evidence/' || true)
+            if [ -z "$EVIDENCE" ]; then
+              echo "ERRO: Arquivos .tsx de UI alterados sem evidências em docs/evidence/"
+              echo "Arquivos alterados:"
+              echo "$UI_FILES"
+              exit 1
+            fi
+          fi
 
   # ── E2E: Playwright (roda após CI passar) ────────────────────
   e2e:
@@ -172,6 +185,76 @@ jobs:
           name: playwright-report
           path: playwright-report/
           retention-days: 7
+
+  # ── Smoke Final: varredura 295 municípios SC (após E2E) ──────
+  smoke-final:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    name: Smoke Final SC (295 municípios)
+    needs: [e2e]
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    services:
+      postgres:
+        image: postgres:15-alpine
+        env:
+          POSTGRES_USER: test
+          POSTGRES_PASSWORD: test
+          POSTGRES_DB: ioc_esg_test
+        options: >-
+          --health-cmd pg_isready --health-interval 10s
+          --health-timeout 5s --health-retries 5
+        ports: ["5432:5432"]
+      redis:
+        image: redis:7-alpine
+        options: >-
+          --health-cmd "redis-cli ping" --health-interval 10s
+          --health-timeout 5s --health-retries 5
+        ports: ["6379:6379"]
+
+    env:
+      DATABASE_URL: postgresql://test:test@localhost:5432/ioc_esg_test
+      REDIS_URL: redis://localhost:6379
+      JWT_SECRET: ${{ secrets.JWT_SECRET || 'ci-test-jwt-secret-do-not-use-in-prod' }}
+      NODE_ENV: test
+      PORT: 3000
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v3
+        with: { version: 8 }
+      - uses: actions/setup-node@v4
+        with: { node-version: "20", cache: "pnpm" }
+      - run: pnpm install --frozen-lockfile
+      - name: Setup database
+        run: pnpm prisma migrate deploy && pnpm db:seed
+      - name: Build
+        run: pnpm build
+      - name: Start backend
+        run: nohup node dist/backend/index.js &
+      - name: Wait for backend
+        run: |
+          for i in $(seq 1 20); do
+            if curl -sf http://localhost:3000/health; then
+              echo "Backend ready"
+              exit 0
+            fi
+            sleep 2
+          done
+          echo "Backend did not start" >&2
+          exit 1
+      - name: Run smoke-test-sc (295 municípios)
+        env:
+          SMOKE_EMAIL: ${{ secrets.SMOKE_EMAIL }}
+          SMOKE_PASSWORD: ${{ secrets.SMOKE_PASSWORD }}
+        run: npx tsx scripts/smoke-test-sc.ts http://localhost:3000
+      - name: Upload evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: smoke-final-evidence
+          path: docs/evidence/*-smoke-final/
+          retention-days: 30
 
   # ── Claude: PR review automático ─────────────────────────────
   claude-pr-review:
