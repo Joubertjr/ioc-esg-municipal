@@ -3,7 +3,6 @@ global:
   evaluation_interval: 15s
 
 rule_files:
-  - "prometheus-rules.yml"
   - "alert_rules.yml"
 
 alerting:

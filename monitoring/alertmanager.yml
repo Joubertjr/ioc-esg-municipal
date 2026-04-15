@@ -1,0 +1,29 @@
+# Alertmanager Configuration — IOC ESG Municipal
+#
+# Configuração mínima para receber alertas do Prometheus.
+# O receiver padrão é um webhook stub que envia alertas para a API,
+# onde são logados via Winston.
+#
+# PRODUÇÃO: substituir webhook-stub por receiver real (Slack, email, PagerDuty).
+# Exemplo Slack:
+#   receivers:
+#     - name: slack
+#       slack_configs:
+#         - api_url: ${SLACK_WEBHOOK_URL}
+#           channel: '#alertas-ioc'
+
+global:
+  resolve_timeout: 5m
+
+route:
+  receiver: webhook-stub
+  group_by: ["alertname", "severity"]
+  group_wait: 30s
+  group_interval: 5m
+  repeat_interval: 4h
+
+receivers:
+  - name: webhook-stub
+    webhook_configs:
+      - url: "http://api:3000/api/internal/alert-sink"
+        send_resolved: true
