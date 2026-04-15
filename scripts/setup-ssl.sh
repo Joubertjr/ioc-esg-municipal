@@ -66,9 +66,20 @@ else
   echo "  docker compose -f $COMPOSE_BASE -f $COMPOSE_SSL logs nginx"
 fi
 
-# 6. Configura renovacao automatica via crontab
-CRON_CMD="0 3 * * * cd $(pwd) && docker compose -f $COMPOSE_BASE -f $COMPOSE_SSL --profile ssl run --rm certbot renew --quiet && docker compose -f $COMPOSE_BASE -f $COMPOSE_SSL exec nginx nginx -s reload"
-echo "[setup-ssl] Para renovacao automatica, adicione ao crontab:"
-echo "  $CRON_CMD"
+# 6. Configura renovacao automatica via crontab (idempotente)
+CRON_MARKER="# ioc-ssl-renew"
+CRON_CMD="0 3 * * * cd $(pwd) && docker compose -f $COMPOSE_BASE -f $COMPOSE_SSL --profile ssl run --rm certbot renew --quiet && docker compose -f $COMPOSE_BASE -f $COMPOSE_SSL exec nginx nginx -s reload $CRON_MARKER"
+
+if [[ "${1:-}" == "--skip-crontab" ]]; then
+  echo "[setup-ssl] --skip-crontab: crontab nao instalado."
+  echo "[setup-ssl] Para instalar manualmente:"
+  echo "  $CRON_CMD"
+else
+  echo "[setup-ssl] Instalando crontab de renovacao automatica (3h diario)..."
+  # Remove entrada anterior (idempotente) e adiciona nova
+  (crontab -l 2>/dev/null | grep -v "$CRON_MARKER" || true; echo "$CRON_CMD") | crontab -
+  echo "[setup-ssl] Crontab instalado. Verificar com: crontab -l"
+fi
+
 echo ""
 echo "[setup-ssl] Concluido."
