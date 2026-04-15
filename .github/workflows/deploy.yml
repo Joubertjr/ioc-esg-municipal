@@ -57,6 +57,15 @@ jobs:
           echo "tag=${TAG}" >> "$GITHUB_OUTPUT"
           echo "Deploying tag: ${TAG}"
 
+      - name: Validar formato do IMAGE_TAG
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          TAG="${{ steps.tag.outputs.tag }}"
+          if ! echo "$TAG" | grep -qE '^([a-f0-9]{7}|latest)$'; then
+            echo "ERRO: IMAGE_TAG deve ser SHA de 7 chars ou 'latest'. Recebido: ${TAG}"
+            exit 1
+          fi
+
       - name: Login no registry para verificação
         uses: docker/login-action@v3
         with:
