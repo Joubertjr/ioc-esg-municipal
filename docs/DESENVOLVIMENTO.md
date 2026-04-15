@@ -243,21 +243,14 @@ O `GITHUB_TOKEN` e automatico — nao precisa configurar.
 
 ```
 push para main
-  └── ci (tsc + lint + unit + integration + build)
+  └── ci (tsc + lint + unit + integration + build + evidência visual)
       └── e2e (necessita ci)
-  └── docker-build (roda em paralelo com ci — PROBLEMA CONHECIDO)
+          └── smoke-final (295 municípios SC — apenas push main)
+              └── [workflow_run] docker-build (trivy scan → push ghcr.io)
+                  └── [workflow_run] deploy (manifest inspect → SSH → pull → up → healthcheck)
 ```
 
-**Atencao:** o `docker-build.yml` nao tem `needs: [ci]`. A imagem pode ser publicada mesmo com ci falhando se ambos rodarem em paralelo. Ate essa dependencia ser adicionada, monitore manualmente.
-
-### Adicionar dependencia no docker-build (pendente)
-
-```yaml
-# Em .github/workflows/docker-build.yml, adicionar:
-jobs:
-  build-and-push:
-    needs: [ci] # <-- adicionar esta linha
-```
+O `docker-build.yml` usa `workflow_run` com `conclusion == 'success'`, garantindo que **todos** os jobs do CI (incluindo smoke-final) passaram antes de publicar a imagem. Deploy manual via `workflow_dispatch` valida que o `IMAGE_TAG` é SHA de 7 chars ou `latest`.
 
 ### Cache de dependencias no CI
 
@@ -273,45 +266,27 @@ O cache de pnpm e gerenciado pelo `actions/setup-node` com `cache: 'pnpm'`. Nao 
 
 ## 5. Deploy
 
-### Pipeline de deploy
+### Pipeline de deploy (automatizado)
 
 ```
-1. Abrir PR na branch main
-2. CI verde (tsc + lint + unit + integration + e2e + build)
-3. Revisao aprovada (1+ aprovacao)
-4. Merge com squash
-5. docker-build.yml publica imagem com tag = SHA curto do commit
-6. Deploy manual no servidor:
-   IMAGE_TAG=<sha> docker compose -f docker-compose.prod.yml up -d
+1. Push/merge para main
+2. CI verde (tsc + lint + unit + integration + build + evidência visual)
+3. E2E verde (Playwright chromium)
+4. Smoke Final verde (295 municípios SC com provenance no summary.json)
+5. docker-build.yml: trivy scan + publica imagem ghcr.io com tag = SHA curto
+6. deploy.yml: SSH no servidor → pull → up → healthcheck (automático via workflow_run)
 ```
 
-### Antes de fazer deploy em producao
+Deploy manual via `workflow_dispatch` aceita apenas `IMAGE_TAG` no formato SHA de 7 chars ou `latest`. Tags arbitrárias são rejeitadas.
+
+### Verificar deploy
 
 ```bash
-# 1. Verificar que a imagem foi publicada com sucesso
-# GitHub Actions > docker-build > Image digest summary
-
-# 2. No servidor, puxar a nova imagem
-docker pull ghcr.io/seu-org/ioc-esg-municipal:<sha>
-
-# 3. Rodar migracao ANTES de subir o container (pendente automacao)
-docker run --rm \
-  --env-file .env \
-  ghcr.io/seu-org/ioc-esg-municipal:<sha> \
-  node -e "const { PrismaClient } = require('@prisma/client'); const p = new PrismaClient(); p.\$connect().then(() => p.\$disconnect())"
-
-# Alternativa mais segura: rodar migrate deploy explicitamente
-docker run --rm \
-  --env-file .env \
-  --entrypoint "" \
-  ghcr.io/seu-org/ioc-esg-municipal:<sha> \
-  npx prisma migrate deploy
-
-# 4. Subir nova versao
-IMAGE_TAG=<sha> docker compose -f docker-compose.prod.yml up -d
-
-# 5. Verificar health
+# No servidor — healthcheck
 curl http://localhost:3000/health
+
+# Verificar imagem rodando
+docker compose -f docker-compose.prod.yml ps
 ```
 
 ### Rollback
