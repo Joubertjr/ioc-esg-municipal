@@ -142,6 +142,21 @@ jobs:
             echo "==> Deploy concluído com sucesso!"
           ENDSSH
 
+      - name: Smoke test pos-deploy
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          SMOKE_EMAIL: ${{ secrets.SMOKE_EMAIL }}
+          SMOKE_PASSWORD: ${{ secrets.SMOKE_PASSWORD }}
+        run: |
+          # Determinar protocolo (HTTPS se certificado responde, senao HTTP)
+          PROTO="https"
+          if ! curl -fsS --max-time 5 "https://${DEPLOY_HOST}/health" >/dev/null 2>&1; then
+            PROTO="http"
+          fi
+          URL="${PROTO}://${DEPLOY_HOST}"
+          echo "Smoke test contra: ${URL}"
+          bash scripts/smoke-test-stack.sh custom "$URL" "$URL"
+
       - name: Sumário do deploy
         if: success()
         run: |
@@ -149,6 +164,7 @@ jobs:
           echo "" >> "$GITHUB_STEP_SUMMARY"
           echo "**Servidor:** \`${{ secrets.DEPLOY_HOST }}\`" >> "$GITHUB_STEP_SUMMARY"
           echo "**Image Tag:** \`${{ steps.tag.outputs.tag }}\`" >> "$GITHUB_STEP_SUMMARY"
+          echo "**Smoke test:** Passou" >> "$GITHUB_STEP_SUMMARY"
           echo "**Timestamp:** \`$(date -u '+%Y-%m-%d %H:%M:%S UTC')\`" >> "$GITHUB_STEP_SUMMARY"
 
       - name: Notificar falha
