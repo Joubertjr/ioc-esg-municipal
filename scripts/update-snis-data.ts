@@ -16,9 +16,11 @@
  * Uso: npx tsx scripts/update-snis-data.ts [--year 2023]
  */
 
-import { writeFileSync, readFileSync } from "node:fs";
+import { writeFileSync, readFileSync, existsSync } from "node:fs";
+import { createHash } from "node:crypto";
 import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
+import os from "node:os";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -119,12 +121,21 @@ function main(): void {
     process.exit(1);
   }
 
+  const csvExists = existsSync(csvPath);
   const output = {
     __meta: {
       lastUpdated: new Date().toISOString(),
       referenceYear: year,
       sourceUrl: "http://app4.mdr.gov.br/serieHistorica/",
       municipalities: Object.keys(data).length,
+      sourceManifest: {
+        acquisitionMethod: csvExists ? "manual_csv_export" : "existing_json_preserved",
+        sourceFile: csvExists ? "scripts/data/snis_export.csv" : null,
+        sourceFileHash: csvExists
+          ? createHash("sha256").update(readFileSync(csvPath)).digest("hex")
+          : null,
+        operator: os.userInfo().username,
+      },
     },
     ...data,
   };
