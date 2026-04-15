@@ -12,6 +12,8 @@
 
 import { writeFileSync, mkdirSync } from "node:fs";
 import { join } from "node:path";
+import { execSync } from "node:child_process";
+import os from "node:os";
 
 // ─── Config ──────────────────────────────────────────────────────────────────
 
@@ -57,6 +59,13 @@ interface Summary {
   failed: number;
   durationMs: number;
   verdict: "GO" | "NO-GO";
+  // Provenance — release manifest
+  gitSha: string;
+  gitShortSha: string;
+  gitBranch: string;
+  environment: string;
+  actor: string;
+  migrationStatus: string;
 }
 
 // ─── State ───────────────────────────────────────────────────────────────────
@@ -389,6 +398,16 @@ async function smoke5(): Promise<void> {
   }
 }
 
+// ─── Provenance Helpers ──────────────────────────────────────────────────────
+
+function safeExec(cmd: string): string {
+  try {
+    return execSync(cmd, { encoding: "utf-8", timeout: 10_000 }).trim();
+  } catch {
+    return "unknown";
+  }
+}
+
 // ─── Evidence Generation ─────────────────────────────────────────────────────
 
 function generateEvidence(): Summary {
@@ -409,6 +428,13 @@ function generateEvidence(): Summary {
     failed,
     durationMs: totalMs,
     verdict,
+    // Provenance — release manifest
+    gitSha: safeExec("git rev-parse HEAD"),
+    gitShortSha: safeExec("git rev-parse --short HEAD"),
+    gitBranch: safeExec("git rev-parse --abbrev-ref HEAD"),
+    environment: process.env["NODE_ENV"] ?? "unknown",
+    actor: process.env["GITHUB_ACTOR"] ?? os.userInfo().username,
+    migrationStatus: safeExec("npx prisma migrate status 2>&1 | tail -1"),
   };
 
   // summary.json
