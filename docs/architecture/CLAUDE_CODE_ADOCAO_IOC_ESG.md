@@ -92,12 +92,12 @@ Legenda: **OK** = adotado e provável | **PARCIAL** = adotado mas incompleto | *
 
 ### 2.5 Governança (settings.json)
 
-| Item                                     | Status  | Evidência / Gap                                                      |
-| ---------------------------------------- | ------- | -------------------------------------------------------------------- |
-| Perfil default                           | OK      | settings.json com allow/deny e hooks completos                       |
-| Topologia settings vs local              | OK      | Ver `docs/architecture/SETTINGS_TOPOLOGIA.md`                        |
-| `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` | OK      | Movido para settings.local.json (experimental isolado)               |
-| MCP                                      | PARCIAL | `obsidian-vault` em settings.local (correto); nenhum MCP obrigatório |
+| Item                                     | Status | Evidência / Gap                                                                  |
+| ---------------------------------------- | ------ | -------------------------------------------------------------------------------- |
+| Perfil default                           | OK     | settings.json com allow/deny e hooks completos                                   |
+| Topologia settings vs local              | OK     | Ver `docs/architecture/SETTINGS_TOPOLOGIA.md`                                    |
+| `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` | OK     | Movido para settings.local.json (experimental isolado)                           |
+| MCP                                      | OK     | Baseline zero; `obsidian-vault` classificado como local em `MCP_HYGIENE.md` (P2) |
 
 ### 2.6 Memory, Skills, Subagentes
 
@@ -112,29 +112,61 @@ Legenda: **OK** = adotado e provável | **PARCIAL** = adotado mas incompleto | *
 
 ### 2.7 Estrutura física
 
-| Diretório            | Status | Função                                                    |
-| -------------------- | ------ | --------------------------------------------------------- |
-| `docs/`              | OK     | Documentação humana (inclui decisions/, evidence/)        |
-| `docs/architecture/` | OK     | Baseline + decisões arquiteturais Claude Code             |
-| `docs/evidence/`     | OK     | Evidências visuais de UI                                  |
-| `state/`             | OK     | Machine-readable projections (futuro)                     |
-| `logs/`              | OK     | Append-only JSONL (schema em `logs/SCHEMA.md`)            |
-| `.claude/backups/`   | OK     | Resiliência local (pre-compact snapshots)                 |
-| `.claude/logs/`      | OK     | Mantém `activity.log` humano; trilha auditável em `logs/` |
+| Diretório            | Status | Função                                                               |
+| -------------------- | ------ | -------------------------------------------------------------------- |
+| `docs/`              | OK     | Documentação humana (inclui decisions/, evidence/, plans/)           |
+| `docs/architecture/` | OK     | 8 documentos canônicos — ver `PHYSICAL_TOPOLOGY.md` (P2)             |
+| `docs/evidence/`     | OK     | Evidências visuais de UI                                             |
+| `state/`             | OK     | Reservado com README (P2); sem consumidor automatizado hoje          |
+| `logs/`              | OK     | Append-only JSONL (schema em `logs/SCHEMA.md`)                       |
+| `.claude/backups/`   | OK     | Resiliência local (pre-compact snapshots); gitignored                |
+| `.claude/logs/`      | OK     | Mantém `activity.log` humano; trilha auditável em `logs/`            |
+| Fronteira canônica   | OK     | Documentada em `docs/architecture/PHYSICAL_TOPOLOGY.md` (P2 Fase 11) |
 
 ---
 
-## 3. Itens Fora do Plano Atual (NÃO ADOTAR AGORA)
+## 3. Estado Consolidado de Adoção (após P0 + P1 + P2)
 
-Decisão explícita para evitar scope creep:
+### 3.1 Adotados
 
-| Item                                     | Razão                                                        |
-| ---------------------------------------- | ------------------------------------------------------------ |
-| Plugins próprios                         | Custo de manutenção > benefício para 1 projeto               |
-| Scheduled Tasks / Cron do runtime Claude | Ações cron operacionais estão em crontab do servidor         |
-| Agent Teams como mecanismo padrão        | Experimental; projeto usa orquestração manual explícita      |
-| MCPs adicionais                          | Só `obsidian-vault` justificado; outros exigem caso concreto |
-| state/runtime-state.json (machine)       | Sem consumidor automatizado hoje                             |
+| Componente                  | Documento canônico                                   |
+| --------------------------- | ---------------------------------------------------- |
+| Instrução persistente       | `CLAUDE.md` + `.claude/rules/` (10 arquivos)         |
+| Mapa de rules               | `docs/architecture/RULES_MAP.md`                     |
+| Skills padronizadas         | `docs/architecture/SKILLS_PATTERN.md` + 15 skills    |
+| Delegação de agents         | `docs/architecture/AGENTS_DELEGATION.md` + 26 agents |
+| Topologia de settings       | `docs/architecture/SETTINGS_TOPOLOGIA.md`            |
+| Higiene de MCP              | `docs/architecture/MCP_HYGIENE.md` (P2)              |
+| Topologia física            | `docs/architecture/PHYSICAL_TOPOLOGY.md` (P2)        |
+| Hardening e checklist final | `docs/architecture/HARDENING_CHECKLIST.md` (P2)      |
+| Loop de hooks runtime       | `.claude/hooks/` (6 eventos) + `logs/SCHEMA.md`      |
+| Audit trail                 | `logs/claude-{runtime,violations,sessions}.jsonl`    |
+| Política de memória         | `.claude/rules/memory-policy.md`                     |
+
+### 3.2 Adotados parcialmente
+
+Nenhum. Após o fechamento do P2 não há mais itens PARCIAL na matriz §2.
+
+### 3.3 Explicitamente não adotados (com justificativa arquitetural)
+
+| Item                                     | Razão arquitetural                                                                            |
+| ---------------------------------------- | --------------------------------------------------------------------------------------------- |
+| Plugins próprios                         | Custo de manutenção > benefício para 1 projeto. Reabrir só via ADR com caso concreto.         |
+| Scheduled Tasks / Cron do runtime Claude | Ações cron operacionais estão em crontab do servidor (SSL renew em `setup-ssl.sh`).           |
+| Agent Teams como mecanismo padrão        | Experimental; projeto usa orquestração manual via `orchestrator` + `improvement-coordinator`. |
+| MCPs adicionais no baseline              | Baseline zero é decisão — ver `MCP_HYGIENE.md` §1. Outros MCPs exigem ADR + smoke test.       |
+| `state/runtime-state.json` machine-read  | Sem consumidor automatizado hoje. README em `state/` explica critério de ativação.            |
+| Dashboard de métricas Claude Code        | Auditoria manual dos JSONL é suficiente para volume atual (ver `HARDENING_CHECKLIST.md` §4).  |
+| CI gate que valida `.claude/`            | Pre-commit hooks locais cobrem; CI gate exigiria ADR separado.                                |
+
+### 3.4 Futuros (sob demanda, não roadmap ativo)
+
+| Item                                   | Quando reconsiderar                                                        |
+| -------------------------------------- | -------------------------------------------------------------------------- |
+| Machine-readable projections em state/ | Quando existir consumidor automatizado identificado                        |
+| Dashboard de métricas                  | Quando volume de sessões ultrapassar capacidade de auditoria manual        |
+| Plugin próprio                         | Quando um padrão recorrente se repetir em ≥3 projetos sob o mesmo operador |
+| Agent Teams como default               | Quando o flag deixar de ser experimental upstream                          |
 
 Qualquer reabertura requer ADR em `docs/decisions/`.
 
@@ -160,10 +192,13 @@ O projeto considera a arquitetura Claude Code **madura** quando, em uma auditori
 - Padrão canônico de skills: `docs/architecture/SKILLS_PATTERN.md`
 - Matriz de delegação de agentes: `docs/architecture/AGENTS_DELEGATION.md`
 - Topologia de settings: `docs/architecture/SETTINGS_TOPOLOGIA.md`
+- Higiene de MCP: `docs/architecture/MCP_HYGIENE.md`
+- Topologia física: `docs/architecture/PHYSICAL_TOPOLOGY.md`
+- Hardening e checklist final: `docs/architecture/HARDENING_CHECKLIST.md`
 - Schema de eventos: `logs/SCHEMA.md`
 - Runbook de produção: `docs/RUNBOOK_PRODUCAO.md`
-- Plano mestre executado: §Fases 0-13 (orientação externa). Bundles P0 (Fases 0-6) e P1 (Fases 7-9) concluídos.
+- Plano mestre executado: §Fases 0-13 (orientação externa). Bundles P0 (Fases 0-6), P1 (Fases 7-9) e P2 (Fases 10-13) concluídos.
 
 ---
 
-_Última revisão: 2026-04-16 — Fases 0-9 concluídas (bundles P0 + P1)._
+_Última revisão: 2026-04-16 — Fases 0-13 concluídas (bundles P0 + P1 + P2)._
