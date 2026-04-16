@@ -28,6 +28,7 @@ if [ ! -f "$ENV_FILE" ]; then
   echo "[prod-local] Gerando $ENV_FILE com segredos aleatorios..."
   JWT=$(openssl rand -hex 32)
   REDIS_PWD=$(openssl rand -hex 16)
+  GRAFANA_PWD=$(openssl rand -hex 16)
   cat > "$ENV_FILE" <<EOF
 # Gerado automaticamente por scripts/prod-up-local.sh — NAO commitar.
 # Este arquivo serve apenas para validacao local da imagem de producao.
@@ -45,6 +46,9 @@ JWT_EXPIRATION=1d
 
 # Redis
 REDIS_PASSWORD=${REDIS_PWD}
+
+# Grafana (admin password)
+GRAFANA_PASSWORD=${GRAFANA_PWD}
 
 # CORS — API exposta em http://localhost:8080
 ALLOWED_ORIGINS=http://localhost:8080,http://localhost:5173

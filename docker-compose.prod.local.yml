@@ -27,7 +27,8 @@ services:
   api:
     image: ioc-esg-municipal:latest
     container_name: ioc_api_prod_local
-    ports:
+    # !override substitui o array de ports do prod.yml (evita conflito com dev em 3000).
+    ports: !override
       - "127.0.0.1:8080:3000"
     environment:
       # REDIS_PASSWORD é validado pelo env-validator em produção (>=8 chars).
