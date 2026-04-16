@@ -16,16 +16,18 @@ Quando há conflito entre um arquivo de regra e uma instrução ad-hoc, as regra
 
 ## Arquivos disponíveis
 
-| Arquivo          | Escopo   | O que cobre                                                                  |
-| ---------------- | -------- | ---------------------------------------------------------------------------- |
-| `typescript.md`  | all      | strict mode, zero `any`, Zod para I/O externo, Decimal.js para finanças      |
-| `backend.md`     | backend  | Controllers finos, Services, Winston, cache Redis, retry, rate limit         |
-| `database.md`    | backend  | Prisma Migrate, soft delete, índices obrigatórios, tratamento de erros P2xxx |
-| `security.md`    | all      | Credenciais, PII, validação Zod em rotas, bcrypt, JWT, rate limiting         |
-| `testing.md`     | all      | Vitest, Playwright, cobertura obrigatória, integração com banco real, AAA    |
-| `docker.md`      | all      | Build obrigatório antes de "concluído", multi-stage, HUSKY=0, health checks  |
-| `git-commits.md` | all      | Formato `tipo(escopo): desc`, tipos e escopos aprovados, push obrigatório    |
-| `visual-qa.md`   | frontend | Screenshot obrigatório, dark mode, estrutura de evidências, checklist        |
+| Arquivo                  | Escopo   | O que cobre                                                                  |
+| ------------------------ | -------- | ---------------------------------------------------------------------------- |
+| `typescript.md`          | all      | strict mode, zero `any`, Zod para I/O externo, Decimal.js para finanças      |
+| `backend.md`             | backend  | Controllers finos, Services, Winston, cache Redis, retry, rate limit         |
+| `database.md`            | backend  | Prisma Migrate, soft delete, índices obrigatórios, tratamento de erros P2xxx |
+| `security.md`            | all      | Credenciais, PII, validação Zod em rotas, bcrypt, JWT, rate limiting         |
+| `testing.md`             | all      | Vitest, Playwright, cobertura obrigatória, integração com banco real, AAA    |
+| `docker.md`              | all      | Build obrigatório antes de "concluído", multi-stage, HUSKY=0, health checks  |
+| `git-commits.md`         | all      | Formato `tipo(escopo): desc`, tipos e escopos aprovados, push obrigatório    |
+| `visual-qa.md`           | frontend | Screenshot obrigatório, dark mode, estrutura de evidências, checklist        |
+| `memory-policy.md`       | all      | O que vai em memory vs rules vs CLAUDE.md vs logs. Checklist de 5 critérios  |
+| `dependency-analysis.md` | backend  | Análise de impacto com madge antes de refactors estruturais                  |
 
 ## Relação com outros documentos
 

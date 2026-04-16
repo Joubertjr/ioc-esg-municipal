@@ -49,7 +49,7 @@ A análise física do repositório revelou:
 
 ### 4. O Teste do Estado (State Management)
 
-- **O que diz:** O `PROJECT_STATE.md` reflete o status do projeto.
+- **O que diz:** O `ESTADO_ATUAL_SC.md` reflete o status do projeto (projection humana oficial).
 - **A Prova:** O arquivo é atualizado manualmente via comando `/state`. Não há um script que o gere dinamicamente lendo a AST ou a cobertura de testes.
 - **Veredito (Falha Parcial):** É um estado estático. Fica defasado rapidamente durante sessões de refatoração intensas.
 

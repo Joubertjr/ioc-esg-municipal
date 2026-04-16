@@ -48,25 +48,20 @@ Documento de estado atual: `docs/ESTADO_ATUAL_SC.md` — leia sempre ao iniciar 
 
 ---
 
-## ESTADO ATUAL DO PROJETO
+## ESTADO OPERACIONAL — ONDE ESTÁ
 
-**Leia sempre:** `docs/ESTADO_ATUAL_SC.md`
+Este arquivo é **instrução persistente**. Estado vivo (o que está pronto, o que falta, o que quebrou) **não** fica aqui.
 
-**Resumo rápido (atualizado em 2026-04-13):**
+| Fonte                                             | Conteúdo                                                            |
+| ------------------------------------------------- | ------------------------------------------------------------------- |
+| `docs/ESTADO_ATUAL_SC.md`                         | Projection humana oficial do estado atual (ler no início da sessão) |
+| `logs/claude-sessions.jsonl`                      | Audit trail de sessões e eventos de runtime                         |
+| `docs/architecture/CLAUDE_CODE_ADOCAO_IOC_ESG.md` | Baseline e matriz de aderência do projeto à arquitetura Claude Code |
+| `.claude/GOTCHAS.md`                              | Armadilhas estáveis do domínio                                      |
+| `docs/RUNBOOK_PRODUCAO.md`                        | Procedimentos operacionais de deploy, backup, SSL, alertas          |
+| `docs/decisions/`                                 | ADRs — decisões arquiteturais                                       |
 
-| Componente                                    | Status                                 |
-| --------------------------------------------- | -------------------------------------- |
-| Autenticação JWT + anti-IDOR                  | ✅ Pronto                              |
-| Onboarding restrito a 295 municípios SC       | ✅ Pronto                              |
-| 7 coletores com APIs reais                    | ✅ Pronto                              |
-| 7 coletores com JSONs estáticos atualizáveis  | ✅ Pronto (scripts update-\*-data.ts)  |
-| `__meta.referenceYear` dinâmico nos coletores | ✅ Pronto                              |
-| Nginx HTTP-only para produção                 | ✅ Pronto                              |
-| SSL opt-in via docker-compose.prod.ssl.yml    | ✅ Pronto                              |
-| Dashboard, Simulador, Relatórios, Benchmark   | ✅ Pronto                              |
-| Docker prod (`docker-compose.prod.yml up -d`) | ✅ Pronto                              |
-| Smoke test com todos os 295 municípios        | ⚠️ Pendente — executar antes do deploy |
-| Domínio + SSL em produção                     | ⚠️ Requer decisão externa (domínio)    |
+> **Nunca** escreva tabelas de status com ✅/⚠️/❌ neste arquivo. Elas mentem em ≤24h.
 
 ---
 

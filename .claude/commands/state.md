@@ -52,5 +52,5 @@ Branch atual: [nome da branch]
 
 4. Confirme ao usuário que o arquivo foi atualizado.
 
-> **Nota:** `docs/PROJECT_STATE.md` é um redirect para `docs/ESTADO_ATUAL_SC.md`. Sempre use o arquivo canônico.
+> **Source of truth:** `docs/ESTADO_ATUAL_SC.md` é a única projection humana oficial do estado. `docs/PROJECT_STATE.md` existe apenas como redirect legado — nunca escreva lá.
 ```

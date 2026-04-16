@@ -24,7 +24,7 @@
 - [ ] Sem credenciais hardcoded ou `.env` commitado
 - [ ] Erros tratados (nunca silenciosos)
 - [ ] Cache Redis implementado para chamadas a APIs externas
-- [ ] `docs/PROJECT_STATE.md` atualizado (se aplicável)
+- [ ] `docs/ESTADO_ATUAL_SC.md` atualizado (se aplicável)
 
 ## Screenshots / Logs
 

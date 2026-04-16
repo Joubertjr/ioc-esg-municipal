@@ -4,7 +4,6 @@
   "autoCompact": true,
   "autoMemoryEnabled": true,
   "env": {
-    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1",
     "CLAUDE_CODE_SUBAGENT_MODEL": "claude-sonnet-4-6",
     "ENABLE_TOOL_SEARCH": "auto",
     "CLAUDE_AUTOCOMPACT_PCT_OVERRIDE": "75"
@@ -46,8 +45,21 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/session_start.sh\"",
-            "async": false
+            "command": "python3 \"$CLAUDE_PROJECT_DIR/.claude/hooks/session_start.py\"",
+            "async": false,
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"$CLAUDE_PROJECT_DIR/.claude/hooks/user_prompt_submit.py\"",
+            "async": false,
+            "timeout": 5
           }
         ]
       }
@@ -85,6 +97,17 @@
             "timeout": 15
           }
         ]
+      },
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"$CLAUDE_PROJECT_DIR/.claude/hooks/post_tool_audit.py\"",
+            "async": true,
+            "timeout": 5
+          }
+        ]
       }
     ],
     "PreCompact": [
@@ -103,8 +126,9 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/stop_activity_log.sh\"",
-            "async": true
+            "command": "python3 \"$CLAUDE_PROJECT_DIR/.claude/hooks/stop_activity_log.py\"",
+            "async": true,
+            "timeout": 5
           }
         ]
       }

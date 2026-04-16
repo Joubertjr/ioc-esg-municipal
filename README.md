@@ -42,12 +42,12 @@ pnpm db:seed
 pnpm dev
 ```
 
-| Serviço | URL |
-|---------|-----|
-| Backend API | http://localhost:3000 |
-| Frontend | http://localhost:5173 |
-| Swagger UI | http://localhost:3000/api/docs |
-| Adminer (banco) | http://localhost:8080 |
+| Serviço         | URL                            |
+| --------------- | ------------------------------ |
+| Backend API     | http://localhost:3000          |
+| Frontend        | http://localhost:5173          |
+| Swagger UI      | http://localhost:3000/api/docs |
+| Adminer (banco) | http://localhost:8080          |
 
 ---
 
@@ -80,6 +80,7 @@ docker compose -f docker-compose.prod.yml exec api npx tsx prisma/seed.ts
 ```
 
 **Diferenças em relação ao ambiente de desenvolvimento:**
+
 - Sem Adminer (exposto apenas em localhost em dev)
 - Redis com senha obrigatória e persistência AOF (`appendonly yes`)
 - API usa imagem pré-construída (sem bind mount de código-fonte)
@@ -91,24 +92,24 @@ docker compose -f docker-compose.prod.yml exec api npx tsx prisma/seed.ts
 
 ## Scripts
 
-| Comando | Descrição |
-|---------|-----------|
-| `pnpm dev` | Backend (3000) + frontend (5173) em modo watch |
-| `pnpm build` | Build de produção (backend + frontend) |
-| `pnpm start` | Inicia o build de produção |
-| `pnpm test` | Unit + integration tests (em sequência) |
-| `pnpm test:unit` | Apenas testes unitários |
-| `pnpm test:integration` | Apenas testes de integração |
-| `pnpm test:e2e` | Testes E2E com Playwright |
-| `pnpm test:watch` | Watch mode |
-| `pnpm lint` | ESLint em todos os arquivos .ts/.tsx |
-| `pnpm format` | Prettier em todo o projeto |
-| `pnpm db:migrate` | Executa migrations Prisma |
-| `pnpm db:seed` | Seed dos 295 municípios de SC |
-| `pnpm db:studio` | Abre o Prisma Studio |
-| `pnpm docker:up` | Sobe PostgreSQL + Redis + Adminer |
-| `pnpm docker:down` | Para todos os containers |
-| `pnpm docker:logs` | Acompanha logs dos containers |
+| Comando                 | Descrição                                      |
+| ----------------------- | ---------------------------------------------- |
+| `pnpm dev`              | Backend (3000) + frontend (5173) em modo watch |
+| `pnpm build`            | Build de produção (backend + frontend)         |
+| `pnpm start`            | Inicia o build de produção                     |
+| `pnpm test`             | Unit + integration tests (em sequência)        |
+| `pnpm test:unit`        | Apenas testes unitários                        |
+| `pnpm test:integration` | Apenas testes de integração                    |
+| `pnpm test:e2e`         | Testes E2E com Playwright                      |
+| `pnpm test:watch`       | Watch mode                                     |
+| `pnpm lint`             | ESLint em todos os arquivos .ts/.tsx           |
+| `pnpm format`           | Prettier em todo o projeto                     |
+| `pnpm db:migrate`       | Executa migrations Prisma                      |
+| `pnpm db:seed`          | Seed dos 295 municípios de SC                  |
+| `pnpm db:studio`        | Abre o Prisma Studio                           |
+| `pnpm docker:up`        | Sobe PostgreSQL + Redis + Adminer              |
+| `pnpm docker:down`      | Para todos os containers                       |
+| `pnpm docker:logs`      | Acompanha logs dos containers                  |
 
 ---
 
@@ -144,29 +145,29 @@ pnpm test:e2e
 Para desenvolvimento, copie `.env.example` para `.env`.
 Para produção, copie `.env.production.example` para `.env` no servidor.
 
-| Variável | Descrição | Padrão dev |
-|----------|-----------|-----------|
-| `DATABASE_URL` | Connection string PostgreSQL | `postgresql://postgres:postgres@localhost:5432/ioc_esg_municipal` |
-| `DATABASE_USER` | Usuário do banco | `postgres` |
-| `DATABASE_PASSWORD` | Senha do banco | `postgres` |
-| `DATABASE_NAME` | Nome do banco | `ioc_esg_municipal` |
-| `NODE_ENV` | Ambiente (`development`/`production`) | `development` |
-| `PORT` | Porta do backend | `3000` |
-| `ALLOWED_ORIGINS` | Origens CORS (separar por vírgula) | `http://localhost:5173` |
-| `VITE_API_URL` | URL base da API (frontend) | `http://localhost:3000/api` |
-| `JWT_SECRET` | Segredo JWT (mín. 32 chars em produção) | `troque-por-chave-segura` |
-| `JWT_EXPIRATION` | Expiração do token | `1d` |
-| `REDIS_URL` | URL do Redis | `redis://localhost:6379` |
-| `REDIS_PASSWORD` | Senha Redis (obrigatório em produção) | vazio em dev |
-| `IBGE_API_URL` | URL da API IBGE | `https://servicodados.ibge.gov.br/api/v1` |
-| `SICONFI_API_URL` | URL da API SICONFI | `https://api.siconfi.tesouro.gov.br/v1` |
-| `DATASUS_API_URL` | URL base do DATASUS | `https://datasus.saude.gov.br` |
-| `INPE_API_URL` | URL da API TerraBrasilis/INPE | `https://terrabrasilis.dpi.inpe.br/api/v1` |
-| `PNCP_API_URL` | URL da API PNCP | `https://pncp.gov.br/api/pncp/v1` |
-| `AGENT_TIMEOUT` | Timeout dos coletores (ms) | `30000` |
-| `AGENT_RETRY_COUNT` | Número de tentativas de retry | `3` |
-| `AGENT_RETRY_DELAY` | Delay inicial de retry (ms) | `1000` |
-| `LOG_LEVEL` | Nível de log Winston | `info` |
+| Variável            | Descrição                               | Padrão dev                                                        |
+| ------------------- | --------------------------------------- | ----------------------------------------------------------------- |
+| `DATABASE_URL`      | Connection string PostgreSQL            | `postgresql://postgres:postgres@localhost:5432/ioc_esg_municipal` |
+| `DATABASE_USER`     | Usuário do banco                        | `postgres`                                                        |
+| `DATABASE_PASSWORD` | Senha do banco                          | `postgres`                                                        |
+| `DATABASE_NAME`     | Nome do banco                           | `ioc_esg_municipal`                                               |
+| `NODE_ENV`          | Ambiente (`development`/`production`)   | `development`                                                     |
+| `PORT`              | Porta do backend                        | `3000`                                                            |
+| `ALLOWED_ORIGINS`   | Origens CORS (separar por vírgula)      | `http://localhost:5173`                                           |
+| `VITE_API_URL`      | URL base da API (frontend)              | `http://localhost:3000/api`                                       |
+| `JWT_SECRET`        | Segredo JWT (mín. 32 chars em produção) | `troque-por-chave-segura`                                         |
+| `JWT_EXPIRATION`    | Expiração do token                      | `1d`                                                              |
+| `REDIS_URL`         | URL do Redis                            | `redis://localhost:6379`                                          |
+| `REDIS_PASSWORD`    | Senha Redis (obrigatório em produção)   | vazio em dev                                                      |
+| `IBGE_API_URL`      | URL da API IBGE                         | `https://servicodados.ibge.gov.br/api/v1`                         |
+| `SICONFI_API_URL`   | URL da API SICONFI                      | `https://api.siconfi.tesouro.gov.br/v1`                           |
+| `DATASUS_API_URL`   | URL base do DATASUS                     | `https://datasus.saude.gov.br`                                    |
+| `INPE_API_URL`      | URL da API TerraBrasilis/INPE           | `https://terrabrasilis.dpi.inpe.br/api/v1`                        |
+| `PNCP_API_URL`      | URL da API PNCP                         | `https://pncp.gov.br/api/pncp/v1`                                 |
+| `AGENT_TIMEOUT`     | Timeout dos coletores (ms)              | `30000`                                                           |
+| `AGENT_RETRY_COUNT` | Número de tentativas de retry           | `3`                                                               |
+| `AGENT_RETRY_DELAY` | Delay inicial de retry (ms)             | `1000`                                                            |
+| `LOG_LEVEL`         | Nível de log Winston                    | `info`                                                            |
 
 **Requisitos em produção:** `JWT_SECRET` mínimo 32 caracteres (não pode ser placeholder), `REDIS_PASSWORD` obrigatório, `ALLOWED_ORIGINS` não pode conter `localhost`. O env-validator valida esses critérios no startup e aborta se não atendidos.
 
@@ -178,25 +179,25 @@ Gere segredos com: `openssl rand -hex 32`
 
 Documentação interativa completa disponível em `/api/docs` (Swagger UI) com todos os schemas de request/response e exemplos.
 
-| Rota | Método | Descrição | Auth | Role |
-|------|--------|-----------|------|------|
-| `/api/auth/register` | POST | Registro (1º usuário = bootstrap sem auth) | Não* | — |
-| `/api/auth/login` | POST | Login, retorna JWT | Não | — |
-| `/api/auth/me` | GET | Dados do usuário autenticado | Sim | qualquer |
-| `/api/ods/:ibgeCode` | GET | Scores ODS (0-100) do município (cache 1h) | Sim | qualquer |
-| `/api/ods/compare` | POST | Compara ODS entre municípios | Sim | qualquer |
-| `/api/ods/:ibgeCode/history` | GET | Histórico de scores ODS | Sim | qualquer |
-| `/api/simulator/simulate` | POST | Simulação de investimento FPM | Sim | qualquer |
-| `/api/simulator/compare` | POST | Compara cenários de simulação | Sim | qualquer |
-| `/api/reports/:ibgeCode` | GET | Relatório ESG executivo completo | Sim | qualquer |
-| `/api/benchmarks` | POST | Benchmark entre municípios | Sim | qualquer |
-| `/api/benchmarks/compare` | POST | Compara município vs grupo | Sim | qualquer |
-| `/api/municipalities` | GET | Lista municípios (paginado) | Sim | qualquer |
-| `/api/municipalities/:ibgeCode` | GET | Detalhe de um município | Sim | qualquer |
-| `/api/agents/:source/:ibgeCode` | GET | Dados brutos de um coletor | Sim | qualquer |
-| `/api/agents/batch/:ibgeCode` | POST | Coleta batch de município | Sim | admin |
-| `/api/docs` | GET | Swagger UI + OpenAPI spec | Não | — |
-| `/health` | GET | Health check | Não | — |
+| Rota                            | Método | Descrição                                  | Auth  | Role     |
+| ------------------------------- | ------ | ------------------------------------------ | ----- | -------- |
+| `/api/auth/register`            | POST   | Registro (1º usuário = bootstrap sem auth) | Não\* | —        |
+| `/api/auth/login`               | POST   | Login, retorna JWT                         | Não   | —        |
+| `/api/auth/me`                  | GET    | Dados do usuário autenticado               | Sim   | qualquer |
+| `/api/ods/:ibgeCode`            | GET    | Scores ODS (0-100) do município (cache 1h) | Sim   | qualquer |
+| `/api/ods/compare`              | POST   | Compara ODS entre municípios               | Sim   | qualquer |
+| `/api/ods/:ibgeCode/history`    | GET    | Histórico de scores ODS                    | Sim   | qualquer |
+| `/api/simulator/simulate`       | POST   | Simulação de investimento FPM              | Sim   | qualquer |
+| `/api/simulator/compare`        | POST   | Compara cenários de simulação              | Sim   | qualquer |
+| `/api/reports/:ibgeCode`        | GET    | Relatório ESG executivo completo           | Sim   | qualquer |
+| `/api/benchmarks`               | POST   | Benchmark entre municípios                 | Sim   | qualquer |
+| `/api/benchmarks/compare`       | POST   | Compara município vs grupo                 | Sim   | qualquer |
+| `/api/municipalities`           | GET    | Lista municípios (paginado)                | Sim   | qualquer |
+| `/api/municipalities/:ibgeCode` | GET    | Detalhe de um município                    | Sim   | qualquer |
+| `/api/agents/:source/:ibgeCode` | GET    | Dados brutos de um coletor                 | Sim   | qualquer |
+| `/api/agents/batch/:ibgeCode`   | POST   | Coleta batch de município                  | Sim   | admin    |
+| `/api/docs`                     | GET    | Swagger UI + OpenAPI spec                  | Não   | —        |
+| `/health`                       | GET    | Health check                               | Não   | —        |
 
 ---
 
@@ -204,24 +205,25 @@ Documentação interativa completa disponível em `/api/docs` (Swagger UI) com t
 
 14 coletores de APIs públicas governamentais. Todos implementam cache Redis, retry com backoff exponencial (1s, 2s, 4s) e timeout configurável via `AGENT_TIMEOUT`.
 
-| Coletor | Fonte | ODS | Principais indicadores |
-|---------|-------|-----|----------------------|
-| IBGE | servicodados.ibge.gov.br/api/v1 | 1, 2, 8, 9, 10, 11 | pct_baixa_renda, taxa_ocupacao, coeficiente_gini, pib_per_capita |
-| SICONFI | api.siconfi.tesouro.gov.br/v1 | 3, 4, 11, 16, 17 | despesa_saude, despesa_educacao, equilibrio_fiscal, dependencia_FPM |
-| DATASUS | datasus.saude.gov.br | 3 | previne_prenatal, previne_diabetes, previne_hipertensao |
-| INEP | inep.gov.br (download) | 4 | ideb_anos_iniciais, ideb_anos_finais |
-| SNIS | snis.gov.br (download) | 6 | atendimento_agua, atendimento_esgoto, esgoto_tratado |
-| INPE | terrabrasilis.dpi.inpe.br/api/v1 | 13, 15 | desmatamento_anual, desmatamento_acumulado |
-| PNCP | pncp.gov.br/api/pncp/v1 | 16 | total_contratacoes, percentual_dispensas, taxa_homologacao |
-| TSE | dados.tse.jus.br | 5 | pct_mulheres_eleitas, pct_candidatas_mulheres |
-| ANEEL | dadosabertos.aneel.gov.br | 7 | potencia_instalada_gd, pct_energia_renovavel |
-| SNIS-RS | snis.gov.br (resíduos) | 12 | coleta_seletiva, reciclagem, compostagem |
-| ANA | dadosabertos.ana.gov.br | 14 | iqa_medio, pct_corpos_bom |
-| Convenios | transferegov.es.gov.br | 17 | convenios_federais, consorcios_intermunicipais |
-| ANATEL | informacoes.anatel.gov.br | 9 | banda_larga_fixa, cobertura_4g, pct_fibra_optica |
-| SISVAN | sisvan.saude.gov.br | 2 | cobertura_alimentar, deficit_peso, sobrepeso |
+| Coletor   | Fonte                            | ODS                | Principais indicadores                                              |
+| --------- | -------------------------------- | ------------------ | ------------------------------------------------------------------- |
+| IBGE      | servicodados.ibge.gov.br/api/v1  | 1, 2, 8, 9, 10, 11 | pct_baixa_renda, taxa_ocupacao, coeficiente_gini, pib_per_capita    |
+| SICONFI   | api.siconfi.tesouro.gov.br/v1    | 3, 4, 11, 16, 17   | despesa_saude, despesa_educacao, equilibrio_fiscal, dependencia_FPM |
+| DATASUS   | datasus.saude.gov.br             | 3                  | previne_prenatal, previne_diabetes, previne_hipertensao             |
+| INEP      | inep.gov.br (download)           | 4                  | ideb_anos_iniciais, ideb_anos_finais                                |
+| SNIS      | snis.gov.br (download)           | 6                  | atendimento_agua, atendimento_esgoto, esgoto_tratado                |
+| INPE      | terrabrasilis.dpi.inpe.br/api/v1 | 13, 15             | desmatamento_anual, desmatamento_acumulado                          |
+| PNCP      | pncp.gov.br/api/pncp/v1          | 16                 | total_contratacoes, percentual_dispensas, taxa_homologacao          |
+| TSE       | dados.tse.jus.br                 | 5                  | pct_mulheres_eleitas, pct_candidatas_mulheres                       |
+| ANEEL     | dadosabertos.aneel.gov.br        | 7                  | potencia_instalada_gd, pct_energia_renovavel                        |
+| SNIS-RS   | snis.gov.br (resíduos)           | 12                 | coleta_seletiva, reciclagem, compostagem                            |
+| ANA       | dadosabertos.ana.gov.br          | 14                 | iqa_medio, pct_corpos_bom                                           |
+| Convenios | transferegov.es.gov.br           | 17                 | convenios_federais, consorcios_intermunicipais                      |
+| ANATEL    | informacoes.anatel.gov.br        | 9                  | banda_larga_fixa, cobertura_4g, pct_fibra_optica                    |
+| SISVAN    | sisvan.saude.gov.br              | 2                  | cobertura_alimentar, deficit_peso, sobrepeso                        |
 
 **Gotchas importantes:**
+
 - Código IBGE: 7 dígitos (ex: `4204202`). SICONFI usa 6 dígitos sem verificador (`420420`)
 - FPM: pago em 3 decêndios/mês (dias 10, 20, 30) — some para o valor mensal
 - DATASUS pode ficar instável: timeout 10s + retry 3x + backoff exponencial
@@ -291,7 +293,7 @@ ioc-esg-municipal/
 │   ├── especificacao/       # Documentação completa do produto
 │   ├── plans/               # Planos de feature aprovados
 │   ├── decisions/           # ADRs (Architecture Decision Records)
-│   └── PROJECT_STATE.md     # Estado atual do projeto
+│   └── ESTADO_ATUAL_SC.md   # Estado atual do projeto (projection humana oficial)
 ├── docker-compose.yml       # Dev: PostgreSQL + Redis + Adminer
 ├── docker-compose.prod.yml  # Produção: stack completa com API
 ├── .env.example             # Template para desenvolvimento
@@ -299,6 +301,7 @@ ioc-esg-municipal/
 ```
 
 **Decisões de arquitetura relevantes:**
+
 - PrismaClient singleton em `backend/lib/prisma.ts` — pool único compartilhado por todos os módulos
 - ODS Score Service orquestra os 14 coletores em paralelo com `withTimeout` por fonte
 - Cache Redis obrigatório em toda chamada de API externa — TTL por fonte (1h a 7 dias)

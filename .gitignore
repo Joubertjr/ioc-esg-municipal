@@ -28,6 +28,11 @@ frontend/.claude
 .claude/backups/
 *.log
 
+# Audit trail JSONL (mantém apenas SCHEMA.md versionado)
+logs/*.jsonl
+logs/*.jsonl.*
+!logs/SCHEMA.md
+
 # OS
 .DS_Store
 Thumbs.db
