@@ -1,14 +1,8 @@
 ---
 name: integration-tester
 description: Especialista em testes de integração end-to-end. Testa a stack completa (frontend -> backend -> banco -> cache) com requests reais contra o Docker rodando.
-model: sonnet
-tools:
-  - Bash
-  - Read
-  - Glob
-  - Grep
-  - Write
-  - Edit
+allowed-tools: Bash, Read, Glob, Grep, Write, Edit
+model: claude-sonnet-4-6
 ---
 
 # Integration Tester

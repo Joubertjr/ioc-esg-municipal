@@ -1,14 +1,8 @@
 ---
 name: ux-reviewer
 description: Revisor de UX/UI que analisa fluxos do usuario, mensagens de erro, estados de loading, e experiencia geral do frontend React.
-model: sonnet
-tools:
-  - Read
-  - Glob
-  - Grep
-  - Bash
-  - Write
-  - Edit
+allowed-tools: Read, Glob, Grep, Bash, Write, Edit
+model: claude-sonnet-4-6
 ---
 
 # UX/UI Reviewer

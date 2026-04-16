@@ -34,4 +34,7 @@ Quando há conflito entre um arquivo de regra e uma instrução ad-hoc, as regra
 - **CLAUDE.md**: instruções operacionais e contexto de sessão (tem prioridade sobre tudo)
 - **docs/decisions/**: ADRs que podem sobrescrever regras específicas com justificativa
 - **docs/plans/**: planos de feature aprovados que refinam aplicação das regras
+- **docs/architecture/RULES_MAP.md**: classificação canônica (global / domain / workflow / governance) de cada regra
+- **docs/architecture/SKILLS_PATTERN.md**: contrato canônico para qualquer nova skill
+- **docs/architecture/AGENTS_DELEGATION.md**: matriz de delegação para os 26 subagentes
 - **~/obsidian-vault/ioc-esg-municipal/long-term/gotchas.md**: exceções e casos especiais conhecidos

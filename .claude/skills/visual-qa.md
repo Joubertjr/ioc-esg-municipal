@@ -9,7 +9,10 @@ model: claude-sonnet-4-6
 
 ## Argumento: `/visual-qa <nome-da-feature> [--interactive <script.ts>]`
 
-## Referência: `@transicao/00_LEIA_PRIMEIRO/VISUAL_QA_FRAMEWORK.md`
+## Referências
+
+- Política: `.claude/rules/visual-qa.md` (checklist e estrutura de evidências)
+- Padrão de skill: `docs/architecture/SKILLS_PATTERN.md`
 
 ## Pipeline (6 passos sequenciais)
 

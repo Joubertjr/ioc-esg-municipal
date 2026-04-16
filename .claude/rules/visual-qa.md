@@ -48,4 +48,5 @@ applies_to: frontend
 
 ### Referência
 
-- Framework completo: `docs/especificacao/VISUAL_QA_FRAMEWORK.md`
+- Skill operacional: `.claude/skills/visual-qa.md` (ciclo screenshot + auditoria + staging)
+- Agente auditor: `.claude/agents/visual-qa-auditor.md` (checklist dos 11 critérios)

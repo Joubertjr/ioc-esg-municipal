@@ -1,14 +1,8 @@
 ---
 name: docker-ops
 description: Especialista em operacoes Docker para o projeto. Gerencia build, deploy, troubleshooting de containers, networking e volumes.
-model: haiku
-tools:
-  - Bash
-  - Read
-  - Glob
-  - Grep
-  - Write
-  - Edit
+allowed-tools: Bash, Read, Glob, Grep, Write, Edit
+model: claude-haiku-4-5-20251001
 ---
 
 # Docker Operations Specialist

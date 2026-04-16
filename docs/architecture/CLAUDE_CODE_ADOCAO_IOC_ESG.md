@@ -11,7 +11,7 @@
 | Dimensão             | Valor                                                          |
 | -------------------- | -------------------------------------------------------------- |
 | Natureza             | Projeto com **estado persistente** (Postgres + Redis)          |
-| Modelo de agentes    | **Multiagente moderado** (22 subagentes, 14 skills, 14 cmds)   |
+| Modelo de agentes    | **Multiagente moderado** (26 subagentes, 15 skills, 12 cmds)   |
 | Integrações externas | 7 APIs governamentais reais + 7 coletores estáticos            |
 | Criticidade          | Alta — produto B2G pago, SLA implícito, auditoria TCE possível |
 | Mercado alvo         | Exclusivo: 295 municípios de Santa Catarina                    |
@@ -101,13 +101,14 @@ Legenda: **OK** = adotado e provável | **PARCIAL** = adotado mas incompleto | *
 
 ### 2.6 Memory, Skills, Subagentes
 
-| Componente                                          | Status  | Evidência / Gap                                           |
-| --------------------------------------------------- | ------- | --------------------------------------------------------- |
-| Política de memory (.claude/rules/memory-policy.md) | OK      | Define memory vs rules vs CLAUDE.md vs logs (Fase 6)      |
-| Memory do usuário                                   | OK      | Escopo de usuário — preferências, não política de projeto |
-| .claude/skills/ (14 skills)                         | PARCIAL | Skills existem; falta template uniforme. Fase 8           |
-| .claude/agents/ (22 agentes)                        | PARCIAL | Definidos; falta política de delegação e matriz. Fase 9   |
-| .claude/commands/ (14 comandos)                     | OK      | Invocáveis via /slash                                     |
+| Componente                                          | Status | Evidência / Gap                                                     |
+| --------------------------------------------------- | ------ | ------------------------------------------------------------------- |
+| Política de memory (.claude/rules/memory-policy.md) | OK     | Define memory vs rules vs CLAUDE.md vs logs (Fase 6)                |
+| Memory do usuário                                   | OK     | Escopo de usuário — preferências, não política de projeto           |
+| .claude/rules/ (10 regras)                          | OK     | Classificadas em `docs/architecture/RULES_MAP.md` (Fase 7)          |
+| .claude/skills/ (15 skills)                         | OK     | Contrato canônico em `docs/architecture/SKILLS_PATTERN.md` (Fase 8) |
+| .claude/agents/ (26 agentes)                        | OK     | Matriz em `docs/architecture/AGENTS_DELEGATION.md` (Fase 9)         |
+| .claude/commands/ (12 comandos)                     | OK     | Invocáveis via /slash                                               |
 
 ### 2.7 Estrutura física
 
@@ -155,11 +156,14 @@ O projeto considera a arquitetura Claude Code **madura** quando, em uma auditori
 ## 5. Referências Cruzadas
 
 - Política de memory: `.claude/rules/memory-policy.md`
+- Mapa de regras: `docs/architecture/RULES_MAP.md`
+- Padrão canônico de skills: `docs/architecture/SKILLS_PATTERN.md`
+- Matriz de delegação de agentes: `docs/architecture/AGENTS_DELEGATION.md`
 - Topologia de settings: `docs/architecture/SETTINGS_TOPOLOGIA.md`
 - Schema de eventos: `logs/SCHEMA.md`
 - Runbook de produção: `docs/RUNBOOK_PRODUCAO.md`
-- Plano mestre executado: §Fases 0-13 (orientação externa). Bundle P0 (Fases 0-6) concluído.
+- Plano mestre executado: §Fases 0-13 (orientação externa). Bundles P0 (Fases 0-6) e P1 (Fases 7-9) concluídos.
 
 ---
 
-_Última revisão: 2026-04-16 — Fases 0, 1, 2, 3, 4, 5, 6 (bundle P0) concluídas._
+_Última revisão: 2026-04-16 — Fases 0-9 concluídas (bundles P0 + P1)._
