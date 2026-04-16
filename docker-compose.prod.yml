@@ -214,6 +214,7 @@ services:
       - "127.0.0.1:9093:9093"
     volumes:
       - ./monitoring/alertmanager.yml:/etc/alertmanager/alertmanager.yml:ro
+      - ./monitoring/slack_url:/etc/alertmanager/slack_url:ro
     deploy:
       resources:
         limits:

@@ -186,16 +186,27 @@ Todos expostos apenas em `127.0.0.1` — nao acessiveis externamente sem proxy.
 
 ### Alertas
 
-O alertmanager esta configurado com webhook stub (loga via Winston).
-Para producao real, substituir por receiver Slack/email em `monitoring/alertmanager.yml`:
+Roteamento dual por severidade:
 
-```yaml
-receivers:
-  - name: slack
-    slack_configs:
-      - api_url: ${SLACK_WEBHOOK_URL}
-        channel: "#alertas-ioc"
+- `severity = critical` → Slack (`#alertas-ioc-critico`) **E** webhook-stub (log Winston)
+- demais severidades → webhook-stub (log Winston)
+
+Config em `monitoring/alertmanager.yml`. O webhook do Slack e lido de
+`/etc/alertmanager/slack_url` dentro do container (mount via compose a partir de
+`./monitoring/slack_url`, que e ignorado pelo git).
+
+**Configurar webhook real do Slack:**
+
+```bash
+# No servidor de producao:
+bash scripts/configure-slack-alerts.sh https://hooks.slack.com/services/T00/B00/XXXX
 ```
+
+O script valida o formato, escreve em `monitoring/slack_url` com permissao 0600
+e envia SIGHUP para o alertmanager recarregar a config (sem reiniciar).
+
+Se o arquivo contiver o placeholder inicial, os POSTs para o Slack falharao
+silenciosamente mas o webhook-stub continua registrando via Winston.
 
 ---
 

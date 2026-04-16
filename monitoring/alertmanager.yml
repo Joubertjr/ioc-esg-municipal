@@ -1,16 +1,15 @@
-# Alertmanager Configuration — IOC ESG Municipal
+# Alertmanager Configuration - IOC ESG Municipal
 #
-# Configuração mínima para receber alertas do Prometheus.
-# O receiver padrão é um webhook stub que envia alertas para a API,
-# onde são logados via Winston.
+# Roteamento de alertas por severidade:
+#   - severity=critical -> Slack (#alertas-ioc-critico) + webhook-stub (log Winston)
+#   - default          -> webhook-stub (log Winston)
 #
-# PRODUÇÃO: substituir webhook-stub por receiver real (Slack, email, PagerDuty).
-# Exemplo Slack:
-#   receivers:
-#     - name: slack
-#       slack_configs:
-#         - api_url: ${SLACK_WEBHOOK_URL}
-#           channel: '#alertas-ioc'
+# O Slack receiver usa api_url_file pointing para /etc/alertmanager/slack_url,
+# mount via docker-compose.prod.yml a partir de ./monitoring/slack_url.
+# Se o arquivo contiver placeholder (nao for real webhook Slack), os POSTs
+# falharao silenciosamente mas o webhook-stub ainda registra via Winston.
+#
+# Configurar Slack real: bash scripts/configure-slack-alerts.sh <webhook-url>
 
 global:
   resolve_timeout: 5m
@@ -21,9 +20,28 @@ route:
   group_wait: 30s
   group_interval: 5m
   repeat_interval: 4h
+  routes:
+    # Alertas criticos vao para Slack E webhook-stub (continue: true)
+    - matchers:
+        - severity = critical
+      receiver: slack-critical
+      continue: true
 
 receivers:
   - name: webhook-stub
     webhook_configs:
       - url: "http://api:3000/api/internal/alert-sink"
+        send_resolved: true
+
+  - name: slack-critical
+    slack_configs:
+      - api_url_file: /etc/alertmanager/slack_url
+        channel: "#alertas-ioc-critico"
+        title: "{{ .CommonLabels.alertname }} [{{ .CommonLabels.severity }}]"
+        text: |
+          *Alerta:* {{ .CommonLabels.alertname }}
+          *Severidade:* {{ .CommonLabels.severity }}
+          *Resumo:* {{ .CommonAnnotations.summary }}
+          *Descricao:* {{ .CommonAnnotations.description }}
+          *Iniciado:* {{ .CommonAnnotations.startsAt }}
         send_resolved: true
