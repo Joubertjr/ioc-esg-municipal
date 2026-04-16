@@ -45,3 +45,6 @@ frontend/.pnpm-store/
 # Secrets de monitoramento (webhook real do Slack)
 monitoring/slack_url
 !monitoring/slack_url.example
+
+# Backups locais (dumps pg_dump)
+backups/

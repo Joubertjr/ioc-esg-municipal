@@ -283,25 +283,71 @@ docker compose -f docker-compose.prod.yml exec grafana \
 
 ## 9. Backup
 
-### Banco de dados
+### Banco de dados — automatico (recomendado)
+
+Instalar crontab de backup diario as 02:00 UTC (idempotente):
 
 ```bash
-# Backup completo
-docker exec ioc_postgres_prod pg_dump -U $DATABASE_USER -d $DATABASE_NAME \
-  --format=custom -f /tmp/backup.dump
+cd /opt/ioc-esg-municipal
+bash scripts/install-backup-cron.sh
+```
 
-# Copiar para fora do container
-docker cp ioc_postgres_prod:/tmp/backup.dump ./backups/$(date +%Y%m%d).dump
+O script:
 
-# Restore (em caso de desastre)
-docker exec -i ioc_postgres_prod pg_restore -U $DATABASE_USER -d $DATABASE_NAME \
-  --clean --if-exists < ./backups/20260415.dump
+1. Cria `/var/log/ioc-backup.log` (ou `./backups/backup.log` se nao tiver permissao)
+2. Remove entradas antigas via marker `# ioc-pg-backup`
+3. Agenda `scripts/backup-postgres.sh` diariamente as 02:00
+
+O backup:
+
+- Formato `custom` (pg_dump -Fc) — permite restore seletivo
+- Diretorio: `./backups/` (ignorado pelo git)
+- Nome: `ioc-esg-YYYYMMDD-HHMMSS.dump`
+- Retencao: 7 dias (configuravel via `RETENTION_DAYS`)
+
+Verificar:
+
+```bash
+crontab -l | grep ioc-pg-backup
+tail -f /var/log/ioc-backup.log    # ou ./backups/backup.log
+ls -lh backups/
+```
+
+Desinstalar:
+
+```bash
+bash scripts/install-backup-cron.sh --uninstall
+```
+
+### Banco de dados — manual
+
+```bash
+bash scripts/backup-postgres.sh
+# Gera: ./backups/ioc-esg-<timestamp>.dump
+```
+
+### Restore (em caso de desastre)
+
+```bash
+# Copiar dump para dentro do container
+docker cp ./backups/ioc-esg-20260416-020000.dump ioc_postgres_prod:/tmp/restore.dump
+
+# Restore completo (substitui dados existentes)
+docker exec ioc_postgres_prod pg_restore \
+  -U $DATABASE_USER -d $DATABASE_NAME \
+  --clean --if-exists /tmp/restore.dump
+
+# Limpar
+docker exec ioc_postgres_prod rm /tmp/restore.dump
 ```
 
 ### Redis
 
 Redis usa `appendonly yes` com fsync a cada segundo. Os dados persistem em restart.
-Para backup manual do AOF:
+Como Redis neste projeto e usado apenas como cache (TTLs curtos, sem dados criticos nao
+derivaveis), nao ha backup agendado — perda em desastre e aceitavel.
+
+Backup manual do AOF quando necessario:
 
 ```bash
 docker exec ioc_redis_prod redis-cli -a $REDIS_PASSWORD BGSAVE
