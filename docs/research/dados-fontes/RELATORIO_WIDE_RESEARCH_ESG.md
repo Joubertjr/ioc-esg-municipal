@@ -9,10 +9,7 @@ Este relatório consolida os resultados de 15 pesquisas simultâneas de validaç
 
 ## 2. VALIDAÇÃO DE FONTES EXISTENTES
 
-sc.cidadessustentaveis.org.br/ está ativa e correta.
-2. A plataforma cobre 5.570 municípios brasileiros. (Fonte: https://idsc.cidadessustentaveis.org.br/)
-3. O financiamento é realizado pela Caixa, Ministério do Meio Ambiente e Mudança do Clima e pela União Europeia. (Fonte: https://idsc.cidadessustentaveis.org.br/)
-4. A metodologia de cálculo do score é baseada na normalização min-max dos indicadores e na ponderação igualitária dos 17 ODS. (Fonte: https://idsc.cidadessustentaveis.org.br/methodology/)
+sc.cidadessustentaveis.org.br/ está ativa e correta. 2. A plataforma cobre 5.570 municípios brasileiros. (Fonte: https://idsc.cidadessustentaveis.org.br/) 3. O financiamento é realizado pela Caixa, Ministério do Meio Ambiente e Mudança do Clima e pela União Europeia. (Fonte: https://idsc.cidadessustentaveis.org.br/) 4. A metodologia de cálculo do score é baseada na normalização min-max dos indicadores e na ponderação igualitária dos 17 ODS. (Fonte: https://idsc.cidadessustentaveis.org.br/methodology/)
 
 **Correções/Atualizações:**
 Nenhum dado incorreto ou desatualizado foi encontrado.
@@ -21,6 +18,7 @@ Nenhum dado incorreto ou desatualizado foi encontrado.
 Nome: Metodologia IDSC-BR (PDF) | URL: https://idsc-sp.cidadessustentaveis.org.br/static/Metodologia.pdf | Descrição: Documento PDF com a metodologia detalhada do IDSC-BR. | Relevância para IOC: Alta
 
 **Implicação para o IOC:**
+
 1. Integrar os 100 indicadores do IDSC-BR ao sistema do IOC para monitoramento e análise.
 2. Utilizar a metodologia de cálculo de score do IDSC-BR como referência para o desenvolvimento de um score próprio do IOC.
 3. Explorar a possibilidade de uma parceria com o Instituto Cidades Sustentáveis para acesso a dados mais detalhados ou a uma futura API.
@@ -36,6 +34,7 @@ URL: https://sdg-transformation-center-sdsn.hub.arcgis.com/datasets/sdsn::sustai
 URL: https://github.com/sdsna/2018GlobalIndex/raw/master/2018GlobalIndexMethodology.pdf — ATIVA | Metodologia detalhada (versão 2018): CONFIRMADA
 
 **Dados Confirmados:**
+
 1. A URL https://dashboards.sdgindex.org/ está ativa e funcional.
 2. O Sustainable Development Report 2025 cobre 167 dos 193 estados membros da ONU no SDG Index (fonte: Sustainable Development Report 2025, página 59).
 3. O relatório utiliza 17 indicadores principais para o SDG Index (SDGi) simplificado (fonte: Sustainable Development Report 2025, página 9 e Tabela 2.1).
@@ -53,6 +52,7 @@ Nome: Methodological Paper PDF (2018) | URL: https://github.com/sdsna/2018Global
 Nome: SDSN Transformation Center | URL: https://sdgtransformationcenter.org | Descrição: Centro responsável pela preparação do SDR e onde o dashboard interativo e dados adicionais podem ser acessados. | Relevância para IOC: alta
 
 **Implicação para o IOC:**
+
 1. Utilizar a API do Esri ArcGIS Hub para integrar os dados do Sustainable Development Report 2025 diretamente nas plataformas do projeto IOC, garantindo acesso a informações atualizadas e abrangentes.
 2. Ao citar a metodologia, referenciar o 'Sustainable Development Report 2025' para a visão geral e o 'Methodological Paper PDF (2018)' para detalhes mais aprofundados, esclarecendo a versão da metodologia utilizada.
 3. Monitorar o site https://dashboards.sdgindex.org/downloads/ para a publicação de um documento metodológico atualizado para a edição de 2025, caso seja disponibilizado futuramente.
@@ -71,6 +71,7 @@ URL: https://docs.owid.io/ — ATIVA | Documentação do Grapher: CONFIRMADO | A
 URL: https://docs.owid.io/projects/etl/api/chart-api/ — ATIVA | API disponível: CONFIRMADO
 
 **Dados Confirmados:**
+
 1. O Grapher é open-source e seu repositório GitHub é https://github.com/owid/owid-grapher [1].
 2. Our World in Data ganhou o Lovie Award 2019 (Lovie Be Greater with Data Award) [2].
 3. O site Our World in Data teve 89 milhões de visitantes únicos em 2021 [3].
@@ -86,6 +87,7 @@ Nome: Grapher Chart API Documentation | URL: https://docs.owid.io/projects/etl/a
 Nome: Timeline of Our World in Data (Issa Rice) | URL: https://timelines.issarice.com/wiki/Timeline_of_Our_World_in_Data | Descrição: Linha do tempo com marcos importantes do Our World in Data, incluindo estatísticas de tráfego. | Relevância para IOC: média
 
 **Implicação para o IOC:**
+
 1. Explorar a API do Grapher (https://docs.owid.io/projects/etl/api/chart-api/) para identificar datasets relevantes que possam ser agregados ou filtrados para análise em nível municipal, mesmo que não haja suporte direto para municípios.
 2. Avaliar a viabilidade de utilizar os dados de "Urbanization" e "Population of the world's largest cities" do OWID para criar indicadores ou análises em nível municipal, considerando a necessidade de processamento adicional para granularidade específica.
 3. Investigar a possibilidade de contribuir com o projeto Our World in Data, sugerindo a inclusão de dados ou funcionalidades específicas para o nível municipal, dado que o projeto é open-source e aceita contribuições.
@@ -105,6 +107,7 @@ URL: https://github.com/edsfocci/gapminder-api — ATIVA | API: CONFIRMADO (API 
 URL: https://www.gapminder.org/data/ — ATIVA | Download de dados: CONFIRMADO (CSV/XLSX, não API)
 
 **Dados Confirmados:**
+
 1. O projeto Dollar Street do Gapminder foi reconhecido no Fast Company World Changing Ideas Awards 2017 (fonte: https://www.fastcompany.com/3068873/announcing-the-winners-of-the-2017-world-changing-ideas-awards).
 2. Hans Rosling foi incluído na lista TIME 100 em 2012 (fonte: https://flowingdata.com/2012/04/18/hans-rosling-makes-time-100-most-influential/).
 3. O documentário "Don't Panic" (associado ao Gapminder) ganhou o Royal Television Society's Television Journalism Awards em 2014, na categoria "Innovative News" (fonte: https://www.gapminder.org/about/about-gapminder/awards/).
@@ -117,6 +120,7 @@ Nome: edsfocci/gapminder-api (GitHub) | URL: https://github.com/edsfocci/gapmind
 Nome: Vizabi | URL: https://vizabi.com/ | Descrição: Framework open-source para visualização de dados, utilizado pelo Gapminder para seus bubble charts. | Relevância para IOC: alta
 
 **Implicação para o IOC:**
+
 1. Para dados municipais, explorar alternativas ao Gapminder ou verificar se a comunidade Vizabi oferece extensões para granularidade subnacional.
 2. Considerar o uso da API não oficial `edsfocci/gapminder-api` para acesso programático aos dados, com a devida avaliação de sua estabilidade e manutenção.
 3. Monitorar o site `vizabi.com` para atualizações na documentação técnica, caso haja interesse em desenvolver visualizações personalizadas com a mesma tecnologia do Gapminder.
@@ -133,6 +137,7 @@ URL: http://www.atlasbrasil.org.br/acervo/atlas — ATIVA | Dados confirmados: n
 URL: http://www.atlasbrasil.org.br/acervo/biblioteca — ATIVA | Dados confirmados: como baixar dados, ano base dos dados mais recentes (2022 para algumas notas metodológicas do Radar IDHM).
 
 **Dados Confirmados:**
+
 1. A URL http://www.atlasbrasil.org.br/ está ativa. (Fonte: Navegação direta)
 2. O Atlas Brasil cobre mais de 330 indicadores socioeconômicos para 5.570 municípios, cinco macrorregiões, 27 Unidades da Federação (UFs), 21 regiões metropolitanas (RMs), três regiões integradas de desenvolvimento (RIDEs) e aproximadamente 17.000 unidades de desenvolvimento humano (UDHs). (Fonte: http://www.atlasbrasil.org.br/acervo/atlas)
 3. O Índice de Desenvolvimento Humano Municipal (IDHM) varia entre 0,000 e 1,000. (Fonte: http://www.atlasbrasil.org.br/acervo/atlas)
@@ -149,6 +154,7 @@ Nome: Atlas do Estado Brasileiro API | URL: https://www.ipea.gov.br/atlasestado/
 Nome: Radar IDHM: Nota Metodológica de IDHM 2022 | URL: http://www.atlasbrasil.org.br/acervo/biblioteca | Descrição: Documento que detalha a metodologia e o ano base mais recente (2022) para o cálculo do IDHM. | Relevância para IOC: alta
 
 **Implicação para o IOC:**
+
 1. Explorar a API do Atlas do Estado Brasileiro (https://www.ipea.gov.br/atlasestado/api) para verificar a possibilidade de integração de dados com o projeto IOC.
 2. Analisar as notas metodológicas do Radar IDHM, especialmente a de 2022, para compreender as atualizações e aprofundar o conhecimento sobre a metodologia do IDHM e a disponibilidade de dados mais recentes.
 3. Utilizar os links de download de bases de dados disponíveis no acervo do Atlas Brasil para obter conjuntos de dados brutos e realizar análises mais detalhadas para o projeto IOC.
@@ -162,6 +168,7 @@ Nome: Radar IDHM: Nota Metodológica de IDHM 2022 | URL: http://www.atlasbrasil.
 URL: https://www.firjan.com.br/ifdm/ — ATIVA (mas acesso bloqueado) | URL: https://pt.wikipedia.org/wiki/%C3%8Dndice_FIRJAN_de_Desenvolvimento_Municipal — ATIVA | URL: https://agenciabrasil.ebc.com.br/direitos-humanos/noticia/2025-05/quase-60-milhoes-vivem-em-cidades-com-desenvolvimento-baixo-ou-critico — ATIVA | URL: https://www.sicavrj.org.br/noticias/ifdm-57-milhoes-de-brasileiros-vivem-em-cidades-com-desenvolvimento-socioeconomico-baixo-ou-critico/ — ATIVA | URL: https://www.poder360.com.br/poder-brasil/57-mi-de-brasileiros-vivem-em-cidades-menos-desenvolvidas-diz-estudo/ — ATIVA | URL: https://portal.montesclaros.mg.gov.br/noticia/conceito-maximo-no-ifdm-empregos-e-renda-impulsionam-desenvolvimento-socioeconomico-de-montes-claros — ATIVA | URL: https://www.revistas.unijui.edu.br/index.php/desenvolvimentoemquestao/article/view/9660/6423 — ATIVA | URL: https://www.ipea.gov.br/ppp/index.php/PPP/article/view/1317 — ATIVA | URL: https://repositorio.unilab.edu.br/jspui/bitstream/123456789/2628/1/JOS%C3%89%20CARLOS%20PINHEIRO%20DA%20SILVA%20Mono.pdf — ATIVA | URL: https://scispace.com/pdf/estudo-comparativo-do-indice-de-desenvolvimento-humano-32c2dfth8j.pdf — ATIVA
 
 **Dados Confirmados:**
+
 1. A URL original do Firjan IFDM é https://www.firjan.com.br/ifdm/.
 2. O IFDM é elaborado pela Federação das Indústrias do Estado do Rio de Janeiro (Firjan).
 3. O IFDM 2025 avaliou 5.550 municípios brasileiros (fonte: Agência Brasil, SICAVRJ, Poder360, Portal Montes Claros).
@@ -185,6 +192,7 @@ Nome: Repositório UNILAB - Análise dos Índices Firjan de Desenvolvimento Muni
 Nome: SciSpace - Estudo Comparativo do Índice de Desenvolvimento Humano Municipal (IDH-M) e o Índice Firjan de Desenvolvimento Municipal (IFDM) | URL: https://scispace.com/pdf/estudo-comparativo-do-indice-de-desenvolvimento-humano-32c2dfth8j.pdf | Descrição: Artigo que analisa a relação entre as variáveis de Renda do IDH-M e Emprego e Renda do IFDM. | Relevância para IOC: alta
 
 **Implicação para o IOC:**
+
 1. Monitorar o site oficial da Firjan para verificar a normalização do acesso e a disponibilidade de relatórios completos e dados brutos do IFDM 2025.
 2. Utilizar as novas fontes identificadas (notícias e artigos acadêmicos) para complementar a análise do IFDM 2025, especialmente para comparações com o IDHM.
 3. Considerar a possibilidade de contato direto com a Firjan para solicitar acesso aos dados e relatórios completos, caso o bloqueio persista.
@@ -199,6 +207,7 @@ URL: https://siconfi.tesouro.gov.br/ — ATIVA | Dados municipais (receitas, des
 URL: http://apidatalake.tesouro.gov.br/docs/siconfi/ — ATIVA | Documentação da API: CONFIRMADO | Formato dos dados (JSON): CONFIRMADO | Frequência de atualização: CONFIRMADO
 
 **Dados Confirmados:**
+
 1. A URL do SICONFI (https://siconfi.tesouro.gov.br/) está ativa e funcional.
 2. O SICONFI disponibiliza dados contábeis e fiscais de municípios, incluindo informações sobre receitas e despesas, através de relatórios como RREO, RGF e DCA, e da Matriz de Saldos Contábeis (MSC) [1].
 3. Existe uma API pública de dados abertos para o SICONFI, acessível em http://apidatalake.tesouro.gov.br/docs/siconfi/ [2].
@@ -218,6 +227,7 @@ Nome: siconfir (pacote R) | URL: https://github.com/aspeddro/siconfir | Descriç
 Nome: Extração de Dados da API do SICONFI com R | URL: https://www.rpubs.com/marcosfs2006/extracao-dados-api-siconfi | Descrição: Tutorial sobre como extrair dados da API do SICONFI usando o pacote {siconfir} em R. | Relevância para IOC: alta
 
 **Implicação para o IOC:**
+
 1. Utilizar a API de Dados Abertos do SICONFI (http://apidatalake.tesouro.gov.br/docs/siconfi/) para acesso programático aos dados de receitas e despesas municipais.
 2. Para obter dados de FPM, consultar os relatórios RREO ou a MSC Orçamentária via API, filtrando por natureza da receita correspondente ao FPM.
 3. Ao buscar dados para municípios de Santa Catarina, utilizar o parâmetro 'uf=SC' nas requisições da API.
@@ -238,6 +248,7 @@ URL: https://www.bloomberg.com/news/articles/2016-12-01/bloomberg-mayors-challen
 URL: https://sdglocalaction.org/2025-global-mayors-challenge/ — ATIVA | Abertura de candidaturas 2025: CONFIRMADO
 
 **Dados Confirmados:**
+
 1. A edição 2025-2026 do Bloomberg Mayors Challenge existe. (Fonte: https://bloombergcities.jhu.edu/program/mayors-challenge/2025-winning-cities)
 2. O desafio premiou 24 cidades com US$1 milhão cada. (Fonte: https://bloombergcities.jhu.edu/program/mayors-challenge/2025-winning-cities)
 3. Mais de 630 cidades se candidataram à edição 2025-2026. (Fonte: https://bloombergcities.jhu.edu/program/mayors-challenge/2025-winning-cities)
@@ -252,6 +263,7 @@ Nome: SDG Local Action | URL: https://sdglocalaction.org/2025-global-mayors-chal
 Nome: Bloomberg.com (Notícia sobre São Paulo) | URL: https://www.bloomberg.com/news/articles/2016-12-01/bloomberg-mayors-challenge-honors-s-o-paulo | Descrição: Notícia confirmando São Paulo como vencedor do Mayors Challenge em 2016. | Relevância para IOC: alta
 
 **Implicação para o IOC:**
+
 1. Monitorar o site do Bloomberg Cities Network para futuras edições do Mayors Challenge e oportunidades de candidatura.
 2. Analisar os projetos vencedores da edição 2025-2026 e edições anteriores (como o de São Paulo) para identificar tendências e áreas de inovação relevantes para o projeto IOC.
 3. Acompanhar as notícias e comunicados da Bloomberg Philanthropies para se manter atualizado sobre iniciativas e desafios relacionados à inovação urbana.
@@ -274,6 +286,7 @@ URL: https://www.agenciaminas.mg.gov.br/noticia/governo-de-minas-vence-premiacao
 URL: https://www.curitiba.pr.gov.br/noticias/curitiba-conquista-premio-conip-de-excelencia-em-gestao-publica-pelo-sistema-que-usa-a-tecnologia-para-facilitar-a-manutencao-urbana/79124 — ATIVA | Vencedores 2025: CONFIRMADO
 
 **Dados Confirmados:**
+
 1. O Prêmio CONIP de Excelência existe desde 1998 (fonte: https://conipdigital.com.br/premio-conip/, https://conipdigital.com.br/wp-content/uploads/2024/03/Regulamento-Oficial-2024-final.pdf)
 2. As categorias atuais (2025) incluem Políticas Públicas, Inteligência Artificial, Proteção de Dados, Gestão Interna, Transformação Digital e Serviço ao Cidadão (fonte: https://www.gov.br/mcom/pt-br/noticias/2025/agosto/programa-computadores-para-a-inclusao-vence-premio-conip-2025-na-categoria-servico-ao-cidadao, https://www.anadep.org.br/wtk/pagina/materia?id=60182&nomePaginaEstrutura=enadep_estrutura)
 3. O processo de inscrição para o Prêmio CONIP 2024 ocorreu de 02 de março a 17 de maio de 2024, através do site conipdigital.com.br, com submissão de vídeo de até 10 minutos (fonte: https://conipdigital.com.br/wp-content/uploads/2024/03/Regulamento-Oficial-2024-final.pdf)
@@ -289,6 +302,7 @@ Nome: Notícia - Programa Computadores para a Inclusão vence Prêmio CONIP 2025
 Nome: Notícia - Obrasgov.br vence Prêmio Conip de Excelência na categoria Transparência: https://www.gov.br/transferegov/pt-br/noticias/noticias/2024/agosto/obrasgov-br-vence-premio-conip-de-excelencia-na-categoria-transparencia | Descrição: Notícia oficial do governo sobre um dos vencedores de 2024. | Relevância para IOC: média
 
 **Implicação para o IOC:**
+
 1. Monitorar o site oficial do CONIP (https://conipdigital.com.br/) para o lançamento do regulamento e datas de inscrição do Prêmio CONIP 2026, visto que o regulamento de 2024 foi divulgado em março.
 2. Analisar os cases vencedores de 2024 e 2025, disponíveis no site e em notícias, para identificar tendências e áreas de foco que possam ser alinhadas com o projeto IOC.
 3. Entrar em contato com a organização do CONIP (premio@conipdigital.com.br) para verificar a possibilidade de inclusão de uma categoria específica para plataformas de scoring ODS ou ESG em futuras edições do prêmio, dado que não foi identificada nenhuma plataforma de scoring ODS entre os vencedores recentes.
@@ -307,6 +321,7 @@ URL: https://www.datavisualizationsociety.org/iib-awards-faqs — ATIVA | Crité
 URL: https://gijn.org/stories/gijns-data-journalism-top-10-open-source-artificial-intelligence-interactive-oceans-bar-chart-races-eu-polling/ — ATIVA | Menção de "Brazil's First Data Awards": CONFIRMADO
 
 **Dados Confirmados:**
+
 1. O Information is Beautiful Awards é amplamente considerado o "Oscar" da visualização de dados e design de informação (fonte: https://thevisualagency.com/tva-blog-articles/codex-atlanticus-lands-in-london-and-boston/)
 2. As categorias 'Interactive Visualization' e 'Business Analytics' (que pode incluir dashboards) são presentes no showcase dos prêmios (fonte: https://www.informationisbeautifulawards.com/showcase?page=1&type=awards)
 3. Critérios de avaliação incluem: Impacto, Engajamento, Clareza, Inovação e Criatividade, Inclusão, Acessibilidade, Eficácia e Beleza (fonte: https://www.datavisualizationsociety.org/iib-awards-faqs)
@@ -321,13 +336,13 @@ Nome: Data Visualization Society - IIB Awards FAQs | URL: https://www.datavisual
 Nome: GIJN - Data Journalism Top 10 | URL: https://gijn.org/stories/gijns-data-journalism-top-10-open-source-artificial-intelligence-interactive-oceans-bar-chart-races-eu-polling/ | Descrição: Artigo que menciona a existência de "Brazil's First Data Awards", indicando um possível vencedor brasileiro. | Relevância para IOC: média
 
 **Implicação para o IOC:**
+
 1. Explorar o "Entry Showcase" (https://www.informationisbeautifulawards.com/showcase) com filtros para identificar especificamente vencedores em categorias como "Current Affairs & Politics" ou "Politics & Global" para exemplos de dados governamentais.
 2. Realizar uma busca mais aprofundada no "Entry Showcase" por termos como "dashboard" ou "interactive" para coletar mais exemplos de dashboards vencedores.
 3. Investigar a menção de "Brazil's First Data Awards" na fonte GIJN para identificar vencedores brasileiros específicos e suas plataformas.
 4. Monitorar o site oficial do Information is Beautiful Awards e da Data Visualization Society para atualizações sobre as datas de inscrição para 2026, caso sejam anunciadas.
 
 ---
-
 
 ---
 
@@ -337,14 +352,14 @@ Nome: GIJN - Data Journalism Top 10 | URL: https://gijn.org/stories/gijns-data-j
 
 A auditoria identificou seis plataformas brasileiras de dados municipais de alta relevância que não constavam nos documentos de pesquisa originais:
 
-| Plataforma | URL | Cobertura | Relevância para IOC |
-|-----------|-----|-----------|-------------------|
-| **IEPS Data** | https://iepsdata.org.br/ | Indicadores de saúde municipal desde 2010 | **Alta** — dados para ODS 3 |
-| **Observatório das Metrópoles** | https://observatoriodemetropoles.net.br/ | Dados urbanos e metropolitanos | **Média** — contexto regional |
-| **MUNIC/IBGE** | https://www.ibge.gov.br/estatisticas/sociais/educacao/10586-pesquisa-de-informacoes-basicas-municipais.html | Informações básicas de todos os municípios | **Alta** — dados institucionais |
-| **SNIS** | https://www.gov.br/cidades/pt-br/assuntos/saneamento/snis | Saneamento básico municipal | **Alta** — dados para ODS 6 |
-| **DataSUS** | https://datasus.saude.gov.br/ | Indicadores de saúde municipal | **Alta** — dados para ODS 3 |
-| **QEdu** | https://www.qedu.org.br/ | Indicadores educacionais municipais | **Alta** — dados para ODS 4 |
+| Plataforma                      | URL                                                                                                         | Cobertura                                  | Relevância para IOC             |
+| ------------------------------- | ----------------------------------------------------------------------------------------------------------- | ------------------------------------------ | ------------------------------- |
+| **IEPS Data**                   | https://iepsdata.org.br/                                                                                    | Indicadores de saúde municipal desde 2010  | **Alta** — dados para ODS 3     |
+| **Observatório das Metrópoles** | https://observatoriodemetropoles.net.br/                                                                    | Dados urbanos e metropolitanos             | **Média** — contexto regional   |
+| **MUNIC/IBGE**                  | https://www.ibge.gov.br/estatisticas/sociais/educacao/10586-pesquisa-de-informacoes-basicas-municipais.html | Informações básicas de todos os municípios | **Alta** — dados institucionais |
+| **SNIS**                        | https://www.gov.br/cidades/pt-br/assuntos/saneamento/snis                                                   | Saneamento básico municipal                | **Alta** — dados para ODS 6     |
+| **DataSUS**                     | https://datasus.saude.gov.br/                                                                               | Indicadores de saúde municipal             | **Alta** — dados para ODS 3     |
+| **QEdu**                        | https://www.qedu.org.br/                                                                                    | Indicadores educacionais municipais        | **Alta** — dados para ODS 4     |
 
 **Destaque — IEPS Data:** O IEPS Data (`https://iepsdata.org.br/`) é uma plataforma que reúne dados e indicadores de saúde de todo o Brasil desde 2010, com visualizações, documentações e bases de dados para download. Abrange temas como mortalidade infantil, cobertura de atenção básica, internações e gastos em saúde — indicadores diretamente relevantes para o ODS 3 do IOC. A plataforma já realiza o trabalho de limpeza e padronização dos dados do DataSUS, o que pode reduzir significativamente o esforço de desenvolvimento do agente coletor de saúde.
 
@@ -352,14 +367,14 @@ A auditoria identificou seis plataformas brasileiras de dados municipais de alta
 
 ### 2.2 Plataformas Internacionais de Referência (Não Citadas Anteriormente)
 
-| Plataforma | URL | Cobertura | Relevância para IOC |
-|-----------|-----|-----------|-------------------|
-| **OECD Regional Well-Being** | https://www.oecdregionalwellbeing.org/ | 467 regiões da OCDE, 11 dimensões | **Alta** — metodologia de bem-estar regional |
-| **EU Cohesion Data** | https://cohesiondata.ec.europa.eu/ | Municípios europeus, dados de coesão | **Média** — referência metodológica |
-| **City Health Dashboard (NYU)** | https://www.cityhealthdashboard.com/ | Saúde municipal nos EUA | **Alta** — modelo de dashboard de saúde |
-| **Eurostat Urban Audit** | https://ec.europa.eu/eurostat/web/cities | Dados urbanos europeus | **Média** — referência comparativa |
-| **UN-Habitat Urban Indicators** | https://data.unhabitat.org/ | Indicadores ONU para cidades | **Alta** — alinhamento com ODS |
-| **Brookings Global Metro Monitor** | https://www.brookings.edu/articles/global-metro-monitor/ | Metrópoles globais | **Baixa** — foco em grandes cidades |
+| Plataforma                         | URL                                                      | Cobertura                            | Relevância para IOC                          |
+| ---------------------------------- | -------------------------------------------------------- | ------------------------------------ | -------------------------------------------- |
+| **OECD Regional Well-Being**       | https://www.oecdregionalwellbeing.org/                   | 467 regiões da OCDE, 11 dimensões    | **Alta** — metodologia de bem-estar regional |
+| **EU Cohesion Data**               | https://cohesiondata.ec.europa.eu/                       | Municípios europeus, dados de coesão | **Média** — referência metodológica          |
+| **City Health Dashboard (NYU)**    | https://www.cityhealthdashboard.com/                     | Saúde municipal nos EUA              | **Alta** — modelo de dashboard de saúde      |
+| **Eurostat Urban Audit**           | https://ec.europa.eu/eurostat/web/cities                 | Dados urbanos europeus               | **Média** — referência comparativa           |
+| **UN-Habitat Urban Indicators**    | https://data.unhabitat.org/                              | Indicadores ONU para cidades         | **Alta** — alinhamento com ODS               |
+| **Brookings Global Metro Monitor** | https://www.brookings.edu/articles/global-metro-monitor/ | Metrópoles globais                   | **Baixa** — foco em grandes cidades          |
 
 **Destaque — City Health Dashboard (NYU):** O City Health Dashboard (`https://www.cityhealthdashboard.com/`) é o caso internacional mais próximo do que o IOC implementa para ODS 3. Cobre indicadores de saúde para municípios americanos com visualizações interativas, comparações entre cidades e drill-down por indicador. O modelo de UX deste dashboard deve ser estudado em profundidade para o redesign mobile-first do IOC.
 
@@ -367,12 +382,12 @@ A auditoria identificou seis plataformas brasileiras de dados municipais de alta
 
 ### 2.3 Design Systems e Component Libraries (Descobertas Críticas)
 
-| Sistema/Biblioteca | URL | Versão Atual | Relevância para IOC |
-|-------------------|-----|-------------|-------------------|
-| **Design System GOV.BR** | https://www.gov.br/ds | v3.7.0 | **Alta** — padrão oficial brasileiro |
-| **Tremor** | https://tremor.so/ | v3.x | **Alta** — componentes de dashboard React |
-| **Shadcn/ui Charts** | https://ui.shadcn.com/charts | 2025 | **Alta** — já usado no projeto |
-| **Recharts vs Victory vs Nivo** | — | — | **Alta** — comparativo de bibliotecas |
+| Sistema/Biblioteca              | URL                          | Versão Atual | Relevância para IOC                       |
+| ------------------------------- | ---------------------------- | ------------ | ----------------------------------------- |
+| **Design System GOV.BR**        | https://www.gov.br/ds        | v3.7.0       | **Alta** — padrão oficial brasileiro      |
+| **Tremor**                      | https://tremor.so/           | v3.x         | **Alta** — componentes de dashboard React |
+| **Shadcn/ui Charts**            | https://ui.shadcn.com/charts | 2025         | **Alta** — já usado no projeto            |
+| **Recharts vs Victory vs Nivo** | —                            | —            | **Alta** — comparativo de bibliotecas     |
 
 **Descoberta crítica — Design System GOV.BR v3.7.0:** O DS GOV.BR possui componentes específicos para dashboards governamentais, incluindo Card, Table, Tag (para status) e componentes de acessibilidade. A adoção parcial deste design system pode ser um diferencial estratégico de credibilidade junto a prefeituras que já utilizam sistemas do governo federal.
 
@@ -395,13 +410,13 @@ A abordagem de **média geométrica** para agregação de dimensões penaliza o 
 
 A auditoria revelou um ecossistema brasileiro de IA municipal mais desenvolvido do que o documentado na pesquisa original:
 
-| Projeto | URL | Descrição | Relevância |
-|---------|-----|-----------|-----------|
-| **LLM4Gov (USP São Carlos)** | https://saocarlos.usp.br/pesquisadores-da-usp-sao-carlos-desenvolvem-modelo-de-inteligencia-artificial-segura-para-uso-governamental-e-ganham-premio-internacional/ | LLM para análise de processos jurídicos governamentais com soberania de dados | **Alta** |
-| **Pró-Cidadão (Florianópolis)** | https://ndmais.com.br/cidadania/chatbot-do-pro-cidadao-passa-de-43-mil-atendimentos-e-amplia-acesso-a-servicos-em-florianopolis/ | Chatbot com 43 mil+ atendimentos via WhatsApp | **Alta** — caso local em SC |
-| **Lia (Prefeitura de Limeira)** | https://limeira.sp.gov.br/lia | Chatbot com IA generativa, atualização a cada 8h | **Alta** — modelo de referência |
-| **Rio 3 Open (Prefeitura do Rio)** | https://www.baguete.com.br/noticias/prefeitura-do-rio-lanca-seis-llms | 6 LLMs para serviços municipais | **Alta** — escala e ambição |
-| **Guia IA Gov Federal** | https://www.gov.br/governodigital/pt-br/infraestrutura-nacional-de-dados/inteligencia-artificial-1/ia-generativa-no-servico-publico.pdf | Guia oficial de IA generativa no serviço público | **Média** — compliance |
+| Projeto                            | URL                                                                                                                                                                 | Descrição                                                                     | Relevância                      |
+| ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------- | ------------------------------- |
+| **LLM4Gov (USP São Carlos)**       | https://saocarlos.usp.br/pesquisadores-da-usp-sao-carlos-desenvolvem-modelo-de-inteligencia-artificial-segura-para-uso-governamental-e-ganham-premio-internacional/ | LLM para análise de processos jurídicos governamentais com soberania de dados | **Alta**                        |
+| **Pró-Cidadão (Florianópolis)**    | https://ndmais.com.br/cidadania/chatbot-do-pro-cidadao-passa-de-43-mil-atendimentos-e-amplia-acesso-a-servicos-em-florianopolis/                                    | Chatbot com 43 mil+ atendimentos via WhatsApp                                 | **Alta** — caso local em SC     |
+| **Lia (Prefeitura de Limeira)**    | https://limeira.sp.gov.br/lia                                                                                                                                       | Chatbot com IA generativa, atualização a cada 8h                              | **Alta** — modelo de referência |
+| **Rio 3 Open (Prefeitura do Rio)** | https://www.baguete.com.br/noticias/prefeitura-do-rio-lanca-seis-llms                                                                                               | 6 LLMs para serviços municipais                                               | **Alta** — escala e ambição     |
+| **Guia IA Gov Federal**            | https://www.gov.br/governodigital/pt-br/infraestrutura-nacional-de-dados/inteligencia-artificial-1/ia-generativa-no-servico-publico.pdf                             | Guia oficial de IA generativa no serviço público                              | **Média** — compliance          |
 
 O caso do Pró-Cidadão de Florianópolis é particularmente relevante por ser um município catarinense — o mesmo mercado-alvo do IOC. Com mais de 43 mil atendimentos via WhatsApp, demonstra que gestores e cidadãos catarinenses já estão receptivos à IA no contexto municipal.
 
@@ -411,14 +426,14 @@ O caso do Pró-Cidadão de Florianópolis é particularmente relevante por ser u
 
 As seguintes informações nos documentos de pesquisa anteriores devem ser corrigidas antes de qualquer uso em materiais de apresentação ou marketing:
 
-| # | Dado Original | Status | Correção Verificada |
-|---|--------------|--------|-------------------|
-| 1 | "Forio usado pelo Banco Mundial" | **INCORRETO** | Forio tem contrato com o CDC (EUA) para hospedagem de simulações. Uso pelo Banco Mundial não confirmado. |
-| 2 | "URL iSDG Model: https://sdgintegration.undp.org/isdg-model" | **URL INATIVA** | URL correta: https://sdgs.un.org/partnerships/integrated-sustainable-development-goals-isdg-model |
-| 3 | "SDG Index cobre 193 países" | **PARCIALMENTE INCORRETO** | O SDG Index 2025 cobre 167 dos 193 estados membros da ONU (não todos os 193). |
-| 4 | "Gapminder — Fast Company World Changing Ideas 2017" | **PARCIALMENTE INCORRETO** | O prêmio foi para o projeto Dollar Street do Gapminder, não para o Gapminder como um todo. |
-| 5 | "Royal Television Society Award 2014 para Gapminder" | **PARCIALMENTE INCORRETO** | O prêmio foi para o documentário "Don't Panic" (associado ao Gapminder), na categoria "Innovative News". |
-| 6 | "CONIP existe desde 1998" | **NÃO VERIFICADO** | Data de início não confirmada nas fontes consultadas. Qualificar ou remover. |
+| #   | Dado Original                                                | Status                     | Correção Verificada                                                                                      |
+| --- | ------------------------------------------------------------ | -------------------------- | -------------------------------------------------------------------------------------------------------- |
+| 1   | "Forio usado pelo Banco Mundial"                             | **INCORRETO**              | Forio tem contrato com o CDC (EUA) para hospedagem de simulações. Uso pelo Banco Mundial não confirmado. |
+| 2   | "URL iSDG Model: https://sdgintegration.undp.org/isdg-model" | **URL INATIVA**            | URL correta: https://sdgs.un.org/partnerships/integrated-sustainable-development-goals-isdg-model        |
+| 3   | "SDG Index cobre 193 países"                                 | **PARCIALMENTE INCORRETO** | O SDG Index 2025 cobre 167 dos 193 estados membros da ONU (não todos os 193).                            |
+| 4   | "Gapminder — Fast Company World Changing Ideas 2017"         | **PARCIALMENTE INCORRETO** | O prêmio foi para o projeto Dollar Street do Gapminder, não para o Gapminder como um todo.               |
+| 5   | "Royal Television Society Award 2014 para Gapminder"         | **PARCIALMENTE INCORRETO** | O prêmio foi para o documentário "Don't Panic" (associado ao Gapminder), na categoria "Innovative News". |
+| 6   | "CONIP existe desde 1998"                                    | **NÃO VERIFICADO**         | Data de início não confirmada nas fontes consultadas. Qualificar ou remover.                             |
 
 ---
 
@@ -436,25 +451,25 @@ O Sustainable Development Report 2025 disponibiliza uma **API pública via Esri 
 
 Com base na auditoria, o IOC tem acesso a dados verificados para todos os 17 ODS via fontes abertas:
 
-| ODS | Fonte Principal Verificada | URL |
-|-----|--------------------------|-----|
-| ODS 1 — Pobreza | IBGE/CadÚnico | https://www.ibge.gov.br/ |
-| ODS 2 — Fome | SISVAN/DataSUS | https://datasus.saude.gov.br/ |
-| ODS 3 — Saúde | IEPS Data + DataSUS | https://iepsdata.org.br/ |
-| ODS 4 — Educação | QEdu + INEP | https://www.qedu.org.br/ |
-| ODS 5 — Igualdade | TSE + IBGE | https://www.tse.jus.br/ |
-| ODS 6 — Saneamento | SNIS | https://www.gov.br/cidades/pt-br/assuntos/saneamento/snis |
-| ODS 7 — Energia | ANEEL | https://www.aneel.gov.br/ |
-| ODS 8 — Trabalho | RAIS/MTE + IBGE | https://www.gov.br/trabalho-e-emprego/ |
-| ODS 9 — Infraestrutura | IBGE/MUNIC | https://www.ibge.gov.br/ |
-| ODS 10 — Desigualdade | IBGE/PNAD | https://www.ibge.gov.br/ |
-| ODS 11 — Cidades | IBGE/MUNIC + SNIS | https://www.ibge.gov.br/ |
-| ODS 12 — Consumo | IBGE | https://www.ibge.gov.br/ |
-| ODS 13 — Clima | INPE | https://www.inpe.br/ |
-| ODS 14 — Vida Aquática | ANA | https://www.gov.br/ana/ |
-| ODS 15 — Vida Terrestre | INPE + IBGE | https://www.inpe.br/ |
-| ODS 16 — Paz e Justiça | TSE + IBGE | https://www.tse.jus.br/ |
-| ODS 17 — Parcerias | SICONFI + PNCP | https://apidatalake.tesouro.gov.br/ |
+| ODS                     | Fonte Principal Verificada | URL                                                       |
+| ----------------------- | -------------------------- | --------------------------------------------------------- |
+| ODS 1 — Pobreza         | IBGE/CadÚnico              | https://www.ibge.gov.br/                                  |
+| ODS 2 — Fome            | SISVAN/DataSUS             | https://datasus.saude.gov.br/                             |
+| ODS 3 — Saúde           | IEPS Data + DataSUS        | https://iepsdata.org.br/                                  |
+| ODS 4 — Educação        | QEdu + INEP                | https://www.qedu.org.br/                                  |
+| ODS 5 — Igualdade       | TSE + IBGE                 | https://www.tse.jus.br/                                   |
+| ODS 6 — Saneamento      | SNIS                       | https://www.gov.br/cidades/pt-br/assuntos/saneamento/snis |
+| ODS 7 — Energia         | ANEEL                      | https://www.aneel.gov.br/                                 |
+| ODS 8 — Trabalho        | RAIS/MTE + IBGE            | https://www.gov.br/trabalho-e-emprego/                    |
+| ODS 9 — Infraestrutura  | IBGE/MUNIC                 | https://www.ibge.gov.br/                                  |
+| ODS 10 — Desigualdade   | IBGE/PNAD                  | https://www.ibge.gov.br/                                  |
+| ODS 11 — Cidades        | IBGE/MUNIC + SNIS          | https://www.ibge.gov.br/                                  |
+| ODS 12 — Consumo        | IBGE                       | https://www.ibge.gov.br/                                  |
+| ODS 13 — Clima          | INPE                       | https://www.inpe.br/                                      |
+| ODS 14 — Vida Aquática  | ANA                        | https://www.gov.br/ana/                                   |
+| ODS 15 — Vida Terrestre | INPE + IBGE                | https://www.inpe.br/                                      |
+| ODS 16 — Paz e Justiça  | TSE + IBGE                 | https://www.tse.jus.br/                                   |
+| ODS 17 — Parcerias      | SICONFI + PNCP             | https://apidatalake.tesouro.gov.br/                       |
 
 ---
 
@@ -515,7 +530,7 @@ Com base na auditoria completa, as seguintes diretrizes técnicas atualizadas de
 [27] IIB Awards FAQs — https://www.datavisualizationsociety.org/iib-awards-faqs  
 [28] Gapminder Awards — https://www.gapminder.org/about/about-gapminder/awards/  
 [29] Vizabi Framework — https://vizabi.com/  
-[30] MUNIC/IBGE — https://www.ibge.gov.br/estatisticas/sociais/educacao/10586-pesquisa-de-informacoes-basicas-municipais.html  
+[30] MUNIC/IBGE — https://www.ibge.gov.br/estatisticas/sociais/educacao/10586-pesquisa-de-informacoes-basicas-municipais.html
 
 ---
 

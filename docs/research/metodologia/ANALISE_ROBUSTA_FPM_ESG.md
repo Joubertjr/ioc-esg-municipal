@@ -15,16 +15,19 @@ Esta análise examina como o FPM está sendo (e pode ser) utilizado para impleme
 O **Fundo de Participação dos Municípios (FPM)** é uma transferência constitucional de recursos financeiros realizada pela União (governo federal) aos municípios brasileiros. Criado pela Constituição Federal de 1988, o FPM é um dos principais mecanismos de redistribuição de receitas tributárias entre os entes federados.
 
 **Base Legal:**
+
 - Constituição Federal de 1988 (Art. 159, I, "b")
 - Lei Complementar nº 62/1989
 - Diversas Emendas Constitucionais (EC 55/2007, EC 84/2014, EC 112/2021)
 
 **Composição:**
 O FPM é constituído de parcelas arrecadadas de dois tributos federais:
+
 1. **Imposto de Renda (IR):** Contribui com a maior parte
 2. **Imposto sobre a Produção Industrial (IPI):** Contribui com parcela menor
 
 **Fórmula de Distribuição:**
+
 - 10% do total é distribuído igualmente entre todos os municípios
 - 90% é distribuído de acordo com a população de cada município
 - Há critérios especiais para municípios com população muito pequena
@@ -33,18 +36,19 @@ O FPM é constituído de parcelas arrecadadas de dois tributos federais:
 
 **Repasses Decendiais:**
 O FPM é repassado em três decêndios (períodos de 10 dias) cada mês:
+
 - **1º decêndio:** Até o dia 10
 - **2º decêndio:** Até o dia 20
 - **3º decêndio:** Até o dia 30
 
 **Valores Recentes:**
 
-| Período | Valor Total | Variação |
-|---------|------------|----------|
-| **1º Decêndio Março 2025** | R$ 28,59 bilhões | -8,3% vs 2024 |
-| **Março 2024** | R$ 31,2 bilhões | Referência |
-| **Dezembro 2025** | R$ 32,6 bilhões | +5,6% vs 2024 |
-| **Anual 2025 (Estimado)** | R$ 98-105 bilhões | Baseado em repasses |
+| Período                    | Valor Total       | Variação            |
+| -------------------------- | ----------------- | ------------------- |
+| **1º Decêndio Março 2025** | R$ 28,59 bilhões  | -8,3% vs 2024       |
+| **Março 2024**             | R$ 31,2 bilhões   | Referência          |
+| **Dezembro 2025**          | R$ 32,6 bilhões   | +5,6% vs 2024       |
+| **Anual 2025 (Estimado)**  | R$ 98-105 bilhões | Baseado em repasses |
 
 **Observação Importante:** Angela Pereira mencionou R$ 5,8 bilhões em um repasse específico, o que corresponde a um ou dois decêndios, não ao total anual.
 
@@ -62,12 +66,14 @@ O FPM pode ser utilizado para qualquer despesa de interesse municipal, incluindo
 
 **Realidade Atual:**
 A maioria dos municípios utiliza o FPM para:
+
 - Pagamento de folha de pessoal (60-70%)
 - Despesas correntes (20-25%)
 - Investimentos (5-15%)
 
 **Problema Identificado:**
 Poucos municípios utilizam o FPM de forma estratégica para implementar agendas ESG, principalmente por falta de:
+
 - Conhecimento técnico
 - Planejamento estratégico
 - Consultoria especializada
@@ -92,6 +98,7 @@ A **Lei nº 14.133/2021**, conhecida como a **Nova Lei de Licitações e Contrat
 #### Artigo 25, § 9º - Critérios Sociais
 
 Permite exigir que **percentual mínimo da mão de obra** seja constituído por:
+
 - Mulheres vítimas de violência doméstica
 - Egressos do sistema prisional
 - Pessoas com deficiência
@@ -103,6 +110,7 @@ Permite exigir que **percentual mínimo da mão de obra** seja constituído por:
 > "Os custos indiretos, relacionados com as despesas de manutenção, utilização, reposição, depreciação e impacto ambiental do objeto licitado, entre outros fatores vinculados ao seu ciclo de vida, poderão ser considerados para a definição do menor dispêndio."
 
 **Implicação:** Ao comprar, por exemplo, ônibus para transporte público, o município deve considerar:
+
 - Custos de manutenção
 - Consumo de combustível
 - Emissões de carbono
@@ -148,27 +156,28 @@ Regulamenta a aplicação de critérios ESG na Lei 14.133/2021, estabelecendo:
 
 A **Agenda 2030 das Nações Unidas** estabelece **17 Objetivos de Desenvolvimento Sustentável (ODS)**, dos quais os municípios são responsáveis por implementar:
 
-| ODS | Objetivo | Relevância Municipal |
-|-----|----------|----------------------|
-| **ODS 1** | Erradicação da Pobreza | Políticas sociais, assistência |
-| **ODS 2** | Fome Zero | Agricultura urbana, programas alimentares |
-| **ODS 3** | Saúde e Bem-estar | Saúde pública, saneamento |
-| **ODS 4** | Educação de Qualidade | Educação municipal |
-| **ODS 5** | Igualdade de Gênero | Políticas de equidade |
-| **ODS 6** | Água Limpa e Saneamento | Gestão de água, saneamento |
-| **ODS 7** | Energia Limpa | Energia renovável, eficiência |
-| **ODS 8** | Trabalho Decente | Geração de empregos |
-| **ODS 9** | Indústria e Inovação | Apoio a startups, inovação |
-| **ODS 10** | Redução de Desigualdades | Inclusão social |
-| **ODS 11** | Cidades Sustentáveis | Planejamento urbano, mobilidade |
-| **ODS 12** | Consumo Responsável | Gestão de resíduos, economia circular |
-| **ODS 13** | Ação Climática | Mitigação de mudanças climáticas |
-| **ODS 14** | Vida na Água | Proteção de recursos hídricos |
-| **ODS 15** | Vida Terrestre | Proteção de biodiversidade |
-| **ODS 16** | Paz e Justiça | Segurança, transparência |
-| **ODS 17** | Parcerias | Colaboração interinstitucional |
+| ODS        | Objetivo                 | Relevância Municipal                      |
+| ---------- | ------------------------ | ----------------------------------------- |
+| **ODS 1**  | Erradicação da Pobreza   | Políticas sociais, assistência            |
+| **ODS 2**  | Fome Zero                | Agricultura urbana, programas alimentares |
+| **ODS 3**  | Saúde e Bem-estar        | Saúde pública, saneamento                 |
+| **ODS 4**  | Educação de Qualidade    | Educação municipal                        |
+| **ODS 5**  | Igualdade de Gênero      | Políticas de equidade                     |
+| **ODS 6**  | Água Limpa e Saneamento  | Gestão de água, saneamento                |
+| **ODS 7**  | Energia Limpa            | Energia renovável, eficiência             |
+| **ODS 8**  | Trabalho Decente         | Geração de empregos                       |
+| **ODS 9**  | Indústria e Inovação     | Apoio a startups, inovação                |
+| **ODS 10** | Redução de Desigualdades | Inclusão social                           |
+| **ODS 11** | Cidades Sustentáveis     | Planejamento urbano, mobilidade           |
+| **ODS 12** | Consumo Responsável      | Gestão de resíduos, economia circular     |
+| **ODS 13** | Ação Climática           | Mitigação de mudanças climáticas          |
+| **ODS 14** | Vida na Água             | Proteção de recursos hídricos             |
+| **ODS 15** | Vida Terrestre           | Proteção de biodiversidade                |
+| **ODS 16** | Paz e Justiça            | Segurança, transparência                  |
+| **ODS 17** | Parcerias                | Colaboração interinstitucional            |
 
 **Obrigação Legal:**
+
 - Ministério do Meio Ambiente envia ofícios aos municípios sobre Agenda 2030
 - Municípios devem estruturar planos de implementação
 - Acesso a financiamentos federais depende de alinhamento com ODS
@@ -190,6 +199,7 @@ Curitiba é reconhecida internacionalmente como uma das cidades mais sustentáve
 Curitiba está substituindo sua frota de ônibus por veículos elétricos, reduzindo emissões de carbono e poluição atmosférica.
 
 **Financiamento:**
+
 - FPM: Parte dos recursos
 - Financiamentos federais (BNDES, Caixa)
 - Parcerias público-privadas
@@ -197,12 +207,14 @@ Curitiba está substituindo sua frota de ônibus por veículos elétricos, reduz
 **Investimento:** R$ 500 milhões - R$ 1 bilhão (estimado)
 
 **Resultados:**
+
 - Redução de 40% em emissões de carbono do transporte
 - Melhoria da qualidade do ar
 - Economia de combustível
 - Criação de empregos em manutenção
 
 **Consultoria Necessária:**
+
 - Análise de ciclo de vida de veículos
 - Planejamento de infraestrutura de carregamento
 - Gestão de transição de frota
@@ -216,18 +228,21 @@ Curitiba está substituindo sua frota de ônibus por veículos elétricos, reduz
 Curitiba está certificando edifícios públicos com selos de sustentabilidade (LEED, AQUA).
 
 **Financiamento:**
+
 - FPM para reformas e construções
 - Recursos próprios
 
 **Investimento:** R$ 50 milhões - R$ 100 milhões (estimado)
 
 **Resultados:**
+
 - 18 mil metros quadrados de área construída certificada
 - Redução de 30% em consumo de energia
 - Redução de 40% em consumo de água
 - Melhoria do conforto e produtividade
 
 **Consultoria Necessária:**
+
 - Seleção de certificações
 - Planejamento de reformas
 - Gestão de projetos
@@ -241,18 +256,21 @@ Curitiba está certificando edifícios públicos com selos de sustentabilidade (
 Curitiba desenvolveu um **Relatório ESG Corporativo** que documenta ações em três eixos: solidariedade, sustentabilidade e governança responsável.
 
 **Financiamento:**
+
 - FPM para estruturação de departamentos
 - Recursos para consultoria
 
 **Investimento:** R$ 5 milhões - R$ 10 milhões (estimado)
 
 **Resultados:**
+
 - Relatório ESG publicado anualmente
 - Alinhamento com ODS
 - Transparência em gestão pública
 - Atração de investimentos
 
 **Consultoria Necessária:**
+
 - Estruturação de agenda ESG
 - Coleta de dados e indicadores
 - Elaboração de relatórios
@@ -273,18 +291,21 @@ Belo Horizonte é uma das cidades brasileiras mais ativas em implementação de 
 Estrutura de governança para coordenar ações de mitigação e adaptação às mudanças climáticas.
 
 **Financiamento:**
+
 - FPM para estruturação
 - Recursos para contratação de consultores
 
 **Investimento:** R$ 2 milhões - R$ 5 milhões (estimado)
 
 **Resultados:**
+
 - Plano Municipal de Mitigação e Adaptação
 - Integração de políticas climáticas
 - Redução de emissões
 - Resiliência urbana
 
 **Consultoria Necessária:**
+
 - Estruturação de comitês
 - Elaboração de planos climáticos
 - Indicadores de mudanças climáticas
@@ -298,18 +319,21 @@ Estrutura de governança para coordenar ações de mitigação e adaptação às
 Integração de critérios ESG em políticas de turismo, conectando sustentabilidade, inovação e inclusão.
 
 **Financiamento:**
+
 - FPM para estruturação
 - Recursos de turismo
 
 **Investimento:** R$ 3 milhões - R$ 8 milhões (estimado)
 
 **Resultados:**
+
 - Certificações de sustentabilidade para hotéis e restaurantes
 - Inclusão de comunidades locais
 - Preservação de patrimônio cultural
 - Atração de turismo consciente
 
 **Consultoria Necessária:**
+
 - Desenvolvimento de critérios ESG para turismo
 - Certificação de estabelecimentos
 - Capacitação de gestores
@@ -330,18 +354,21 @@ Porto Alegre publicou um **Relatório de Sustentabilidade 2024** alinhado com OD
 Desenvolvimento de sistema de coleta de dados e elaboração de relatório anual de sustentabilidade.
 
 **Financiamento:**
+
 - FPM para estruturação
 - Recursos para consultoria
 
 **Investimento:** R$ 1 milhão - R$ 3 milhões (estimado)
 
 **Resultados:**
+
 - Relatório de Sustentabilidade publicado
 - Alinhamento com 17 ODS
 - Transparência em gestão
 - Engajamento de stakeholders
 
 **Consultoria Necessária:**
+
 - Estruturação de sistema de dados
 - Indicadores de ODS
 - Elaboração de relatórios
@@ -356,6 +383,7 @@ Desenvolvimento de sistema de coleta de dados e elaboração de relatório anual
 ### 4.1 Tamanho do Mercado
 
 **Municípios Brasileiros:**
+
 - Total: 5.570 municípios
 - Com capacidade de contratar consultoria: 2.000-3.000
 - Que já contrataram: 100-200
@@ -363,14 +391,14 @@ Desenvolvimento de sistema de coleta de dados e elaboração de relatório anual
 
 **Investimento Médio por Município:**
 
-| Tipo de Projeto | Investimento | Frequência |
-|-----------------|-------------|-----------|
-| **Diagnóstico ESG** | R$ 20.000 - R$ 50.000 | Uma vez |
-| **Planejamento de Agenda ESG** | R$ 50.000 - R$ 150.000 | Uma vez |
-| **Implementação de Projetos** | R$ 100.000 - R$ 500.000 | Contínuo |
-| **Relatório ESG Anual** | R$ 30.000 - R$ 80.000 | Anual |
-| **Treinamento de Equipes** | R$ 20.000 - R$ 50.000 | Anual |
-| **Consultoria Contínua** | R$ 5.000 - R$ 20.000/mês | Contínuo |
+| Tipo de Projeto                | Investimento             | Frequência |
+| ------------------------------ | ------------------------ | ---------- |
+| **Diagnóstico ESG**            | R$ 20.000 - R$ 50.000    | Uma vez    |
+| **Planejamento de Agenda ESG** | R$ 50.000 - R$ 150.000   | Uma vez    |
+| **Implementação de Projetos**  | R$ 100.000 - R$ 500.000  | Contínuo   |
+| **Relatório ESG Anual**        | R$ 30.000 - R$ 80.000    | Anual      |
+| **Treinamento de Equipes**     | R$ 20.000 - R$ 50.000    | Anual      |
+| **Consultoria Contínua**       | R$ 5.000 - R$ 20.000/mês | Contínuo   |
 
 **Mercado Total Potencial:**
 
@@ -392,6 +420,7 @@ Desenvolvimento de sistema de coleta de dados e elaboração de relatório anual
 Análise completa da situação atual do município em relação a critérios ESG.
 
 **Escopo:**
+
 - Análise de legislação municipal
 - Mapeamento de stakeholders
 - Avaliação de políticas públicas
@@ -412,6 +441,7 @@ Análise completa da situação atual do município em relação a critérios ES
 Desenvolvimento de plano estratégico de ESG alinhado com ODS.
 
 **Escopo:**
+
 - Definição de visão e missão
 - Alinhamento com ODS
 - Definição de metas e indicadores
@@ -432,6 +462,7 @@ Desenvolvimento de plano estratégico de ESG alinhado com ODS.
 Suporte na execução de projetos específicos (energia renovável, mobilidade, resíduos, etc.).
 
 **Escopo:**
+
 - Seleção de projetos prioritários
 - Estruturação técnica
 - Gestão de implementação
@@ -451,6 +482,7 @@ Suporte na execução de projetos específicos (energia renovável, mobilidade, 
 Elaboração de relatório anual de sustentabilidade e ODS.
 
 **Escopo:**
+
 - Coleta de dados
 - Análise de indicadores
 - Elaboração de relatório
@@ -470,6 +502,7 @@ Elaboração de relatório anual de sustentabilidade e ODS.
 Suporte mensal para implementação e monitoramento de agenda ESG.
 
 **Escopo:**
+
 - Acompanhamento de projetos
 - Suporte técnico
 - Atualização de legislação
@@ -536,6 +569,7 @@ Suporte mensal para implementação e monitoramento de agenda ESG.
 ### 5.1 Passo 1: Diagnóstico da Situação Atual
 
 **Atividades:**
+
 1. Revisar legislação municipal
 2. Mapear políticas públicas existentes
 3. Identificar alinhamento com ODS
@@ -550,6 +584,7 @@ Suporte mensal para implementação e monitoramento de agenda ESG.
 ### 5.2 Passo 2: Estruturação de Agenda ESG
 
 **Atividades:**
+
 1. Definir visão e missão ESG
 2. Selecionar ODS prioritários
 3. Definir metas e indicadores
@@ -564,6 +599,7 @@ Suporte mensal para implementação e monitoramento de agenda ESG.
 ### 5.3 Passo 3: Seleção de Projetos Prioritários
 
 **Critérios de Seleção:**
+
 1. Alinhamento com ODS
 2. Impacto potencial
 3. Viabilidade técnica e financeira
@@ -571,6 +607,7 @@ Suporte mensal para implementação e monitoramento de agenda ESG.
 5. Capacidade de financiamento
 
 **Projetos Típicos:**
+
 - Energia renovável (solar, eólica)
 - Mobilidade sustentável (ônibus elétricos, ciclovias)
 - Gestão de resíduos (coleta seletiva, reciclagem)
@@ -586,6 +623,7 @@ Suporte mensal para implementação e monitoramento de agenda ESG.
 ### 5.4 Passo 4: Estruturação Técnica de Projetos
 
 **Atividades por Projeto:**
+
 1. Análise de viabilidade técnica
 2. Estimativa de custos
 3. Identificação de financiamento
@@ -600,6 +638,7 @@ Suporte mensal para implementação e monitoramento de agenda ESG.
 ### 5.5 Passo 5: Implementação e Monitoramento
 
 **Atividades:**
+
 1. Gestão de licitações
 2. Acompanhamento de execução
 3. Monitoramento de indicadores
@@ -614,6 +653,7 @@ Suporte mensal para implementação e monitoramento de agenda ESG.
 ### 5.6 Passo 6: Relatório ESG Anual
 
 **Atividades:**
+
 1. Coleta de dados de indicadores
 2. Análise de progresso
 3. Elaboração de relatório
@@ -635,6 +675,7 @@ Suporte mensal para implementação e monitoramento de agenda ESG.
 Instalação de painéis solares em prédios públicos municipais.
 
 **Financiamento:**
+
 - FPM: 30-40%
 - BNDES/Caixa: 40-50%
 - Recursos próprios: 10-20%
@@ -642,12 +683,14 @@ Instalação de painéis solares em prédios públicos municipais.
 **Investimento Total:** R$ 5 - 20 milhões
 
 **Benefícios:**
+
 - Redução de 40-60% em consumo de energia
 - Economia de R$ 500 mil - R$ 2 milhões/ano
 - Redução de 500-2.000 toneladas de CO2/ano
 - Criação de 20-50 empregos
 
 **Consultoria Necessária:**
+
 - Análise de viabilidade técnica
 - Seleção de tecnologia
 - Estruturação de licitação
@@ -662,6 +705,7 @@ Instalação de painéis solares em prédios públicos municipais.
 Substituição de frota de ônibus por veículos elétricos.
 
 **Financiamento:**
+
 - FPM: 20-30%
 - BNDES/Caixa: 40-50%
 - Parcerias público-privadas: 20-40%
@@ -669,12 +713,14 @@ Substituição de frota de ônibus por veículos elétricos.
 **Investimento Total:** R$ 50 - 500 milhões (dependendo do tamanho da frota)
 
 **Benefícios:**
+
 - Redução de 40-50% em emissões de carbono
 - Melhoria da qualidade do ar
 - Economia de combustível
 - Criação de 100-500 empregos
 
 **Consultoria Necessária:**
+
 - Análise de ciclo de vida de veículos
 - Planejamento de infraestrutura de carregamento
 - Estruturação de licitação
@@ -689,6 +735,7 @@ Substituição de frota de ônibus por veículos elétricos.
 Implementação de sistema de coleta seletiva, reciclagem e compostagem.
 
 **Financiamento:**
+
 - FPM: 30-40%
 - Recursos próprios: 30-40%
 - Parcerias: 20-40%
@@ -696,12 +743,14 @@ Implementação de sistema de coleta seletiva, reciclagem e compostagem.
 **Investimento Total:** R$ 10 - 50 milhões
 
 **Benefícios:**
+
 - Redução de 30-50% em resíduos para aterros
 - Criação de 200-1.000 empregos
 - Economia de R$ 1 - 5 milhões/ano
 - Redução de 100-500 toneladas de CO2/ano
 
 **Consultoria Necessária:**
+
 - Diagnóstico de resíduos
 - Estruturação de sistema
 - Capacitação de equipes
@@ -716,6 +765,7 @@ Implementação de sistema de coleta seletiva, reciclagem e compostagem.
 Implementação de sistema de tratamento de água e saneamento.
 
 **Financiamento:**
+
 - FPM: 20-30%
 - PAC/BNDES: 40-50%
 - Recursos próprios: 20-30%
@@ -723,12 +773,14 @@ Implementação de sistema de tratamento de água e saneamento.
 **Investimento Total:** R$ 50 - 500 milhões
 
 **Benefícios:**
+
 - Acesso a água potável para 100% da população
 - Redução de doenças de veiculação hídrica
 - Proteção de recursos hídricos
 - Criação de 100-500 empregos
 
 **Consultoria Necessária:**
+
 - Diagnóstico de água e saneamento
 - Planejamento técnico
 - Estruturação de licitação
@@ -743,6 +795,7 @@ Implementação de sistema de tratamento de água e saneamento.
 Programas de educação ambiental e inclusão social em comunidades vulneráveis.
 
 **Financiamento:**
+
 - FPM: 40-50%
 - Recursos próprios: 30-40%
 - Parcerias: 10-30%
@@ -750,12 +803,14 @@ Programas de educação ambiental e inclusão social em comunidades vulneráveis
 **Investimento Total:** R$ 2 - 10 milhões
 
 **Benefícios:**
+
 - Capacitação de 1.000-5.000 pessoas
 - Criação de 50-200 empregos
 - Redução de vulnerabilidade social
 - Melhoria da qualidade de vida
 
 **Consultoria Necessária:**
+
 - Diagnóstico social
 - Estruturação de programas
 - Capacitação de educadores
@@ -770,13 +825,13 @@ Programas de educação ambiental e inclusão social em comunidades vulneráveis
 
 ### 7.1 Matriz de Oportunidades
 
-| Tipo de Consultoria | Preço | Demanda | Receita Potencial | Tempo para Implementação |
-|-------------------|-------|--------|------------------|------------------------|
-| **Diagnóstico ESG** | R$ 20-50k | 2.000-3.000 | R$ 40-150B | 2-4 semanas |
-| **Planejamento ESG** | R$ 50-150k | 1.500-2.000 | R$ 75-300B | 4-8 semanas |
-| **Projetos ESG** | R$ 100-500k | 1.000-2.000 | R$ 100-1.000B | 3-12 meses |
-| **Relatório ESG** | R$ 30-80k | 500-1.000 | R$ 15-80B | 4-6 semanas |
-| **Consultoria Contínua** | R$ 5-20k/mês | 200-500 | R$ 12-120B/ano | Contínuo |
+| Tipo de Consultoria      | Preço        | Demanda     | Receita Potencial | Tempo para Implementação |
+| ------------------------ | ------------ | ----------- | ----------------- | ------------------------ |
+| **Diagnóstico ESG**      | R$ 20-50k    | 2.000-3.000 | R$ 40-150B        | 2-4 semanas              |
+| **Planejamento ESG**     | R$ 50-150k   | 1.500-2.000 | R$ 75-300B        | 4-8 semanas              |
+| **Projetos ESG**         | R$ 100-500k  | 1.000-2.000 | R$ 100-1.000B     | 3-12 meses               |
+| **Relatório ESG**        | R$ 30-80k    | 500-1.000   | R$ 15-80B         | 4-6 semanas              |
+| **Consultoria Contínua** | R$ 5-20k/mês | 200-500     | R$ 12-120B/ano    | Contínuo                 |
 
 ### 7.2 Receita Potencial por Modelo
 
@@ -867,24 +922,28 @@ Programas de educação ambiental e inclusão social em comunidades vulneráveis
 ### 8.3 Próximos Passos
 
 **Imediato (Próximas 2 semanas):**
+
 1. Participar do workshop de Angela Pereira
 2. Entrevistar 10-20 gestores municipais
 3. Pesquisar 5 consultores concorrentes
 4. Validar demanda
 
 **Curto Prazo (Próximo mês):**
+
 1. Desenvolver metodologia de diagnóstico
 2. Criar templates e ferramentas
 3. Fazer 2-3 diagnósticos piloto
 4. Documentar resultados
 
 **Médio Prazo (Próximos 3 meses):**
+
 1. Atingir 10-20 clientes
 2. Gerar R$ 500.000 - R$ 1.000.000
 3. Documentar case studies
 4. Preparar para escala
 
 **Longo Prazo (Próximos 12 meses):**
+
 1. Atingir 50-100 clientes
 2. Gerar R$ 3.500.000 - R$ 7.000.000
 3. Expandir equipe
@@ -895,12 +954,14 @@ Programas de educação ambiental e inclusão social em comunidades vulneráveis
 ## APÊNDICE: FONTES E REFERÊNCIAS
 
 ### Legislação
+
 - Constituição Federal de 1988
 - Lei Complementar nº 62/1989 (FPM)
 - Lei nº 14.133/2021 (Nova Lei de Licitações)
 - Decreto nº 11.430/2023 (Regulamentação ESG)
 
 ### Organismos e Programas
+
 - Nações Unidas (ODS/Agenda 2030)
 - Tesouro Nacional (FPM)
 - Ministério do Meio Ambiente
@@ -909,12 +970,14 @@ Programas de educação ambiental e inclusão social em comunidades vulneráveis
 - UCLG
 
 ### Estudos e Relatórios
+
 - Relatório ESG Curitiba 2024
 - Relatório de Sustentabilidade Porto Alegre 2024
 - Agenda Climática Municipal Belo Horizonte
 - IDSC-BR (Índice de Desenvolvimento Sustentável das Cidades)
 
 ### Consultores e Especialistas
+
 - Angela Pereira (Lance Taber, Kickstand)
 - Madeline Furtado (Observatório Nova Lei de Licitações)
 - Especialistas em ESG municipal
