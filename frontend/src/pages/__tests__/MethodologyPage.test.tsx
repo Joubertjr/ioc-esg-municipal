@@ -38,6 +38,10 @@ const MOCK_METHODOLOGY: MethodologyReport = {
           explanation: "Percentual da população com renda baixa.",
           goodDirection: "down" as const,
           formula: "score = ((70 - pct) / 50) * 100",
+          formulaVariables: [
+            { symbol: "pct", meaning: "Percentual da população com renda baixa" },
+            { symbol: "70", meaning: "Pior cenário (score 0)" },
+          ],
           benchmarks: {
             min: "70% = score 0",
             max: "20% = score 100",
@@ -65,6 +69,9 @@ const MOCK_METHODOLOGY: MethodologyReport = {
           explanation: "Percentual da receita em saúde.",
           goodDirection: "up" as const,
           formula: "≥25% → 100",
+          formulaVariables: [
+            { symbol: "≥25%", meaning: "Se a despesa é 25% ou mais, score máximo" },
+          ],
           benchmarks: {
             min: "<10% = score 0",
             max: "≥25% = score 100",

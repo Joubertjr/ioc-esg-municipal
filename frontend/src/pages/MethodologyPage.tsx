@@ -92,6 +92,32 @@ function IndicatorCard({ indicator }: { indicator: IndicatorMethodology }) {
             <p className="text-foreground mt-0.5 font-mono text-[11px] bg-muted rounded px-2 py-1">
               {indicator.formula}
             </p>
+            {indicator.formulaVariables?.length > 0 && (
+              <div className="mt-2 border border-border/50 rounded overflow-hidden">
+                <table className="w-full text-[11px]">
+                  <thead>
+                    <tr className="bg-muted/70">
+                      <th className="text-left px-2 py-1 font-semibold text-muted-foreground">
+                        Variável
+                      </th>
+                      <th className="text-left px-2 py-1 font-semibold text-muted-foreground">
+                        Significado
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {indicator.formulaVariables.map((v, i) => (
+                      <tr key={v.symbol} className={i % 2 === 0 ? "bg-card" : "bg-muted/30"}>
+                        <td className="px-2 py-1 font-mono text-foreground whitespace-nowrap align-top">
+                          {v.symbol}
+                        </td>
+                        <td className="px-2 py-1 text-muted-foreground">{v.meaning}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
           </div>
           <div>
             <span className="font-medium text-muted-foreground">Benchmarks:</span>

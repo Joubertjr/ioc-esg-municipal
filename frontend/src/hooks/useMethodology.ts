@@ -1,6 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
 import { apiGet } from "../lib/api";
 
+export interface FormulaVariable {
+  symbol: string;
+  meaning: string;
+}
+
 export interface IndicatorMethodology {
   name: string;
   label: string;
@@ -10,6 +15,7 @@ export interface IndicatorMethodology {
   explanation: string;
   goodDirection: "up" | "down";
   formula: string;
+  formulaVariables: FormulaVariable[];
   benchmarks: { min: string; max: string; description: string };
 }
 
