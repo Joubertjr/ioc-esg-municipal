@@ -22,7 +22,7 @@ describe("FloatingBottomTabBar", () => {
   it("renders exactly 5 navigation links", () => {
     renderWithRouter();
     const links = screen.getAllByRole("link");
-    expect(links).toHaveLength(5);
+    expect(links).toHaveLength(6);
   });
 
   it("renders a link to /dashboard", () => {
@@ -48,6 +48,14 @@ describe("FloatingBottomTabBar", () => {
   it("renders a link to /benchmark", () => {
     renderWithRouter();
     expect(screen.getByRole("link", { name: /comparar/i })).toHaveAttribute("href", "/benchmark");
+  });
+
+  it("renders a link to /methodology", () => {
+    renderWithRouter();
+    expect(screen.getByRole("link", { name: /metodologia/i })).toHaveAttribute(
+      "href",
+      "/methodology",
+    );
   });
 
   it("marks the active tab with aria-current=page when on /dashboard", () => {

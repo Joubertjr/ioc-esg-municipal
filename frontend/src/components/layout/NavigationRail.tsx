@@ -1,5 +1,13 @@
 import { NavLink, useLocation } from "react-router-dom";
-import { LayoutDashboard, Calculator, FileText, BarChart3, Scale, LogOut } from "lucide-react";
+import {
+  LayoutDashboard,
+  Calculator,
+  FileText,
+  BarChart3,
+  Scale,
+  BookOpen,
+  LogOut,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface RailItem {
@@ -14,6 +22,7 @@ const RAIL_ITEMS: RailItem[] = [
   { to: "/reports", label: "Relatórios", icon: FileText },
   { to: "/monitoring", label: "Monitoramento", icon: BarChart3 },
   { to: "/benchmark", label: "Comparativo", icon: Scale },
+  { to: "/methodology", label: "Metodologia", icon: BookOpen },
 ];
 
 interface NavigationRailProps {

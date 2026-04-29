@@ -23,6 +23,9 @@ const MonitoringPage = lazy(() =>
 const BenchmarkPage = lazy(() =>
   import("./pages/BenchmarkPage").then((m) => ({ default: m.BenchmarkPage })),
 );
+const MethodologyPage = lazy(() =>
+  import("./pages/MethodologyPage").then((m) => ({ default: m.MethodologyPage })),
+);
 const OnboardingPage = lazy(() =>
   import("./pages/OnboardingPage").then((m) => ({ default: m.OnboardingPage })),
 );
@@ -112,6 +115,16 @@ export function App() {
                       <ProtectedRoute>
                         <PageTransition>
                           <BenchmarkPage />
+                        </PageTransition>
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/methodology"
+                    element={
+                      <ProtectedRoute>
+                        <PageTransition>
+                          <MethodologyPage />
                         </PageTransition>
                       </ProtectedRoute>
                     }

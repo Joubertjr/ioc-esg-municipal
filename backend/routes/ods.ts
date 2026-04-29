@@ -1,5 +1,6 @@
 import { Router, type Request, type Response, type Router as RouterType } from "express";
 import { calculateMunicipalOds } from "../services/ods/index.js";
+import { getMethodology } from "../services/ods/index.js";
 import {
   calculateAndPersistScores,
   getScoreHistory,
@@ -12,6 +13,25 @@ import { withCache } from "../utils/cache.js";
 import { prisma } from "../lib/prisma.js";
 
 const router: RouterType = Router();
+
+/**
+ * GET /api/ods/methodology
+ * Retorna a metodologia completa de cálculo dos 17 ODS:
+ * fórmulas, benchmarks, fontes de dados e método de agregação.
+ */
+router.get("/methodology", async (_req: Request, res: Response) => {
+  try {
+    const methodology = await withCache("ods:methodology", 86400, () =>
+      Promise.resolve(getMethodology()),
+    );
+    res.json(methodology);
+  } catch (error) {
+    logger.error("Error fetching ODS methodology", {
+      error: error instanceof Error ? error.message : String(error),
+    });
+    res.status(500).json({ error: "Erro interno ao buscar metodologia ODS" });
+  }
+});
 
 /**
  * GET /api/ods/:ibgeCode

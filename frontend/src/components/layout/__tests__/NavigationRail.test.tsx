@@ -24,7 +24,7 @@ describe("NavigationRail", () => {
     renderWithRouter();
     // Navigation links are inside the nav within the aside
     const links = screen.getAllByRole("link");
-    expect(links).toHaveLength(5);
+    expect(links).toHaveLength(6);
   });
 
   it("renders a link to /dashboard with title Painel ODS", () => {
@@ -53,6 +53,14 @@ describe("NavigationRail", () => {
   it("renders a link to /benchmark with title Comparativo", () => {
     renderWithRouter();
     expect(screen.getByRole("link", { name: "Comparativo" })).toHaveAttribute("href", "/benchmark");
+  });
+
+  it("renders a link to /methodology with title Metodologia", () => {
+    renderWithRouter();
+    expect(screen.getByRole("link", { name: "Metodologia" })).toHaveAttribute(
+      "href",
+      "/methodology",
+    );
   });
 
   it("marks the active route with aria-current=page when on /dashboard", () => {
