@@ -53,3 +53,8 @@ monitoring/slack_url
 
 # Backups locais (dumps pg_dump)
 backups/
+
+# Python bytecode (hooks .claude/, tools/)
+__pycache__/
+*.pyc
+*.pyo
