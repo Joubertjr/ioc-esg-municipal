@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "instagram-carousel": {
+      "command": "python",
+      "args": [
+        "/CAMINHO/ABSOLUTO/para/tools/instagram-carousel-mcp/instagram_carousel_mcp.py"
+      ],
+      "env": {}
+    }
+  }
+}
