@@ -95,8 +95,8 @@ Evals de integração usam `4205407` em `evals/agent-esg/tasks.json`.
 ## Próximos passos (pós-validação)
 
 1. **MVP produto** — dashboard executivo + simulador FPM (ODS 3/4/6), conforme roadmap do projeto
-2. **Camada agêntica** — relatório executivo / Q&A usando schemas Day 0 + `docs/mdo/hitl-queue.md`
-3. **Qualidade contínua** — `pnpm eval:agent` antes de release; `eval:agent:fast` no CI
+2. **Camada agêntica** — `GET /api/agent/reports/:ibgeCode/executive` (✅); Q&A com LLM + HITL (próximo)
+3. **Qualidade contínua** — `pnpm eval:agent` antes de release; `eval:agent:fast` no CI (✅)
 4. **Governança** — revisar `tool_scope.md` a cada nova ferramenta LLM ou integração writeback
 5. Day 0 MDO: ver `docs/mdo/DAY0-CHECKLIST.md` (**5/5** na camada agêntica)
 

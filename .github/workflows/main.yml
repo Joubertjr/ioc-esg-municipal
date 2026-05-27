@@ -62,6 +62,8 @@ jobs:
       - run: pnpm tsc --noEmit
       - run: pnpm lint
       - run: pnpm test:unit
+      - name: MDO agent evals (fast)
+        run: pnpm eval:agent:fast
       - name: Integration tests
         env:
           DATABASE_URL: postgresql://test:test@localhost:5432/ioc_esg_test

@@ -16,6 +16,7 @@ import benchmarksRouter from "./routes/benchmarks.js";
 import recommendationsRouter from "./routes/recommendations.js";
 import graphRouter from "./routes/graph.js";
 import ingestionRouter from "./routes/ingestion.js";
+import agentRouter from "./routes/agent.js";
 import {
   startIngestionScheduler,
   stopIngestionScheduler,
@@ -173,6 +174,7 @@ app.use("/api/benchmarks", authenticateToken, benchmarksRouter);
 app.use("/api/recommendations", authenticateToken, recommendationsRouter);
 app.use("/api/graph", authenticateToken, graphRouter);
 app.use("/api/ingestion", authenticateToken, ingestionRouter);
+app.use("/api/agent", authenticateToken, agentRouter);
 
 // ─── Frontend estático (SPA) ──────────────────────────────────────────────────
 // Serve frontend/dist quando compilado (Docker ou pnpm build + pnpm start).

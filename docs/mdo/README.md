@@ -13,6 +13,8 @@ Aplicação da [Metodologia MDO v0.1.5](https://github.com/Joubertjr/metodologia
 
 **Código Day 0:** `backend/services/agent/` · **Evals:** `evals/agent-esg/`
 
+**API (determinística, contrato MDO):** `GET /api/agent/reports/:ibgeCode/executive`
+
 ```bash
 pnpm eval:agent:fast   # 16 tasks domínio (sem rede, ~3s)
 pnpm eval:agent        # 30 tasks incl. integração Florianópolis (~15s+)
