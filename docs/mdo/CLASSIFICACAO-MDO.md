@@ -7,15 +7,16 @@
 
 ## Resumo executivo
 
-| Campo                | Valor                                                                                 |
-| -------------------- | ------------------------------------------------------------------------------------- |
-| **Arquétipo**        | **D — Solo Infra / Workflow** (variante **D regulado** GovTech BR)                    |
-| **Vertical**         | GovTech / ESG municipal — ODS, FPM, indicadores públicos brasileiros                  |
-| **Quem paga**        | Prefeitura / secretarias municipais (B2G)                                             |
-| **Como vende**       | SaaS B2G — licença por município / contrato institucional (não PLG consumer)          |
-| **Regulado**         | Sim — LGPD (dados municipais e de gestão), transparência pública, APIs governamentais |
-| **Stage Day 0**      | Stage 1 — `schema_contracts` + glossário + evals + tool-scope                         |
-| **Arquitetura alvo** | D027 — Typed Workflow + Evals First (não multi-agent runtime por padrão)              |
+| Campo                 | Valor                                                                                      |
+| --------------------- | ------------------------------------------------------------------------------------------ |
+| **Arquétipo**         | **D — Solo Infra / Workflow** (variante **D regulado** GovTech BR)                         |
+| **Vertical**          | GovTech / ESG municipal — ODS, FPM, indicadores públicos brasileiros                       |
+| **Quem paga**         | Prefeitura / secretarias municipais (B2G)                                                  |
+| **Como vende**        | SaaS B2G — licença por município / contrato institucional (não PLG consumer)               |
+| **Regulado**          | Sim — LGPD (dados municipais e de gestão), transparência pública, APIs governamentais      |
+| **Stage Day 0**       | Stage 1 — `schema_contracts` + glossário + evals + tool-scope                              |
+| **Arquitetura alvo**  | D027 — Typed Workflow + Evals First (não multi-agent runtime por padrão)                   |
+| **Validação mercado** | **✅ Produto/piloto validado** — PMF confirmado; MDO cobre camada agêntica, não descoberta |
 
 **Não é arquétipo B:** apesar do label “SaaS”, o cliente é instituição pública com ciclo de compra lento, não consumidor self-serve. P-002 (distribuição PLG) é secundário.
 
@@ -75,24 +76,28 @@
 
 ---
 
-## Piloto Day 0
+## Piloto e validação
 
 | Campo                     | Valor                                                                           |
 | ------------------------- | ------------------------------------------------------------------------------- |
-| **Município piloto**      | **Florianópolis/SC** (IBGE `4205407`)                                           |
-| **Justificativa**         | Capital, dados completos no seed, referência para expansão SC                   |
+| **Status PMF**            | **✅ Validado** — não há etapa de descoberta com gestor neste ciclo MDO         |
+| **Município referência**  | **Florianópolis/SC** (IBGE `4205407`) — base técnica para evals e demos         |
+| **Justificativa técnica** | Capital, dados completos no seed, referência para expansão SC                   |
 | **ODS prioritários**      | **3** (Saúde), **4** (Educação), **6** (Saneamento) — alinhado ao MVP 8 semanas |
-| **Contato institucional** | _A preencher_ (prefeito/secretário)                                             |
+| **Contato institucional** | _Opcional_ — registro interno apenas, se útil para contrato/edital              |
 
 Evals de integração usam `4205407` em `evals/agent-esg/tasks.json`.
 
+> **Nota:** A MDO assume “≥1 piloto com nome” para aplicar o pacote; aqui o critério está atendido por **validação de produto já realizada**, não por nova rodada de entrevistas.
+
 ---
 
-## Próximos passos
+## Próximos passos (pós-validação)
 
-1. Completar checklist em `docs/mdo/DAY0-CHECKLIST.md`
-2. Expandir `evals/agent-esg/tasks/` até ≥50 tasks
-3. Ligar `pnpm eval:agent` (script a criar) ao CI
-4. Revisar `docs/mdo/tool_scope.md` a cada nova integração ou ferramenta LLM
+1. **MVP produto** — dashboard executivo + simulador FPM (ODS 3/4/6), conforme roadmap do projeto
+2. **Camada agêntica** — relatório executivo / Q&A usando schemas Day 0 + `docs/mdo/hitl-queue.md`
+3. **Qualidade contínua** — `pnpm eval:agent` antes de release; `eval:agent:fast` no CI
+4. **Governança** — revisar `tool_scope.md` a cada nova ferramenta LLM ou integração writeback
+5. Day 0 MDO: ver `docs/mdo/DAY0-CHECKLIST.md` (**5/5** na camada agêntica)
 
 **Referência MDO (repo separado):** [metodologia-mdo](https://github.com/Joubertjr/metodologia-mdo)
