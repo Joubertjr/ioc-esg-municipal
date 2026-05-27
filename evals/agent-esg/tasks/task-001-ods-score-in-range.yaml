@@ -1,0 +1,22 @@
+id: task-001-ods-score-in-range
+versao: "1.0"
+categoria: caso_principal
+
+descricao: |
+  Para município com indicadores válidos, o score ODS retornado deve estar
+  sempre entre 0 e 100 inclusive.
+
+input:
+  municipalityId: "4205407" # Florianópolis — ajustar conforme seed
+  odsNumber: 3
+
+expected_output:
+  score_min: 0
+  score_max: 100
+
+pass_criteria: |
+  - score é número finito
+  - 0 <= score <= 100
+  - se dataAvailable false em todos indicadores, score pode ser null mas não inventado
+
+regressao: false

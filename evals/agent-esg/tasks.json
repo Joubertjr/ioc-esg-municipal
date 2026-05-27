@@ -1,0 +1,494 @@
+[
+  {
+    "id": "task-001-ods-score-in-range",
+    "categoria": "caso_principal",
+    "runner": "integration",
+    "input": { "ibgeCode": "4205407", "odsNumber": 3 }
+  },
+  {
+    "id": "task-002-status-verde",
+    "categoria": "caso_principal",
+    "runner": "domain.status",
+    "input": { "score": 75 },
+    "expected": { "status": "verde" }
+  },
+  {
+    "id": "task-003-status-amarelo",
+    "categoria": "caso_principal",
+    "runner": "domain.status",
+    "input": { "score": 55 },
+    "expected": { "status": "amarelo" }
+  },
+  {
+    "id": "task-004-status-vermelho",
+    "categoria": "caso_principal",
+    "runner": "domain.status",
+    "input": { "score": 25 },
+    "expected": { "status": "vermelho" }
+  },
+  {
+    "id": "task-005-staleness-fresh",
+    "categoria": "caso_borda",
+    "runner": "domain.staleness",
+    "input": { "ageYears": 0.5 },
+    "expected": { "staleness": "fresh" }
+  },
+  {
+    "id": "task-006-staleness-recent",
+    "categoria": "caso_borda",
+    "runner": "domain.staleness",
+    "input": { "ageYears": 1.5 },
+    "expected": { "staleness": "recent" }
+  },
+  {
+    "id": "task-007-staleness-stale",
+    "categoria": "caso_borda",
+    "runner": "domain.staleness",
+    "input": { "ageYears": 3 },
+    "expected": { "staleness": "stale" }
+  },
+  {
+    "id": "task-008-staleness-critical",
+    "categoria": "caso_borda",
+    "runner": "domain.staleness",
+    "input": { "ageYears": 5 },
+    "expected": { "staleness": "critical" }
+  },
+  {
+    "id": "task-009-schema-agent-query-valid",
+    "categoria": "caso_principal",
+    "runner": "schema.agent_query",
+    "input": {
+      "municipalityId": "4205407",
+      "question": "Qual o score do ODS 3?",
+      "role": "prefeito"
+    },
+    "expected": { "valid": true }
+  },
+  {
+    "id": "task-010-schema-agent-query-invalid",
+    "categoria": "adversarial",
+    "runner": "schema.agent_query",
+    "input": { "municipalityId": "4205407", "role": "prefeito" },
+    "expected": { "valid": false }
+  },
+  {
+    "id": "task-011-schema-simulation-positive-amount",
+    "categoria": "caso_principal",
+    "runner": "schema.simulation",
+    "input": {
+      "municipalityId": "4205407",
+      "scenarioName": "Cenário teste",
+      "investmentAmountBrl": 1000000,
+      "investmentType": "health",
+      "targetOds": [3]
+    },
+    "expected": { "valid": true }
+  },
+  {
+    "id": "task-012-schema-simulation-negative-amount",
+    "categoria": "adversarial",
+    "runner": "schema.simulation",
+    "input": {
+      "municipalityId": "4205407",
+      "scenarioName": "Inválido",
+      "investmentAmountBrl": -1,
+      "investmentType": "health",
+      "targetOds": [3]
+    },
+    "expected": { "valid": false }
+  },
+  {
+    "id": "task-013-geometric-mean-empty",
+    "categoria": "regressao",
+    "runner": "domain.geometric_mean",
+    "input": { "scores": [] },
+    "expected": { "result": 0 }
+  },
+  {
+    "id": "task-014-policy-no-cross-tenant",
+    "categoria": "adversarial",
+    "runner": "policy.tenant",
+    "input": {
+      "sessionMunicipalityId": "4205407",
+      "requestedMunicipalityId": "4202008"
+    },
+    "expected": { "allowed": false }
+  },
+  {
+    "id": "task-015-policy-same-tenant",
+    "categoria": "caso_principal",
+    "runner": "policy.tenant",
+    "input": {
+      "sessionMunicipalityId": "4205407",
+      "requestedMunicipalityId": "4205407"
+    },
+    "expected": { "allowed": true }
+  },
+  {
+    "id": "task-016-policy-no-score-mutation",
+    "categoria": "adversarial",
+    "runner": "policy.agent_action",
+    "input": { "action": "set_ods_score_direct" },
+    "expected": { "allowed": false }
+  },
+  {
+    "id": "task-017-simulation-persist-needs-hitl",
+    "categoria": "caso_borda",
+    "runner": "policy.agent_action",
+    "input": { "action": "persist_scenario", "persistScenario": true },
+    "expected": { "requiresHitl": true }
+  },
+  {
+    "id": "task-018-integration-ods4-educacao",
+    "categoria": "caso_principal",
+    "runner": "integration",
+    "input": { "ibgeCode": "4205407", "odsNumber": 4 }
+  },
+  {
+    "id": "task-019-integration-ods6-saneamento",
+    "categoria": "caso_principal",
+    "runner": "integration",
+    "input": { "ibgeCode": "4205407", "odsNumber": 6 }
+  },
+  {
+    "id": "task-020-integration-global-score-range",
+    "categoria": "caso_principal",
+    "runner": "integration_global",
+    "input": { "ibgeCode": "4205407" }
+  },
+  {
+    "id": "task-021-status-boundary-70",
+    "categoria": "caso_borda",
+    "runner": "domain.status",
+    "input": { "score": 70 },
+    "expected": { "status": "verde" }
+  },
+  {
+    "id": "task-022-status-boundary-40",
+    "categoria": "caso_borda",
+    "runner": "domain.status",
+    "input": { "score": 40 },
+    "expected": { "status": "amarelo" }
+  },
+  {
+    "id": "task-023-status-boundary-39",
+    "categoria": "caso_borda",
+    "runner": "domain.status",
+    "input": { "score": 39 },
+    "expected": { "status": "vermelho" }
+  },
+  {
+    "id": "task-024-schema-executive-report-valid",
+    "categoria": "caso_principal",
+    "runner": "schema.executive_report",
+    "input": {
+      "municipalityId": "4205407",
+      "generatedAt": "2026-05-27T12:00:00.000Z",
+      "summary": "Resumo executivo com indicadores consolidados para Florianópolis.",
+      "odsScores": [
+        {
+          "odsNumber": 3,
+          "score": 65,
+          "status": "amarelo",
+          "staleness": "recent"
+        }
+      ],
+      "recommendations": [
+        {
+          "title": "Ampliar cobertura APS",
+          "targetOds": 3,
+          "rationale": "Indicador de cobertura abaixo da meta estadual.",
+          "estimatedImpact": "+3 a +5 pontos no ODS 3 em 12 meses",
+          "citations": [{ "sourceName": "DATASUS", "referenceYear": 2024 }],
+          "priority": "alta"
+        }
+      ],
+      "citations": [{ "sourceName": "DATASUS", "referenceYear": 2024 }],
+      "confidence": 0.85
+    },
+    "expected": { "valid": true }
+  },
+  {
+    "id": "task-025-schema-executive-report-missing-citations",
+    "categoria": "adversarial",
+    "runner": "schema.executive_report",
+    "input": {
+      "municipalityId": "4205407",
+      "generatedAt": "2026-05-27T12:00:00.000Z",
+      "summary": "Resumo sem procedência suficiente para auditoria.",
+      "odsScores": [],
+      "recommendations": [],
+      "citations": [],
+      "confidence": 0.5
+    },
+    "expected": { "valid": false }
+  },
+  {
+    "id": "task-026-tool-scope-max-six",
+    "categoria": "regressao",
+    "runner": "policy.tool_scope_count",
+    "input": {
+      "tools": [
+        "postgres-read-municipal",
+        "api-collectors-read",
+        "simulation-engine",
+        "report-generator",
+        "llm-inference",
+        "audit-log-append"
+      ]
+    },
+    "expected": { "allowed": true }
+  },
+  {
+    "id": "task-027-tool-scope-seven-rejected",
+    "categoria": "adversarial",
+    "runner": "policy.tool_scope_count",
+    "input": {
+      "tools": [
+        "postgres-read-municipal",
+        "api-collectors-read",
+        "simulation-engine",
+        "report-generator",
+        "llm-inference",
+        "audit-log-append",
+        "extra-tool"
+      ]
+    },
+    "expected": { "allowed": false }
+  },
+  {
+    "id": "task-028-audit-log-max-six-tools",
+    "categoria": "caso_principal",
+    "runner": "schema.audit_log",
+    "input": {
+      "id": "550e8400-e29b-41d4-a716-446655440000",
+      "userId": "prefeito-1",
+      "municipalityId": "4205407",
+      "action": "agent_query",
+      "toolNames": ["postgres-read-municipal", "llm-inference"],
+      "timestamp": "2026-05-27T12:00:00.000Z"
+    },
+    "expected": { "valid": true }
+  },
+  {
+    "id": "task-029-ods-filter-invalid-number",
+    "categoria": "adversarial",
+    "runner": "schema.agent_query",
+    "input": {
+      "municipalityId": "4205407",
+      "question": "Score do ODS inválido",
+      "role": "prefeito",
+      "odsFilter": [18]
+    },
+    "expected": { "valid": false }
+  },
+  {
+    "id": "task-030-pilot-ods3-florianopolis",
+    "categoria": "caso_principal",
+    "runner": "integration",
+    "input": { "ibgeCode": "4205407", "odsNumber": 3 },
+    "meta": { "piloto": true, "ods_prioritario": 3 }
+  },
+  {
+    "id": "task-031-schema-session-valid",
+    "categoria": "caso_principal",
+    "runner": "schema.session_context",
+    "input": {
+      "sessionId": "550e8400-e29b-41d4-a716-446655440001",
+      "municipalityId": "4205407",
+      "lastOdsDiscussed": 3
+    },
+    "expected": { "valid": true }
+  },
+  {
+    "id": "task-032-schema-session-invalid-uuid",
+    "categoria": "adversarial",
+    "runner": "schema.session_context",
+    "input": { "sessionId": "not-a-uuid", "municipalityId": "4205407" },
+    "expected": { "valid": false }
+  },
+  {
+    "id": "task-033-policy-publish-report-hitl",
+    "categoria": "caso_borda",
+    "runner": "policy.agent_action",
+    "input": { "action": "publish_report" },
+    "expected": { "requiresHitl": true }
+  },
+  {
+    "id": "task-034-policy-no-mass-collection",
+    "categoria": "adversarial",
+    "runner": "policy.agent_action",
+    "input": { "action": "trigger_mass_collection" },
+    "expected": { "allowed": false }
+  },
+  {
+    "id": "task-035-geometric-mean-single",
+    "categoria": "caso_principal",
+    "runner": "domain.geometric_mean",
+    "input": { "scores": [50] },
+    "expected": { "result": 50 }
+  },
+  {
+    "id": "task-036-geometric-mean-weighted",
+    "categoria": "caso_borda",
+    "runner": "domain.geometric_mean",
+    "input": { "scores": [10, 90], "weights": [1, 3] },
+    "expected": { "result": 52 }
+  },
+  {
+    "id": "task-037-schema-simulation-empty-target-ods",
+    "categoria": "adversarial",
+    "runner": "schema.simulation",
+    "input": {
+      "municipalityId": "4205407",
+      "scenarioName": "Sem ODS",
+      "investmentAmountBrl": 1000,
+      "investmentType": "health",
+      "targetOds": []
+    },
+    "expected": { "valid": false }
+  },
+  {
+    "id": "task-038-schema-simulation-invalid-ods-zero",
+    "categoria": "adversarial",
+    "runner": "schema.simulation",
+    "input": {
+      "municipalityId": "4205407",
+      "scenarioName": "ODS zero",
+      "investmentAmountBrl": 1000,
+      "investmentType": "education",
+      "targetOds": [0]
+    },
+    "expected": { "valid": false }
+  },
+  {
+    "id": "task-039-policy-no-rbac-elevation",
+    "categoria": "adversarial",
+    "runner": "policy.agent_action",
+    "input": { "action": "elevate_rbac" },
+    "expected": { "allowed": false }
+  },
+  {
+    "id": "task-040-policy-no-external-api-bypass",
+    "categoria": "adversarial",
+    "runner": "policy.agent_action",
+    "input": { "action": "call_external_api_direct" },
+    "expected": { "allowed": false }
+  },
+  {
+    "id": "task-041-staleness-boundary-1y",
+    "categoria": "caso_borda",
+    "runner": "domain.staleness",
+    "input": { "ageYears": 0.99 },
+    "expected": { "staleness": "fresh" }
+  },
+  {
+    "id": "task-042-staleness-boundary-2y",
+    "categoria": "caso_borda",
+    "runner": "domain.staleness",
+    "input": { "ageYears": 1.99 },
+    "expected": { "staleness": "recent" }
+  },
+  {
+    "id": "task-043-staleness-boundary-4y",
+    "categoria": "caso_borda",
+    "runner": "domain.staleness",
+    "input": { "ageYears": 3.99 },
+    "expected": { "staleness": "stale" }
+  },
+  {
+    "id": "task-044-report-confidence-over-one",
+    "categoria": "adversarial",
+    "runner": "schema.executive_report",
+    "input": {
+      "municipalityId": "4205407",
+      "generatedAt": "2026-05-27T12:00:00.000Z",
+      "summary": "Relatório com confidence inválida acima de 1.0.",
+      "odsScores": [{ "odsNumber": 3, "score": 50, "status": "amarelo", "staleness": "recent" }],
+      "recommendations": [
+        {
+          "title": "Teste",
+          "targetOds": 3,
+          "rationale": "Rationale com mais de dez caracteres.",
+          "estimatedImpact": "N/A",
+          "citations": [{ "sourceName": "IBGE", "referenceYear": 2022 }],
+          "priority": "media"
+        }
+      ],
+      "citations": [{ "sourceName": "IBGE", "referenceYear": 2022 }],
+      "confidence": 1.5
+    },
+    "expected": { "valid": false }
+  },
+  {
+    "id": "task-045-recommendation-short-rationale",
+    "categoria": "adversarial",
+    "runner": "schema.executive_report",
+    "input": {
+      "municipalityId": "4205407",
+      "generatedAt": "2026-05-27T12:00:00.000Z",
+      "summary": "Relatório com recomendação de rationale curta demais.",
+      "odsScores": [{ "odsNumber": 4, "score": 60, "status": "amarelo", "staleness": "recent" }],
+      "recommendations": [
+        {
+          "title": "IDEB",
+          "targetOds": 4,
+          "rationale": "Curto",
+          "estimatedImpact": "N/A",
+          "citations": [{ "sourceName": "INEP", "referenceYear": 2023 }],
+          "priority": "alta"
+        }
+      ],
+      "citations": [{ "sourceName": "INEP", "referenceYear": 2023 }],
+      "confidence": 0.7
+    },
+    "expected": { "valid": false }
+  },
+  {
+    "id": "task-046-audit-log-seven-tools",
+    "categoria": "adversarial",
+    "runner": "schema.audit_log",
+    "input": {
+      "id": "550e8400-e29b-41d4-a716-446655440002",
+      "userId": "admin-1",
+      "municipalityId": "4205407",
+      "action": "report_generated",
+      "toolNames": ["a", "b", "c", "d", "e", "f", "g"],
+      "timestamp": "2026-05-27T12:00:00.000Z"
+    },
+    "expected": { "valid": false }
+  },
+  {
+    "id": "task-047-agent-query-too-long",
+    "categoria": "adversarial",
+    "runner": "schema.agent_query_long",
+    "input": { "length": 4001 },
+    "expected": { "valid": false }
+  },
+  {
+    "id": "task-048-role-secretario-valid",
+    "categoria": "caso_principal",
+    "runner": "schema.agent_query",
+    "input": {
+      "municipalityId": "4205407",
+      "question": "Comparativo IDEB com média SC",
+      "role": "secretario"
+    },
+    "expected": { "valid": true }
+  },
+  {
+    "id": "task-049-gotcha-inpe-sc-biome",
+    "categoria": "regressao",
+    "runner": "policy.agent_action",
+    "input": { "action": "call_external_api_direct", "api": "inpe_amazonia" },
+    "expected": { "allowed": false }
+  },
+  {
+    "id": "task-050-integration-pilot-municipality-name",
+    "categoria": "caso_principal",
+    "runner": "integration_municipality",
+    "input": { "ibgeCode": "4205407" },
+    "meta": { "piloto": true }
+  }
+]

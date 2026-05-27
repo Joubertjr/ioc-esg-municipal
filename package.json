@@ -19,6 +19,8 @@
     "test:coverage": "vitest run --coverage",
     "test:watch": "vitest tests/",
     "eval:memory": "tsx scripts/run-longmemeval.ts",
+    "eval:agent": "tsx evals/agent-esg/run.ts",
+    "eval:agent:fast": "tsx evals/agent-esg/run.ts -- --skip-integration",
     "lint": "eslint . --ext .ts,.tsx",
     "lint:fix": "eslint . --ext .ts,.tsx --fix",
     "format": "prettier --write \"**/*.{ts,tsx,json,md}\"",

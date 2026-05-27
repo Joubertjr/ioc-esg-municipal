@@ -7,6 +7,7 @@ import {
   type SourceFreshness,
 } from "../../../shared/types/domain/ods.js";
 import type { MunicipalOdsReport, OdsSummary } from "../ods/ods_score_service.js";
+import { logger } from "../../utils/logger.js";
 
 /**
  * Lê MunicipalOdsReport diretamente do PostgreSQL (OdsIndicator + OdsScore).
@@ -14,6 +15,21 @@ import type { MunicipalOdsReport, OdsSummary } from "../ods/ods_score_service.js
  * O formato é type-compatible com o report gerado em tempo real.
  */
 export async function readOdsReportFromDatabase(
+  ibgeCode: string,
+): Promise<MunicipalOdsReport | null> {
+  try {
+    return await readOdsReportFromDatabaseInternal(ibgeCode);
+  } catch (err) {
+    logger.warn(
+      `[ods-reader] database unavailable for ${ibgeCode}, falling back to realtime: ${
+        err instanceof Error ? err.message : String(err)
+      }`,
+    );
+    return null;
+  }
+}
+
+async function readOdsReportFromDatabaseInternal(
   ibgeCode: string,
 ): Promise<MunicipalOdsReport | null> {
   const municipality = await prisma.municipality.findUnique({
