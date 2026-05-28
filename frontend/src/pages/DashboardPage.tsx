@@ -13,6 +13,7 @@ import { RecommendationPanel } from "../components/recommendations/Recommendatio
 import { ExecutiveReportPanel } from "../components/dashboard/ExecutiveReportPanel";
 import { AgentQueryPanel } from "../components/dashboard/AgentQueryPanel";
 import { HitlNoticePanel } from "../components/dashboard/HitlNoticePanel";
+import { HitlQueuePanel } from "../components/dashboard/HitlQueuePanel";
 import { useToast } from "../components/ui/Toast";
 import { useAuthContext } from "../contexts/AuthContext";
 import type { OdsSummary } from "../types/api";
@@ -106,6 +107,7 @@ export function DashboardPage() {
 
         {/* ── Row 3: Camada agêntica MDO ── */}
         <section className="space-y-4">
+          <HitlQueuePanel />
           <HitlNoticePanel />
           <ExecutiveReportPanel ibgeCode={ibgeCode} />
           <AgentQueryPanel ibgeCode={ibgeCode} />

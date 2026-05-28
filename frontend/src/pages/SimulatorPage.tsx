@@ -228,6 +228,7 @@ export function SimulatorPage() {
   const [isFocused, setIsFocused] = useState(false);
   const [allocation, setAllocation] = useState<InvestmentAllocation>(buildDefaultAllocation);
   const [result, setResult] = useState<SimulationResult | null>(null);
+  const [persistScenario, setPersistScenario] = useState(false);
   const [showScenarioBanner, setShowScenarioBanner] = useState(false);
   const { showToast } = useToast();
 
@@ -270,7 +271,8 @@ export function SimulatorPage() {
     Error
   >({
     queryKey: ["municipalities"],
-    queryFn: () => apiGet<{ data: MunicipalityListItem[]; total: number }>("/api/municipalities?pageSize=300"),
+    queryFn: () =>
+      apiGet<{ data: MunicipalityListItem[]; total: number }>("/api/municipalities?pageSize=300"),
     staleTime: 60 * 60 * 1000,
   });
 
@@ -315,9 +317,14 @@ export function SimulatorPage() {
     (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
       if (allocationSum !== 100) return;
-      simulateMutation.mutate({ ibgeCode, totalAmount, allocation });
+      simulateMutation.mutate({
+        ibgeCode,
+        totalAmount,
+        allocation,
+        ...(persistScenario ? { persistScenario: true } : {}),
+      });
     },
-    [ibgeCode, totalAmount, allocation, allocationSum, simulateMutation],
+    [ibgeCode, totalAmount, allocation, allocationSum, persistScenario, simulateMutation],
   );
 
   const municipalities = municipalitiesData?.data ?? [];
@@ -501,6 +508,21 @@ export function SimulatorPage() {
             </div>
           </div>
 
+          <label className="flex items-start gap-3 p-4 rounded-lg border border-warning/30 bg-warning/5 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={persistScenario}
+              onChange={(e) => setPersistScenario(e.target.checked)}
+              className="mt-1 accent-primary"
+            />
+            <span className="text-sm text-foreground">
+              <span className="font-medium">Solicitar persistência do cenário (HITL)</span>
+              <span className="block text-muted-foreground mt-0.5">
+                Envia para aprovação do prefeito/admin antes de gravar no histórico.
+              </span>
+            </span>
+          </label>
+
           <button
             type="submit"
             disabled={simulateMutation.isPending || allocationSum !== 100 || totalAmount <= 0}
@@ -538,6 +560,12 @@ export function SimulatorPage() {
         {/* Resultados ou placeholder */}
         {result ? (
           <div className="space-y-6">
+            {result.hitlRequestId && (
+              <div className="p-4 rounded-lg border border-primary/30 bg-primary/5 text-sm text-foreground">
+                Cenário enviado para aprovação HITL (ID: {result.hitlRequestId.slice(0, 8)}…).
+                Acompanhe no dashboard.
+              </div>
+            )}
             <div className="bg-card rounded-xl shadow-card p-6">
               <h2 className="text-base font-semibold text-foreground mb-1 text-center">
                 Projeção de Impacto nos ODS — {result.municipalityName ?? result.ibgeCode}

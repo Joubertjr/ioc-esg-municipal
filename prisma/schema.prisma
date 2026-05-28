@@ -98,18 +98,60 @@ model Simulation {
 }
 
 model User {
-  id             String         @id @default(cuid())
-  email          String         @unique
-  passwordHash   String
+  id                    String         @id @default(cuid())
+  email                 String         @unique
+  passwordHash          String
   /// admin|prefeito|secretario|viewer
-  role           String
-  municipalityId String?
-  createdAt      DateTime       @default(now())
-  updatedAt      DateTime       @updatedAt
-  name           String         @default("")
-  refreshTokens  RefreshToken[]
+  role                  String
+  municipalityId        String?
+  createdAt             DateTime       @default(now())
+  updatedAt             DateTime       @updatedAt
+  name                  String         @default("")
+  refreshTokens         RefreshToken[]
+  hitlRequestsCreated   HitlRequest[]  @relation("HitlRequestedBy")
+  hitlRequestsReviewed  HitlRequest[]  @relation("HitlReviewedBy")
+  agentAuditLogs        AgentAuditLog[]
 
   @@index([municipalityId])
+}
+
+/// Fila HITL — ações sensíveis (G-HITL-IOC-01/02)
+model HitlRequest {
+  id               String    @id @default(cuid())
+  /// persist_scenario|publish_report
+  action           String
+  /// pending|approved|rejected
+  status           String    @default("pending")
+  municipalityId   String
+  requestedById    String
+  reviewedById     String?
+  payload          Json
+  reviewNote       String?
+  createdAt        DateTime  @default(now())
+  reviewedAt       DateTime?
+  requestedBy      User      @relation("HitlRequestedBy", fields: [requestedById], references: [id])
+  reviewedBy       User?     @relation("HitlReviewedBy", fields: [reviewedById], references: [id])
+
+  @@index([status, createdAt])
+  @@index([municipalityId, status])
+}
+
+/// Trilha de auditoria append-only da camada agêntica (P-006 / AP-10)
+model AgentAuditLog {
+  id             String   @id @default(uuid())
+  userId         String
+  municipalityId String
+  /// agent_query|report_generated|simulation_run|hitl_approved|hitl_rejected
+  action         String
+  toolNames      String[]
+  promptHash     String?
+  metadata       Json?
+  createdAt      DateTime @default(now())
+  user           User     @relation(fields: [userId], references: [id])
+
+  @@index([municipalityId, createdAt])
+  @@index([userId, createdAt])
+  @@index([action, createdAt])
 }
 
 model RefreshToken {

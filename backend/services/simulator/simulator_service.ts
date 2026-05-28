@@ -61,6 +61,15 @@ export interface SimulationResult {
   globalDelta: number | null;
   ods: OdsSimulationResult[];
   warnings: SimulationWarning[];
+  /** Preenchido quando persistScenario=true — aguarda HITL */
+  hitlRequestId?: string;
+}
+
+export interface RunSimulationOptions {
+  /** G-HITL-IOC-01: cria pedido na fila em vez de gravar direto */
+  persistScenario?: boolean;
+  requestedByUserId?: string;
+  municipalityDbId?: string;
 }
 
 // ─── Tipo interno de alocação (mantém a lógica de mapeamento existente) ────────
@@ -196,7 +205,20 @@ function projectOdsScore(
  * Quando nenhum dado ODS está disponível para o município, retorna resultado degenerado
  * com scores nulos e deltas nulos (nunca retorna null).
  */
-export async function runSimulation(input: SimulationInput): Promise<SimulationResult> {
+function internalAllocationsFromResult(result: SimulationResult): InternalAllocation[] {
+  return (Object.entries(result.allocation) as [InvestmentArea, number][])
+    .filter(([, pct]) => pct > 0)
+    .map(([area, pct]) => ({
+      area,
+      amount: (result.totalAmount * pct) / 100,
+      targetOds: [],
+    }));
+}
+
+export async function runSimulation(
+  input: SimulationInput,
+  options?: RunSimulationOptions,
+): Promise<SimulationResult> {
   const { ibgeCode, totalAmount, allocation } = input;
 
   // Validar que alocações somam ~100%
@@ -307,10 +329,23 @@ export async function runSimulation(input: SimulationInput): Promise<SimulationR
     warnings,
   };
 
-  // Persistência fire-and-forget — não bloqueia a resposta ao cliente
-  void persistSimulation(simulationResult, internalAllocations);
+  if (options?.persistScenario && options.requestedByUserId && options.municipalityDbId) {
+    const { createHitlRequest } = await import("../agent/hitl_queue_service.js");
+    const hitl = await createHitlRequest({
+      action: "persist_scenario",
+      municipalityId: options.municipalityDbId,
+      requestedById: options.requestedByUserId,
+      payload: { simulationResult },
+    });
+    simulationResult.hitlRequestId = hitl.id;
+  }
 
   return simulationResult;
+}
+
+/** Grava simulação após aprovação HITL (G-HITL-IOC-01). */
+export async function persistSimulationResult(result: SimulationResult): Promise<void> {
+  await persistSimulation(result, internalAllocationsFromResult(result));
 }
 
 /**

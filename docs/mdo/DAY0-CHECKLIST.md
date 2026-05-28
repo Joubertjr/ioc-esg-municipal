@@ -19,9 +19,12 @@ Arquétipo **D regulado** · Meta ≤2 semanas full-time
 [x] Q&A determinístico POST /api/agent/query + AgentQueryPanel
 [x] HITL check API + HitlNoticePanel
 [x] Plano mestre → PLANO-ENTREGA-COMPLETO.md
-[ ] RoPA / DPIA formal
-[ ] LLM em /query com fallback determinístico
-[ ] Fila HITL com persistência e aprovação na UI
+[x] RoPA / DPIA — templates em docs/compliance/
+[x] LLM em /query com fallback determinístico (AGENT_LLM_QA_ENABLED)
+[x] Fila HITL com persistência e aprovação na UI
+[x] Audit trail AgentAuditLog
+[x] Simulador persistScenario → fila HITL
+[ ] RoPA / DPIA assinados pelo DPO
 ```
 
 **5/5 cumpridos** = aderente à Tese Revisada Day 0 para a camada agêntica do produto.

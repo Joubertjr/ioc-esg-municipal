@@ -10,15 +10,16 @@
 
 ## 1. Visão do que foi entregue
 
-| Fase              | Entrega                                                              | Status             |
-| ----------------- | -------------------------------------------------------------------- | ------------------ |
-| Day 0 MDO         | Glossário, tool-scope, HITL doc, 7 schemas Zod, LLM client, 50 evals | ✅                 |
-| API agêntica      | `GET …/executive`, `POST /query`, `POST /hitl/check`                 | ✅                 |
-| Qualidade         | `pnpm eval:agent` (50/50), `eval:agent:fast` no CI                   | ✅                 |
-| Frontend          | Dashboard: executivo + Q&A + HITL; Reports: executivo no topo        | ✅                 |
-| Produto base      | Coletores, simulador FPM, relatório legado, 641+ testes              | ✅ (pré-existente) |
-| Compliance formal | RoPA / DPIA assinados                                                | 🔜 backlog         |
-| LLM em produção   | Respostas via `llm_client` com guardrails                            | 🔜 fase 2          |
+| Fase             | Entrega                                                              | Status             |
+| ---------------- | -------------------------------------------------------------------- | ------------------ |
+| Day 0 MDO        | Glossário, tool-scope, HITL doc, 7 schemas Zod, LLM client, 50 evals | ✅                 |
+| API agêntica     | `GET …/executive`, `POST /query`, `POST /hitl/check`                 | ✅                 |
+| Qualidade        | `pnpm eval:agent` (50/50), `eval:agent:fast` no CI                   | ✅                 |
+| Frontend         | Dashboard: executivo + Q&A + HITL; Reports: executivo no topo        | ✅                 |
+| Produto base     | Coletores, simulador FPM, relatório legado, 641+ testes              | ✅ (pré-existente) |
+| Compliance       | Templates RoPA/DPIA (`docs/compliance/`)                             | ✅ template        |
+| LLM em produção  | `AGENT_LLM_QA_ENABLED` + fallback determinístico                     | ✅                 |
+| HITL + auditoria | `HitlRequest`, `AgentAuditLog`, fila UI, `persistScenario`           | ✅ fase 2          |
 
 ---
 
@@ -29,19 +30,23 @@
 | GET    | `/api/agent/reports/:ibgeCode/executive` | Relatório executivo (`ExecutiveReportSchema`)   |
 | POST   | `/api/agent/query`                       | Q&A determinístico (`AgentQueryResponseSchema`) |
 | POST   | `/api/agent/hitl/check`                  | Verifica se ação exige HITL                     |
+| GET    | `/api/agent/hitl/pending`                | Fila pendente (admin/prefeito)                  |
+| POST   | `/api/agent/hitl/:id/approve`            | Aprova e executa ação                           |
+| POST   | `/api/agent/hitl/:id/reject`             | Rejeita pedido                                  |
 
 **Autenticação:** JWT + escopo municipal (`requireMunicipalityScope`).  
-**Q&A:** sem LLM na resposta (P-011); parse de “ODS N” e score global.  
-**HITL:** `persist_scenario` e `publish_report` → aprovação admin/prefeito.
+**Q&A:** determinístico por padrão; LLM opcional com fallback (P-011).  
+**HITL:** `persist_scenario` no simulador → fila antes de gravar no Prisma.
 
 ---
 
 ## 3. Frontend
 
-| Tela         | Componentes MDO                                              |
-| ------------ | ------------------------------------------------------------ |
-| `/dashboard` | `ExecutiveReportPanel`, `AgentQueryPanel`, `HitlNoticePanel` |
-| `/reports`   | `ExecutiveReportPanel` (resumo MDO + detalhe 17 ODS legado)  |
+| Tela         | Componentes MDO                                             |
+| ------------ | ----------------------------------------------------------- |
+| `/dashboard` | Executivo, Q&A, `HitlQueuePanel`, aviso HITL                |
+| `/simulator` | Checkbox `persistScenario` → fila HITL                      |
+| `/reports`   | `ExecutiveReportPanel` (resumo MDO + detalhe 17 ODS legado) |
 
 ---
 
@@ -77,14 +82,13 @@ pnpm dev
 
 ---
 
-## 6. Backlog pós-entrega (fase 2)
+## 6. Backlog pós-entrega (fase 3)
 
-1. **RoPA / DPIA** — documentos LGPD assinados pelo DPO municipal.
-2. **LLM** — conectar `llm_client.ts` ao `/query` com fallback determinístico.
-3. **HITL UI** — fila de aprovação com persistência (hoje só aviso + API check).
-4. **Simulador** — flag `persistScenario` com gate HITL antes de gravar no Prisma.
-5. **Auditoria** — persistir `AuditLogEntry` em tabela append-only.
-6. **Evidências visuais** — screenshots reais do dashboard (substituir placeholders em `docs/evidence/`).
+1. **RoPA / DPIA assinados** — preencher templates em `docs/compliance/` com DPO.
+2. **Migrar DB** — `pnpm prisma migrate deploy` (migration `20260528120000_hitl_audit`).
+3. **Variáveis** — `AGENT_LLM_QA_ENABLED=true` + `ANTHROPIC_API_KEY` para Q&A com LLM.
+4. **Evidências visuais** — screenshots reais (substituir placeholders).
+5. **Publicação de relatório** — fluxo HITL `publish_report` com carimbo PDF.
 
 ---
 

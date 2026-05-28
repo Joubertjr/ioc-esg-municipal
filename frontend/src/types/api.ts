@@ -73,6 +73,8 @@ export interface SimulationRequest {
   ibgeCode: string;
   totalAmount: number;
   allocation: InvestmentAllocation;
+  /** G-HITL-IOC-01: envia para fila de aprovação em vez de gravar direto */
+  persistScenario?: boolean;
 }
 
 export interface OdsSimulationResult {
@@ -96,6 +98,7 @@ export interface SimulationResult {
   projectedGlobalScore: number | null;
   globalDelta: number | null;
   ods: OdsSimulationResult[];
+  hitlRequestId?: string;
 }
 
 // ---- Municipalities ----
@@ -298,7 +301,25 @@ export interface AgentQueryResponse {
   citations: SourceCitation[];
   confidence: number;
   answeredAt: string;
-  mode: "deterministic";
+  mode: "deterministic" | "llm";
+}
+
+export interface HitlRequestItem {
+  id: string;
+  action: HitlAction;
+  status: "pending" | "approved" | "rejected";
+  municipalityId: string;
+  requestedById: string;
+  reviewedById: string | null;
+  payload: unknown;
+  reviewNote: string | null;
+  createdAt: string;
+  reviewedAt: string | null;
+}
+
+export interface HitlPendingResponse {
+  items: HitlRequestItem[];
+  count: number;
 }
 
 export type HitlAction = "publish_report" | "persist_scenario" | "set_ods_score_direct";

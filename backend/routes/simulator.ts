@@ -1,6 +1,8 @@
 import { Router, type Request, type Response, type Router as RouterType } from "express";
 import { z, type ZodIssue } from "zod";
 import { runSimulation, type SimulationInput } from "../services/simulator/simulator_service.js";
+import { resolveMunicipalityDbId } from "../services/agent/hitl_queue_service.js";
+import { appendAgentAudit } from "../services/agent/audit_service.js";
 import { batchLimiter } from "../middleware/rate-limit.js";
 import { logger } from "../utils/logger.js";
 import { requireRole } from "../middleware/auth.js";
@@ -47,6 +49,10 @@ const SimulationInputSchema = z.object({
   allocation: InvestmentAllocationSchema,
 });
 
+const SimulateBodySchema = SimulationInputSchema.extend({
+  persistScenario: z.boolean().optional().default(false),
+});
+
 /** /compare aceita array direto no body */
 const CompareBodySchema = z
   .array(SimulationInputSchema)
@@ -71,7 +77,7 @@ router.post(
   "/simulate",
   requireRole("admin", "prefeito", "secretario"),
   async (req: Request, res: Response) => {
-    const parsed = SimulationInputSchema.safeParse(req.body);
+    const parsed = SimulateBodySchema.safeParse(req.body);
 
     if (!parsed.success) {
       res.status(400).json({
@@ -81,15 +87,41 @@ router.post(
       return;
     }
 
-    const input: SimulationInput = parsed.data;
+    const { persistScenario, ...input }: SimulationInput & { persistScenario: boolean } =
+      parsed.data;
 
     logger.info("[route:simulator] simulate chamado", {
       ibgeCode: input.ibgeCode,
       totalAmount: input.totalAmount,
+      persistScenario,
     });
 
     try {
-      const result = await runSimulation(input);
+      const municipalityDbId = persistScenario
+        ? await resolveMunicipalityDbId(input.ibgeCode)
+        : null;
+
+      if (persistScenario && !municipalityDbId) {
+        res.status(404).json({ error: "Município não encontrado para persistência" });
+        return;
+      }
+
+      const result = await runSimulation(input, {
+        persistScenario,
+        requestedByUserId: persistScenario ? req.user?.sub : undefined,
+        municipalityDbId: municipalityDbId ?? undefined,
+      });
+
+      if (req.user?.sub && municipalityDbId) {
+        void appendAgentAudit({
+          userId: req.user.sub,
+          municipalityId: municipalityDbId,
+          action: "simulation_run",
+          toolNames: ["simulator_service"],
+          metadata: { persistScenario, hitlRequestId: result.hitlRequestId ?? null },
+        });
+      }
+
       res.json(result);
     } catch (error) {
       logger.error("[route:simulator] erro em /simulate", {

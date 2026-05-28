@@ -7,6 +7,7 @@ import {
   type SourceCitation,
 } from "./schemas.js";
 import { getOdsStatus } from "../../../shared/types/domain/ods.js";
+import { tryLlmAgentAnswer } from "./agent_query_llm.js";
 
 const STATUS_LABEL = {
   verde: "verde (≥70)",
@@ -68,11 +69,10 @@ function answerOdsScore(
   return `O ODS ${odsNumber} em ${name} está com score ${score.toFixed(1)}/100 (${statusText}), ano de referência ${referenceYear}. Fontes: ${sources.join(", ") || "dados municipais consolidados"}.`;
 }
 
-export async function answerAgentQuery(input: AgentQueryInput): Promise<AgentQueryResponse | null> {
-  const parsed = AgentQueryInputSchema.parse(input);
-  const report = await calculateMunicipalOds(parsed.municipalityId);
-  if (!report) return null;
-
+async function buildDeterministicAnswer(
+  parsed: AgentQueryInput,
+  report: NonNullable<Awaited<ReturnType<typeof calculateMunicipalOds>>>,
+): Promise<{ answer: string; confidence: number; citations: SourceCitation[] }> {
   const odsTargets = extractOdsNumbers(parsed.question, parsed.odsFilter);
   const allSources = report.ods.flatMap((o) => o.sources);
   const refYear = report.referenceYear;
@@ -117,13 +117,42 @@ export async function answerAgentQuery(input: AgentQueryInput): Promise<AgentQue
     confidence = 0.75;
   }
 
+  return {
+    answer,
+    confidence,
+    citations: buildCitations(allSources, refYear),
+  };
+}
+
+export async function answerAgentQuery(input: AgentQueryInput): Promise<AgentQueryResponse | null> {
+  const parsed = AgentQueryInputSchema.parse(input);
+  const report = await calculateMunicipalOds(parsed.municipalityId);
+  if (!report) return null;
+
+  const deterministic = await buildDeterministicAnswer(parsed, report);
+
+  let answer = deterministic.answer;
+  let confidence = deterministic.confidence;
+  let mode: "deterministic" | "llm" = "deterministic";
+
+  try {
+    const llmAnswer = await tryLlmAgentAnswer(parsed, report);
+    if (llmAnswer) {
+      answer = llmAnswer;
+      mode = "llm";
+      confidence = Math.min(deterministic.confidence + 0.05, 0.92);
+    }
+  } catch {
+    // fallback silencioso para determinístico (P-011)
+  }
+
   return AgentQueryResponseSchema.parse({
     municipalityId: parsed.municipalityId,
     question: parsed.question,
     answer,
-    citations: buildCitations(allSources, refYear),
+    citations: deterministic.citations,
     confidence,
     answeredAt: new Date().toISOString(),
-    mode: "deterministic",
+    mode,
   });
 }

@@ -100,9 +100,23 @@ export const AgentQueryResponseSchema = z.object({
   citations: z.array(SourceCitationSchema).min(1),
   confidence: z.number().min(0).max(1),
   answeredAt: z.string().datetime(),
-  mode: z.literal("deterministic"),
+  mode: z.enum(["deterministic", "llm"]),
 });
 export type AgentQueryResponse = z.infer<typeof AgentQueryResponseSchema>;
+
+export const HitlRequestDtoSchema = z.object({
+  id: z.string(),
+  action: z.enum(["persist_scenario", "publish_report"]),
+  status: z.enum(["pending", "approved", "rejected"]),
+  municipalityId: z.string(),
+  requestedById: z.string(),
+  reviewedById: z.string().nullable(),
+  payload: z.unknown(),
+  reviewNote: z.string().nullable(),
+  createdAt: z.string().datetime(),
+  reviewedAt: z.string().datetime().nullable(),
+});
+export type HitlRequestDto = z.infer<typeof HitlRequestDtoSchema>;
 
 export const HitlCheckInputSchema = z.object({
   action: z.enum(["publish_report", "persist_scenario", "set_ods_score_direct"]),

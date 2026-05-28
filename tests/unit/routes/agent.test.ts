@@ -2,10 +2,22 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import express from "express";
 import request from "supertest";
 
-const { mockGenerateExecutive, mockAnswerQuery, mockHitlCheck } = vi.hoisted(() => ({
+const {
+  mockGenerateExecutive,
+  mockAnswerQuery,
+  mockHitlCheck,
+  mockListPending,
+  mockApprove,
+  mockAppendAudit,
+  mockResolveMunicipality,
+} = vi.hoisted(() => ({
   mockGenerateExecutive: vi.fn(),
   mockAnswerQuery: vi.fn(),
   mockHitlCheck: vi.fn(),
+  mockListPending: vi.fn(),
+  mockApprove: vi.fn(),
+  mockAppendAudit: vi.fn(),
+  mockResolveMunicipality: vi.fn(),
 }));
 
 vi.mock("../../../backend/services/agent/executive_report_service.js", () => ({
@@ -18,6 +30,26 @@ vi.mock("../../../backend/services/agent/agent_query_service.js", () => ({
 
 vi.mock("../../../backend/services/agent/hitl_service.js", () => ({
   checkHitlRequirement: mockHitlCheck,
+}));
+
+vi.mock("../../../backend/services/agent/hitl_queue_service.js", () => ({
+  listPendingHitlRequests: mockListPending,
+  approveHitlRequest: mockApprove,
+  rejectHitlRequest: vi.fn(),
+  resolveMunicipalityDbId: mockResolveMunicipality,
+}));
+
+vi.mock("../../../backend/services/agent/audit_service.js", () => ({
+  appendAgentAudit: mockAppendAudit,
+}));
+
+vi.mock("../../../backend/lib/prisma.js", () => ({
+  prisma: {
+    municipality: {
+      findUnique: vi.fn().mockResolvedValue({ id: "mun-db", ibgeCode: "4205407" }),
+      findFirst: vi.fn(),
+    },
+  },
 }));
 
 vi.mock("../../../backend/utils/logger.js", () => ({
@@ -114,6 +146,18 @@ describe("POST /api/agent/query", () => {
   it("retorna 400 para body inválido", async () => {
     const res = await request(buildApp()).post("/api/agent/query").send({ question: "x" });
     expect(res.status).toBe(400);
+  });
+});
+
+describe("GET /api/agent/hitl/pending", () => {
+  beforeEach(() => {
+    mockListPending.mockResolvedValue([]);
+  });
+
+  it("retorna lista vazia", async () => {
+    const res = await request(buildApp()).get("/api/agent/hitl/pending");
+    expect(res.status).toBe(200);
+    expect(res.body.count).toBe(0);
   });
 });
 
