@@ -15,7 +15,10 @@ export function useHitlApprove() {
   const qc = useQueryClient();
   return useMutation<HitlRequestItem, Error, string>({
     mutationFn: (id) => apiPost<HitlRequestItem>(`/api/agent/hitl/${id}/approve`, {}),
-    onSuccess: () => qc.invalidateQueries({ queryKey: ["hitl-pending"] }),
+    onSuccess: () => {
+      void qc.invalidateQueries({ queryKey: ["hitl-pending"] });
+      void qc.invalidateQueries({ queryKey: ["published-report"] });
+    },
   });
 }
 
@@ -24,6 +27,6 @@ export function useHitlReject() {
   return useMutation<HitlRequestItem, Error, { id: string; reviewNote?: string }>({
     mutationFn: ({ id, reviewNote }) =>
       apiPost<HitlRequestItem>(`/api/agent/hitl/${id}/reject`, { reviewNote }),
-    onSuccess: () => qc.invalidateQueries({ queryKey: ["hitl-pending"] }),
+    onSuccess: () => void qc.invalidateQueries({ queryKey: ["hitl-pending"] }),
   });
 }

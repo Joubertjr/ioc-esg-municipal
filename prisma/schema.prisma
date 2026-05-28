@@ -23,7 +23,8 @@ model Municipality {
   ingestionLogs IngestionLog[]
   indicators    OdsIndicator[]
   odsScores     OdsScore[]
-  simulations   Simulation[]
+  simulations              Simulation[]
+  publishedExecutiveReports  PublishedExecutiveReport[]
 
   @@index([state])
   @@index([deletedAt])
@@ -152,6 +153,22 @@ model AgentAuditLog {
   @@index([municipalityId, createdAt])
   @@index([userId, createdAt])
   @@index([action, createdAt])
+}
+
+/// Relatório executivo publicado após HITL (G-HITL-IOC-02)
+model PublishedExecutiveReport {
+  id               String       @id @default(cuid())
+  municipalityId   String
+  ibgeCode         String
+  reportSnapshot   Json
+  institutionStamp String
+  publishedById    String
+  hitlRequestId    String?
+  publishedAt      DateTime     @default(now())
+  municipality     Municipality @relation(fields: [municipalityId], references: [id])
+
+  @@index([municipalityId, publishedAt])
+  @@index([ibgeCode, publishedAt])
 }
 
 model RefreshToken {

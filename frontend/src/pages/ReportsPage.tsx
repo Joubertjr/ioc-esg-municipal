@@ -1,6 +1,8 @@
 import { useState, useCallback, useEffect } from "react";
 import { useOdsReport } from "../hooks/useOdsReport";
 import { ExecutiveReportPanel } from "../components/dashboard/ExecutiveReportPanel";
+import { PublishedReportStamp } from "../components/dashboard/PublishedReportStamp";
+import { usePublishedReport } from "../hooks/usePublishedReport";
 import { AppShell } from "../components/layout/AppShell";
 import { useToast } from "../components/ui/Toast";
 import { useAuthContext } from "../contexts/AuthContext";
@@ -264,6 +266,7 @@ export function ReportsPage() {
   const { currentUser } = useAuthContext();
   const [ibgeCode, setIbgeCode] = useState(currentUser?.ibgeCode ?? DEFAULT_IBGE_CODE);
   const { data: report, isLoading, isError, error, refetch } = useOdsReport(ibgeCode);
+  const { data: published } = usePublishedReport(ibgeCode);
   const { showToast } = useToast();
 
   useEffect(() => {
@@ -573,17 +576,23 @@ export function ReportsPage() {
               </span>
             </div>
 
-            {/* Footer */}
-            <div className="pt-6 border-t border-border text-xs text-muted-foreground/60 text-center">
-              <p>
-                Dados públicos obtidos via IBGE, SICONFI, DATASUS, INEP, SNIS, INPE e PNCP. Este
-                relatório é de caráter informativo e não substitui análise técnica especializada.
-              </p>
-              <p className="mt-1">
-                IOC ESG Municipal — Plataforma de Gestão Pública com Impacto ODS &copy;{" "}
-                {new Date().getFullYear()}
-              </p>
-            </div>
+            {published ? (
+              <PublishedReportStamp
+                institutionStamp={published.institutionStamp}
+                publishedAt={published.publishedAt}
+              />
+            ) : (
+              <div className="pt-6 border-t border-border text-xs text-muted-foreground/60 text-center">
+                <p>
+                  Dados públicos obtidos via IBGE, SICONFI, DATASUS, INEP, SNIS, INPE e PNCP. Este
+                  relatório é de caráter informativo e não substitui análise técnica especializada.
+                </p>
+                <p className="mt-1">
+                  IOC ESG Municipal — Plataforma de Gestão Pública com Impacto ODS &copy;{" "}
+                  {new Date().getFullYear()}
+                </p>
+              </div>
+            )}
           </div>
         )}
       </AppShell>

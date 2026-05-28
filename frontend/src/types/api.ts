@@ -322,6 +322,21 @@ export interface HitlPendingResponse {
   count: number;
 }
 
+export interface PublishRequestResponse {
+  hitlRequestId: string;
+  status: "pending";
+}
+
+export interface PublishedExecutiveReport {
+  id: string;
+  ibgeCode: string;
+  municipalityId: string;
+  report: ExecutiveReport;
+  institutionStamp: string;
+  publishedAt: string;
+  publishedById: string;
+}
+
 export type HitlAction = "publish_report" | "persist_scenario" | "set_ods_score_direct";
 
 export interface HitlCheckResponse {

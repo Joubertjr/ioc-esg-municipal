@@ -3,6 +3,8 @@ import { logger } from "../../utils/logger.js";
 import { persistSimulationResult } from "../simulator/simulator_service.js";
 import type { SimulationResult } from "../simulator/simulator_service.js";
 import { appendAgentAudit } from "./audit_service.js";
+import { publishExecutiveReportFromHitl } from "./published_report_service.js";
+import type { ExecutiveReport } from "./schemas.js";
 
 export type HitlAction = "persist_scenario" | "publish_report";
 export type HitlStatus = "pending" | "approved" | "rejected";
@@ -85,7 +87,11 @@ export async function listPendingHitlRequests(municipalityId?: string): Promise<
   return rows.map(toDto);
 }
 
-async function executeApprovedAction(action: HitlAction, payload: unknown): Promise<void> {
+async function executeApprovedAction(
+  action: HitlAction,
+  payload: unknown,
+  context: { reviewerId: string; municipalityId: string; hitlRequestId: string },
+): Promise<void> {
   if (action === "persist_scenario") {
     const body = payload as { simulationResult?: SimulationResult };
     if (!body.simulationResult) {
@@ -94,7 +100,17 @@ async function executeApprovedAction(action: HitlAction, payload: unknown): Prom
     await persistSimulationResult(body.simulationResult);
     return;
   }
-  logger.info("[hitl] publish_report aprovado — sem writeback externo nesta fase");
+
+  const body = payload as { ibgeCode?: string; executiveReport?: ExecutiveReport };
+  if (!body.ibgeCode || !body.executiveReport) {
+    throw new Error("Payload HITL inválido: executiveReport ausente");
+  }
+  await publishExecutiveReportFromHitl(
+    { ibgeCode: body.ibgeCode, executiveReport: body.executiveReport },
+    context.reviewerId,
+    context.municipalityId,
+    context.hitlRequestId,
+  );
 }
 
 export async function approveHitlRequest(params: {
@@ -120,7 +136,11 @@ export async function approveHitlRequest(params: {
     throw new Error("Acesso negado ao pedido de outro município");
   }
 
-  await executeApprovedAction(existing.action as HitlAction, existing.payload);
+  await executeApprovedAction(existing.action as HitlAction, existing.payload, {
+    reviewerId: params.reviewerId,
+    municipalityId: existing.municipalityId,
+    hitlRequestId: existing.id,
+  });
 
   const updated = await prisma.hitlRequest.update({
     where: { id: params.requestId },

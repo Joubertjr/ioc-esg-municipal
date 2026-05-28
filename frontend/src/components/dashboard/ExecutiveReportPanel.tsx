@@ -1,5 +1,9 @@
 import { Link } from "react-router-dom";
 import { useExecutiveReport } from "../../hooks/useExecutiveReport";
+import { usePublishedReport, useRequestPublishReport } from "../../hooks/usePublishedReport";
+import { useAuthContext } from "../../contexts/AuthContext";
+import { useToast } from "../ui/Toast";
+import { PublishedReportStamp } from "./PublishedReportStamp";
 
 interface ExecutiveReportPanelProps {
   ibgeCode: string;
@@ -30,7 +34,16 @@ export function ExecutiveReportPanel({
   ibgeCode,
   showReportLink = true,
 }: ExecutiveReportPanelProps) {
+  const { currentUser } = useAuthContext();
+  const { showToast } = useToast();
   const { data, isLoading, isError, error } = useExecutiveReport(ibgeCode);
+  const { data: published } = usePublishedReport(ibgeCode);
+  const requestPublish = useRequestPublishReport(ibgeCode);
+
+  const canRequestPublish =
+    currentUser?.role === "admin" ||
+    currentUser?.role === "prefeito" ||
+    currentUser?.role === "secretario";
 
   if (isLoading) {
     return (
@@ -75,6 +88,11 @@ export function ExecutiveReportPanel({
           <span className="text-xs font-medium px-2.5 py-1 rounded-full bg-primary/10 text-primary">
             Confiança {Math.round(data.confidence * 100)}%
           </span>
+          {published && (
+            <span className="text-xs font-medium px-2.5 py-1 rounded-full bg-success/10 text-success">
+              Publicado oficialmente
+            </span>
+          )}
           {showReportLink && (
             <Link
               to="/reports"
@@ -82,6 +100,25 @@ export function ExecutiveReportPanel({
             >
               Relatório completo →
             </Link>
+          )}
+          {canRequestPublish && !published && (
+            <button
+              type="button"
+              disabled={requestPublish.isPending}
+              onClick={() =>
+                requestPublish.mutate(undefined, {
+                  onSuccess: (r) =>
+                    showToast(
+                      `Publicação enviada para aprovação HITL (${r.hitlRequestId.slice(0, 8)}…).`,
+                      "success",
+                    ),
+                  onError: (err) => showToast(err.message, "error"),
+                })
+              }
+              className="text-xs font-medium px-2.5 py-1 rounded-full bg-primary text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
+            >
+              {requestPublish.isPending ? "Enviando…" : "Solicitar publicação"}
+            </button>
           )}
         </div>
       </div>
@@ -116,6 +153,13 @@ export function ExecutiveReportPanel({
           </p>
           <p className="text-sm text-foreground">{topRecommendation.rationale}</p>
         </div>
+      )}
+
+      {published && (
+        <PublishedReportStamp
+          institutionStamp={published.institutionStamp}
+          publishedAt={published.publishedAt}
+        />
       )}
     </div>
   );

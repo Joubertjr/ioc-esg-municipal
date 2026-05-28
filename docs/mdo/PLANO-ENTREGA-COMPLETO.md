@@ -25,14 +25,17 @@
 
 ## 2. APIs da camada agêntica
 
-| Método | Rota                                     | Descrição                                       |
-| ------ | ---------------------------------------- | ----------------------------------------------- |
-| GET    | `/api/agent/reports/:ibgeCode/executive` | Relatório executivo (`ExecutiveReportSchema`)   |
-| POST   | `/api/agent/query`                       | Q&A determinístico (`AgentQueryResponseSchema`) |
-| POST   | `/api/agent/hitl/check`                  | Verifica se ação exige HITL                     |
-| GET    | `/api/agent/hitl/pending`                | Fila pendente (admin/prefeito)                  |
-| POST   | `/api/agent/hitl/:id/approve`            | Aprova e executa ação                           |
-| POST   | `/api/agent/hitl/:id/reject`             | Rejeita pedido                                  |
+| Método | Rota                                           | Descrição                                       |
+| ------ | ---------------------------------------------- | ----------------------------------------------- |
+| GET    | `/api/agent/reports/:ibgeCode/executive`       | Relatório executivo (`ExecutiveReportSchema`)   |
+| POST   | `/api/agent/query`                             | Q&A determinístico (`AgentQueryResponseSchema`) |
+| POST   | `/api/agent/hitl/check`                        | Verifica se ação exige HITL                     |
+| GET    | `/api/agent/hitl/pending`                      | Fila pendente (admin/prefeito)                  |
+| POST   | `/api/agent/hitl/:id/approve`                  | Aprova e executa ação                           |
+| POST   | `/api/agent/hitl/:id/reject`                   | Rejeita pedido                                  |
+| POST   | `/api/agent/reports/:ibgeCode/publish-request` | Solicita publicação (HITL)                      |
+| GET    | `/api/agent/reports/:ibgeCode/published`       | Último relatório publicado + carimbo            |
+| GET    | `/api/agent/audit/logs`                        | Trilha de auditoria agêntica                    |
 
 **Autenticação:** JWT + escopo municipal (`requireMunicipalityScope`).  
 **Q&A:** determinístico por padrão; LLM opcional com fallback (P-011).  
@@ -82,17 +85,25 @@ pnpm dev
 
 ---
 
-## 6. Backlog pós-entrega (fase 3)
+## 6. Fase 3 (entregue)
 
-1. **RoPA / DPIA assinados** — preencher templates em `docs/compliance/` com DPO.
-2. **Migrar DB** — `pnpm prisma migrate deploy` (migration `20260528120000_hitl_audit`).
-3. **Variáveis** — `AGENT_LLM_QA_ENABLED=true` + `ANTHROPIC_API_KEY` para Q&A com LLM.
-4. **Evidências visuais** — screenshots reais (substituir placeholders).
-5. **Publicação de relatório** — fluxo HITL `publish_report` com carimbo PDF.
+| Item                                                     | Status |
+| -------------------------------------------------------- | ------ |
+| `publish_report` HITL + `PublishedExecutiveReport`       | ✅     |
+| Carimbo institucional na impressão (`/reports`)          | ✅     |
+| `GET /audit/logs`                                        | ✅     |
+| `.env.example` camada MDO                                | ✅     |
+| `docs/mdo/MIGRACAO-MDO.md` + `docs/compliance/README.md` | ✅     |
+
+## 7. Backlog residual
+
+1. **RoPA / DPIA assinados** pelo DPO municipal.
+2. **Screenshots reais** em `docs/evidence/`.
+3. **Retenção/purge** automatizado de `AgentAuditLog`.
 
 ---
 
-## 7. Critérios de aceite desta entrega
+## 8. Critérios de aceite desta entrega
 
 - [x] Day 0 MDO documentado e implementado no código
 - [x] 50 evals passando localmente

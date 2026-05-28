@@ -10,6 +10,11 @@ import {
   resolveMunicipalityDbId,
 } from "../services/agent/hitl_queue_service.js";
 import { appendAgentAudit } from "../services/agent/audit_service.js";
+import { listAgentAuditLogs } from "../services/agent/audit_query_service.js";
+import {
+  getLatestPublishedReport,
+  requestPublishExecutiveReport,
+} from "../services/agent/published_report_service.js";
 import { AgentQueryInputSchema, HitlCheckInputSchema } from "../services/agent/schemas.js";
 import { requireMunicipalityScope, requireRole } from "../middleware/auth.js";
 import { prisma } from "../lib/prisma.js";
@@ -89,6 +94,100 @@ router.get(
     }
   },
 );
+
+/**
+ * GET /api/agent/reports/:ibgeCode/published — última versão publicada (carimbo institucional)
+ */
+router.get(
+  "/reports/:ibgeCode/published",
+  requireMunicipalityScope(),
+  async (req: Request, res: Response) => {
+    const ibgeCode = req.params["ibgeCode"];
+    if (!ibgeCode || !/^\d{7}$/.test(ibgeCode)) {
+      res.status(400).json({ error: "ibgeCode deve ter 7 dígitos numéricos" });
+      return;
+    }
+
+    try {
+      const published = await getLatestPublishedReport(ibgeCode);
+      if (!published) {
+        res.status(404).json({ error: "Nenhum relatório publicado para este município" });
+        return;
+      }
+      res.json(published);
+    } catch (error) {
+      logger.error("[agent] erro ao buscar publicado", {
+        ibgeCode,
+        error: error instanceof Error ? error.message : String(error),
+      });
+      res.status(500).json({ error: "Erro interno" });
+    }
+  },
+);
+
+/**
+ * POST /api/agent/reports/:ibgeCode/publish-request — envia para fila HITL (G-HITL-IOC-02)
+ */
+router.post(
+  "/reports/:ibgeCode/publish-request",
+  requireRole("admin", "prefeito", "secretario"),
+  requireMunicipalityScope(),
+  async (req: Request, res: Response) => {
+    const ibgeCode = req.params["ibgeCode"];
+    if (!ibgeCode || !/^\d{7}$/.test(ibgeCode) || !req.user?.sub) {
+      res.status(400).json({ error: "Requisição inválida" });
+      return;
+    }
+
+    const municipalityDbId = await resolveMunicipalityDbId(ibgeCode);
+    if (!municipalityDbId) {
+      res.status(404).json({ error: "Município não encontrado" });
+      return;
+    }
+
+    if (!assertMunicipalityAccess(req, res, municipalityDbId)) return;
+
+    try {
+      const result = await requestPublishExecutiveReport({
+        ibgeCode,
+        requestedByUserId: req.user.sub,
+        municipalityDbId,
+      });
+
+      void appendAgentAudit({
+        userId: req.user.sub,
+        municipalityId: municipalityDbId,
+        action: "report_generated",
+        toolNames: ["hitl_queue", "executive_report"],
+        metadata: { hitlRequestId: result.hitlRequestId, intent: "publish_request" },
+      });
+
+      res.status(202).json(result);
+    } catch (error) {
+      const msg = error instanceof Error ? error.message : "Erro ao solicitar publicação";
+      res.status(400).json({ error: msg });
+    }
+  },
+);
+
+/**
+ * GET /api/agent/audit/logs — trilha append-only (admin: todos; prefeito: seu município)
+ */
+router.get("/audit/logs", requireRole("admin", "prefeito"), async (req: Request, res: Response) => {
+  const rawLimit = req.query["limit"];
+  const limit = rawLimit ? parseInt(String(rawLimit), 10) : 50;
+  const scopeId = req.user?.role === "admin" ? undefined : (req.user?.municipalityId ?? undefined);
+
+  try {
+    const logs = await listAgentAuditLogs({ municipalityId: scopeId, limit });
+    res.json({ logs, count: logs.length });
+  } catch (error) {
+    logger.error("[agent] erro em /audit/logs", {
+      error: error instanceof Error ? error.message : String(error),
+    });
+    res.status(500).json({ error: "Erro ao listar auditoria" });
+  }
+});
 
 /**
  * POST /api/agent/query — determinístico com fallback LLM opcional (AGENT_LLM_QA_ENABLED)

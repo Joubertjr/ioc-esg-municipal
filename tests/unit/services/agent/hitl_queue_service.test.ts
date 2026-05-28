@@ -22,6 +22,10 @@ vi.mock("../../../../backend/services/simulator/simulator_service.js", () => ({
   persistSimulationResult: vi.fn().mockResolvedValue(undefined),
 }));
 
+vi.mock("../../../../backend/services/agent/published_report_service.js", () => ({
+  publishExecutiveReportFromHitl: vi.fn().mockResolvedValue({ id: "pub-1" }),
+}));
+
 vi.mock("../../../../backend/services/agent/audit_service.js", () => ({
   appendAgentAudit: vi.fn().mockResolvedValue(undefined),
 }));
