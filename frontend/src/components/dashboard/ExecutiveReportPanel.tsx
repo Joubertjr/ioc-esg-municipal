@@ -1,8 +1,12 @@
+import { Link } from "react-router-dom";
 import { useExecutiveReport } from "../../hooks/useExecutiveReport";
 
 interface ExecutiveReportPanelProps {
   ibgeCode: string;
+  showReportLink?: boolean;
 }
+
+const PRIORITY_ODS = [3, 4, 6] as const;
 
 const PRIORITY_LABEL: Record<"alta" | "media" | "baixa", string> = {
   alta: "Alta",
@@ -16,7 +20,16 @@ const PRIORITY_CLASS: Record<"alta" | "media" | "baixa", string> = {
   baixa: "bg-muted text-muted-foreground",
 };
 
-export function ExecutiveReportPanel({ ibgeCode }: ExecutiveReportPanelProps) {
+const STATUS_CLASS: Record<string, string> = {
+  verde: "bg-success/10 text-success",
+  amarelo: "bg-warning/10 text-warning",
+  vermelho: "bg-danger/10 text-danger",
+};
+
+export function ExecutiveReportPanel({
+  ibgeCode,
+  showReportLink = true,
+}: ExecutiveReportPanelProps) {
   const { data, isLoading, isError, error } = useExecutiveReport(ibgeCode);
 
   if (isLoading) {
@@ -45,20 +58,46 @@ export function ExecutiveReportPanel({ ibgeCode }: ExecutiveReportPanelProps) {
   }
 
   const topRecommendation = data.recommendations[0];
+  const pilotOds = PRIORITY_ODS.map((n) => data.odsScores.find((o) => o.odsNumber === n)).filter(
+    Boolean,
+  );
 
   return (
     <div className="bg-card rounded-xl shadow-card p-6 space-y-4">
-      <div className="flex items-start justify-between gap-3">
+      <div className="flex items-start justify-between gap-3 flex-wrap">
         <div>
           <h3 className="text-lg font-semibold text-foreground">Relatório Executivo (MDO)</h3>
           <p className="text-sm text-muted-foreground">
             Gerado em {new Date(data.generatedAt).toLocaleString("pt-BR")}
           </p>
         </div>
-        <span className="text-xs font-medium px-2.5 py-1 rounded-full bg-primary/10 text-primary">
-          Confiança {Math.round(data.confidence * 100)}%
-        </span>
+        <div className="flex items-center gap-2 flex-wrap">
+          <span className="text-xs font-medium px-2.5 py-1 rounded-full bg-primary/10 text-primary">
+            Confiança {Math.round(data.confidence * 100)}%
+          </span>
+          {showReportLink && (
+            <Link
+              to="/reports"
+              className="text-xs font-medium px-2.5 py-1 rounded-full border border-border text-foreground hover:bg-accent transition-colors"
+            >
+              Relatório completo →
+            </Link>
+          )}
+        </div>
       </div>
+
+      {pilotOds.length > 0 && (
+        <div className="flex flex-wrap gap-2">
+          {pilotOds.map((ods) => (
+            <span
+              key={ods!.odsNumber}
+              className={`text-xs font-medium px-2.5 py-1 rounded-full ${STATUS_CLASS[ods!.status] ?? "bg-muted"}`}
+            >
+              ODS {ods!.odsNumber}: {ods!.score.toFixed(0)} · {ods!.status}
+            </span>
+          ))}
+        </div>
+      )}
 
       <p className="text-sm leading-relaxed text-foreground">{data.summary}</p>
 

@@ -91,3 +91,28 @@ export const AuditLogEntrySchema = z.object({
   timestamp: z.string().datetime(),
 });
 export type AuditLogEntry = z.infer<typeof AuditLogEntrySchema>;
+
+/** Resposta Q&A determinística (sem LLM — P-011) */
+export const AgentQueryResponseSchema = z.object({
+  municipalityId: z.string().min(1),
+  question: z.string().min(3),
+  answer: z.string().min(10),
+  citations: z.array(SourceCitationSchema).min(1),
+  confidence: z.number().min(0).max(1),
+  answeredAt: z.string().datetime(),
+  mode: z.literal("deterministic"),
+});
+export type AgentQueryResponse = z.infer<typeof AgentQueryResponseSchema>;
+
+export const HitlCheckInputSchema = z.object({
+  action: z.enum(["publish_report", "persist_scenario", "set_ods_score_direct"]),
+});
+export type HitlCheckInput = z.infer<typeof HitlCheckInputSchema>;
+
+export const HitlCheckResponseSchema = z.object({
+  action: HitlCheckInputSchema.shape.action,
+  requiresHitl: z.boolean(),
+  reason: z.string().min(1),
+  approverRoles: z.array(z.enum(["admin", "prefeito"])).optional(),
+});
+export type HitlCheckResponse = z.infer<typeof HitlCheckResponseSchema>;

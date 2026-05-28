@@ -283,6 +283,33 @@ export interface ExecutiveReport {
   confidence: number;
 }
 
+export interface AgentQueryInput {
+  municipalityId: string;
+  question: string;
+  role: "admin" | "prefeito" | "secretario";
+  odsFilter?: number[];
+  locale?: "pt-BR";
+}
+
+export interface AgentQueryResponse {
+  municipalityId: string;
+  question: string;
+  answer: string;
+  citations: SourceCitation[];
+  confidence: number;
+  answeredAt: string;
+  mode: "deterministic";
+}
+
+export type HitlAction = "publish_report" | "persist_scenario" | "set_ods_score_direct";
+
+export interface HitlCheckResponse {
+  action: HitlAction;
+  requiresHitl: boolean;
+  reason: string;
+  approverRoles?: Array<"admin" | "prefeito">;
+}
+
 export interface ScenarioReasoning {
   area: InvestmentArea;
   percentage: number;

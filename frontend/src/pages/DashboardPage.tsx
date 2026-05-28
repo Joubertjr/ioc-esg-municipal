@@ -11,6 +11,8 @@ import { OdsDetailPanel } from "../components/ods/OdsDetailPanel";
 import { OdsHistoryChart } from "../components/charts/OdsHistoryChart";
 import { RecommendationPanel } from "../components/recommendations/RecommendationPanel";
 import { ExecutiveReportPanel } from "../components/dashboard/ExecutiveReportPanel";
+import { AgentQueryPanel } from "../components/dashboard/AgentQueryPanel";
+import { HitlNoticePanel } from "../components/dashboard/HitlNoticePanel";
 import { useToast } from "../components/ui/Toast";
 import { useAuthContext } from "../contexts/AuthContext";
 import type { OdsSummary } from "../types/api";
@@ -102,9 +104,11 @@ export function DashboardPage() {
           </div>
         </section>
 
-        {/* ── Row 3: Executive report (MDO contract from backend) ── */}
-        <section>
+        {/* ── Row 3: Camada agêntica MDO ── */}
+        <section className="space-y-4">
+          <HitlNoticePanel />
           <ExecutiveReportPanel ibgeCode={ibgeCode} />
+          <AgentQueryPanel ibgeCode={ibgeCode} />
         </section>
 
         {/* ── Row 4: Recommendations + History side-by-side ── */}

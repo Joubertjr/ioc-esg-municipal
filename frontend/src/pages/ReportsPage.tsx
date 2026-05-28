@@ -1,5 +1,6 @@
 import { useState, useCallback, useEffect } from "react";
 import { useOdsReport } from "../hooks/useOdsReport";
+import { ExecutiveReportPanel } from "../components/dashboard/ExecutiveReportPanel";
 import { AppShell } from "../components/layout/AppShell";
 import { useToast } from "../components/ui/Toast";
 import { useAuthContext } from "../contexts/AuthContext";
@@ -318,6 +319,10 @@ export function ReportsPage() {
             Imprimir / Exportar PDF
           </button>
         </div>
+
+        <section className="mb-8 no-print">
+          <ExecutiveReportPanel ibgeCode={ibgeCode} showReportLink={false} />
+        </section>
 
         {isError && (
           <div className="mb-6 p-4 bg-destructive/10 border border-destructive/20 rounded-lg flex items-center justify-between">

@@ -2,12 +2,22 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import express from "express";
 import request from "supertest";
 
-const { mockGenerateExecutive } = vi.hoisted(() => ({
+const { mockGenerateExecutive, mockAnswerQuery, mockHitlCheck } = vi.hoisted(() => ({
   mockGenerateExecutive: vi.fn(),
+  mockAnswerQuery: vi.fn(),
+  mockHitlCheck: vi.fn(),
 }));
 
 vi.mock("../../../backend/services/agent/executive_report_service.js", () => ({
   generateExecutiveReport: mockGenerateExecutive,
+}));
+
+vi.mock("../../../backend/services/agent/agent_query_service.js", () => ({
+  answerAgentQuery: mockAnswerQuery,
+}));
+
+vi.mock("../../../backend/services/agent/hitl_service.js", () => ({
+  checkHitlRequirement: mockHitlCheck,
 }));
 
 vi.mock("../../../backend/utils/logger.js", () => ({
@@ -73,5 +83,55 @@ describe("GET /api/agent/reports/:ibgeCode/executive", () => {
   it("retorna 400 para ibgeCode inválido", async () => {
     const res = await request(buildApp()).get("/api/agent/reports/abc/executive");
     expect(res.status).toBe(400);
+  });
+});
+
+describe("POST /api/agent/query", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    mockAnswerQuery.mockResolvedValue({
+      municipalityId: "4205407",
+      question: "Qual o ODS 3?",
+      answer: "ODS 3: 58.0",
+      citations: [{ sourceName: "DATASUS", referenceYear: 2024 }],
+      confidence: 0.85,
+      answeredAt: "2026-05-28T12:00:00.000Z",
+      mode: "deterministic",
+    });
+  });
+
+  it("retorna 200 com resposta determinística", async () => {
+    const res = await request(buildApp()).post("/api/agent/query").send({
+      municipalityId: "4205407",
+      question: "Qual o ODS 3?",
+      role: "prefeito",
+      locale: "pt-BR",
+    });
+    expect(res.status).toBe(200);
+    expect(res.body.mode).toBe("deterministic");
+  });
+
+  it("retorna 400 para body inválido", async () => {
+    const res = await request(buildApp()).post("/api/agent/query").send({ question: "x" });
+    expect(res.status).toBe(400);
+  });
+});
+
+describe("POST /api/agent/hitl/check", () => {
+  beforeEach(() => {
+    mockHitlCheck.mockReturnValue({
+      action: "persist_scenario",
+      requiresHitl: true,
+      reason: "Persistir cenário exige aprovação.",
+      approverRoles: ["admin", "prefeito"],
+    });
+  });
+
+  it("retorna regra HITL", async () => {
+    const res = await request(buildApp())
+      .post("/api/agent/hitl/check")
+      .send({ action: "persist_scenario" });
+    expect(res.status).toBe(200);
+    expect(res.body.requiresHitl).toBe(true);
   });
 });

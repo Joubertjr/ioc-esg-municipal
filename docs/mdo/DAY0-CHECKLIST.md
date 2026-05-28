@@ -12,6 +12,16 @@ Arquétipo **D regulado** · Meta ≤2 semanas full-time
 
 **Status:** **5/5 Day 0 camada agêntica** · `pnpm eval:agent:fast` (44 tasks) · `pnpm eval:agent` (50 tasks c/ integração)
 
-**Semana 2–4 (D regulado):** RoPA, DPIA, audit trail em ações de agente, HITL em simulação que altera cenário exportado.
+**Pós-Day 0 (entrega PMF):**
+
+```
+[x] Relatório executivo API + dashboard + /reports
+[x] Q&A determinístico POST /api/agent/query + AgentQueryPanel
+[x] HITL check API + HitlNoticePanel
+[x] Plano mestre → PLANO-ENTREGA-COMPLETO.md
+[ ] RoPA / DPIA formal
+[ ] LLM em /query com fallback determinístico
+[ ] Fila HITL com persistência e aprovação na UI
+```
 
 **5/5 cumpridos** = aderente à Tese Revisada Day 0 para a camada agêntica do produto.
