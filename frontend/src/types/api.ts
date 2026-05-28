@@ -248,6 +248,41 @@ export interface RecommendationReport {
   strengths: Array<{ odsNumber: number; odsName: string; score: number }>;
 }
 
+// ---- Agent Executive Report (MDO) ----
+
+export type DataStaleness = "fresh" | "recent" | "stale" | "critical" | "unknown";
+
+export interface SourceCitation {
+  sourceName: string;
+  referenceYear: number;
+  indicatorId?: string;
+  url?: string;
+}
+
+export interface PrioritizedRecommendation {
+  title: string;
+  targetOds: number;
+  rationale: string;
+  estimatedImpact: string;
+  citations: SourceCitation[];
+  priority: "alta" | "media" | "baixa";
+}
+
+export interface ExecutiveReport {
+  municipalityId: string;
+  generatedAt: string;
+  summary: string;
+  odsScores: Array<{
+    odsNumber: number;
+    score: number;
+    status: OdsStatus;
+    staleness: DataStaleness;
+  }>;
+  recommendations: PrioritizedRecommendation[];
+  citations: SourceCitation[];
+  confidence: number;
+}
+
 export interface ScenarioReasoning {
   area: InvestmentArea;
   percentage: number;

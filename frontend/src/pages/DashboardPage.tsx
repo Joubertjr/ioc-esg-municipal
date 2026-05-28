@@ -10,6 +10,7 @@ import { DimensionRadarChart } from "../components/dashboard/DimensionRadarChart
 import { OdsDetailPanel } from "../components/ods/OdsDetailPanel";
 import { OdsHistoryChart } from "../components/charts/OdsHistoryChart";
 import { RecommendationPanel } from "../components/recommendations/RecommendationPanel";
+import { ExecutiveReportPanel } from "../components/dashboard/ExecutiveReportPanel";
 import { useToast } from "../components/ui/Toast";
 import { useAuthContext } from "../contexts/AuthContext";
 import type { OdsSummary } from "../types/api";
@@ -101,7 +102,12 @@ export function DashboardPage() {
           </div>
         </section>
 
-        {/* ── Row 3: Recommendations + History side-by-side ── */}
+        {/* ── Row 3: Executive report (MDO contract from backend) ── */}
+        <section>
+          <ExecutiveReportPanel ibgeCode={ibgeCode} />
+        </section>
+
+        {/* ── Row 4: Recommendations + History side-by-side ── */}
         <section className="grid grid-cols-1 xl:grid-cols-[1fr_380px] gap-4">
           <div className="bg-card rounded-xl shadow-card p-6">
             <RecommendationPanel ibgeCode={ibgeCode} compact />
