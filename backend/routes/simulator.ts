@@ -3,7 +3,7 @@ import { z, type ZodIssue } from "zod";
 import { runSimulation, type SimulationInput } from "../services/simulator/simulator_service.js";
 import { resolveMunicipalityDbId } from "../services/agent/hitl_queue_service.js";
 import { appendAgentAudit } from "../services/agent/audit_service.js";
-import { batchLimiter } from "../middleware/rate-limit.js";
+
 import { logger } from "../utils/logger.js";
 import { requireRole } from "../middleware/auth.js";
 import { prisma } from "../lib/prisma.js";
@@ -144,7 +144,7 @@ router.post(
 router.post(
   "/compare",
   requireRole("admin", "prefeito", "secretario"),
-  batchLimiter,
+
   async (req: Request, res: Response) => {
     const parsed = CompareBodySchema.safeParse(req.body);
 

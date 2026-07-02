@@ -115,7 +115,7 @@ test.describe("Autenticação", () => {
     await page.getByRole("button", { name: "Entrar" }).click();
 
     // Assert — mensagem de erro visível, URL permanece em /login
-    await expect(page.locator(".text-red-700")).toBeVisible({ timeout: 10_000 });
+    await expect(page.locator(".text-danger")).toBeVisible({ timeout: 10_000 });
     await expect(page).toHaveURL(/\/login/);
   });
 
@@ -129,7 +129,7 @@ test.describe("Autenticação", () => {
     await page.getByRole("button", { name: "Entrar" }).click();
 
     // Assert
-    await expect(page.locator(".text-red-700")).toBeVisible({ timeout: 10_000 });
+    await expect(page.locator(".text-danger")).toBeVisible({ timeout: 10_000 });
     await expect(page).toHaveURL(/\/login/);
   });
 
@@ -176,7 +176,7 @@ test.describe("Autenticação", () => {
     await page.getByRole("button", { name: "Criar conta" }).click();
 
     // Assert — mensagem de nome obrigatório renderizada pelo componente
-    await expect(page.locator(".text-red-700")).toBeVisible({ timeout: 5_000 });
+    await expect(page.locator(".text-danger")).toBeVisible({ timeout: 5_000 });
   });
 
   // ---------------------------------------------------------------------------

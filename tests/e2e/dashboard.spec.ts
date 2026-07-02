@@ -32,67 +32,55 @@ test.describe("Dashboard — Painel ODS", () => {
   // Estrutura da página
   // ---------------------------------------------------------------------------
 
-  test("deve_exibir_header_com_navegacao_e_seletor_de_municipio", async ({
-    page,
-  }) => {
+  test("deve_exibir_header_com_navegacao_e_seletor_de_municipio", async ({ page }) => {
     // Assert
-    await expect(
-      page.getByText("IOC ESG Municipal", { exact: false }),
-    ).toBeVisible();
+    await expect(page.getByText("IOC ESG Municipal", { exact: false })).toBeVisible();
     await expect(page.getByRole("link", { name: "Painel ODS" })).toBeVisible();
     await expect(page.getByRole("link", { name: "Simulador" })).toBeVisible();
-    await expect(
-      page.locator('input[placeholder="Buscar municipio..."]'),
-    ).toBeVisible();
+    await expect(page.locator('input[placeholder="Buscar município..."]')).toBeVisible();
     await expect(page.getByRole("button", { name: "Sair" })).toBeVisible();
   });
 
-  test("deve_exibir_secao_de_objetivos_de_desenvolvimento_sustentavel", async ({
-    page,
-  }) => {
-    // Assert
-    await expect(
-      page.getByRole("heading", {
-        name: "Objetivos de Desenvolvimento Sustentavel",
-      }),
-    ).toBeVisible();
+  test("deve_exibir_grid_de_dimensoes_ods", async ({ page }) => {
+    // Assert — o dashboard organiza os ODS por dimensão (Social, Econômico, etc.)
+    // O CardTitle é um div, usar locator específico para o card de dimensão
+    await expect(page.getByText("Social", { exact: true }).first()).toBeVisible({
+      timeout: 10_000,
+    });
+    await expect(page.getByText("Ambiental", { exact: true }).first()).toBeVisible();
   });
 
   // ---------------------------------------------------------------------------
   // Cards ODS — estado de carregamento
   // ---------------------------------------------------------------------------
 
-  test("deve_exibir_17_skeleton_cards_enquanto_dados_carregam", async ({
-    page,
-  }) => {
+  test("deve_exibir_skeleton_cards_enquanto_dados_carregam", async ({ page }) => {
     // Arrange — intercepta a requisição ODS para simular lentidão
+    let shouldDelay = true;
     await page.route("**/api/ods/**", async (route) => {
-      await page.waitForTimeout(2_000);
+      if (shouldDelay) {
+        await new Promise((r) => setTimeout(r, 3_000));
+      }
       await route.continue();
     });
 
     // Act
     await page.goto("/dashboard");
 
-    // Assert — skeletons renderizados imediatamente
-    // OdsCardSkeleton usa "animate-pulse" como indicador visual
+    // Assert — skeletons renderizados imediatamente (5 dimension cards)
     const skeletons = page.locator(".animate-pulse");
     await expect(skeletons.first()).toBeVisible({ timeout: 3_000 });
+
+    // Cleanup
+    shouldDelay = false;
+    await page.unrouteAll({ behavior: "ignoreErrors" });
   });
 
-  test("deve_exibir_17_cards_ods_apos_carregamento_dos_dados", async ({
-    page,
-  }) => {
-    // Arrange — aguarda dados chegarem (máx 15s para APIs externas lentas)
-    // Assert — grid de ODS cards fica visível
-    // Os cards possuem border-top colorida definida pelo atributo style
-    const odsGrid = page
-      .getByRole("heading", {
-        name: "Objetivos de Desenvolvimento Sustentavel",
-      })
-      .locator("~ div");
-
-    await expect(odsGrid).toBeVisible({ timeout: 15_000 });
+  test("deve_exibir_scores_ods_apos_carregamento_dos_dados", async ({ page }) => {
+    // Assert — após carregamento, os ODS individuais aparecem como botões clicáveis
+    // dentro dos cards de dimensão (Social, Econômico, Ambiental, etc.)
+    const odsButton = page.getByRole("button", { name: /Pobreza/i });
+    await expect(odsButton).toBeVisible({ timeout: 15_000 });
   });
 
   // ---------------------------------------------------------------------------
@@ -110,9 +98,7 @@ test.describe("Dashboard — Painel ODS", () => {
   // Erro de API
   // ---------------------------------------------------------------------------
 
-  test("deve_exibir_banner_de_erro_quando_api_ods_retorna_500", async ({
-    page,
-  }) => {
+  test("deve_exibir_banner_de_erro_quando_api_ods_retorna_500", async ({ page }) => {
     // Arrange — força erro 500 na API ODS
     await page.route("**/api/ods/**", (route) =>
       route.fulfill({ status: 500, body: '{"error":"Erro interno"}' }),
@@ -125,19 +111,14 @@ test.describe("Dashboard — Painel ODS", () => {
     await expect(page.getByText("Erro ao carregar dados ODS")).toBeVisible({
       timeout: 10_000,
     });
-    await expect(
-      page.getByRole("button", { name: "Tentar novamente" }),
-    ).toBeVisible();
+    await expect(page.getByRole("button", { name: "Tentar novamente" })).toBeVisible();
   });
 
-  test("deve_tentar_recarregar_dados_ao_clicar_em_tentar_novamente", async ({
-    page,
-  }) => {
-    // Arrange — primeira requisição retorna erro, segunda bem-sucedida
-    let requestCount = 0;
+  test("deve_tentar_recarregar_dados_ao_clicar_em_tentar_novamente", async ({ page }) => {
+    // Arrange — todas as requisições retornam erro inicialmente
+    let shouldFail = true;
     await page.route("**/api/ods/**", (route) => {
-      requestCount++;
-      if (requestCount === 1) {
+      if (shouldFail) {
         route.fulfill({ status: 500, body: '{"error":"Erro interno"}' });
       } else {
         route.continue();
@@ -149,43 +130,31 @@ test.describe("Dashboard — Painel ODS", () => {
       timeout: 10_000,
     });
 
-    // Act
+    // Act — libera requests e clica "Tentar novamente"
+    shouldFail = false;
     await page.getByRole("button", { name: "Tentar novamente" }).click();
 
-    // Assert — segunda requisição disparada (requestCount > 1)
-    // Poll until the route handler has been called more than once.
-    await page.waitForFunction(() => true); // flush microtasks
-    expect(requestCount).toBeGreaterThan(1);
+    // Assert — dados carregam após retry
+    await expect(page.getByText("Erro ao carregar dados ODS")).not.toBeVisible({
+      timeout: 15_000,
+    });
   });
 
   // ---------------------------------------------------------------------------
   // Drawer de detalhe do ODS (requer dados reais)
   // ---------------------------------------------------------------------------
 
-  test("deve_abrir_drawer_de_detalhe_ao_clicar_em_card_ods", async ({
-    page,
-  }) => {
-    // Arrange — aguarda grid de cards carregar
-    // Os cards ODS são divs clicáveis dentro do grid
-    // Aguarda até algum card (não skeleton) aparecer
-    await page.waitForSelector('[style*="border-top-color"]', {
-      timeout: 15_000,
-    });
+  test("deve_abrir_painel_de_detalhe_ao_clicar_em_ods", async ({ page }) => {
+    // Arrange — aguarda os ODS carregarem nas dimensões
+    const odsButton = page.getByRole("button", { name: /Pobreza/i });
+    await expect(odsButton).toBeVisible({ timeout: 15_000 });
 
-    // Act — clica no primeiro card ODS disponível
-    await page
-      .locator('[style*="border-top-color"]')
-      .first()
-      .click();
+    // Act — clica no primeiro ODS disponível
+    await odsButton.click();
 
-    // Assert — drawer lateral abre (verifica por conteúdo esperado)
-    // OdsDetailDrawer exibe detalhes do ODS selecionado
-    // Se drawer não carregar em 5s, API pode estar indisponível (aceitável em CI)
-    const drawer = page.locator('[role="dialog"], aside, .drawer').first();
-    // Verifica sem falhar caso drawer use outro mecanismo
-    await page.waitForTimeout(500);
-    // O drawer pode ou não aparecer dependendo da implementação
-    // Este teste verifica apenas que o clique não gera erro JS
+    // Assert — painel de detalhe aparece (OdsDetailPanel)
+    // O painel mostra detalhes do ODS selecionado
+    await expect(page.getByText("ODS 1", { exact: true })).toBeVisible({ timeout: 5_000 });
   });
 
   // ---------------------------------------------------------------------------
@@ -193,12 +162,11 @@ test.describe("Dashboard — Painel ODS", () => {
   // ---------------------------------------------------------------------------
 
   test("deve_renderizar_area_do_radar_chart_no_dashboard", async ({ page }) => {
-    // Assert — OdsRadarChart fica dentro da seção superior (flex-1 min-w-0)
-    // Verifica que o elemento existe e não causa erro de renderização
-    const firstSection = page.locator("section").first();
-    await expect(firstSection).toBeVisible();
-    // O SVG do radar é renderizado pelo Recharts
-    const svgChart = firstSection.locator("svg").first();
-    await expect(svgChart).toBeVisible({ timeout: 15_000 });
+    // Assert — DimensionRadarChart renderiza um SVG via Recharts
+    // O radar fica ao lado do grid de dimensões (visível apenas em xl)
+    // Verificamos que o contêiner do chart existe
+    await expect(page.getByText("Visão por Dimensão")).toBeVisible({
+      timeout: 15_000,
+    });
   });
 });

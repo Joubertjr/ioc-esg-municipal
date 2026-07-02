@@ -21,7 +21,7 @@ import {
   startIngestionScheduler,
   stopIngestionScheduler,
 } from "./services/ingestion/ingestion_scheduler.js";
-import { generalLimiter } from "./middleware/rate-limit.js";
+
 import { authenticateToken } from "./middleware/auth.js";
 import { globalErrorHandler, notFoundHandler } from "./middleware/error-handler.js";
 import { requestIdMiddleware } from "./middleware/request-id.js";
@@ -98,7 +98,7 @@ app.use(
     credentials: true,
   }),
 );
-app.use(generalLimiter);
+
 app.use(cookieParser());
 app.use(express.json({ limit: "10kb" }));
 

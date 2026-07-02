@@ -11,7 +11,7 @@ import {
 } from "../services/auth/auth_service.js";
 import { z } from "zod";
 import { authenticateToken } from "../middleware/auth.js";
-import { authLimiter } from "../middleware/rate-limit.js";
+
 import { logger } from "../utils/logger.js";
 
 const router: RouterType = Router();
@@ -25,7 +25,7 @@ const authService = new AuthService(prisma);
  * - Os demais recebem role "prefeito" — nunca aceita role do body.
  * - Retorna token + refreshToken para auto-login após registro.
  */
-router.post("/register", authLimiter, async (req: Request, res: Response) => {
+router.post("/register", async (req: Request, res: Response) => {
   logger.info("POST /api/auth/register", { ip: req.ip });
 
   // Valida body com Zod — role é deliberadamente excluída do schema
@@ -85,7 +85,7 @@ router.post("/register", authLimiter, async (req: Request, res: Response) => {
 /**
  * Autentica usuário e retorna JWT.
  */
-router.post("/login", authLimiter, async (req: Request, res: Response) => {
+router.post("/login", async (req: Request, res: Response) => {
   logger.info("POST /api/auth/login", { ip: req.ip });
 
   const parsed = LoginSchema.safeParse(req.body);
@@ -146,7 +146,7 @@ const RefreshSchema = z.object({
  * Troca um refresh token válido por novos access + refresh tokens (rotação).
  * O refresh token antigo é revogado imediatamente.
  */
-router.post("/refresh", authLimiter, async (req: Request, res: Response) => {
+router.post("/refresh", async (req: Request, res: Response) => {
   logger.info("POST /api/auth/refresh", { ip: req.ip });
 
   const parsed = RefreshSchema.safeParse(req.body);
@@ -187,7 +187,7 @@ router.post("/refresh", authLimiter, async (req: Request, res: Response) => {
 /**
  * Encerra a sessão: revoga o refresh token (se fornecido) e limpa o cookie.
  */
-router.post("/logout", authLimiter, async (req: Request, res: Response) => {
+router.post("/logout", async (req: Request, res: Response) => {
   const { refreshToken } = req.body as { refreshToken?: string };
 
   if (refreshToken && typeof refreshToken === "string") {

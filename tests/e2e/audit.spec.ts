@@ -15,6 +15,10 @@ import { test, expect } from "@playwright/test";
 import { ensureTestUser, loginViaApi } from "./helpers/auth";
 import * as fs from "fs";
 import * as path from "path";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const EVIDENCE_DIR = path.resolve(
   __dirname,
@@ -53,10 +57,9 @@ test.describe("Auditoria Funcional — Prefeito de Florianópolis", () => {
       // Wait for loading to finish (no more skeleton animations after 15s)
       await page.waitForTimeout(2_000); // initial load
       try {
-        await page.waitForFunction(
-          () => document.querySelectorAll(".animate-pulse").length === 0,
-          { timeout: 15_000 },
-        );
+        await page.waitForFunction(() => document.querySelectorAll(".animate-pulse").length === 0, {
+          timeout: 15_000,
+        });
       } catch {
         // If skeletons still present after 15s, capture evidence and fail
         await page.screenshot({
@@ -111,10 +114,9 @@ test.describe("Auditoria Funcional — Prefeito de Florianópolis", () => {
   test("dashboard: KPI cards mostram valores numéricos", async ({ page }) => {
     await page.goto("/dashboard");
     // Wait for data to load
-    await page.waitForFunction(
-      () => document.querySelectorAll(".animate-pulse").length === 0,
-      { timeout: 15_000 },
-    );
+    await page.waitForFunction(() => document.querySelectorAll(".animate-pulse").length === 0, {
+      timeout: 15_000,
+    });
 
     // At least one KPI card should show a number (not just "—")
     const kpiValues = page.locator(".tabular-nums");
@@ -131,10 +133,9 @@ test.describe("Auditoria Funcional — Prefeito de Florianópolis", () => {
 
   test("simulator: formulário de alocação acessível", async ({ page }) => {
     await page.goto("/simulator");
-    await page.waitForFunction(
-      () => document.querySelectorAll(".animate-pulse").length === 0,
-      { timeout: 15_000 },
-    );
+    await page.waitForFunction(() => document.querySelectorAll(".animate-pulse").length === 0, {
+      timeout: 15_000,
+    });
 
     // Investment amount input should be present
     const amountInput = page.locator('input[inputmode="numeric"], input[type="text"]').first();
@@ -147,35 +148,34 @@ test.describe("Auditoria Funcional — Prefeito de Florianópolis", () => {
 
   test("benchmark: ranking table renderiza após carregamento", async ({ page }) => {
     await page.goto("/benchmark");
-    await page.waitForFunction(
-      () => document.querySelectorAll(".animate-pulse").length === 0,
-      { timeout: 15_000 },
-    );
+    await page.waitForFunction(() => document.querySelectorAll(".animate-pulse").length === 0, {
+      timeout: 15_000,
+    });
 
     // Should show "Comparativo Municipal" heading
     await expect(page.getByText("Comparativo Municipal")).toBeVisible();
 
     // Ranking table or summary cards should be visible (depends on selectedCodes)
-    const summaryCards = page.locator('[class*="grid"] [class*="Card"], [class*="grid"] [class*="card"]');
+    const summaryCards = page.locator(
+      '[class*="grid"] [class*="Card"], [class*="grid"] [class*="card"]',
+    );
     // At least the page structure should render without errors
     await expect(page.locator("main")).toBeVisible();
   });
 
   test("reports: página renderiza sem erro", async ({ page }) => {
     await page.goto("/reports");
-    await page.waitForFunction(
-      () => document.querySelectorAll(".animate-pulse").length === 0,
-      { timeout: 15_000 },
-    );
+    await page.waitForFunction(() => document.querySelectorAll(".animate-pulse").length === 0, {
+      timeout: 15_000,
+    });
     await expect(page.locator("main")).toBeVisible();
   });
 
   test("monitoring: página renderiza sem erro", async ({ page }) => {
     await page.goto("/monitoring");
-    await page.waitForFunction(
-      () => document.querySelectorAll(".animate-pulse").length === 0,
-      { timeout: 15_000 },
-    );
+    await page.waitForFunction(() => document.querySelectorAll(".animate-pulse").length === 0, {
+      timeout: 15_000,
+    });
     await expect(page.locator("main")).toBeVisible();
   });
 });

@@ -51,15 +51,15 @@ async function waitForBackend(maxAttempts = 15, delayMs = 2_000): Promise<void> 
 }
 
 /**
- * Cria o usuário de teste via API de registro (bootstrap — sem auth necessária
- * para o primeiro usuário). Ignora 409 caso o usuário já exista.
+ * Cria o usuário de teste via API de registro e completa o onboarding
+ * associando Florianópolis (4205407). Ignora 409 caso o usuário já exista.
  *
  * Aguarda automaticamente o backend iniciar antes de tentar o registro.
  */
 export async function ensureTestUser(): Promise<void> {
   await waitForBackend();
 
-  const res = await fetch(`${BACKEND_URL}/api/auth/register`, {
+  const regRes = await fetch(`${BACKEND_URL}/api/auth/register`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -70,10 +70,35 @@ export async function ensureTestUser(): Promise<void> {
     signal: AbortSignal.timeout(10_000),
   });
 
-  if (!res.ok && res.status !== 409) {
-    const body = await res.text();
-    throw new Error(`Falha ao criar usuário de teste (${res.status}): ${body}`);
+  if (!regRes.ok && regRes.status !== 409) {
+    const body = await regRes.text();
+    throw new Error(`Falha ao criar usuário de teste (${regRes.status}): ${body}`);
   }
+
+  const loginRes = await fetch(`${BACKEND_URL}/api/auth/login`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email: TEST_USER.email, password: TEST_USER.password }),
+    signal: AbortSignal.timeout(10_000),
+  });
+
+  if (!loginRes.ok) return;
+
+  const cookies = loginRes.headers.getSetCookie?.() ?? [];
+  const tokenCookie = cookies.find((c) => c.startsWith("token="));
+  const { token } = (await loginRes.json()) as { token: string };
+  const authToken = tokenCookie ? tokenCookie.split("=")[1].split(";")[0] : token;
+
+  await fetch(`${BACKEND_URL}/api/auth/me`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+      Cookie: `token=${authToken}`,
+      Authorization: `Bearer ${authToken}`,
+    },
+    body: JSON.stringify({ ibgeCode: DEFAULT_IBGE_CODE }),
+    signal: AbortSignal.timeout(10_000),
+  });
 }
 
 /**

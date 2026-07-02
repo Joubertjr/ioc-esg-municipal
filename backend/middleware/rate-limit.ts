@@ -71,9 +71,11 @@ export const batchLimiter = rateLimit({
  * Limiter para rotas de autenticação: 10 tentativas por 15 minutos por IP.
  * Aplicado em POST /login e POST /register — proteção contra brute force.
  */
+const isProduction = process.env["NODE_ENV"] === "production";
+
 export const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 10,
+  max: isProduction ? 10 : 200,
   message: { error: "Muitas tentativas de login. Tente novamente em 15 minutos." },
   standardHeaders: true,
   legacyHeaders: false,

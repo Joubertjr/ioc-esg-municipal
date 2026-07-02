@@ -13,11 +13,7 @@
  */
 
 import { test, expect } from "@playwright/test";
-import {
-  ensureTestUser,
-  loginViaApi,
-  DEFAULT_IBGE_CODE,
-} from "./helpers/auth";
+import { ensureTestUser, loginViaApi, DEFAULT_IBGE_CODE } from "./helpers/auth";
 
 test.describe("Navegação", () => {
   test.beforeAll(async () => {
@@ -33,9 +29,7 @@ test.describe("Navegação", () => {
   // Rotas protegidas
   // ---------------------------------------------------------------------------
 
-  test("deve_carregar_pagina_dashboard_na_rota_barra_dashboard", async ({
-    page,
-  }) => {
+  test("deve_carregar_pagina_dashboard_na_rota_barra_dashboard", async ({ page }) => {
     // Arrange — já autenticado via beforeEach
 
     // Act
@@ -44,14 +38,10 @@ test.describe("Navegação", () => {
     // Assert
     await expect(page).toHaveURL(/\/dashboard/);
     // Header sempre presente em páginas protegidas
-    await expect(
-      page.getByText("IOC ESG Municipal", { exact: false }),
-    ).toBeVisible();
+    await expect(page.getByText("IOC ESG Municipal", { exact: false })).toBeVisible();
   });
 
-  test("deve_carregar_pagina_simulador_na_rota_barra_simulator", async ({
-    page,
-  }) => {
+  test("deve_carregar_pagina_simulador_na_rota_barra_simulator", async ({ page }) => {
     // Arrange — já autenticado via beforeEach
 
     // Act
@@ -59,9 +49,7 @@ test.describe("Navegação", () => {
 
     // Assert
     await expect(page).toHaveURL(/\/simulator/);
-    await expect(
-      page.getByRole("heading", { name: "Simulador de Investimentos" }),
-    ).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Simulador de Investimentos" })).toBeVisible();
   });
 
   test("deve_redirecionar_rota_desconhecida_para_dashboard_quando_autenticado", async ({
@@ -80,9 +68,7 @@ test.describe("Navegação", () => {
   // Links de navegação no header (AppShell)
   // ---------------------------------------------------------------------------
 
-  test("deve_navegar_para_simulador_ao_clicar_no_link_simulador_do_header", async ({
-    page,
-  }) => {
+  test("deve_navegar_para_simulador_ao_clicar_no_link_simulador_do_header", async ({ page }) => {
     // Arrange
     await page.goto("/dashboard");
 
@@ -91,14 +77,10 @@ test.describe("Navegação", () => {
 
     // Assert
     await expect(page).toHaveURL(/\/simulator/);
-    await expect(
-      page.getByRole("heading", { name: "Simulador de Investimentos" }),
-    ).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Simulador de Investimentos" })).toBeVisible();
   });
 
-  test("deve_navegar_para_dashboard_ao_clicar_no_link_painel_ods_do_header", async ({
-    page,
-  }) => {
+  test("deve_navegar_para_dashboard_ao_clicar_no_link_painel_ods_do_header", async ({ page }) => {
     // Arrange
     await page.goto("/simulator");
 
@@ -113,41 +95,35 @@ test.describe("Navegação", () => {
   // Seletor de município no header
   // ---------------------------------------------------------------------------
 
-  test("deve_exibir_nome_do_municipio_padrao_no_combobox_do_header", async ({
-    page,
-  }) => {
+  test("deve_exibir_nome_do_municipio_padrao_no_combobox_do_header", async ({ page }) => {
     // Arrange
     await page.goto("/dashboard");
 
     // Assert — Florianópolis é o município padrão (DEFAULT_IBGE_CODE = 4205407)
     // O combobox exibe o nome quando não está aberto
-    const combobox = page.locator('input[placeholder="Buscar municipio..."]');
-    await expect(combobox).toHaveValue("Florianopolis", { timeout: 5_000 });
+    const combobox = page.locator('input[placeholder="Buscar município..."]');
+    await expect(combobox).toHaveValue("Florianópolis", { timeout: 5_000 });
   });
 
-  test("deve_filtrar_municipios_ao_digitar_no_combobox_do_header", async ({
-    page,
-  }) => {
+  test("deve_filtrar_municipios_ao_digitar_no_combobox_do_header", async ({ page }) => {
     // Arrange
     await page.goto("/dashboard");
-    const combobox = page.locator('input[placeholder="Buscar municipio..."]');
+    const combobox = page.locator('input[placeholder="Buscar município..."]');
 
     // Act
     await combobox.focus();
     await combobox.fill("Blumenau");
 
     // Assert — dropdown deve exibir Blumenau
-    await expect(page.getByText("Blumenau", { exact: false }).first()).toBeVisible(
-      { timeout: 5_000 },
-    );
+    await expect(page.getByText("Blumenau", { exact: false }).first()).toBeVisible({
+      timeout: 5_000,
+    });
   });
 
-  test("deve_trocar_municipio_ao_selecionar_opcao_no_combobox", async ({
-    page,
-  }) => {
+  test("deve_trocar_municipio_ao_selecionar_opcao_no_combobox", async ({ page }) => {
     // Arrange
     await page.goto("/dashboard");
-    const combobox = page.locator('input[placeholder="Buscar municipio..."]');
+    const combobox = page.locator('input[placeholder="Buscar município..."]');
 
     // Act
     await combobox.focus();
@@ -165,9 +141,7 @@ test.describe("Navegação", () => {
   // Logout a partir de páginas internas
   // ---------------------------------------------------------------------------
 
-  test("deve_fazer_logout_e_redirecionar_para_login_a_partir_do_dashboard", async ({
-    page,
-  }) => {
+  test("deve_fazer_logout_e_redirecionar_para_login_a_partir_do_dashboard", async ({ page }) => {
     // Arrange
     await page.goto("/dashboard");
 
@@ -178,9 +152,7 @@ test.describe("Navegação", () => {
     await expect(page).toHaveURL(/\/login/);
   });
 
-  test("deve_fazer_logout_e_redirecionar_para_login_a_partir_do_simulador", async ({
-    page,
-  }) => {
+  test("deve_fazer_logout_e_redirecionar_para_login_a_partir_do_simulador", async ({ page }) => {
     // Arrange
     await page.goto("/simulator");
 

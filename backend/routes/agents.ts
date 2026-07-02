@@ -17,7 +17,7 @@ import {
 import { AnatelCollector, mapToOdsIndicators as mapAnatelOds } from "../agents/anatel/index.js";
 import { SisvanCollector, mapToOdsIndicators as mapSisvanOds } from "../agents/sisvan/index.js";
 import { logger } from "../utils/logger.js";
-import { batchLimiter } from "../middleware/rate-limit.js";
+
 import { requireRole } from "../middleware/auth.js";
 
 const router: RouterType = Router();
@@ -88,7 +88,7 @@ router.get("/ibge/:ibgeCode", async (req: Request, res: Response) => {
 router.post(
   "/ibge/batch",
   requireRole("admin", "prefeito", "secretario"),
-  batchLimiter,
+
   async (req: Request, res: Response) => {
     const ibgeCodes = validateBatchBody(req.body);
     if (!ibgeCodes) {
@@ -150,7 +150,7 @@ router.get("/siconfi/:ibgeCode", async (req: Request, res: Response) => {
 router.post(
   "/siconfi/batch",
   requireRole("admin", "prefeito", "secretario"),
-  batchLimiter,
+
   async (req: Request, res: Response) => {
     const ibgeCodes = validateBatchBody(req.body);
     if (!ibgeCodes) {

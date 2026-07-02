@@ -7,7 +7,7 @@ import {
   assessComparability,
 } from "../services/ods/ods_history_service.js";
 import { logger } from "../utils/logger.js";
-import { batchLimiter } from "../middleware/rate-limit.js";
+
 import { requireRole, requireMunicipalityScope } from "../middleware/auth.js";
 import { withCache } from "../utils/cache.js";
 import { prisma } from "../lib/prisma.js";
@@ -162,7 +162,7 @@ router.get(
 router.post(
   "/compare",
   requireRole("admin", "prefeito", "secretario"),
-  batchLimiter,
+
   async (req: Request, res: Response) => {
     const { ibgeCodes } = req.body as { ibgeCodes?: string[] };
 

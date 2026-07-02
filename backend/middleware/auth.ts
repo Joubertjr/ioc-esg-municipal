@@ -63,11 +63,20 @@ function getAllowedOrigins(): string[] {
  * Origin ou Referer pertence à lista de origens permitidas.
  * GET/HEAD/OPTIONS são seguros por definição (não modificam estado).
  */
+function normalizeOrigin(raw: string): string {
+  try {
+    const url = new URL(raw);
+    return url.origin;
+  } catch {
+    return raw;
+  }
+}
+
 function verifyCsrf(req: Request): boolean {
   const safeMethods = ["GET", "HEAD", "OPTIONS"];
   if (safeMethods.includes(req.method)) return true;
 
-  const allowedOrigins = getAllowedOrigins();
+  const allowedOrigins = getAllowedOrigins().map(normalizeOrigin);
   const origin = req.headers["origin"];
   const referer = req.headers["referer"];
 
@@ -81,7 +90,8 @@ function verifyCsrf(req: Request): boolean {
   }
   if (!candidate) return false;
 
-  return allowedOrigins.some((allowed) => allowed === candidate);
+  const normalized = normalizeOrigin(candidate);
+  return allowedOrigins.some((allowed) => allowed === normalized);
 }
 
 // ─── Middleware authenticateToken ─────────────────────────────────────────────
