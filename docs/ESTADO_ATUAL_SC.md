@@ -1,6 +1,6 @@
 # Estado Atual do Projeto — Foco SC
 
-**Data da Última Atualização:** 13 de abril de 2026
+**Data da Última Atualização:** 2 de julho de 2026
 **Objetivo Único:** Entregar a plataforma funcionando perfeitamente para os 295 municípios de Santa Catarina (SC) e obter aprovação do cliente final. Nenhuma feature além desse escopo deve ser desenvolvida.
 
 ---
@@ -63,6 +63,19 @@ Auditoria end-to-end como prefeito de Florianópolis identificou e corrigiu:
 | Ranking "—" no Dashboard               | Backend exclui target do ranking, frontend não calculava | `e4020ef` |
 
 Rotina de auditoria permanente criada: `/audit` (skill) + `scripts/audit.sh` + `tests/e2e/audit.spec.ts` (`5cf899a`).
+
+### Correções de Produção (2026-07-02)
+
+| Bug                                          | Impacto                                                  | Commit    |
+| -------------------------------------------- | -------------------------------------------------------- | --------- |
+| CSRF rejeitava requests (porta 80 implícita) | Onboarding bloqueado em produção Docker (nginx porta 80) | `0849910` |
+| Rate limiting bloqueava uso normal           | 429 em fluxos legítimos de registro/login                | `0849910` |
+| Testes e2e desatualizados vs UI redesenhada  | 10/31 testes falhando (seletores de layout antigo)       | `0849910` |
+| `__dirname` não definido em ESM (audit.spec) | `audit.spec.ts` crashava ao importar                     | `0849910` |
+
+**Rate limiting:** removido temporariamente (sem express-rate-limit). Será reativado quando o produto estiver em produção real com domínio público.
+
+**Testes e2e:** 31/31 passando contra stack Docker produção. Cobertura: auth (11), dashboard (9), navigation (11).
 
 ---
 
