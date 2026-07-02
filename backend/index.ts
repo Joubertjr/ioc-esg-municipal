@@ -128,7 +128,13 @@ app.get("/health", async (_req, res) => {
   });
 });
 
-app.get("/metrics", async (_req, res) => {
+app.get("/metrics", async (req, res) => {
+  const ip = req.ip ?? req.socket.remoteAddress ?? "";
+  const isLocal = ip === "127.0.0.1" || ip === "::1" || ip === "::ffff:127.0.0.1";
+  if (!isLocal) {
+    res.status(403).json({ error: "Forbidden" });
+    return;
+  }
   res.set("Content-Type", registry.contentType);
   res.end(await registry.metrics());
 });

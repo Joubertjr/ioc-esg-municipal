@@ -184,13 +184,18 @@ router.post("/refresh", async (req: Request, res: Response) => {
 
 // ─── POST /api/auth/logout ────────────────────────────────────────────────────
 
+const LogoutSchema = z.object({
+  refreshToken: z.string().optional(),
+});
+
 /**
  * Encerra a sessão: revoga o refresh token (se fornecido) e limpa o cookie.
  */
 router.post("/logout", async (req: Request, res: Response) => {
-  const { refreshToken } = req.body as { refreshToken?: string };
+  const parsed = LogoutSchema.safeParse(req.body);
+  const refreshToken = parsed.success ? parsed.data.refreshToken : undefined;
 
-  if (refreshToken && typeof refreshToken === "string") {
+  if (refreshToken) {
     try {
       await authService.revokeRefreshToken(refreshToken);
     } catch (err) {

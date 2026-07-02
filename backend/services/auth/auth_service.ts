@@ -12,7 +12,6 @@ export const RegisterSchema = z.object({
   email: z.string().email("Formato de e-mail inválido"),
   password: z.string().min(8, "Senha deve ter no mínimo 8 caracteres"),
   name: z.string().min(1, "Nome é obrigatório"),
-  municipalityId: z.string().optional().nullable(),
 });
 
 export const LoginSchema = z.object({
@@ -78,8 +77,8 @@ export class AuthCredentialsError extends Error {
 // ─── Constantes ───────────────────────────────────────────────────────────────
 
 const SALT_ROUNDS = 12;
-const DEFAULT_JWT_EXPIRATION = "1d";
-const REFRESH_TOKEN_EXPIRY_DAYS = 30;
+const DEFAULT_JWT_EXPIRATION = "15m";
+const REFRESH_TOKEN_EXPIRY_DAYS = 7;
 
 // ─── AuthService ──────────────────────────────────────────────────────────────
 
@@ -111,7 +110,6 @@ export class AuthService {
         passwordHash,
         name: input.name,
         role,
-        municipalityId: input.municipalityId ?? null,
       },
     });
 
