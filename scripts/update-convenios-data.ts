@@ -4,13 +4,14 @@
  * Atualiza shared/data/convenios_latest.json com dados de convênios federais.
  *
  * Estratégia (em ordem):
- * 1. API do Portal da Transparência (requer PORTAL_TRANSPARENCIA_API_KEY)
- *    Cadastro gratuito: https://portaldatransparencia.gov.br/api-de-dados/cadastrar-email
- * 2. CSV local em scripts/data/convenios_export.csv
- * 3. Preserva dados existentes
+ * 1. SICONV ZIPs do repositório DETRU (siconv_convenio.csv.zip + siconv_proposta.csv.zip + siconv_consorcios.csv.zip)
+ *    Fonte: https://repositorio.dados.gov.br/seges/detru/
+ *    Uso: SICONV_DIR=/path/to/detru npx tsx scripts/update-convenios-data.ts
+ * 2. API do Portal da Transparência (requer PORTAL_TRANSPARENCIA_API_KEY)
+ * 3. CSV local em scripts/data/convenios_export.csv
+ * 4. Preserva dados existentes
  *
- * Uso: npx tsx scripts/update-convenios-data.ts [--year 2024]
- * Com API: PORTAL_TRANSPARENCIA_API_KEY=xxx npx tsx scripts/update-convenios-data.ts
+ * Uso: npx tsx scripts/update-convenios-data.ts [--year 2026]
  */
 
 import { writeFileSync, readFileSync, existsSync } from "node:fs";
@@ -23,7 +24,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 import { ConveniosDataFileSchema } from "../shared/types/agents/convenios.types.js";
 
 const OUTPUT_PATH = resolve(__dirname, "../shared/data/convenios_latest.json");
-const DEFAULT_FALLBACK_YEAR = 2023;
+const DEFAULT_FALLBACK_YEAR = 2026;
 
 const PORTAL_API_BASE = "https://api.portaldatransparencia.gov.br/api-de-dados/convenios";
 
@@ -33,13 +34,109 @@ interface ConveniosEntry {
   consorciosIntermunicipais: number | null;
 }
 
+function readFromSiconvZips(): Record<string, ConveniosEntry> | null {
+  const siconvDir = process.env["SICONV_DIR"] ?? resolve(__dirname, "data/detru");
+  const convenioZip = resolve(siconvDir, "siconv_convenio.csv.zip");
+  const propostaZip = resolve(siconvDir, "siconv_proposta.csv.zip");
+  const consorcioZip = resolve(siconvDir, "siconv_consorcios.csv.zip");
+
+  if (!existsSync(convenioZip) || !existsSync(propostaZip)) {
+    return null;
+  }
+
+  console.log(`[update-convenios] Processando SICONV ZIPs de ${siconvDir}...`);
+
+  // Passo 1: Extrair propostas SC via awk (evita carregar 200MB+ em memória)
+  const propostaMap = new Map<string, string>();
+  try {
+    const tsvRaw = execSync(
+      `unzip -p "${propostaZip}" siconv_proposta.csv | awk -F';' 'NR>1 && length($4)==7 && substr($4,1,2)=="42" {print $1 "\\t" $4}'`,
+      { maxBuffer: 20 * 1024 * 1024, timeout: 120_000 },
+    ).toString();
+
+    for (const line of tsvRaw.split("\n")) {
+      const [id, ibge] = line.split("\t");
+      if (id && ibge) propostaMap.set(id, ibge);
+    }
+  } catch (err) {
+    console.error(
+      `[update-convenios] Erro ao ler propostas: ${(err as Error).message.split("\n")[0]}`,
+    );
+    return null;
+  }
+
+  console.log(`[update-convenios] ${propostaMap.size} propostas SC mapeadas`);
+
+  // Passo 2: Contar convênios não-cancelados por município SC via awk
+  const convenioCount = new Map<string, number>();
+  try {
+    const tsvRaw = execSync(
+      `unzip -p "${convenioZip}" siconv_convenio.csv | awk -F';' 'NR>1 && $7!="Convênio Anulado" && $7!="Cancelado" && $7!="Convênio Rescindido" {print $2}'`,
+      { maxBuffer: 20 * 1024 * 1024, timeout: 120_000 },
+    ).toString();
+
+    for (const id of tsvRaw.split("\n")) {
+      const trimmed = id.trim();
+      if (!trimmed) continue;
+      const ibge = propostaMap.get(trimmed);
+      if (!ibge) continue;
+      convenioCount.set(ibge, (convenioCount.get(ibge) ?? 0) + 1);
+    }
+  } catch (err) {
+    console.error(
+      `[update-convenios] Erro ao ler convênios: ${(err as Error).message.split("\n")[0]}`,
+    );
+    return null;
+  }
+
+  console.log(`[update-convenios] ${convenioCount.size} municípios SC com convênios`);
+
+  // Passo 3: Contar consórcios distintos por município SC
+  const consorcioCount = new Map<string, number>();
+  if (existsSync(consorcioZip)) {
+    try {
+      const tsvRaw = execSync(
+        `unzip -p "${consorcioZip}" siconv_consorcios.csv | awk -F';' 'NR>1 {print $1 "\\t" $2}'`,
+        { maxBuffer: 20 * 1024 * 1024, timeout: 120_000 },
+      ).toString();
+
+      const seen = new Set<string>();
+      for (const line of tsvRaw.split("\n")) {
+        const [idProposta, cnpjConsorcio] = line.split("\t");
+        if (!idProposta || !cnpjConsorcio) continue;
+
+        const ibge = propostaMap.get(idProposta.trim());
+        if (!ibge) continue;
+
+        const key = `${ibge}:${cnpjConsorcio.trim()}`;
+        if (seen.has(key)) continue;
+        seen.add(key);
+        consorcioCount.set(ibge, (consorcioCount.get(ibge) ?? 0) + 1);
+      }
+
+      console.log(`[update-convenios] ${consorcioCount.size} municípios SC com consórcios`);
+    } catch {
+      console.log("[update-convenios] Aviso: não foi possível processar consórcios");
+    }
+  }
+
+  // Montar dados
+  const data: Record<string, ConveniosEntry> = {};
+  for (const [ibge, count] of convenioCount) {
+    data[ibge] = {
+      conveniosFederaisAtivos: count,
+      pctOrcamentoConvenios: null,
+      consorciosIntermunicipais: consorcioCount.get(ibge) ?? null,
+    };
+  }
+
+  return data;
+}
+
 function fetchFromPortalApi(): Record<string, ConveniosEntry> | null {
   const apiKey = process.env["PORTAL_TRANSPARENCIA_API_KEY"];
   if (!apiKey) {
     console.log("[update-convenios] PORTAL_TRANSPARENCIA_API_KEY não definida.");
-    console.log(
-      "[update-convenios] Cadastro gratuito: https://portaldatransparencia.gov.br/api-de-dados/cadastrar-email",
-    );
     return null;
   }
 
@@ -147,20 +244,30 @@ function main(): void {
   const yearArg = process.argv.indexOf("--year");
   const year = yearArg >= 0 ? parseInt(process.argv[yearArg + 1], 10) : DEFAULT_FALLBACK_YEAR;
 
-  let data = fetchFromPortalApi();
-  let source = "portal_transparencia_api";
+  // 1. SICONV ZIPs
+  let data = readFromSiconvZips();
+  let source = "siconv_detru_zip";
 
+  // 2. Portal da Transparência API
+  if (!data) {
+    data = fetchFromPortalApi();
+    source = "portal_transparencia_api";
+  }
+
+  // 3. CSV manual
   if (!data) {
     data = readFromCsv();
     source = "manual_csv";
   }
 
+  // 4. Preservar existentes
   if (!data) {
     console.log("[update-convenios] Nenhuma fonte nova. Mantendo dados existentes.");
     console.log("[update-convenios] Para atualizar:");
-    console.log("  Opção 1: PORTAL_TRANSPARENCIA_API_KEY=xxx pnpm data:update:convenios");
-    console.log("  Opção 2: Baixe CSV de https://plataformamaisbrasil.gov.br/download-de-dados");
-    console.log("           Salve em scripts/data/convenios_export.csv");
+    console.log("  Opção 1: SICONV_DIR=/path/to/detru pnpm data:update:convenios");
+    console.log("           (ZIPs do https://repositorio.dados.gov.br/seges/detru/)");
+    console.log("  Opção 2: PORTAL_TRANSPARENCIA_API_KEY=xxx pnpm data:update:convenios");
+    console.log("  Opção 3: Baixe CSV e salve em scripts/data/convenios_export.csv");
     const existing: Record<string, unknown> = JSON.parse(
       readFileSync(OUTPUT_PATH, "utf-8"),
     ) as Record<string, unknown>;
