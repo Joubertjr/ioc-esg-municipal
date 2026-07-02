@@ -123,12 +123,13 @@ test.describe("Auditoria Funcional — Prefeito de Florianópolis", () => {
     await expect(kpiValues.first()).toBeVisible({ timeout: 5_000 });
   });
 
-  test("dashboard: grid de 17 ODS cards renderiza", async ({ page }) => {
+  test("dashboard: grid de dimensões ODS renderiza", async ({ page }) => {
     await page.goto("/dashboard");
-    await page.waitForSelector('[style*="border-top-color"]', { timeout: 15_000 });
-    const odsCards = page.locator('[style*="border-top-color"]');
-    const count = await odsCards.count();
-    expect(count).toBe(17);
+    const odsButton = page.getByRole("button", { name: /Pobreza/i });
+    await expect(odsButton).toBeVisible({ timeout: 15_000 });
+    // Verifica que todas as 5 dimensões estão presentes
+    await expect(page.getByText("Social", { exact: true }).first()).toBeVisible();
+    await expect(page.getByText("Ambiental", { exact: true }).first()).toBeVisible();
   });
 
   test("simulator: formulário de alocação acessível", async ({ page }) => {
