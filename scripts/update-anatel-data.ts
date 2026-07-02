@@ -102,7 +102,13 @@ function main(): void {
     console.log(`[update-anatel] Parsed ${Object.keys(data).length} municípios SC dos CSVs`);
   } else {
     console.log("[update-anatel] CSVs não encontrados em scripts/data/");
-    console.log("[update-anatel] Mantendo dados existentes, adicionando apenas __meta");
+    console.log("[update-anatel] Para atualizar com dados novos:");
+    console.log("  1. Acesse https://dados.anatel.gov.br/");
+    console.log("  2. Baixe 'Acessos - Banda Larga Fixa' (CSV)");
+    console.log("     Salve como scripts/data/anatel_bl_export.csv");
+    console.log("  3. Baixe 'Cobertura Rede Móvel' (CSV)");
+    console.log("     Salve como scripts/data/anatel_4g_export.csv");
+    console.log("[update-anatel] Mantendo dados existentes.");
 
     const existing: Record<string, unknown> = JSON.parse(
       readFileSync(OUTPUT_PATH, "utf-8"),
@@ -122,12 +128,14 @@ function main(): void {
     process.exit(1);
   }
 
+  const csvExists = existsSync(blCsvPath) || existsSync(g4CsvPath);
   const output = {
     __meta: {
       lastUpdated: new Date().toISOString(),
       referenceYear: year,
       sourceUrl: "https://dados.anatel.gov.br/",
       municipalities: Object.keys(data).length,
+      acquisitionMethod: csvExists ? "manual_csv_export" : "existing_json_preserved",
     },
     ...data,
   };

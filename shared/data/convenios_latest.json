@@ -1475,9 +1475,10 @@
     "consorciosIntermunicipais": 4
   },
   "__meta": {
-    "lastUpdated": "2026-04-13T16:34:05.907Z",
+    "lastUpdated": "2026-07-02T02:54:35.542Z",
     "referenceYear": 2023,
     "sourceUrl": "https://plataformamaisbrasil.gov.br/download-de-dados",
-    "municipalities": 295
+    "municipalities": 295,
+    "acquisitionMethod": "existing_json_preserved"
   }
 }

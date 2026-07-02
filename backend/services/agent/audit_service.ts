@@ -26,7 +26,7 @@ export async function appendAgentAudit(input: AppendAuditInput): Promise<void> {
         action: input.action,
         toolNames: input.toolNames.slice(0, 6),
         promptHash: input.promptText ? hashPrompt(input.promptText) : null,
-        metadata: input.metadata ?? undefined,
+        metadata: input.metadata as Record<string, string | number | boolean | null> | undefined,
       },
     });
   } catch (error) {

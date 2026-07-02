@@ -90,7 +90,13 @@ function main(): void {
     console.log(`[update-sisvan] Parsed ${Object.keys(data).length} municípios SC do CSV`);
   } else {
     console.log(`[update-sisvan] CSV não encontrado em ${csvPath}`);
-    console.log("[update-sisvan] Mantendo dados existentes, adicionando apenas __meta");
+    console.log("[update-sisvan] Para atualizar com dados novos:");
+    console.log("  1. Acesse https://opendatasus.saude.gov.br/dataset/sisvan-estado-nutricional");
+    console.log("  2. Baixe CSV do estado nutricional (crianças <5 anos)");
+    console.log("  3. Filtre por UF=SC e consolide por município");
+    console.log("  4. Salve como scripts/data/sisvan_export.csv");
+    console.log("  Colunas esperadas: codigo_ibge;cobertura;deficit;sobrepeso");
+    console.log("[update-sisvan] Mantendo dados existentes.");
 
     const existing: Record<string, unknown> = JSON.parse(
       readFileSync(OUTPUT_PATH, "utf-8"),
@@ -110,12 +116,14 @@ function main(): void {
     process.exit(1);
   }
 
+  const csvExists = existsSync(csvPath);
   const output = {
     __meta: {
       lastUpdated: new Date().toISOString(),
       referenceYear: year,
       sourceUrl: "https://opendatasus.saude.gov.br/dataset/sisvan-estado-nutricional",
       municipalities: Object.keys(data).length,
+      acquisitionMethod: csvExists ? "manual_csv_export" : "existing_json_preserved",
     },
     ...data,
   };

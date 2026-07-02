@@ -3,21 +3,16 @@
  *
  * Atualiza shared/data/aneel_latest.json com dados da ANEEL (geração distribuída).
  *
- * Fonte: ANEEL Dados Abertos (CKAN) — https://dadosabertos.aneel.gov.br/
- * Dataset: "Empreendimentos de Geração Distribuída"
- * API: https://dadosabertos.aneel.gov.br/api/3/action/datastore_search
- *
- * Indicadores:
- *   geracaoDistribuidaKw — potência instalada de GD em kW (nullable)
- *   unidadesGd           — número de unidades consumidoras com GD (int, nullable)
- *   populacao            — população do município (int, nullable)
+ * Estratégia (em ordem):
+ * 1. API CKAN da ANEEL (via curl — fetch do Node falha por TLS gov)
+ * 2. CSV local em scripts/data/aneel_export.csv
+ * 3. Preserva dados existentes
  *
  * Uso: npx tsx scripts/update-aneel-data.ts [--year 2024]
- *
- * Este script tenta primeiro a API CKAN. Se falhar, lê CSV local.
  */
 
 import { writeFileSync, readFileSync, existsSync } from "node:fs";
+import { execSync } from "node:child_process";
 import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -28,8 +23,8 @@ import { AneelDataFileSchema } from "../shared/types/agents/aneel.types.js";
 const OUTPUT_PATH = resolve(__dirname, "../shared/data/aneel_latest.json");
 const DEFAULT_FALLBACK_YEAR = 2023;
 
-// CKAN resource ID para GD — pode mudar ao longo do tempo
 const ANEEL_CKAN_BASE = "https://dadosabertos.aneel.gov.br/api/3/action/datastore_search";
+const ANEEL_RESOURCE_ID = "b1bd71e7-d0ad-4214-9053-cbd58e9564a7";
 
 interface AneelEntry {
   geracaoDistribuidaKw: number | null;
@@ -37,23 +32,17 @@ interface AneelEntry {
   populacao: number | null;
 }
 
-async function fetchFromCkan(_year: number): Promise<Record<string, AneelEntry> | null> {
+function fetchFromCkan(): Record<string, AneelEntry> | null {
   try {
-    // ANEEL CKAN usa resource_id para identificar o dataset
-    // Primeiro busca a lista de recursos do dataset de GD
-    const searchUrl = `${ANEEL_CKAN_BASE}?resource_id=b1bd71e7-d0ad-4214-9053-cbd58e9564a7&limit=5000&filters={"SigUF":"SC"}`;
+    const url = `${ANEEL_CKAN_BASE}?resource_id=${ANEEL_RESOURCE_ID}&limit=5000&filters={"SigUF":"SC"}`;
+    console.log(`[update-aneel] Tentando API CKAN via curl...`);
 
-    console.log(`[update-aneel] Tentando API CKAN: ${searchUrl}`);
-    const response = await fetch(searchUrl, {
-      signal: AbortSignal.timeout(30_000),
-    });
+    const raw = execSync(`curl -s --max-time 30 "${url}"`, {
+      timeout: 35_000,
+      maxBuffer: 50 * 1024 * 1024,
+    }).toString();
 
-    if (!response.ok) {
-      console.log(`[update-aneel] CKAN retornou ${response.status}`);
-      return null;
-    }
-
-    const json = (await response.json()) as {
+    const json = JSON.parse(raw) as {
       result?: { records?: Array<Record<string, unknown>> };
     };
 
@@ -63,7 +52,6 @@ async function fetchFromCkan(_year: number): Promise<Record<string, AneelEntry> 
       return null;
     }
 
-    // Agregar por município
     const byMunicipio = new Map<string, { kw: number; units: number }>();
     for (const rec of records) {
       const ibge = String(rec["CodMunicipioIbge"] ?? "").trim();
@@ -81,7 +69,7 @@ async function fetchFromCkan(_year: number): Promise<Record<string, AneelEntry> 
       data[ibge] = {
         geracaoDistribuidaKw: Math.round(agg.kw * 100) / 100,
         unidadesGd: agg.units,
-        populacao: null, // população não vem da ANEEL — preenchida por cruzamento com IBGE
+        populacao: null,
       };
     }
 
@@ -89,7 +77,7 @@ async function fetchFromCkan(_year: number): Promise<Record<string, AneelEntry> 
     return data;
   } catch (err) {
     console.log(
-      `[update-aneel] Erro na API CKAN: ${err instanceof Error ? err.message : String(err)}`,
+      `[update-aneel] Erro na API CKAN: ${err instanceof Error ? err.message.split("\n")[0] : String(err)}`,
     );
     return null;
   }
@@ -131,34 +119,36 @@ function readFromCsv(): Record<string, AneelEntry> | null {
   return data;
 }
 
-async function main(): Promise<void> {
+function main(): void {
   const yearArg = process.argv.indexOf("--year");
   const year = yearArg >= 0 ? parseInt(process.argv[yearArg + 1], 10) : DEFAULT_FALLBACK_YEAR;
 
-  // Tenta API CKAN primeiro, depois CSV, depois mantém existente
-  let data = await fetchFromCkan(year);
+  let data = fetchFromCkan();
+  let source = "ckan_api";
 
   if (!data) {
     data = readFromCsv();
+    source = "manual_csv";
   }
 
   if (!data) {
-    console.log("[update-aneel] Nenhuma fonte nova disponível. Mantendo dados existentes.");
+    console.log("[update-aneel] Nenhuma fonte nova. Mantendo dados existentes.");
+    console.log("[update-aneel] Para atualizar manualmente:");
+    console.log("  1. Acesse https://dadosabertos.aneel.gov.br/");
+    console.log("  2. Busque 'Empreendimentos de Geração Distribuída'");
+    console.log("  3. Baixe CSV e salve em scripts/data/aneel_export.csv");
     const existing: Record<string, unknown> = JSON.parse(
       readFileSync(OUTPUT_PATH, "utf-8"),
     ) as Record<string, unknown>;
     const { __meta: _, ...entries } = existing;
     data = entries as Record<string, AneelEntry>;
+    source = "existing_json_preserved";
   }
 
-  // Validação Zod antes de gravar — garante compatibilidade com o collector
   const validation = AneelDataFileSchema.safeParse(data);
   if (!validation.success) {
-    console.error("[update-aneel] ERRO: Output falha validação Zod. O JSON NÃO foi gravado.");
-    console.error(
-      "[update-aneel] Erros:",
-      JSON.stringify(validation.error.errors.slice(0, 5), null, 2),
-    );
+    console.error("[update-aneel] ERRO: Validação Zod falhou.");
+    console.error(JSON.stringify(validation.error.errors.slice(0, 5), null, 2));
     process.exit(1);
   }
 
@@ -168,14 +158,15 @@ async function main(): Promise<void> {
       referenceYear: year,
       sourceUrl: "https://dadosabertos.aneel.gov.br/",
       municipalities: Object.keys(data).length,
+      acquisitionMethod: source,
     },
     ...data,
   };
 
   writeFileSync(OUTPUT_PATH, JSON.stringify(output, null, 2) + "\n");
   console.log(
-    `[update-aneel] Gravado ${OUTPUT_PATH} (${Object.keys(data).length} municípios, ano ref: ${year})`,
+    `[update-aneel] Gravado ${OUTPUT_PATH} (${Object.keys(data).length} municípios, ano ref: ${year}, fonte: ${source})`,
   );
 }
 
-void main();
+main();

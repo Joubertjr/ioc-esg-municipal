@@ -29,10 +29,8 @@
  */
 
 import { writeFileSync, readFileSync, existsSync } from "node:fs";
-import { createHash } from "node:crypto";
 import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import os from "node:os";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -156,7 +154,14 @@ function main(): void {
     );
   } else {
     console.log(`[update-ieps] CSV não encontrado em ${csvPath}`);
-    console.log("[update-ieps] Mantendo dados existentes, adicionando apenas __meta");
+    console.log("[update-ieps] Para atualizar com dados novos:");
+    console.log("  1. Acesse https://iepsdata.org.br/ ou https://basedosdados.org/");
+    console.log("  2. Busque a tabela br_ieps_saude.municipio");
+    console.log("  3. Filtre por sigla_uf='SC' e ano desejado");
+    console.log("  4. Exporte CSV com: id_municipio, tx_mort_inf_ibge, cob_esf,");
+    console.log("     cob_vac_polio, tx_hosp_csap, desp_tot_saude_pc_mun_def, pct_prenatal_adeq");
+    console.log("  5. Salve como scripts/data/ieps_export.csv");
+    console.log("[update-ieps] Mantendo dados existentes.");
 
     const existing: Record<string, unknown> = JSON.parse(
       readFileSync(OUTPUT_PATH, "utf-8"),
@@ -184,14 +189,7 @@ function main(): void {
       referenceYear: year,
       sourceUrl: "https://iepsdata.org.br/",
       municipalities: Object.keys(data).length,
-      sourceManifest: {
-        acquisitionMethod: csvExists ? "manual_csv_export" : "existing_json_preserved",
-        sourceFile: csvExists ? "scripts/data/ieps_export.csv" : null,
-        sourceFileHash: csvExists
-          ? createHash("sha256").update(readFileSync(csvPath)).digest("hex")
-          : null,
-        operator: os.userInfo().username,
-      },
+      acquisitionMethod: csvExists ? "manual_csv_export" : "existing_json_preserved",
     },
     ...data,
   };

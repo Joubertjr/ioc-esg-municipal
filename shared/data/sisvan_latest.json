@@ -1420,9 +1420,10 @@
     "sobrepeso_infantil": 5.9
   },
   "__meta": {
-    "lastUpdated": "2026-04-13T16:34:04.764Z",
+    "lastUpdated": "2026-07-02T02:54:03.826Z",
     "referenceYear": 2023,
     "sourceUrl": "https://opendatasus.saude.gov.br/dataset/sisvan-estado-nutricional",
-    "municipalities": 284
+    "municipalities": 284,
+    "acquisitionMethod": "existing_json_preserved"
   }
 }

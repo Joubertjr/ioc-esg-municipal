@@ -1475,9 +1475,10 @@
     "populacao": 39604
   },
   "__meta": {
-    "lastUpdated": "2026-04-13T16:34:37.124Z",
+    "lastUpdated": "2026-07-02T02:54:34.938Z",
     "referenceYear": 2023,
     "sourceUrl": "https://dadosabertos.aneel.gov.br/",
-    "municipalities": 295
+    "municipalities": 295,
+    "acquisitionMethod": "existing_json_preserved"
   }
 }

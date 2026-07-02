@@ -17,10 +17,8 @@
  */
 
 import { writeFileSync, readFileSync, existsSync } from "node:fs";
-import { createHash } from "node:crypto";
 import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import os from "node:os";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -66,7 +64,21 @@ function main(): void {
 
   let data: Record<string, SnisEntry>;
 
-  try {
+  if (!existsSync(csvPath)) {
+    console.log(`[update-snis] CSV não encontrado em ${csvPath}`);
+    console.log("[update-snis] Para atualizar com dados novos:");
+    console.log("  1. Acesse http://app4.mdr.gov.br/serieHistorica/");
+    console.log("  2. Selecione: Água e Esgoto > Municipal > SC > Todos");
+    console.log("  3. Indicadores: IN023, IN056, IN046, IN049");
+    console.log("  4. Exporte CSV e salve em scripts/data/snis_export.csv");
+    console.log("[update-snis] Mantendo dados existentes.");
+
+    const existing: Record<string, unknown> = JSON.parse(
+      readFileSync(OUTPUT_PATH, "utf-8"),
+    ) as Record<string, unknown>;
+    const { __meta: _, ...entries } = existing;
+    data = entries as Record<string, SnisEntry>;
+  } else {
     const csv = readFileSync(csvPath, "utf-8");
     const lines = csv.split("\n").filter((l) => l.trim());
     const header = lines[0].split(";").map((h) => h.trim().toLowerCase());
@@ -99,15 +111,6 @@ function main(): void {
     }
 
     console.log(`[update-snis] Parsed ${Object.keys(data).length} municípios SC do CSV`);
-  } catch {
-    console.log(`[update-snis] CSV não encontrado em ${csvPath}`);
-    console.log("[update-snis] Mantendo dados existentes, adicionando apenas __meta");
-
-    const existing: Record<string, unknown> = JSON.parse(
-      readFileSync(OUTPUT_PATH, "utf-8"),
-    ) as Record<string, unknown>;
-    const { __meta: _, ...entries } = existing;
-    data = entries as Record<string, SnisEntry>;
   }
 
   // Validação Zod antes de gravar — garante compatibilidade com o collector
@@ -128,14 +131,7 @@ function main(): void {
       referenceYear: year,
       sourceUrl: "http://app4.mdr.gov.br/serieHistorica/",
       municipalities: Object.keys(data).length,
-      sourceManifest: {
-        acquisitionMethod: csvExists ? "manual_csv_export" : "existing_json_preserved",
-        sourceFile: csvExists ? "scripts/data/snis_export.csv" : null,
-        sourceFileHash: csvExists
-          ? createHash("sha256").update(readFileSync(csvPath)).digest("hex")
-          : null,
-        operator: os.userInfo().username,
-      },
+      acquisitionMethod: csvExists ? "manual_csv_export" : "existing_json_preserved",
     },
     ...data,
   };
