@@ -1,0 +1,676 @@
+{
+  "__meta": {
+    "lastUpdated": "2026-07-02T05:04:01.688Z",
+    "source": "extrata_coleta_db",
+    "sourceUrl": "https://transferegov.gestao.gov.br/",
+    "acquisitionMethod": "postgresql_direct_query"
+  },
+  "programasAbertos": [
+    {
+      "nome": "Fomento ao Setor Agropecuário - Propostas Voluntárias - Termo de Fomento",
+      "orgaoSuperior": "MINISTÉRIO DA AGRICULTURA E PECUÁRIA",
+      "modalidade": "TERMO DE FOMENTO",
+      "inicioJanela": "2026-02-09",
+      "fimJanela": "2026-12-31",
+      "acaoOrcamentaria": "114420ZV",
+      "naturezaJuridica": "Organização da Sociedade Civil"
+    },
+    {
+      "nome": "Ações da Diretoria de Articulação e Inovação em Educação Aberta (DIEA) da Capes - PROEB e Inovação Tecnológica",
+      "orgaoSuperior": "MINISTERIO DA EDUCACAO",
+      "modalidade": "CONVENIO",
+      "inicioJanela": "2026-03-10",
+      "fimJanela": "2026-12-31",
+      "acaoOrcamentaria": "000020RJ",
+      "naturezaJuridica": "Administração Pública Municipal"
+    },
+    {
+      "nome": "Programa Nacional de Modernização e Apoio à Produção Agrícola - PROMAQ",
+      "orgaoSuperior": "MINISTÉRIO DA AGRICULTURA E PECUÁRIA",
+      "modalidade": "TERMO DE COMPROMISSO",
+      "inicioJanela": "2026-02-11",
+      "fimJanela": "2026-12-31",
+      "acaoOrcamentaria": "114420ZV",
+      "naturezaJuridica": "Administração Pública Municipal"
+    },
+    {
+      "nome": "Ações da Diretoria de Articulação e Inovação em Educação Aberta (DIEA) da Capes",
+      "orgaoSuperior": "MINISTERIO DA EDUCACAO",
+      "modalidade": "TERMO DE FOMENTO",
+      "inicioJanela": "2026-01-16",
+      "fimJanela": "2026-12-31",
+      "acaoOrcamentaria": "000020RJ",
+      "naturezaJuridica": "Organização da Sociedade Civil"
+    },
+    {
+      "nome": "Ações da Diretoria de Articulação e Inovação em Educação Aberta (DIEA) da Capes - Sistema UAB",
+      "orgaoSuperior": "MINISTERIO DA EDUCACAO",
+      "modalidade": "CONVENIO",
+      "inicioJanela": "2026-03-10",
+      "fimJanela": "2026-12-31",
+      "acaoOrcamentaria": "000020RJ",
+      "naturezaJuridica": "Administração Pública Estadual ou do Distrito Federal"
+    },
+    {
+      "nome": "Programa Nacional de Estradas Rurais - PRONER",
+      "orgaoSuperior": "MINISTÉRIO DA AGRICULTURA E PECUÁRIA",
+      "modalidade": "CONVENIO",
+      "inicioJanela": "2026-02-11",
+      "fimJanela": "2026-12-31",
+      "acaoOrcamentaria": "114420ZV",
+      "naturezaJuridica": "Consórcio Público"
+    },
+    {
+      "nome": "Fomento ao Setor Agropecuário - Proposta Voluntária -  Obras de Fomento",
+      "orgaoSuperior": "MINISTÉRIO DA AGRICULTURA E PECUÁRIA",
+      "modalidade": "CONTRATO DE REPASSE",
+      "inicioJanela": "2026-02-10",
+      "fimJanela": "2026-12-31",
+      "acaoOrcamentaria": "114420ZV",
+      "naturezaJuridica": "Administração Pública Municipal"
+    },
+    {
+      "nome": "Fomento ao Setor Agropecuário - Propostas Voluntárias",
+      "orgaoSuperior": "MINISTÉRIO DA AGRICULTURA E PECUÁRIA",
+      "modalidade": "CONVENIO OU CONTRATO DE REPASSE",
+      "inicioJanela": "2026-02-09",
+      "fimJanela": "2026-12-31",
+      "acaoOrcamentaria": "114420ZV",
+      "naturezaJuridica": "Administração Pública Municipal"
+    },
+    {
+      "nome": "Programa Brasileiro de Professores no CERN",
+      "orgaoSuperior": "MINISTERIO DA EDUCACAO",
+      "modalidade": "TERMO DE FOMENTO",
+      "inicioJanela": "2026-01-02",
+      "fimJanela": "2026-12-31",
+      "acaoOrcamentaria": "000020RJ",
+      "naturezaJuridica": "Organização da Sociedade Civil"
+    },
+    {
+      "nome": "Programa SIMEC/PAR",
+      "orgaoSuperior": "MINISTERIO DA EDUCACAO",
+      "modalidade": "TERMO DE COMPROMISSO",
+      "inicioJanela": "2026-01-02",
+      "fimJanela": "2026-12-31",
+      "acaoOrcamentaria": "000020RP",
+      "naturezaJuridica": "Administração Pública Municipal"
+    },
+    {
+      "nome": "Proposta do Programa Nacional de Fomento à Gestão e Emissão da Carteira de Identidade Nacional – ProCIN 2",
+      "orgaoSuperior": "MGI - MINISTÉRIO DA GESTÃO E DA INOVAÇÃO EM SERVIÇOS PÚBLICOS",
+      "modalidade": "CONTRATO DE REPASSE",
+      "inicioJanela": "2026-02-23",
+      "fimJanela": "2026-07-31",
+      "acaoOrcamentaria": "21H50000",
+      "naturezaJuridica": "Administração Pública Estadual ou do Distrito Federal"
+    },
+    {
+      "nome": "Ação 00SX - Apoio a Projetos de Desenvolvimento Sustentável Local Integrado - RP2",
+      "orgaoSuperior": "MINISTÉRIO DA INTEGRAÇÃO E DO DESENVOLVIMENTO REGIONAL",
+      "modalidade": "CONVENIO",
+      "inicioJanela": "2026-02-19",
+      "fimJanela": "2026-07-30",
+      "acaoOrcamentaria": "231700SX",
+      "naturezaJuridica": "Consórcio Público"
+    },
+    {
+      "nome": "Ação 214S - Rotas de Integração Nacional - RP2",
+      "orgaoSuperior": "MINISTÉRIO DA INTEGRAÇÃO E DO DESENVOLVIMENTO REGIONAL",
+      "modalidade": "CONVENIO",
+      "inicioJanela": "2026-02-19",
+      "fimJanela": "2026-07-30",
+      "acaoOrcamentaria": "2317214S",
+      "naturezaJuridica": "Empresa pública/Sociedade de economia mista"
+    },
+    {
+      "nome": "Edital_FNMA/SQA - 1041.00UD – Iniciativa Arborizacidades – Apoio a municípios para o fortalecimento da arborização urbana e a redução do calor urbano extremo",
+      "orgaoSuperior": "MINISTERIO DO MEIO AMBIENTE",
+      "modalidade": "CONVENIO",
+      "inicioJanela": "2026-05-07",
+      "fimJanela": "2026-07-06",
+      "acaoOrcamentaria": "104100UD",
+      "naturezaJuridica": "Administração Pública Municipal"
+    },
+    {
+      "nome": "Capacitação empreendedora, educação empreendedora e inclusão socioprodutiva",
+      "orgaoSuperior": "MINISTÉRIO DO EMPREENDEDORISMO, DA MICROEMPRESA E DA EMPRESA DE PEQUENO PORTE",
+      "modalidade": "CONVENIO",
+      "inicioJanela": "2026-06-24",
+      "fimJanela": "2026-06-30",
+      "acaoOrcamentaria": "210C0000",
+      "naturezaJuridica": "Administração Pública Municipal"
+    },
+    {
+      "nome": "Programa 2319 - Acao 00T1 - Transferencia de recurusos do Ministerio dos Transportes para o Ministerio das Cidades - RP 2",
+      "orgaoSuperior": "MINISTERIO DAS CIDADES",
+      "modalidade": "CONTRATO DE REPASSE",
+      "inicioJanela": null,
+      "fimJanela": null,
+      "acaoOrcamentaria": "221900T1",
+      "naturezaJuridica": "Administração Pública Municipal"
+    },
+    {
+      "nome": "NOVO PAC PATRIMÔNIO CULTURAL - OBRAS 2026",
+      "orgaoSuperior": "MINISTERIO DA CULTURA",
+      "modalidade": "TERMO DE COMPROMISSO",
+      "inicioJanela": null,
+      "fimJanela": null,
+      "acaoOrcamentaria": "00005538",
+      "naturezaJuridica": "Administração Pública Estadual ou do Distrito Federal"
+    },
+    {
+      "nome": "Implementação da Escola Estadual de Socioeducação (EES).",
+      "orgaoSuperior": "MINISTERIO DOS DIREITOS HUMANOS E CIDADANIA",
+      "modalidade": "CONVENIO",
+      "inicioJanela": null,
+      "fimJanela": null,
+      "acaoOrcamentaria": "21G00001",
+      "naturezaJuridica": "Consórcio Público"
+    },
+    {
+      "nome": "Promoção e Apoio ao Desenvolvimento do Futebol Masculino e Feminino - Convênio (RP 2) - SNFDT",
+      "orgaoSuperior": "MINISTERIO DO ESPORTE",
+      "modalidade": "CONVENIO",
+      "inicioJanela": null,
+      "fimJanela": null,
+      "acaoOrcamentaria": "502620JO",
+      "naturezaJuridica": "Administração Pública Municipal"
+    },
+    {
+      "nome": "ATENÇÃO ESPECIALIZADA À SAÚDE - REDE DE ATENÇÃO HOSPITALAR - HOSPITAL GERAL",
+      "orgaoSuperior": "MINISTERIO DA SAUDE",
+      "modalidade": "CONTRATO DE REPASSE",
+      "inicioJanela": null,
+      "fimJanela": null,
+      "acaoOrcamentaria": "51188535",
+      "naturezaJuridica": "Administração Pública Municipal"
+    },
+    {
+      "nome": "Fundo Nacional de Investimento em Infraestrutura Social – FIIS",
+      "orgaoSuperior": "MINISTERIO DA SAUDE",
+      "modalidade": "TERMO DE COMPROMISSO",
+      "inicioJanela": null,
+      "fimJanela": null,
+      "acaoOrcamentaria": "00000000",
+      "naturezaJuridica": "Consórcio Público"
+    },
+    {
+      "nome": "Programa Selo Verde Brasil",
+      "orgaoSuperior": "MINISTÉRIO DO DESENVOLVIMENTO, INDÚSTRIA, COMÉRCIO E SERVIÇOS",
+      "modalidade": "CONVENIO",
+      "inicioJanela": null,
+      "fimJanela": null,
+      "acaoOrcamentaria": "21FH0000",
+      "naturezaJuridica": "Organização da Sociedade Civil"
+    },
+    {
+      "nome": "Fomento a Eventos Turísticos - Emendas Parlamentares de Comissão",
+      "orgaoSuperior": "MINISTERIO DO TURISMO",
+      "modalidade": "CONVENIO",
+      "inicioJanela": null,
+      "fimJanela": null,
+      "acaoOrcamentaria": "232320Y3",
+      "naturezaJuridica": "Administração Pública Estadual ou do Distrito Federal"
+    },
+    {
+      "nome": "Ações de Alto Rendimento e Promoção de Eventos",
+      "orgaoSuperior": "MINISTERIO DO ESPORTE",
+      "modalidade": "CONVENIO",
+      "inicioJanela": null,
+      "fimJanela": null,
+      "acaoOrcamentaria": "5126216T",
+      "naturezaJuridica": "Administração Pública Estadual ou do Distrito Federal"
+    },
+    {
+      "nome": "Novo PAC - Contenção de Encostas - FIN",
+      "orgaoSuperior": "MINISTERIO DAS CIDADES",
+      "modalidade": "TERMO DE COMPROMISSO",
+      "inicioJanela": null,
+      "fimJanela": null,
+      "acaoOrcamentaria": "PACFIN25",
+      "naturezaJuridica": "Consórcio Público"
+    },
+    {
+      "nome": "Fomento a Eventos Turísticos - Recurso de Programação",
+      "orgaoSuperior": "MINISTERIO DO TURISMO",
+      "modalidade": "CONVENIO",
+      "inicioJanela": null,
+      "fimJanela": null,
+      "acaoOrcamentaria": "202620Y3",
+      "naturezaJuridica": "Administração Pública Municipal"
+    },
+    {
+      "nome": "ESTRUTURACAO DA REDE DE SERVICOS DO SISTEMA UNICO DE ASSISTENCIA SOCIAL (SUAS) - POLITICAS PUBLICAS",
+      "orgaoSuperior": "MINISTÉRIO DO DESENVOLVIMENTO E ASSISTÊNCIA SOCIAL, FAMÍLIA E COMBATE FOME",
+      "modalidade": "CONTRATO DE REPASSE",
+      "inicioJanela": null,
+      "fimJanela": null,
+      "acaoOrcamentaria": "5031219G",
+      "naturezaJuridica": "Administração Pública Estadual ou do Distrito Federal"
+    },
+    {
+      "nome": "SNSH - 2321- Recursos Hídricos: Água em Quantidade e Qualidade para sempre - AÇÃO 5900 - NOVO PAC",
+      "orgaoSuperior": "MINISTÉRIO DA INTEGRAÇÃO E DO DESENVOLVIMENTO REGIONAL",
+      "modalidade": "TERMO DE COMPROMISSO",
+      "inicioJanela": null,
+      "fimJanela": null,
+      "acaoOrcamentaria": "23215900",
+      "naturezaJuridica": "Administração Pública Estadual ou do Distrito Federal"
+    },
+    {
+      "nome": "Fundo de Investimento em Infraestrutura Social (FIIS)",
+      "orgaoSuperior": "MINISTERIO DA EDUCACAO",
+      "modalidade": "TERMO DE COMPROMISSO",
+      "inicioJanela": null,
+      "fimJanela": null,
+      "acaoOrcamentaria": "00000000",
+      "naturezaJuridica": "Administração Pública Estadual ou do Distrito Federal"
+    },
+    {
+      "nome": "5120 - Pesquisa, Desenvolvimento, Inovação, Produção e Avaliação de Tecnologias em Saúde",
+      "orgaoSuperior": "MINISTERIO DA SAUDE",
+      "modalidade": "CONVENIO",
+      "inicioJanela": null,
+      "fimJanela": null,
+      "acaoOrcamentaria": "51208636",
+      "naturezaJuridica": "Administração Pública Estadual ou do Distrito Federal"
+    },
+    {
+      "nome": "5133 - Segurança Alimentar e Nutricional e Combate à Fome",
+      "orgaoSuperior": "MINISTÉRIO DO DESENVOLVIMENTO E ASSISTÊNCIA SOCIAL, FAMÍLIA E COMBATE FOME",
+      "modalidade": "TERMO DE FOMENTO",
+      "inicioJanela": null,
+      "fimJanela": null,
+      "acaoOrcamentaria": "51332784",
+      "naturezaJuridica": "Organização da Sociedade Civil"
+    },
+    {
+      "nome": "Fomento a Eventos Turísticos - Emendas Parlamentares de Comissão",
+      "orgaoSuperior": "MINISTERIO DO TURISMO",
+      "modalidade": "CONVENIO",
+      "inicioJanela": null,
+      "fimJanela": null,
+      "acaoOrcamentaria": "232320Y3",
+      "naturezaJuridica": "Administração Pública Municipal"
+    },
+    {
+      "nome": "ATENÇÃO ESPECIALIZADA À SAÚDE - REDE ALYNE - MATERNIDADE",
+      "orgaoSuperior": "MINISTERIO DA SAUDE",
+      "modalidade": "CONTRATO DE REPASSE",
+      "inicioJanela": null,
+      "fimJanela": null,
+      "acaoOrcamentaria": "51188535",
+      "naturezaJuridica": "Administração Pública Estadual ou do Distrito Federal"
+    },
+    {
+      "nome": "5133 - Segurança Alimentar e Nutricional e Combate à Fome",
+      "orgaoSuperior": "MINISTÉRIO DO DESENVOLVIMENTO E ASSISTÊNCIA SOCIAL, FAMÍLIA E COMBATE FOME",
+      "modalidade": "TERMO DE FOMENTO",
+      "inicioJanela": null,
+      "fimJanela": null,
+      "acaoOrcamentaria": "51332784",
+      "naturezaJuridica": "Organização da Sociedade Civil"
+    },
+    {
+      "nome": "SNSH - 2321 - Recursos Hídricos - Água para Todos - Infraestrutura Hídrica - Ação 21DE - Novo PAC",
+      "orgaoSuperior": "MINISTÉRIO DA INTEGRAÇÃO E DO DESENVOLVIMENTO REGIONAL",
+      "modalidade": "TERMO DE COMPROMISSO",
+      "inicioJanela": null,
+      "fimJanela": null,
+      "acaoOrcamentaria": "232121DE",
+      "naturezaJuridica": "Empresa pública/Sociedade de economia mista"
+    },
+    {
+      "nome": "APOIO A PROJETOS DE INFRAESTRUTURA TURÍSTICA - CONTRATO DE REPASSE - PROPONENTE ESPECIFICO",
+      "orgaoSuperior": "MINISTERIO DO TURISMO",
+      "modalidade": "CONTRATO DE REPASSE",
+      "inicioJanela": null,
+      "fimJanela": null,
+      "acaoOrcamentaria": "232310V0",
+      "naturezaJuridica": "Administração Pública Estadual ou do Distrito Federal"
+    },
+    {
+      "nome": "Funcionamento de Instituições Federais de Ensino Superior",
+      "orgaoSuperior": "MINISTERIO DA EDUCACAO",
+      "modalidade": "CONVENIO",
+      "inicioJanela": null,
+      "fimJanela": null,
+      "acaoOrcamentaria": "20RK0043",
+      "naturezaJuridica": "Organização da Sociedade Civil"
+    },
+    {
+      "nome": "Ação 00SX - Apoio a Projetos de Desenvolvimento Sustentável Local Integrado - Decisão Judicial - Convênio",
+      "orgaoSuperior": "MINISTÉRIO DA INTEGRAÇÃO E DO DESENVOLVIMENTO REGIONAL",
+      "modalidade": "CONVENIO",
+      "inicioJanela": null,
+      "fimJanela": null,
+      "acaoOrcamentaria": "231700SX",
+      "naturezaJuridica": "Administração Pública Municipal"
+    },
+    {
+      "nome": "5120 - Pesquisa, Desenvolvimento, Inovação, Produção e Avaliação de Tecnologias em Saúde",
+      "orgaoSuperior": "MINISTERIO DA SAUDE",
+      "modalidade": "CONVENIO",
+      "inicioJanela": null,
+      "fimJanela": null,
+      "acaoOrcamentaria": "51208636",
+      "naturezaJuridica": "Organização da Sociedade Civil"
+    },
+    {
+      "nome": "Desenvolvimento de indicadores de impacto das universidades em inovação tecnológica",
+      "orgaoSuperior": "MINISTERIO DA EDUCACAO",
+      "modalidade": "CONVENIO",
+      "inicioJanela": null,
+      "fimJanela": null,
+      "acaoOrcamentaria": "511320RN",
+      "naturezaJuridica": "Organização da Sociedade Civil"
+    },
+    {
+      "nome": "Ação 20YA - Apoio a Projetos de Excelência Esportiva nas fases de Especialização e Aperfeiçoamento - Programa Revelar Talentos (Termo de Fomento)",
+      "orgaoSuperior": "MINISTERIO DO ESPORTE",
+      "modalidade": "TERMO DE FOMENTO",
+      "inicioJanela": null,
+      "fimJanela": null,
+      "acaoOrcamentaria": "512620YA",
+      "naturezaJuridica": "Organização da Sociedade Civil"
+    },
+    {
+      "nome": "Qualificação no Turismo - RP2",
+      "orgaoSuperior": "MINISTERIO DO TURISMO",
+      "modalidade": "CONVENIO",
+      "inicioJanela": null,
+      "fimJanela": null,
+      "acaoOrcamentaria": "232321FN",
+      "naturezaJuridica": "Administração Pública Estadual ou do Distrito Federal"
+    },
+    {
+      "nome": "Ação 216T - Apoio a projetos de Excelência Esportiva nas fases de Alto Rendimento e Transição de Carreira (Termo de Fomento)",
+      "orgaoSuperior": "MINISTERIO DO ESPORTE",
+      "modalidade": "TERMO DE FOMENTO",
+      "inicioJanela": null,
+      "fimJanela": null,
+      "acaoOrcamentaria": "5126216T",
+      "naturezaJuridica": "Organização da Sociedade Civil"
+    },
+    {
+      "nome": "Novo PAC - Mobilidade Urbana Sustentável - Renovação de Frota",
+      "orgaoSuperior": "MINISTERIO DAS CIDADES",
+      "modalidade": "TERMO DE COMPROMISSO",
+      "inicioJanela": null,
+      "fimJanela": null,
+      "acaoOrcamentaria": "PACFIN26",
+      "naturezaJuridica": "Administração Pública Estadual ou do Distrito Federal"
+    },
+    {
+      "nome": "Promoção e Fomento à Cultura Brasileira - Desenvolvimento e execução do projeto Centro de Pesquisa e Memória do Teatro de Arena e da Cena Ativista do Brasil - 2ª Fase - RP2 - Ação 202720ZF",
+      "orgaoSuperior": "MINISTERIO DA CULTURA",
+      "modalidade": "TERMO DE FOMENTO",
+      "inicioJanela": null,
+      "fimJanela": null,
+      "acaoOrcamentaria": "202720ZF",
+      "naturezaJuridica": "Organização da Sociedade Civil"
+    },
+    {
+      "nome": "Novo PAC - Periferia Viva Urbanização de Favelas",
+      "orgaoSuperior": "MINISTERIO DAS CIDADES",
+      "modalidade": "TERMO DE COMPROMISSO",
+      "inicioJanela": null,
+      "fimJanela": null,
+      "acaoOrcamentaria": "00T2FGTS",
+      "naturezaJuridica": "Administração Pública Estadual ou do Distrito Federal"
+    },
+    {
+      "nome": "5120 - Pesquisa, Desenvolvimento, Inovação, Produção e Avaliação de Tecnologias em Saúde",
+      "orgaoSuperior": "MINISTERIO DA SAUDE",
+      "modalidade": "CONVENIO",
+      "inicioJanela": null,
+      "fimJanela": null,
+      "acaoOrcamentaria": "51208636",
+      "naturezaJuridica": "Administração Pública Estadual ou do Distrito Federal"
+    },
+    {
+      "nome": "Programa 2319 - Mobilidade Urbana - Acao 00T1 - RP3 - Ponte Aracaju a Barra dos Coqueiros",
+      "orgaoSuperior": "MINISTERIO DAS CIDADES",
+      "modalidade": "TERMO DE COMPROMISSO",
+      "inicioJanela": null,
+      "fimJanela": null,
+      "acaoOrcamentaria": "231900T1",
+      "naturezaJuridica": "Administração Pública Estadual ou do Distrito Federal"
+    },
+    {
+      "nome": "OPERAÇÃO ACOLHIDA",
+      "orgaoSuperior": "MINISTÉRIO DO DESENVOLVIMENTO E ASSISTÊNCIA SOCIAL, FAMÍLIA E COMBATE FOME",
+      "modalidade": "TERMO DE COLABORACAO",
+      "inicioJanela": null,
+      "fimJanela": null,
+      "acaoOrcamentaria": "513121H0",
+      "naturezaJuridica": "Organização da Sociedade Civil"
+    },
+    {
+      "nome": "Escola Internacional de Verão do Futuro Edgar Morin",
+      "orgaoSuperior": "MINISTERIO DA EDUCACAO",
+      "modalidade": "CONVENIO",
+      "inicioJanela": null,
+      "fimJanela": null,
+      "acaoOrcamentaria": "60037H17",
+      "naturezaJuridica": "Organização da Sociedade Civil"
+    },
+    {
+      "nome": "Centro de Formação em Educação Quilombola do Tocantins (CFEQTO)",
+      "orgaoSuperior": "MINISTERIO DA EDUCACAO",
+      "modalidade": "CONVENIO",
+      "inicioJanela": null,
+      "fimJanela": null,
+      "acaoOrcamentaria": "511120RJ",
+      "naturezaJuridica": "Organização da Sociedade Civil"
+    },
+    {
+      "nome": "5120 - Pesquisa, Desenvolvimento, Inovação, Produção e Avaliação de Tecnologias em Saúde",
+      "orgaoSuperior": "MINISTERIO DA SAUDE",
+      "modalidade": "CONVENIO",
+      "inicioJanela": null,
+      "fimJanela": null,
+      "acaoOrcamentaria": "512020K7",
+      "naturezaJuridica": "Organização da Sociedade Civil"
+    },
+    {
+      "nome": "Funcionamento de Instituições Federais de Ensino Superior",
+      "orgaoSuperior": "MINISTERIO DA EDUCACAO",
+      "modalidade": "CONVENIO",
+      "inicioJanela": null,
+      "fimJanela": null,
+      "acaoOrcamentaria": "20RK0043",
+      "naturezaJuridica": "Organização da Sociedade Civil"
+    },
+    {
+      "nome": "Funcionamento de Instituições Federais de Ensino Superior",
+      "orgaoSuperior": "MINISTERIO DA EDUCACAO",
+      "modalidade": "CONVENIO",
+      "inicioJanela": null,
+      "fimJanela": null,
+      "acaoOrcamentaria": "20RK0043",
+      "naturezaJuridica": "Organização da Sociedade Civil"
+    },
+    {
+      "nome": "Novo PAC - Mobilidade Urbana Sustentável",
+      "orgaoSuperior": "MINISTERIO DAS CIDADES",
+      "modalidade": "TERMO DE COMPROMISSO",
+      "inicioJanela": null,
+      "fimJanela": null,
+      "acaoOrcamentaria": "231900T3",
+      "naturezaJuridica": "Empresa pública/Sociedade de economia mista"
+    },
+    {
+      "nome": "Funcionamento de Instituições Federais de Ensino Superior",
+      "orgaoSuperior": "MINISTERIO DA EDUCACAO",
+      "modalidade": "CONVENIO",
+      "inicioJanela": null,
+      "fimJanela": null,
+      "acaoOrcamentaria": "20RK0043",
+      "naturezaJuridica": "Organização da Sociedade Civil"
+    },
+    {
+      "nome": "Fomento ao Setor Agropecuário - Proponente Específico",
+      "orgaoSuperior": "MINISTÉRIO DA AGRICULTURA E PECUÁRIA",
+      "modalidade": "CONVENIO OU CONTRATO DE REPASSE",
+      "inicioJanela": null,
+      "fimJanela": null,
+      "acaoOrcamentaria": "114420ZV",
+      "naturezaJuridica": "Administração Pública Municipal"
+    },
+    {
+      "nome": "Ação 00VA - Apoio à Implantação de Tecnologias de Acesso à Água - RP2",
+      "orgaoSuperior": "MINISTÉRIO DA INTEGRAÇÃO E DO DESENVOLVIMENTO REGIONAL",
+      "modalidade": "CONVENIO",
+      "inicioJanela": null,
+      "fimJanela": null,
+      "acaoOrcamentaria": "231700VA",
+      "naturezaJuridica": "Administração Pública Municipal"
+    },
+    {
+      "nome": "Ação 00SX - Apoio a Projetos de Desenvolvimento Sustentável Local Integrado - RP8 - CINDRE",
+      "orgaoSuperior": "MINISTÉRIO DA INTEGRAÇÃO E DO DESENVOLVIMENTO REGIONAL",
+      "modalidade": "CONVENIO",
+      "inicioJanela": null,
+      "fimJanela": null,
+      "acaoOrcamentaria": "231700SX",
+      "naturezaJuridica": "Administração Pública Estadual ou do Distrito Federal"
+    },
+    {
+      "nome": "Fundo Nacional de Investimento em Infraestrutura Social – FIIS",
+      "orgaoSuperior": "MINISTERIO DA SAUDE",
+      "modalidade": "TERMO DE COMPROMISSO",
+      "inicioJanela": null,
+      "fimJanela": null,
+      "acaoOrcamentaria": "00000000",
+      "naturezaJuridica": "Administração Pública Municipal"
+    },
+    {
+      "nome": "Novo PAC - Abastecimento de Água - FIN",
+      "orgaoSuperior": "MINISTERIO DAS CIDADES",
+      "modalidade": "TERMO DE COMPROMISSO",
+      "inicioJanela": null,
+      "fimJanela": null,
+      "acaoOrcamentaria": "PACFIN25",
+      "naturezaJuridica": "Empresa pública/Sociedade de economia mista"
+    },
+    {
+      "nome": "Novo PAC - Prevenção a desastres - Drenagem Urbana - FIN",
+      "orgaoSuperior": "MINISTERIO DAS CIDADES",
+      "modalidade": "TERMO DE COMPROMISSO",
+      "inicioJanela": null,
+      "fimJanela": null,
+      "acaoOrcamentaria": "PACFIN25",
+      "naturezaJuridica": "Administração Pública Estadual ou do Distrito Federal"
+    },
+    {
+      "nome": "5663 - Autonomia Econ?mica das Mulheres",
+      "orgaoSuperior": "MINISTÉRIO DAS MULHERES",
+      "modalidade": "CONVENIO",
+      "inicioJanela": null,
+      "fimJanela": null,
+      "acaoOrcamentaria": "566321GG",
+      "naturezaJuridica": "Administração Pública Estadual ou do Distrito Federal"
+    },
+    {
+      "nome": "Novo PAC - Esgotamento Sanitário - FIN",
+      "orgaoSuperior": "MINISTERIO DAS CIDADES",
+      "modalidade": "TERMO DE COMPROMISSO",
+      "inicioJanela": null,
+      "fimJanela": null,
+      "acaoOrcamentaria": "PACFIN25",
+      "naturezaJuridica": "Consórcio Público"
+    },
+    {
+      "nome": "ATENÇÃO INTEGRAL À SAÚDE DA CRIANÇA - POLÍTICAS DE ATENÇÃO A SAÚDE DA CRIANÇA / ACAO 5119.21CE / CONVENIO / PROGRAMA",
+      "orgaoSuperior": "MINISTERIO DA SAUDE",
+      "modalidade": "CONVENIO",
+      "inicioJanela": null,
+      "fimJanela": null,
+      "acaoOrcamentaria": "511921CE",
+      "naturezaJuridica": "Organização da Sociedade Civil"
+    },
+    {
+      "nome": "Novo PAC - Resíduos Sólidos - FIN",
+      "orgaoSuperior": "MINISTERIO DAS CIDADES",
+      "modalidade": "TERMO DE COMPROMISSO",
+      "inicioJanela": null,
+      "fimJanela": null,
+      "acaoOrcamentaria": "PACFIN25",
+      "naturezaJuridica": "Empresa pública/Sociedade de economia mista"
+    },
+    {
+      "nome": "Novo PAC - Mobilidade Urbana Sustentável: Mobilidade Grandes e Médias Cidades",
+      "orgaoSuperior": "MINISTERIO DAS CIDADES",
+      "modalidade": "TERMO DE COMPROMISSO",
+      "inicioJanela": null,
+      "fimJanela": null,
+      "acaoOrcamentaria": "PACFIN26",
+      "naturezaJuridica": "Administração Pública Municipal"
+    },
+    {
+      "nome": "Programa Cidadania PoPRua",
+      "orgaoSuperior": "MINISTERIO DA EDUCACAO",
+      "modalidade": "CONVENIO",
+      "inicioJanela": null,
+      "fimJanela": null,
+      "acaoOrcamentaria": "00000000",
+      "naturezaJuridica": "Organização da Sociedade Civil"
+    },
+    {
+      "nome": "Ação 00SX - Apoio a Projetos de Desenvolvimento Sustentável Local Integrado - Decisão Judicial",
+      "orgaoSuperior": "MINISTÉRIO DA INTEGRAÇÃO E DO DESENVOLVIMENTO REGIONAL",
+      "modalidade": "CONTRATO DE REPASSE",
+      "inicioJanela": null,
+      "fimJanela": null,
+      "acaoOrcamentaria": "231700SX",
+      "naturezaJuridica": "Administração Pública Estadual ou do Distrito Federal"
+    },
+    {
+      "nome": "Atendimento de demanda judicial - Processo nº 0001844-33.2008.4.01.3300 - Município de Caem/BA",
+      "orgaoSuperior": "MINISTERIO DAS CIDADES",
+      "modalidade": "CONTRATO DE REPASSE",
+      "inicioJanela": null,
+      "fimJanela": null,
+      "acaoOrcamentaria": "221900T1",
+      "naturezaJuridica": "Administração Pública Municipal"
+    }
+  ],
+  "totalProgramasSC": 15947,
+  "totalEncerrados": 10774,
+  "totalAbertos": 70,
+  "programasPorOrgao": {
+    "MINISTERIO DA SAUDE": 1046,
+    "MINISTERIO DAS CIDADES": 895,
+    "MINISTERIO DA CULTURA": 280,
+    "MINISTÉRIO DO DESENVOLVIMENTO E ASSISTÊNCIA SOCIAL, FAMÍLIA E COMBATE FOME": 274,
+    "MINISTÉRIO DA INTEGRAÇÃO E DO DESENVOLVIMENTO REGIONAL": 256,
+    "MINISTERIO DO ESPORTE": 242,
+    "MINISTERIO DOS DIREITOS HUMANOS E CIDADANIA": 182,
+    "MINISTERIO DA JUSTICA E SEGURANCA PUBLICA": 171,
+    "MINISTÉRIO DA AGRICULTURA E PECUÁRIA": 169,
+    "PRESIDENCIA DA REPÚBLICA": 160,
+    "MINISTÉRIO DO DESENVOLVIMENTO AGRÁRIO E AGRICULTURA FAMILIAR": 158,
+    "MINISTERIO DO TURISMO": 150,
+    "SEC.ESPEC.DE AGRIC.FAMIL.E DO DESENV.AGRARIO": 143,
+    "MINISTÉRIO DA CIÊNCIA, TECNOLOGIA E INOVAÇÃO": 63,
+    "MINISTERIO DO MEIO AMBIENTE": 63,
+    "MINISTERIO DA DEFESA": 63,
+    "MINISTERIO DO TRABALHO E EMPREGO": 58,
+    "MINISTÉRIO DA PESCA E AQUICULTURA": 54,
+    "MINISTERIO DA EDUCACAO": 46,
+    "MINISTÉRIO DA IGUALDADE RACIAL": 37,
+    "MINISTÉRIO DAS MULHERES": 33,
+    "MINISTÉRIO DO DESENVOLVIMENTO, INDÚSTRIA, COMÉRCIO E SERVIÇOS": 18,
+    "MINISTERIO DA INFRAESTRUTURA": 17,
+    "MINISTERIO DE MINAS E ENERGIA": 12,
+    "MINISTERIO DAS COMUNICACOES": 10,
+    "MINISTÉRIO DO EMPREENDEDORISMO, DA MICROEMPRESA E DA EMPRESA DE PEQUENO PORTE": 7,
+    "MIN.DAS MULH., DA IG.RACIAL E DOS DIR.HUMANOS": 5,
+    "MINISTERIO DA ECONOMIA": 4,
+    "MINISTERIO DOS POVOS INDIGENAS": 3,
+    "MINISTÉRIO DE PORTOS E AEROPORTOS": 1,
+    "MINISTERIO DO PLANEJAMENTO, DESENVOLVIMENTO E GESTAO": 1
+  }
+}

@@ -56,6 +56,9 @@ export class ConveniosCollector {
         conveniosFederaisAtivos: entry.conveniosFederaisAtivos,
         pctOrcamentoConvenios: entry.pctOrcamentoConvenios,
         consorciosIntermunicipais: entry.consorciosIntermunicipais,
+        valorTotalRepasse: entry.valorTotalRepasse ?? null,
+        valorTotalDesembolsado: entry.valorTotalDesembolsado ?? null,
+        valorTotalGlobal: entry.valorTotalGlobal ?? null,
       },
     };
   }

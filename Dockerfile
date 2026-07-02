@@ -88,7 +88,7 @@ RUN for i in 1 2 3; do \
 # Copia manifests do frontend e instala suas deps
 COPY frontend/package.json frontend/pnpm-lock.yaml ./frontend/
 RUN for i in 1 2 3; do \
-      cd frontend && pnpm install --frozen-lockfile --ignore-scripts && break || \
+      cd frontend && pnpm install --frozen-lockfile && break || \
       { echo "pnpm install (frontend) attempt $i failed, retrying..."; sleep 5; }; \
     done
 

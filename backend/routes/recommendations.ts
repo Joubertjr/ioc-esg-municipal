@@ -2,6 +2,7 @@ import { Router, type Request, type Response, type Router as RouterType } from "
 import { z } from "zod";
 import { generateRecommendations } from "../services/recommendations/recommendation_service.js";
 import { computeRecommendedScenario } from "../services/recommendations/scenario_service.js";
+import { TransfereGovCollector } from "../agents/transferegov/transferegov_collector.js";
 import { requireMunicipalityScope } from "../middleware/auth.js";
 import { logger } from "../utils/logger.js";
 
@@ -10,6 +11,30 @@ const router: RouterType = Router();
 const ibgeCodeSchema = z
   .string()
   .regex(/^\d{7}$/, "ibgeCode deve ter exatamente 7 dígitos numéricos");
+
+/**
+ * GET /api/recommendations/oportunidades
+ * Lista programas federais abertos para municípios de SC no TransfereGov.
+ * Registrada ANTES das rotas com :ibgeCode para evitar conflito de params.
+ */
+router.get("/oportunidades", async (_req: Request, res: Response) => {
+  try {
+    const collector = new TransfereGovCollector();
+    const summary = collector.getSummary();
+
+    if (!summary) {
+      res.status(503).json({ error: "Dados do TransfereGov não disponíveis" });
+      return;
+    }
+
+    res.json(summary);
+  } catch (error) {
+    logger.error("[recommendations] erro ao buscar oportunidades TransfereGov", {
+      error: error instanceof Error ? error.message : String(error),
+    });
+    res.status(500).json({ error: "Erro interno ao buscar oportunidades" });
+  }
+});
 
 /**
  * GET /api/recommendations/:ibgeCode/scenario

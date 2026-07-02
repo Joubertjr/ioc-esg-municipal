@@ -40,7 +40,7 @@ export function mapToOdsIndicators(data: ConveniosMunicipalData): OdsIndicator[]
         score: scoreConvenios(ind.conveniosFederaisAtivos),
         referenceYear,
         referenceDate,
-      })
+      }),
     );
   }
 
@@ -55,7 +55,7 @@ export function mapToOdsIndicators(data: ConveniosMunicipalData): OdsIndicator[]
         score: scorePctOrcamento(ind.pctOrcamentoConvenios),
         referenceYear,
         referenceDate,
-      })
+      }),
     );
   }
 
@@ -70,7 +70,22 @@ export function mapToOdsIndicators(data: ConveniosMunicipalData): OdsIndicator[]
         score: scoreConsorcios(ind.consorciosIntermunicipais),
         referenceYear,
         referenceDate,
-      })
+      }),
+    );
+  }
+
+  // ODS 17 — Valor total desembolsado (capacidade de captação federal)
+  if (ind.valorTotalDesembolsado !== null && ind.valorTotalDesembolsado > 0) {
+    indicators.push(
+      makeIndicator({
+        municipalityId: ibgeCode,
+        odsNumber: 17,
+        indicatorName: "valor_desembolsado_federal",
+        value: ind.valorTotalDesembolsado,
+        score: scoreDesembolso(ind.valorTotalDesembolsado),
+        referenceYear,
+        referenceDate,
+      }),
     );
   }
 
@@ -116,6 +131,21 @@ function scoreConsorcios(n: number): number {
   if (n >= 5) return 100;
   if (n >= 2) return 50 + ((n - 2) / 3) * 50;
   return (n / 2) * 50;
+}
+
+/**
+ * Valor total desembolsado (R$) → score 0-100.
+ * Referência baseada na distribuição SC: mediana ~R$3M, P90 ~R$20M.
+ *
+ * >= 20M → 100
+ * >= 5M  → 50-100 (interpolação linear)
+ * < 5M   → 0-50  (interpolação linear)
+ */
+function scoreDesembolso(valor: number): number {
+  const milhoes = valor / 1_000_000;
+  if (milhoes >= 20) return 100;
+  if (milhoes >= 5) return 50 + ((milhoes - 5) / 15) * 50;
+  return (milhoes / 5) * 50;
 }
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────

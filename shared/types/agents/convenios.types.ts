@@ -6,6 +6,9 @@ export const ConveniosMunicipalEntrySchema = z.object({
   conveniosFederaisAtivos: z.number().int().min(0).nullable(),
   pctOrcamentoConvenios: z.number().min(0).max(100).nullable(),
   consorciosIntermunicipais: z.number().int().min(0).nullable(),
+  valorTotalRepasse: z.number().min(0).nullable().optional(),
+  valorTotalDesembolsado: z.number().min(0).nullable().optional(),
+  valorTotalGlobal: z.number().min(0).nullable().optional(),
 });
 
 export const ConveniosDataFileSchema = z.record(z.string(), ConveniosMunicipalEntrySchema);
@@ -25,7 +28,10 @@ export interface ConveniosMunicipalData {
 }
 
 export interface ConveniosIndicators {
-  conveniosFederaisAtivos: number | null;     // número de convênios ativos com a União
-  pctOrcamentoConvenios: number | null;       // % do orçamento municipal oriundo de convênios federais
-  consorciosIntermunicipais: number | null;   // número de consórcios intermunicipais em que participa
+  conveniosFederaisAtivos: number | null;
+  pctOrcamentoConvenios: number | null;
+  consorciosIntermunicipais: number | null;
+  valorTotalRepasse: number | null;
+  valorTotalDesembolsado: number | null;
+  valorTotalGlobal: number | null;
 }

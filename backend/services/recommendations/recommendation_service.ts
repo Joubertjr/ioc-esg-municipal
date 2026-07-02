@@ -2,6 +2,7 @@ import { generateEsgReport } from "../reports/report_service.js";
 import { compareAgainstBenchmark } from "../benchmarks/benchmark_service.js";
 import { withCache } from "../../utils/cache.js";
 import { logger } from "../../utils/logger.js";
+import { TransfereGovCollector } from "../../agents/transferegov/transferegov_collector.js";
 
 import { SC_BENCHMARK_CODES } from "../../../shared/constants/sc-benchmark-codes.js";
 
@@ -214,6 +215,20 @@ async function _computeRecommendations(ibgeCode: string): Promise<Recommendation
     }
   }
 
+  // 2.5. Enriquecer ações ODS 17 com oportunidades reais do TransfereGov
+  const transfereGov = new TransfereGovCollector();
+  const openPrograms = transfereGov.getOpenPrograms({
+    naturezaJuridica: "Administração Pública Municipal",
+  });
+  const ods17Actions: string[] = [];
+  if (openPrograms.length > 0) {
+    for (const p of openPrograms.slice(0, 5)) {
+      const prazo = p.fimJanela ? ` — prazo ${p.fimJanela}` : "";
+      ods17Actions.push(`[OPORTUNIDADE ABERTA] ${p.nome} (${p.orgaoSuperior})${prazo}`);
+    }
+  }
+  ods17Actions.push(...(ODS_ACTIONS[17] ?? []));
+
   // 3. Gerar recomendações com análise enriquecida
   const recommendations: SmartRecommendation[] = [];
   const strengths: Array<{ odsNumber: number; odsName: string; score: number }> = [];
@@ -271,7 +286,7 @@ async function _computeRecommendations(ibgeCode: string): Promise<Recommendation
       stateAverage,
       gap,
       ranking,
-      actions: ODS_ACTIONS[ods.odsNumber] ?? [],
+      actions: ods.odsNumber === 17 ? ods17Actions : (ODS_ACTIONS[ods.odsNumber] ?? []),
       investmentArea: ODS_INVESTMENT_AREA[ods.odsNumber] ?? "desenvolvimento geral",
       estimatedImpact,
     });

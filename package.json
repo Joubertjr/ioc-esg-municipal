@@ -43,7 +43,8 @@
     "data:update:aneel": "tsx scripts/update-aneel-data.ts",
     "data:update:convenios": "tsx scripts/update-convenios-data.ts",
     "data:update:ieps": "tsx scripts/update-ieps-data.ts",
-    "data:update:all": "pnpm data:update:snis && pnpm data:update:inep && pnpm data:update:sisvan && pnpm data:update:anatel && pnpm data:update:aneel && pnpm data:update:convenios && pnpm data:update:ieps",
+    "data:update:transferegov": "tsx scripts/update-transferegov-data.ts",
+    "data:update:all": "pnpm data:update:snis && pnpm data:update:inep && pnpm data:update:sisvan && pnpm data:update:anatel && pnpm data:update:aneel && pnpm data:update:convenios && pnpm data:update:ieps && pnpm data:update:transferegov",
     "smoke:final": "bash scripts/smoke-final.sh",
     "prepare": "husky"
   },

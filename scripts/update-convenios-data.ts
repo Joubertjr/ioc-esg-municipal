@@ -32,6 +32,48 @@ interface ConveniosEntry {
   conveniosFederaisAtivos: number | null;
   pctOrcamentoConvenios: number | null;
   consorciosIntermunicipais: number | null;
+  valorTotalRepasse: number | null;
+  valorTotalDesembolsado: number | null;
+  valorTotalGlobal: number | null;
+}
+
+interface FinancialData {
+  desembolsado: number;
+  global: number;
+  gasto: number;
+}
+
+function readFinancialFromIndicadores(siconvDir: string): Map<string, FinancialData> | null {
+  const indicadoresZip = resolve(siconvDir, "siconv_prop_inst_indicadores_municipios.csv.zip");
+  if (!existsSync(indicadoresZip)) return null;
+
+  try {
+    const tsvRaw = execSync(
+      `unzip -p "${indicadoresZip}" siconv_prop_inst_indicadores_municipios.csv | ` +
+        `awk -F';' 'NR>1 && length($1)==7 && substr($1,1,2)=="42" && $12!="Cancelado" && $12!="Convênio Anulado" && $12!="Convênio Rescindido" {` +
+        `gsub(",",".",$16); gsub(",",".",$26); gsub(",",".",$13); ` +
+        `print $1 "\\t" $16+0 "\\t" $26+0 "\\t" $13+0}'`,
+      { maxBuffer: 30 * 1024 * 1024, timeout: 120_000 },
+    ).toString();
+
+    const result = new Map<string, FinancialData>();
+    for (const line of tsvRaw.split("\n")) {
+      const [ibge, desemb, glob, gasto] = line.split("\t");
+      if (!ibge || ibge.length !== 7) continue;
+
+      const existing = result.get(ibge) ?? { desembolsado: 0, global: 0, gasto: 0 };
+      existing.desembolsado += parseFloat(desemb ?? "0");
+      existing.global += parseFloat(glob ?? "0");
+      existing.gasto += parseFloat(gasto ?? "0");
+      result.set(ibge, existing);
+    }
+
+    // eslint-disable-next-line no-console
+    console.log(`[update-convenios] ${result.size} municípios SC com dados financeiros`);
+    return result;
+  } catch {
+    return null;
+  }
 }
 
 function readFromSiconvZips(): Record<string, ConveniosEntry> | null {
@@ -120,13 +162,22 @@ function readFromSiconvZips(): Record<string, ConveniosEntry> | null {
     }
   }
 
+  // Passo 4: Extrair dados financeiros do indicadores_municipios
+  const financialData = readFinancialFromIndicadores(siconvDir);
+
   // Montar dados
   const data: Record<string, ConveniosEntry> = {};
-  for (const [ibge, count] of convenioCount) {
+  const allIbges = new Set([...convenioCount.keys(), ...(financialData?.keys() ?? [])]);
+  for (const ibge of allIbges) {
+    const count = convenioCount.get(ibge) ?? 0;
+    const fin = financialData?.get(ibge);
     data[ibge] = {
-      conveniosFederaisAtivos: count,
+      conveniosFederaisAtivos: count > 0 ? count : null,
       pctOrcamentoConvenios: null,
       consorciosIntermunicipais: consorcioCount.get(ibge) ?? null,
+      valorTotalRepasse: fin ? Math.round(fin.global * 100) / 100 : null,
+      valorTotalDesembolsado: fin ? Math.round(fin.desembolsado * 100) / 100 : null,
+      valorTotalGlobal: fin ? Math.round(fin.global * 100) / 100 : null,
     };
   }
 
@@ -194,6 +245,9 @@ function fetchFromPortalApi(): Record<string, ConveniosEntry> | null {
       conveniosFederaisAtivos: count,
       pctOrcamentoConvenios: null,
       consorciosIntermunicipais: null,
+      valorTotalRepasse: null,
+      valorTotalDesembolsado: null,
+      valorTotalGlobal: null,
     };
   }
 
@@ -233,6 +287,9 @@ function readFromCsv(): Record<string, ConveniosEntry> | null {
       conveniosFederaisAtivos: count,
       pctOrcamentoConvenios: null,
       consorciosIntermunicipais: null,
+      valorTotalRepasse: null,
+      valorTotalDesembolsado: null,
+      valorTotalGlobal: null,
     };
   }
 
