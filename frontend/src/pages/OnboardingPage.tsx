@@ -5,9 +5,9 @@ import { SC_MUNICIPALITIES } from "../../../shared/constants/municipalities-sc";
 
 // 5 municípios mais populosos de SC como sugestão inicial
 const POPULAR_MUNICIPALITY_CODES = [
-  "4205407", // Joinville
+  "4205407", // Florianópolis
   "4202404", // Blumenau
-  "4209102", // Florianópolis
+  "4209102", // Joinville
   "4214805", // São José
   "4208203", // Itajaí
 ];
