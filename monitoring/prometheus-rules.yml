@@ -1,0 +1,64 @@
+# Prometheus Alert Rules — IOC ESG Municipal
+#
+# Regras básicas de alerta para monitorar saúde da aplicação.
+# Alertmanager deve ser configurado com receiver adequado (webhook, Slack, email).
+
+groups:
+  - name: ioc-api-health
+    rules:
+      # API não responde ao scrape por mais de 2 minutos
+      - alert: ApiDown
+        expr: up{job="ioc-api"} == 0
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "API IOC ESG está indisponível"
+          description: "O target {{ $labels.instance }} não responde ao scrape do Prometheus há mais de 2 minutos."
+
+      # Latência P95 acima de 5s por mais de 5 minutos
+      - alert: HighLatency
+        expr: histogram_quantile(0.95, rate(http_request_duration_seconds_bucket{job="ioc-api"}[5m])) > 5
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Latência P95 da API acima de 5s"
+          description: "A latência P95 da API está em {{ $value }}s nos últimos 5 minutos."
+
+      # Taxa de erros 5xx acima de 5% por mais de 5 minutos
+      - alert: HighErrorRate
+        expr: |
+          (
+            sum(rate(http_requests_total{job="ioc-api",status=~"5.."}[5m]))
+            /
+            sum(rate(http_requests_total{job="ioc-api"}[5m]))
+          ) > 0.05
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Taxa de erros 5xx acima de 5%"
+          description: "{{ $value | humanizePercentage }} das requisições estão retornando 5xx."
+
+  - name: ioc-infrastructure
+    rules:
+      # Disco com menos de 10% livre
+      - alert: DiskSpaceLow
+        expr: (node_filesystem_avail_bytes{mountpoint="/"} / node_filesystem_size_bytes{mountpoint="/"}) < 0.10
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Espaço em disco abaixo de 10%"
+          description: "O disco em {{ $labels.instance }} tem apenas {{ $value | humanizePercentage }} livre."
+
+      # Container reiniciando repetidamente
+      - alert: ContainerRestarting
+        expr: increase(container_restart_count[1h]) > 3
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Container reiniciando repetidamente"
+          description: "O container {{ $labels.name }} reiniciou {{ $value }} vezes na última hora."

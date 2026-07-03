@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "concurrently \"pnpm run dev:backend\" \"pnpm run dev:frontend\"",
     "dev:backend": "tsx watch backend/index.ts",
-    "dev:frontend": "cd frontend && vite",
+    "dev:frontend": "cd frontend && pnpm exec vite",
     "build": "pnpm run build:backend && pnpm run build:frontend",
     "build:backend": "tsc",
     "build:frontend": "cd frontend && vite build",

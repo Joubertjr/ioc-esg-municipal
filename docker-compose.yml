@@ -22,7 +22,7 @@ services:
       POSTGRES_PASSWORD: ioc_dev_2026
       POSTGRES_DB: ioc_esg
     ports:
-      - "5432:5432"
+      - "${PG_HOST_PORT:-5432}:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
     healthcheck:

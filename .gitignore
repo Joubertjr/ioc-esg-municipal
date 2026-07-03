@@ -54,3 +54,4 @@ monitoring/slack_url
 # Backups locais (dumps pg_dump)
 backups/
 docker-compose.prod.override.yml
+docker-compose.override.yml
