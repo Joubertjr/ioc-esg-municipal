@@ -123,6 +123,19 @@ Rotina de auditoria permanente criada: `/audit` (skill) + `scripts/audit.sh` + `
 
 **Processo repetível criado:** `scripts/deploy-and-verify.sh` (build → deploy → smoke test login → API tests → CORS check). Regra codificada em `.claude/rules/production-verification.md`.
 
+### Correções de Docker Build (2026-07-03)
+
+| Bug                                                        | Impacto                                                  | Commit    |
+| ---------------------------------------------------------- | -------------------------------------------------------- | --------- |
+| Retry loops shell saíam 0 quando todas tentativas falhavam | Docker build "passava" mas imagem ficava quebrada        | `902be5d` |
+| `--ignore-scripts` impedia criação de symlinks em .bin/    | `tsc` e `vite` não encontrados no fe-builder             | `902be5d` |
+| ETIMEDOUT em pnpm install dentro do Docker Desktop Mac     | Downloads concorrentes saturavam rede do Docker          | `902be5d` |
+| Porto postgres fixo 5432 conflitava com outros projetos    | `docker compose up` falhava com "port already allocated" | `902be5d` |
+| `pnpm exec vite` não encontrado no dev:frontend            | pnpm PATH não inclui subdir node_modules/.bin/           | `902be5d` |
+| prometheus-rules.yml referenciado mas inexistente          | compose prod falhava ao montar volume                    | `902be5d` |
+
+**Soluções:** `.npmrc` com `network-concurrency=4`, `HUSKY=0` em vez de `--ignore-scripts`, retry com flag `ok=0/ok=1`, `PG_HOST_PORT` configurável.
+
 ---
 
 ## 4. Pipeline de Ingestão (2026-04-13)
