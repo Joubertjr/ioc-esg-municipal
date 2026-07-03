@@ -1,7 +1,8 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 
-vi.mock("../../../shared/data/ieps_2021.json", () => ({
+vi.mock("../../../shared/data/ieps_latest.json", () => ({
   default: {
+    __meta: { referenceYear: 2021 },
     "4204202": {
       mortalidadeInfantil: 8.5,
       coberturaEsf: 92.3,

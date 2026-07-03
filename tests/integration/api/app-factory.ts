@@ -29,9 +29,6 @@ export async function createTestApp(): Promise<Express> {
   // cookieParser deve vir antes dos routers para que req.cookies esteja populado
   app.use(cookieParser());
 
-  // Importa o limiter já mockado (vi.mock de express-rate-limit aplica-se aqui)
-  const { generalLimiter } = await import("../../../backend/middleware/rate-limit.js");
-  app.use(generalLimiter);
   app.use(express.json({ limit: "10kb" }));
 
   // ── Health endpoint ─────────────────────────────────────────────────────────

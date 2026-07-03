@@ -17,6 +17,16 @@ vi.mock("../../../backend/utils/logger.js", () => ({
   },
 }));
 
+vi.mock("../../../backend/services/ingestion/ods_score_reader.js", () => ({
+  readOdsReportFromDatabase: vi.fn().mockResolvedValue(null),
+}));
+
+vi.mock("../../../backend/lib/prisma.js", () => ({
+  prisma: {
+    municipality: { findUnique: vi.fn().mockResolvedValue(null) },
+  },
+}));
+
 vi.mock("../../../shared/data/ideb_2023.json", () => ({ default: {} }));
 vi.mock("../../../shared/data/snis_2022.json", () => ({ default: {} }));
 vi.mock("../../../shared/data/tse_2024.json", () => ({ default: {} }));
@@ -38,13 +48,56 @@ const MOCK_ODS_REPORT = {
     const num = i + 1;
     let score: number | null = null;
     let status: string | null = null;
-    const indicators: Array<{ indicatorName: string; value: number | null; odsNumber: number; score: number | null; source: string }> = [];
-    if (num === 3) { score = 80; status = "verde"; indicators.push({ indicatorName: "despesa_saude", value: 400000000, odsNumber: 3, score: 80, source: "siconfi" }); }
-    if (num === 4) { score = 50; status = "amarelo"; indicators.push({ indicatorName: "despesa_educacao", value: 450000000, odsNumber: 4, score: 50, source: "siconfi" }); }
-    if (num === 6) { score = 30; status = "vermelho"; indicators.push({ indicatorName: "atendimento_agua", value: 75, odsNumber: 6, score: 30, source: "snis" }); }
+    const indicators: Array<{
+      indicatorName: string;
+      value: number | null;
+      odsNumber: number;
+      score: number | null;
+      source: string;
+    }> = [];
+    if (num === 3) {
+      score = 80;
+      status = "verde";
+      indicators.push({
+        indicatorName: "despesa_saude",
+        value: 400000000,
+        odsNumber: 3,
+        score: 80,
+        source: "siconfi",
+      });
+    }
+    if (num === 4) {
+      score = 50;
+      status = "amarelo";
+      indicators.push({
+        indicatorName: "despesa_educacao",
+        value: 450000000,
+        odsNumber: 4,
+        score: 50,
+        source: "siconfi",
+      });
+    }
+    if (num === 6) {
+      score = 30;
+      status = "vermelho";
+      indicators.push({
+        indicatorName: "atendimento_agua",
+        value: 75,
+        odsNumber: 6,
+        score: 30,
+        source: "snis",
+      });
+    }
     return {
-      odsNumber: num, name: `ODS ${num}`, shortName: `ODS${num}`, color: "#000",
-      weight: 1.0, score, status, indicators, sources: score !== null ? ["test"] : [],
+      odsNumber: num,
+      name: `ODS ${num}`,
+      shortName: `ODS${num}`,
+      color: "#000",
+      weight: 1.0,
+      score,
+      status,
+      indicators,
+      sources: score !== null ? ["test"] : [],
     };
   }),
 };

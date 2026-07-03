@@ -76,9 +76,8 @@ vi.mock("../../../backend/utils/logger.js", () => ({
 // ─── App de teste ─────────────────────────────────────────────────────────────
 
 async function buildApp() {
-  const { default: municipalitiesRouter } = await import(
-    "../../../backend/routes/municipalities.js"
-  );
+  const { default: municipalitiesRouter } =
+    await import("../../../backend/routes/municipalities.js");
   const app = express();
   app.use(express.json());
   app.use("/api/municipalities", municipalitiesRouter);
@@ -142,16 +141,12 @@ describe("GET /api/municipalities", () => {
     expect(res.body.total).toBe(0);
   });
 
-  it("deve limitar pageSize ao máximo de 100 quando valor enviado é maior", async () => {
-    // Arrange — pageSize=200 deve ser ignorado; Zod aplica max(100) e usa default 50
+  it("deve limitar pageSize ao máximo de 300 quando valor enviado é maior", async () => {
     mockTransaction.mockResolvedValue([municipalityListFixture, 2]);
 
-    // Act
-    const res = await request(app).get("/api/municipalities?pageSize=200");
+    const res = await request(app).get("/api/municipalities?pageSize=500");
 
-    // Assert
     expect(res.status).toBe(200);
-    // O schema Zod rejeita > 100 via safeParse e o código faz fallback para 50
     expect(res.body.pageSize).toBe(50);
   });
 

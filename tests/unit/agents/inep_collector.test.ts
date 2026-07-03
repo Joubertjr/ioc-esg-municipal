@@ -1,7 +1,8 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 
-vi.mock("../../../shared/data/ideb_2023.json", () => ({
+vi.mock("../../../shared/data/ideb_latest.json", () => ({
   default: {
+    __meta: { referenceYear: 2023 },
     "4204202": { idebAnosIniciais: 6.5, idebAnosFinais: 5.8 },
     "4200101": { idebAnosIniciais: null, idebAnosFinais: 4.2 },
     "4200051": { idebAnosIniciais: null, idebAnosFinais: null },
@@ -144,8 +145,8 @@ describe("INEP ODS Mapper", () => {
     const data: InepMunicipalData = {
       ...mockData,
       indicators: {
-        idebAnosIniciais: 6.5,  // score ~92 → verde
-        idebAnosFinais: 3.0,    // score = (3.0 / 4.0) * 50 = 37.5 → vermelho
+        idebAnosIniciais: 6.5, // score ~92 → verde
+        idebAnosFinais: 3.0, // score = (3.0 / 4.0) * 50 = 37.5 → vermelho
       },
     };
     const indicators = mapToOdsIndicators(data);

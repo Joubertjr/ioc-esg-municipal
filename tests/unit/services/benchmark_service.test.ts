@@ -1,11 +1,22 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 
-const { mockCalculateOds } = vi.hoisted(() => ({
+const { mockCalculateOds, mockReadOdsReportsForCodes } = vi.hoisted(() => ({
   mockCalculateOds: vi.fn(),
+  mockReadOdsReportsForCodes: vi.fn().mockResolvedValue(new Map()),
 }));
 
 vi.mock("../../../backend/services/ods/ods_score_service.js", () => ({
   calculateMunicipalOds: mockCalculateOds,
+}));
+
+vi.mock("../../../backend/services/ingestion/ods_score_reader.js", () => ({
+  readOdsReportsForCodes: mockReadOdsReportsForCodes,
+}));
+
+vi.mock("../../../backend/lib/prisma.js", () => ({
+  prisma: {
+    municipality: { findMany: vi.fn().mockResolvedValue([]) },
+  },
 }));
 
 // withCache mock — executa fn diretamente sem Redis para testes unitários
@@ -22,13 +33,27 @@ vi.mock("../../../backend/utils/logger.js", () => ({
   },
 }));
 
-vi.mock("../../../shared/data/ideb_2023.json", () => ({ default: {} }));
-vi.mock("../../../shared/data/snis_2022.json", () => ({ default: {} }));
+vi.mock("../../../shared/data/ideb_latest.json", () => ({
+  default: { __meta: { referenceYear: 2023 } },
+}));
+vi.mock("../../../shared/data/snis_latest.json", () => ({
+  default: { __meta: { referenceYear: 2022 } },
+}));
 vi.mock("../../../shared/data/tse_2024.json", () => ({ default: {} }));
-vi.mock("../../../shared/data/aneel_gd_2023.json", () => ({ default: {} }));
+vi.mock("../../../shared/data/aneel_latest.json", () => ({
+  default: { __meta: { referenceYear: 2023 } },
+}));
 vi.mock("../../../shared/data/snis_rs_2022.json", () => ({ default: {} }));
 vi.mock("../../../shared/data/ana_2022.json", () => ({ default: {} }));
-vi.mock("../../../shared/data/convenios_2023.json", () => ({ default: {} }));
+vi.mock("../../../shared/data/convenios_latest.json", () => ({
+  default: { __meta: { referenceYear: 2023 } },
+}));
+vi.mock("../../../shared/data/sisvan_latest.json", () => ({
+  default: { __meta: { referenceYear: 2023 } },
+}));
+vi.mock("../../../shared/data/ieps_latest.json", () => ({
+  default: { __meta: { referenceYear: 2021 } },
+}));
 
 const { generateBenchmark, compareAgainstBenchmark } =
   await import("../../../backend/services/benchmarks/benchmark_service.js");
@@ -106,10 +131,13 @@ describe("BenchmarkService", () => {
 
   describe("generateBenchmark", () => {
     it("retorna ranking ordenado por globalScore decrescente", async () => {
-      mockCalculateOds
-        .mockResolvedValueOnce(REPORT_A)
-        .mockResolvedValueOnce(REPORT_B)
-        .mockResolvedValueOnce(REPORT_C);
+      mockReadOdsReportsForCodes.mockResolvedValueOnce(
+        new Map([
+          ["4204202", REPORT_A],
+          ["4205407", REPORT_B],
+          ["4209102", REPORT_C],
+        ]),
+      );
 
       const result = await generateBenchmark(["4204202", "4205407", "4209102"]);
 
@@ -121,7 +149,12 @@ describe("BenchmarkService", () => {
     });
 
     it("calcula médias ODS corretamente", async () => {
-      mockCalculateOds.mockResolvedValueOnce(REPORT_A).mockResolvedValueOnce(REPORT_B);
+      mockReadOdsReportsForCodes.mockResolvedValueOnce(
+        new Map([
+          ["4204202", REPORT_A],
+          ["4205407", REPORT_B],
+        ]),
+      );
 
       const result = await generateBenchmark(["4204202", "4205407"]);
 
@@ -136,8 +169,8 @@ describe("BenchmarkService", () => {
       expect(ods1Avg.count).toBe(0);
     });
 
-    it("lida com falhas de coletores graciosamente", async () => {
-      mockCalculateOds.mockResolvedValueOnce(REPORT_A).mockRejectedValueOnce(new Error("timeout"));
+    it("lida com municípios sem dados graciosamente", async () => {
+      mockReadOdsReportsForCodes.mockResolvedValueOnce(new Map([["4204202", REPORT_A]]));
 
       const result = await generateBenchmark(["4204202", "0000000"]);
 
@@ -147,14 +180,19 @@ describe("BenchmarkService", () => {
     });
 
     it("calcula globalAverage corretamente", async () => {
-      mockCalculateOds.mockResolvedValueOnce(REPORT_A).mockResolvedValueOnce(REPORT_B);
+      mockReadOdsReportsForCodes.mockResolvedValueOnce(
+        new Map([
+          ["4204202", REPORT_A],
+          ["4205407", REPORT_B],
+        ]),
+      );
 
       const result = await generateBenchmark(["4204202", "4205407"]);
       expect(result.globalAverage).toBe(77.5);
     });
 
     it("retorna globalAverage null quando nenhum report tem dados", async () => {
-      mockCalculateOds.mockResolvedValue(null);
+      mockReadOdsReportsForCodes.mockResolvedValueOnce(new Map());
 
       const result = await generateBenchmark(["0000000", "0000001"]);
       expect(result.globalAverage).toBeNull();
@@ -164,14 +202,21 @@ describe("BenchmarkService", () => {
 
   describe("compareAgainstBenchmark", () => {
     it("retorna comparison com delta e aboveAverage", async () => {
-      mockCalculateOds
-        // fullBenchmark call (alvo + peers)
-        .mockResolvedValueOnce(REPORT_A)
-        .mockResolvedValueOnce(REPORT_B)
-        .mockResolvedValueOnce(REPORT_C)
-        // peers-only benchmark call
-        .mockResolvedValueOnce(REPORT_B)
-        .mockResolvedValueOnce(REPORT_C);
+      // fullBenchmark (alvo + peers)
+      mockReadOdsReportsForCodes.mockResolvedValueOnce(
+        new Map([
+          ["4204202", REPORT_A],
+          ["4205407", REPORT_B],
+          ["4209102", REPORT_C],
+        ]),
+      );
+      // peers-only benchmark
+      mockReadOdsReportsForCodes.mockResolvedValueOnce(
+        new Map([
+          ["4205407", REPORT_B],
+          ["4209102", REPORT_C],
+        ]),
+      );
 
       const result = await compareAgainstBenchmark("4204202", ["4205407", "4209102"]);
 
@@ -187,14 +232,18 @@ describe("BenchmarkService", () => {
     });
 
     it("exclui município alvo do benchmark para evitar self-reference bias", async () => {
-      mockCalculateOds
-        .mockResolvedValueOnce(REPORT_A) // fullBenchmark: alvo
-        .mockResolvedValueOnce(REPORT_B) // fullBenchmark: peer
-        .mockResolvedValueOnce(REPORT_B); // benchmark peers-only
+      // fullBenchmark (alvo + peer)
+      mockReadOdsReportsForCodes.mockResolvedValueOnce(
+        new Map([
+          ["4204202", REPORT_A],
+          ["4205407", REPORT_B],
+        ]),
+      );
+      // peers-only benchmark
+      mockReadOdsReportsForCodes.mockResolvedValueOnce(new Map([["4205407", REPORT_B]]));
 
       const result = await compareAgainstBenchmark("4204202", ["4205407"]);
 
-      // Benchmark deve conter apenas os peers, não o município alvo
       const codes = result.benchmark.municipalities.map((m: { ibgeCode: string }) => m.ibgeCode);
       expect(codes).not.toContain("4204202");
       expect(codes).toContain("4205407");

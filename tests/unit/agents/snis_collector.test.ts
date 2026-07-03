@@ -1,7 +1,8 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 
-vi.mock("../../../shared/data/snis_2022.json", () => ({
+vi.mock("../../../shared/data/snis_latest.json", () => ({
   default: {
+    __meta: { referenceYear: 2022 },
     "4204202": {
       atendimentoAgua: 99.1,
       atendimentoEsgoto: 88.7,

@@ -1,7 +1,8 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 
-vi.mock("../../../shared/data/sisvan_2023.json", () => ({
+vi.mock("../../../shared/data/sisvan_latest.json", () => ({
   default: {
+    __meta: { referenceYear: 2023 },
     "4204202": {
       cobertura_acompanhamento: 90.0,
       deficit_nutricional: 3.0,
@@ -215,7 +216,9 @@ describe("SISVAN ODS Mapper", () => {
     const indicators = mapToOdsIndicators(mockData);
 
     // cobertura = 90 → score 100 → verde
-    const cobertura = indicators.find((i) => i.indicatorName === "sisvan_cobertura_acompanhamento")!;
+    const cobertura = indicators.find(
+      (i) => i.indicatorName === "sisvan_cobertura_acompanhamento",
+    )!;
     expect(cobertura.status).toBe("verde");
 
     // deficit = 3.0 → score 100 → verde
@@ -238,9 +241,26 @@ describe("SISVAN ODS Mapper", () => {
 
   it("scores ficam entre 0 e 100 para valores extremos", () => {
     const extremeCases: SisvanMunicipalData[] = [
-      { ...mockData, indicators: { cobertura_acompanhamento: 0, deficit_nutricional: 0, sobrepeso_infantil: 0 } },
-      { ...mockData, indicators: { cobertura_acompanhamento: 100, deficit_nutricional: 100, sobrepeso_infantil: 100 } },
-      { ...mockData, indicators: { cobertura_acompanhamento: 50, deficit_nutricional: 15, sobrepeso_infantil: 25 } },
+      {
+        ...mockData,
+        indicators: { cobertura_acompanhamento: 0, deficit_nutricional: 0, sobrepeso_infantil: 0 },
+      },
+      {
+        ...mockData,
+        indicators: {
+          cobertura_acompanhamento: 100,
+          deficit_nutricional: 100,
+          sobrepeso_infantil: 100,
+        },
+      },
+      {
+        ...mockData,
+        indicators: {
+          cobertura_acompanhamento: 50,
+          deficit_nutricional: 15,
+          sobrepeso_infantil: 25,
+        },
+      },
     ];
 
     for (const data of extremeCases) {

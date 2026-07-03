@@ -50,6 +50,7 @@ vi.mock("../../../backend/services/ods/index.js", () => ({
 vi.mock("../../../backend/services/ods/ods_history_service.js", () => ({
   calculateAndPersistScores: mockCalculateAndPersistScores,
   getScoreHistory: mockGetScoreHistory,
+  assessComparability: vi.fn().mockReturnValue({ comparable: true, reason: "mock" }),
 }));
 
 vi.mock("../../../backend/utils/logger.js", () => ({

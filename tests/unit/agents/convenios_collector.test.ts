@@ -1,7 +1,8 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 
-vi.mock("../../../shared/data/convenios_2023.json", () => ({
+vi.mock("../../../shared/data/convenios_latest.json", () => ({
   default: {
+    __meta: { referenceYear: 2023 },
     "4204202": {
       conveniosFederaisAtivos: 12,
       pctOrcamentoConvenios: 18.5,
@@ -88,11 +89,7 @@ describe("ConveniosCollector", () => {
   });
 
   it("collectBatch retorna Map apenas com municípios encontrados", async () => {
-    const result = await collector.collectBatch([
-      "4204202",
-      "4200101",
-      "9999999",
-    ]);
+    const result = await collector.collectBatch(["4204202", "4200101", "9999999"]);
 
     expect(result).toBeInstanceOf(Map);
     expect(result.size).toBe(2);
@@ -141,9 +138,7 @@ describe("Convenios ODS Mapper", () => {
       ...mockData,
       indicators: { ...mockData.indicators, conveniosFederaisAtivos: 10 },
     };
-    const ind = mapToOdsIndicators(data).find(
-      (i) => i.indicatorName === "convenios_federais"
-    )!;
+    const ind = mapToOdsIndicators(data).find((i) => i.indicatorName === "convenios_federais")!;
     expect(ind.score).toBe(100);
   });
 
@@ -152,9 +147,7 @@ describe("Convenios ODS Mapper", () => {
       ...mockData,
       indicators: { ...mockData.indicators, conveniosFederaisAtivos: 5 },
     };
-    const ind = mapToOdsIndicators(data).find(
-      (i) => i.indicatorName === "convenios_federais"
-    )!;
+    const ind = mapToOdsIndicators(data).find((i) => i.indicatorName === "convenios_federais")!;
     expect(ind.score).toBe(50);
   });
 
@@ -163,9 +156,7 @@ describe("Convenios ODS Mapper", () => {
       ...mockData,
       indicators: { ...mockData.indicators, conveniosFederaisAtivos: 0 },
     };
-    const ind = mapToOdsIndicators(data).find(
-      (i) => i.indicatorName === "convenios_federais"
-    )!;
+    const ind = mapToOdsIndicators(data).find((i) => i.indicatorName === "convenios_federais")!;
     expect(ind.score).toBe(0);
   });
 
@@ -177,7 +168,7 @@ describe("Convenios ODS Mapper", () => {
       indicators: { ...mockData.indicators, pctOrcamentoConvenios: 15 },
     };
     const ind = mapToOdsIndicators(data).find(
-      (i) => i.indicatorName === "pct_orcamento_convenios"
+      (i) => i.indicatorName === "pct_orcamento_convenios",
     )!;
     expect(ind.score).toBe(100);
   });
@@ -188,7 +179,7 @@ describe("Convenios ODS Mapper", () => {
       indicators: { ...mockData.indicators, pctOrcamentoConvenios: 5 },
     };
     const ind = mapToOdsIndicators(data).find(
-      (i) => i.indicatorName === "pct_orcamento_convenios"
+      (i) => i.indicatorName === "pct_orcamento_convenios",
     )!;
     expect(ind.score).toBe(50);
   });
@@ -199,7 +190,7 @@ describe("Convenios ODS Mapper", () => {
       indicators: { ...mockData.indicators, pctOrcamentoConvenios: 0 },
     };
     const ind = mapToOdsIndicators(data).find(
-      (i) => i.indicatorName === "pct_orcamento_convenios"
+      (i) => i.indicatorName === "pct_orcamento_convenios",
     )!;
     expect(ind.score).toBe(0);
   });
@@ -212,7 +203,7 @@ describe("Convenios ODS Mapper", () => {
       indicators: { ...mockData.indicators, consorciosIntermunicipais: 5 },
     };
     const ind = mapToOdsIndicators(data).find(
-      (i) => i.indicatorName === "consorcios_intermunicipais"
+      (i) => i.indicatorName === "consorcios_intermunicipais",
     )!;
     expect(ind.score).toBe(100);
   });
@@ -223,7 +214,7 @@ describe("Convenios ODS Mapper", () => {
       indicators: { ...mockData.indicators, consorciosIntermunicipais: 2 },
     };
     const ind = mapToOdsIndicators(data).find(
-      (i) => i.indicatorName === "consorcios_intermunicipais"
+      (i) => i.indicatorName === "consorcios_intermunicipais",
     )!;
     expect(ind.score).toBe(50);
   });
@@ -234,7 +225,7 @@ describe("Convenios ODS Mapper", () => {
       indicators: { ...mockData.indicators, consorciosIntermunicipais: 0 },
     };
     const ind = mapToOdsIndicators(data).find(
-      (i) => i.indicatorName === "consorcios_intermunicipais"
+      (i) => i.indicatorName === "consorcios_intermunicipais",
     )!;
     expect(ind.score).toBe(0);
   });
@@ -265,9 +256,7 @@ describe("Convenios ODS Mapper", () => {
     };
     const indicators = mapToOdsIndicators(data);
     expect(indicators).toHaveLength(2);
-    expect(indicators.map((i) => i.indicatorName)).not.toContain(
-      "pct_orcamento_convenios"
-    );
+    expect(indicators.map((i) => i.indicatorName)).not.toContain("pct_orcamento_convenios");
   });
 
   // ── Status ─────────────────────────────────────────────────────────────────
@@ -299,9 +288,7 @@ describe("Convenios ODS Mapper", () => {
       ...mockData,
       indicators: { ...mockData.indicators, conveniosFederaisAtivos: 7 },
     };
-    const ind = mapToOdsIndicators(data).find(
-      (i) => i.indicatorName === "convenios_federais"
-    )!;
+    const ind = mapToOdsIndicators(data).find((i) => i.indicatorName === "convenios_federais")!;
     expect(ind.score).toBe(70);
     expect(ind.status).toBe("verde");
   });

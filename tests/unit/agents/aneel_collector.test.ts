@@ -1,7 +1,8 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 
-vi.mock("../../../shared/data/aneel_gd_2023.json", () => ({
+vi.mock("../../../shared/data/aneel_latest.json", () => ({
   default: {
+    __meta: { referenceYear: 2023 },
     // Município médio com todos os dados
     "4204202": { geracaoDistribuidaKw: 5000.0, unidadesGd: 800, populacao: 220_000 },
     // Município pequeno com GD baixa
@@ -264,7 +265,7 @@ describe("ANEEL ODS Mapper — ODS 7", () => {
     const perCapita = indicators.find((i) => i.indicatorName === "gd_per_capita_w")!;
     const penetracao = indicators.find((i) => i.indicatorName === "penetracao_gd")!;
 
-    expect(perCapita.status).toBe("verde");    // score 100
+    expect(perCapita.status).toBe("verde"); // score 100
     expect(penetracao.status).toBe("vermelho"); // score < 40
   });
 
