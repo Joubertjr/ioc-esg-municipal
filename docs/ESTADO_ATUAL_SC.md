@@ -1,6 +1,6 @@
 # Estado Atual do Projeto — Foco SC
 
-**Data da Última Atualização:** 2 de julho de 2026
+**Data da Última Atualização:** 3 de julho de 2026
 **Objetivo Único:** Entregar a plataforma funcionando perfeitamente para os 295 municípios de Santa Catarina (SC) e obter aprovação do cliente final. Nenhuma feature além desse escopo deve ser desenvolvida.
 
 ---
@@ -93,6 +93,19 @@ Rotina de auditoria permanente criada: `/audit` (skill) + `scripts/audit.sh` + `
 | /metrics exposto publicamente                     | Restrito a localhost (403 para IPs externos)            | `c919dd5` |
 
 **Testes unitários:** 1222/1222 passando (57 suítes).
+
+### Correções de Docker e Testes (2026-07-03)
+
+| Bug                                                 | Impacto                                                      | Commit    |
+| --------------------------------------------------- | ------------------------------------------------------------ | --------- |
+| Prisma CLI ausente na imagem Docker prod            | `prisma migrate deploy` falhava no entrypoint → restart loop | `5445070` |
+| entrypoint usava `npx` em vez de `pnpm`             | npx baixava prisma 7.8.0 da rede, ignorando o local          | `5445070` |
+| Seed com senha hardcoded `admin12345`               | Vulnerabilidade de segurança, removida                       | `5445070` |
+| Testes ODS sem mock de withCache/Redis              | 6 testes com timeout por tentativa de conexão Redis          | `5445070` |
+| Testes ODS/Reports sem `id` no mock de município    | `requireMunicipalityScope` retornava 403/404                 | `5445070` |
+| Testes benchmarks com limite errado (50 vs 300)     | Teste esperava max 50, schema Zod permite 300                | `5445070` |
+| Testes simulator com params extras                  | `runSimulation` agora recebe opts de persistência            | `5445070` |
+| 10 arquivos de teste com mocks órfãos de rate-limit | vi.mock de rate-limit.js apontava para módulo deletado       | `5445070` |
 
 ---
 
