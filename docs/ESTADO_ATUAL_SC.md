@@ -75,7 +75,24 @@ Rotina de auditoria permanente criada: `/audit` (skill) + `scripts/audit.sh` + `
 
 **Rate limiting:** removido temporariamente (sem express-rate-limit). Será reativado quando o produto estiver em produção real com domínio público.
 
-**Testes e2e:** 31/31 passando contra stack Docker produção. Cobertura: auth (11), dashboard (9), navigation (11).
+**Testes e2e:** 66/66 passando contra stack Docker produção. Cobertura: auth (11), dashboard (9), navigation (11), simulator (21), audit (14).
+
+### Correções de Testes (2026-07-02)
+
+| Bug                                               | Impacto                                                 | Commit    |
+| ------------------------------------------------- | ------------------------------------------------------- | --------- |
+| 6 collector tests com paths JSON antigos          | Mocks apontavam `*_YEAR.json` em vez de `*_latest.json` | `c29c780` |
+| peer_clustering sem async/await + sem Prisma mock | Testes crashavam por chamada síncrona de função async   | `c29c780` |
+| report_service sem mock de ods_score_reader       | Import transitivo de Prisma falhava                     | `c29c780` |
+| ods.test.ts sem assessComparability no mock       | Função nova não mockada                                 | `c29c780` |
+| municipalities.test.ts PageSizeSchema max 300     | Teste esperava max 100, schema atualizado para 300      | `c29c780` |
+| app-factory.ts importava rate-limit.ts deletado   | Testes de integração crashavam                          | `c29c780` |
+| simulator.spec.ts seletores desatualizados        | 4 testes e2e falhando (textos UI, route patterns, CSS)  | `c29c780` |
+| Segurança: RegisterSchema aceitava municipalityId | Bypass de vinculação de município via registro          | `c919dd5` |
+| JWT expiração longa (1d/30d)                      | Access 1d→15m, refresh 30d→7d por compliance            | `c919dd5` |
+| /metrics exposto publicamente                     | Restrito a localhost (403 para IPs externos)            | `c919dd5` |
+
+**Testes unitários:** 1222/1222 passando (57 suítes).
 
 ---
 
