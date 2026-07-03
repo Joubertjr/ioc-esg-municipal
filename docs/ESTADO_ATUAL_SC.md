@@ -107,6 +107,22 @@ Rotina de auditoria permanente criada: `/audit` (skill) + `scripts/audit.sh` + `
 | Testes simulator com params extras                  | `runSimulation` agora recebe opts de persistência            | `5445070` |
 | 10 arquivos de teste com mocks órfãos de rate-limit | vi.mock de rate-limit.js apontava para módulo deletado       | `5445070` |
 
+### Correções de Login e Infra Docker (2026-07-03)
+
+| Bug                                                       | Impacto                                                          | Commit    |
+| --------------------------------------------------------- | ---------------------------------------------------------------- | --------- |
+| fetchWithRefresh interceptava 401 de login como refresh   | Login com senha errada mostrava "Sessão expirada" em vez de erro | `eeb6375` |
+| handleResponse não lia body do servidor                   | Mensagem genérica em vez do erro real do backend                 | `eeb6375` |
+| Dockerfile: `tsc` não encontrado com cache stale          | Docker build falhava no estágio builder                          | `0596b90` |
+| entrypoint.sh usava `pnpm prisma` (inexistente em prod)   | Container em restart loop por falta de corepack                  | `0596b90` |
+| env-validator abortava por localhost em ALLOWED_ORIGINS   | API não iniciava em produção local                               | `0596b90` |
+| REDIS_PASSWORD ausente no compose → env-validator falhava | API rejeitada por senha Redis < 8 chars                          | `0596b90` |
+| RUN_SEED não passado ao container                         | Seed nunca executava mesmo com RUN_SEED=true                     | `0596b90` |
+| CORS: ALLOWED_ORIGINS default não incluía porta 80        | Requests do nginx bloqueados por CORS                            | `0596b90` |
+| Grafana: `${GRAFANA_PASSWORD:?}` bloqueava todo compose   | `docker compose` falhava se variável não definida                | `0596b90` |
+
+**Processo repetível criado:** `scripts/deploy-and-verify.sh` (build → deploy → smoke test login → API tests → CORS check). Regra codificada em `.claude/rules/production-verification.md`.
+
 ---
 
 ## 4. Pipeline de Ingestão (2026-04-13)
