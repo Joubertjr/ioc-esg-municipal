@@ -15,7 +15,7 @@ vi.mock("../../../../backend/services/agent/executive_report_service.js", () => 
   generateExecutiveReport: mockGenerate,
 }));
 
-vi.mock("../../../../backend/services/agent/hitl_queue_service.js", () => ({
+vi.mock("../../../../backend/services/agent/hitl_persistence.js", () => ({
   createHitlRequest: mockCreateHitl,
 }));
 

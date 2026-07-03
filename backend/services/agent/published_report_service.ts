@@ -1,7 +1,7 @@
 import { prisma } from "../../lib/prisma.js";
 import { logger } from "../../utils/logger.js";
 import { generateExecutiveReport } from "./executive_report_service.js";
-import { createHitlRequest } from "./hitl_queue_service.js";
+import { createHitlRequest } from "./hitl_persistence.js";
 import type { ExecutiveReport } from "./schemas.js";
 
 export interface PublishedReportDto {

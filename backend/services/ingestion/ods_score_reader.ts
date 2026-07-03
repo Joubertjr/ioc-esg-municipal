@@ -6,7 +6,7 @@ import {
   type DataFreshness,
   type SourceFreshness,
 } from "../../../shared/types/domain/ods.js";
-import type { MunicipalOdsReport, OdsSummary } from "../ods/ods_score_service.js";
+import type { MunicipalOdsReport, OdsSummary } from "../../../shared/types/domain/ods.js";
 import { logger } from "../../utils/logger.js";
 
 /**

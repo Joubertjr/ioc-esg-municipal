@@ -330,7 +330,7 @@ export async function runSimulation(
   };
 
   if (options?.persistScenario && options.requestedByUserId && options.municipalityDbId) {
-    const { createHitlRequest } = await import("../agent/hitl_queue_service.js");
+    const { createHitlRequest } = await import("../agent/hitl_persistence.js");
     const hitl = await createHitlRequest({
       action: "persist_scenario",
       municipalityId: options.municipalityDbId,

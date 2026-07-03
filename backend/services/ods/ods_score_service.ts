@@ -30,6 +30,8 @@ import {
   type OdsStatus,
   type DataFreshness,
   type SourceFreshness,
+  type OdsSummary,
+  type MunicipalOdsReport,
 } from "../../../shared/types/domain/ods.js";
 import { logger } from "../../utils/logger.js";
 import { withCache } from "../../utils/cache.js";
@@ -66,33 +68,7 @@ async function withTimeout<T>(promise: Promise<T>, ms: number, label: string): P
   }
 }
 
-export interface OdsSummary {
-  odsNumber: number;
-  name: string;
-  shortName: string;
-  color: string;
-  weight: number;
-  score: number | null;
-  status: OdsStatus | null;
-  indicators: OdsIndicator[];
-  sources: string[];
-  dataFreshness: DataFreshness;
-}
-
-export interface MunicipalOdsReport {
-  ibgeCode: string;
-  municipalityName: string | null;
-  referenceYear: number;
-  globalScore: number | null;
-  globalStatus: OdsStatus | null;
-  geometricScore: number | null;
-  geometricStatus: OdsStatus | null;
-  odsCount: { total: number; withData: number; verde: number; amarelo: number; vermelho: number };
-  dataFreshness: DataFreshness;
-  ods: OdsSummary[];
-  dataSource?: "database" | "realtime";
-  dataCollectedAt?: string | null;
-}
+export type { OdsSummary, MunicipalOdsReport } from "../../../shared/types/domain/ods.js";
 
 /**
  * Calcula freshness a partir de um conjunto de indicadores.

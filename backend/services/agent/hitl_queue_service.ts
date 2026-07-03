@@ -1,79 +1,16 @@
 import { prisma } from "../../lib/prisma.js";
-import { logger } from "../../utils/logger.js";
-import { persistSimulationResult } from "../simulator/simulator_service.js";
-import type { SimulationResult } from "../simulator/simulator_service.js";
 import { appendAgentAudit } from "./audit_service.js";
-import { publishExecutiveReportFromHitl } from "./published_report_service.js";
+import {
+  createHitlRequest,
+  resolveMunicipalityDbId,
+  toHitlDto,
+  type HitlAction,
+  type HitlRequestDto,
+} from "./hitl_persistence.js";
 import type { ExecutiveReport } from "./schemas.js";
 
-export type HitlAction = "persist_scenario" | "publish_report";
-export type HitlStatus = "pending" | "approved" | "rejected";
-
-export interface HitlRequestDto {
-  id: string;
-  action: HitlAction;
-  status: HitlStatus;
-  municipalityId: string;
-  requestedById: string;
-  reviewedById: string | null;
-  payload: unknown;
-  reviewNote: string | null;
-  createdAt: string;
-  reviewedAt: string | null;
-}
-
-function toDto(row: {
-  id: string;
-  action: string;
-  status: string;
-  municipalityId: string;
-  requestedById: string;
-  reviewedById: string | null;
-  payload: unknown;
-  reviewNote: string | null;
-  createdAt: Date;
-  reviewedAt: Date | null;
-}): HitlRequestDto {
-  return {
-    id: row.id,
-    action: row.action as HitlAction,
-    status: row.status as HitlStatus,
-    municipalityId: row.municipalityId,
-    requestedById: row.requestedById,
-    reviewedById: row.reviewedById,
-    payload: row.payload,
-    reviewNote: row.reviewNote,
-    createdAt: row.createdAt.toISOString(),
-    reviewedAt: row.reviewedAt?.toISOString() ?? null,
-  };
-}
-
-export async function resolveMunicipalityDbId(ibgeCode: string): Promise<string | null> {
-  const m = await prisma.municipality.findUnique({
-    where: { ibgeCode },
-    select: { id: true },
-  });
-  return m?.id ?? null;
-}
-
-export async function createHitlRequest(params: {
-  action: HitlAction;
-  municipalityId: string;
-  requestedById: string;
-  payload: unknown;
-}): Promise<HitlRequestDto> {
-  const row = await prisma.hitlRequest.create({
-    data: {
-      action: params.action,
-      status: "pending",
-      municipalityId: params.municipalityId,
-      requestedById: params.requestedById,
-      payload: params.payload as object,
-    },
-  });
-  logger.info("[hitl] pedido criado", { id: row.id, action: params.action });
-  return toDto(row);
-}
+export { createHitlRequest, resolveMunicipalityDbId };
+export type { HitlAction, HitlRequestDto, HitlStatus } from "./hitl_persistence.js";
 
 export async function listPendingHitlRequests(municipalityId?: string): Promise<HitlRequestDto[]> {
   const rows = await prisma.hitlRequest.findMany({
@@ -84,7 +21,7 @@ export async function listPendingHitlRequests(municipalityId?: string): Promise<
     orderBy: { createdAt: "asc" },
     take: 50,
   });
-  return rows.map(toDto);
+  return rows.map(toHitlDto);
 }
 
 async function executeApprovedAction(
@@ -93,11 +30,14 @@ async function executeApprovedAction(
   context: { reviewerId: string; municipalityId: string; hitlRequestId: string },
 ): Promise<void> {
   if (action === "persist_scenario") {
-    const body = payload as { simulationResult?: SimulationResult };
+    const body = payload as { simulationResult?: unknown };
     if (!body.simulationResult) {
       throw new Error("Payload HITL inválido: simulationResult ausente");
     }
-    await persistSimulationResult(body.simulationResult);
+    const { persistSimulationResult } = await import("../simulator/simulator_service.js");
+    await persistSimulationResult(
+      body.simulationResult as Parameters<typeof persistSimulationResult>[0],
+    );
     return;
   }
 
@@ -105,6 +45,7 @@ async function executeApprovedAction(
   if (!body.ibgeCode || !body.executiveReport) {
     throw new Error("Payload HITL inválido: executiveReport ausente");
   }
+  const { publishExecutiveReportFromHitl } = await import("./published_report_service.js");
   await publishExecutiveReportFromHitl(
     { ibgeCode: body.ibgeCode, executiveReport: body.executiveReport },
     context.reviewerId,
@@ -159,7 +100,7 @@ export async function approveHitlRequest(params: {
     metadata: { hitlRequestId: existing.id, hitlAction: existing.action },
   });
 
-  return toDto(updated);
+  return toHitlDto(updated);
 }
 
 export async function rejectHitlRequest(params: {
@@ -204,5 +145,5 @@ export async function rejectHitlRequest(params: {
     metadata: { hitlRequestId: existing.id },
   });
 
-  return toDto(updated);
+  return toHitlDto(updated);
 }
