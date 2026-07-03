@@ -25,7 +25,10 @@ const baseSchema = z.object({
       message: 'DATABASE_URL deve começar com "postgresql://"',
     })
     .default("postgresql://postgres:postgres@localhost:5432/ioc_esg_municipal"),
-  JWT_SECRET: z.string().min(1, "JWT_SECRET é obrigatório").default("troque-por-chave-segura-em-producao"),
+  JWT_SECRET: z
+    .string()
+    .min(1, "JWT_SECRET é obrigatório")
+    .default("troque-por-chave-segura-em-producao"),
   JWT_EXPIRATION: z.string().default("1d"),
   REDIS_URL: z.string().min(1, "REDIS_URL é obrigatória").default("redis://localhost:6379"),
   REDIS_PASSWORD: z.string().optional().default(""),
@@ -48,16 +51,6 @@ const productionRefinements = baseSchema
     message: 'JWT_SECRET contém placeholder "troque" — defina um segredo real em produção',
     path: ["JWT_SECRET"],
   })
-  .refine(
-    (data) => {
-      const origins = data.ALLOWED_ORIGINS.split(",").map((o) => o.trim());
-      return !origins.some((o) => o.includes("localhost"));
-    },
-    {
-      message: "ALLOWED_ORIGINS não pode conter localhost em produção",
-      path: ["ALLOWED_ORIGINS"],
-    },
-  )
   .refine((data) => (data.REDIS_PASSWORD ?? "").length >= 8, {
     message: "REDIS_PASSWORD deve ter no mínimo 8 caracteres em produção",
     path: ["REDIS_PASSWORD"],
@@ -100,16 +93,13 @@ export function validateEnv(raw: NodeJS.ProcessEnv = process.env): Env {
     return fallback;
   }
 
-  // Em produção, emite aviso se ALLOWED_ORIGINS contiver localhost (não bloqueia se passou na validação)
-  if (!isProduction) {
-    const origins = (result.data.ALLOWED_ORIGINS ?? "").split(",").map((o: string) => o.trim());
-    const hasLocalhost = origins.some((o: string) => o.includes("localhost"));
-    if (hasLocalhost) {
-      logger.warn(
-        "[env-validator] ALLOWED_ORIGINS contém localhost — aceitável em desenvolvimento",
-        { ALLOWED_ORIGINS: result.data.ALLOWED_ORIGINS },
-      );
-    }
+  const origins = (result.data.ALLOWED_ORIGINS ?? "").split(",").map((o: string) => o.trim());
+  const hasLocalhost = origins.some((o: string) => o.includes("localhost"));
+  if (hasLocalhost && isProduction) {
+    logger.warn(
+      "[env-validator] ALLOWED_ORIGINS contém localhost em produção — configure domínio real antes do deploy público",
+      { ALLOWED_ORIGINS: result.data.ALLOWED_ORIGINS },
+    );
   }
 
   logger.info("[env-validator] Variáveis de ambiente validadas com sucesso", {

@@ -24,13 +24,17 @@ services:
     container_name: ioc_postgres_prod
     restart: unless-stopped
     environment:
-      POSTGRES_USER: ${DATABASE_USER}
-      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
-      POSTGRES_DB: ${DATABASE_NAME}
+      POSTGRES_USER: ${DATABASE_USER:-postgres}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD:-postgres}
+      POSTGRES_DB: ${DATABASE_NAME:-ioc_esg_municipal}
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${DATABASE_USER} -d ${DATABASE_NAME}"]
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -U ${DATABASE_USER:-postgres} -d ${DATABASE_NAME:-ioc_esg_municipal}",
+        ]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -58,17 +62,17 @@ services:
     # appendonly garante persistência: dados sobrevivem a restart
     command: >
       redis-server
-      --requirepass ${REDIS_PASSWORD}
+      --requirepass ${REDIS_PASSWORD:-redis_dev_pass}
       --appendonly yes
       --appendfsync everysec
       --maxmemory 256mb
       --maxmemory-policy allkeys-lru
     environment:
-      REDIS_PASSWORD: ${REDIS_PASSWORD}
+      REDIS_PASSWORD: ${REDIS_PASSWORD:-redis_dev_pass}
     volumes:
       - redis_data:/data
     healthcheck:
-      test: ["CMD-SHELL", "redis-cli -a ${REDIS_PASSWORD} ping | grep PONG"]
+      test: ["CMD-SHELL", "redis-cli -a ${REDIS_PASSWORD:-redis_dev_pass} ping | grep PONG"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -91,7 +95,7 @@ services:
 
   api:
     # IMAGE_TAG deve ser o commit SHA do deploy (ex: IMAGE_TAG=abc1234)
-    image: ${REGISTRY:-ghcr.io/seu-org}/ioc-esg-municipal:${IMAGE_TAG:-latest}
+    image: ioc-esg-municipal:${IMAGE_TAG:-latest}
     container_name: ioc_api_prod
     restart: unless-stopped
     ports:
@@ -99,11 +103,12 @@ services:
     environment:
       NODE_ENV: production
       PORT: 3000
-      DATABASE_URL: postgresql://${DATABASE_USER}:${DATABASE_PASSWORD}@postgres:5432/${DATABASE_NAME}?schema=public
-      REDIS_URL: redis://:${REDIS_PASSWORD}@redis:6379
-      JWT_SECRET: ${JWT_SECRET}
+      DATABASE_URL: postgresql://${DATABASE_USER:-postgres}:${DATABASE_PASSWORD:-postgres}@postgres:5432/${DATABASE_NAME:-ioc_esg_municipal}?schema=public
+      REDIS_URL: redis://:${REDIS_PASSWORD:-redis_dev_pass}@redis:6379
+      JWT_SECRET: ${JWT_SECRET:-dev-secret-change-in-production-min-32-chars}
       JWT_EXPIRATION: ${JWT_EXPIRATION:-1d}
-      ALLOWED_ORIGINS: ${ALLOWED_ORIGINS}
+      ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:-http://localhost,http://localhost:80}
+      REDIS_PASSWORD: ${REDIS_PASSWORD:-redis_dev_pass}
       LOG_LEVEL: ${LOG_LEVEL:-info}
       # APIs governamentais
       IBGE_API_URL: ${IBGE_API_URL:-https://servicodados.ibge.gov.br/api/v1}
@@ -111,6 +116,10 @@ services:
       DATASUS_API_URL: ${DATASUS_API_URL:-https://datasus.saude.gov.br}
       INPE_API_URL: ${INPE_API_URL:-https://terrabrasilis.dpi.inpe.br/api/v1}
       PNCP_API_URL: ${PNCP_API_URL:-https://pncp.gov.br/api/pncp/v1}
+      # Admin seed
+      ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@ioc.local}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-}
+      RUN_SEED: ${RUN_SEED:-false}
       # Agentes
       AGENT_TIMEOUT: ${AGENT_TIMEOUT:-30000}
       AGENT_RETRY_COUNT: ${AGENT_RETRY_COUNT:-3}
@@ -238,7 +247,7 @@ services:
     ports:
       - "127.0.0.1:3001:3000"
     environment:
-      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_PASSWORD:?GRAFANA_PASSWORD obrigatório — gere com openssl rand -hex 16}
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_PASSWORD:-changeme}
       GF_USERS_ALLOW_SIGN_UP: "false"
     volumes:
       - ./monitoring/grafana/provisioning:/etc/grafana/provisioning:ro

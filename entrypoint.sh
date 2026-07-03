@@ -15,11 +15,12 @@
 # =============================================================================
 set -e
 
+PRISMA_BIN="./node_modules/.bin/prisma"
+
 echo "==> Aguardando banco de dados estar pronto..."
-# O healthcheck do postgres no compose garante que o banco aceita conexões.
 
 echo "==> Rodando Prisma migrations..."
-pnpm prisma migrate deploy
+$PRISMA_BIN migrate deploy
 
 if [ "${RUN_SEED}" = "true" ]; then
   echo "==> Rodando seed (295 municípios SC)..."

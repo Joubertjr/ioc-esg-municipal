@@ -39,7 +39,7 @@ RUN for i in 1 2 3; do \
 FROM base AS builder
 
 # Instala TODAS as deps (dev incluídas) para compilar.
-# --ignore-scripts também evita husky no builder (git não existe na imagem).
+# --ignore-scripts evita husky/prepare. HUSKY=0 é belt-and-suspenders.
 ENV HUSKY=0
 RUN for i in 1 2 3; do \
       pnpm install --frozen-lockfile --ignore-scripts && break || \
@@ -60,7 +60,7 @@ RUN for i in 1 2 3; do \
     done
 
 # Compila TypeScript → dist/
-RUN pnpm build:backend
+RUN pnpm exec tsc
 
 # ── Stage 4: fe-builder — build do frontend com Vite ──────────────────────────
 # Usa a raiz do projeto como WORKDIR para que o TypeScript encontre zod/decimal.js
@@ -111,10 +111,6 @@ ENV NODE_ENV=production
 RUN for i in 1 2 3; do \
       apk add --no-cache dumb-init netcat-openbsd openssl && break || \
       { echo "apk add attempt $i failed, retrying..."; sleep 5; }; \
-    done && \
-    for i in 1 2 3; do \
-      corepack enable && corepack prepare pnpm@8.15.0 --activate && break || \
-      { echo "corepack (prod) attempt $i failed, retrying..."; sleep 5; }; \
     done
 
 WORKDIR /app
@@ -135,14 +131,15 @@ COPY --chown=nodeuser:nodejs package.json pnpm-lock.yaml ./
 
 # Instala prisma CLI (necessário para migrate deploy no entrypoint)
 # O --prod do stage deps exclui binários CLI; reinstala apenas o prisma
+# Usa npm diretamente (Node built-in) — pnpm exige corepack + rede em runtime
 RUN for i in 1 2 3; do \
-      pnpm add prisma@5.22.0 --save-prod --ignore-scripts && break || \
+      npm install prisma@5.22.0 --save --ignore-scripts && break || \
       { echo "prisma install attempt $i failed, retrying..."; sleep 5; }; \
     done
 
 # Gera Prisma Client no contexto de produção e corrige ownership dos artefatos
 RUN for i in 1 2 3; do \
-      pnpm prisma generate && break || \
+      npx prisma generate && break || \
       { echo "prisma generate (prod) attempt $i failed, retrying..."; sleep 5; }; \
     done && \
     chown -R nodeuser:nodejs /app/node_modules
