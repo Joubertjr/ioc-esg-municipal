@@ -47,10 +47,15 @@ const baseSchema = z.object({
 // ─── Regras adicionais em produção ───────────────────────────────────────────
 
 const productionRefinements = baseSchema
-  .refine((data) => !data.JWT_SECRET.includes("troque"), {
-    message: 'JWT_SECRET contém placeholder "troque" — defina um segredo real em produção',
-    path: ["JWT_SECRET"],
-  })
+  .refine(
+    (data) =>
+      !["troque", "dev-secret", "change-in-production"].some((s) => data.JWT_SECRET.includes(s)),
+    {
+      message:
+        "JWT_SECRET contém placeholder de desenvolvimento — defina um segredo real em produção",
+      path: ["JWT_SECRET"],
+    },
+  )
   .refine((data) => (data.REDIS_PASSWORD ?? "").length >= 8, {
     message: "REDIS_PASSWORD deve ter no mínimo 8 caracteres em produção",
     path: ["REDIS_PASSWORD"],

@@ -29,22 +29,28 @@ FROM base AS deps
 # --ignore-scripts: evita rodar `prepare` (husky) que só existe em dev.
 # HUSKY=0: belt-and-suspenders para o caso de outro script tentar invocá-lo.
 ENV HUSKY=0
-# Retry 3x: pnpm install baixa pacotes do registry + binários (prisma, etc).
-RUN for i in 1 2 3; do \
+# Retry 5x: pnpm install baixa pacotes do registry + binários (prisma, etc).
+# Cache mount persiste o pnpm store entre builds.
+RUN --mount=type=cache,target=/root/.local/share/pnpm/store/v3 \
+    for i in 1 2 3 4 5; do \
       pnpm install --frozen-lockfile --prod --ignore-scripts && break || \
-      { echo "pnpm install attempt $i failed, retrying..."; sleep 5; }; \
+      { echo "pnpm install attempt $i failed, retrying in 10s..."; sleep 10; }; \
     done
 
 # ── Stage 3: builder — compila TypeScript (backend) ───────────────────────────
 FROM base AS builder
 
 # Instala TODAS as deps (dev incluídas) para compilar.
-# --ignore-scripts evita husky/prepare. HUSKY=0 é belt-and-suspenders.
+# HUSKY=0 desativa o hook prepare (husky) sem --ignore-scripts,
+# que impede pnpm de linkar binários em .bin/.
+# Cache mount persiste o pnpm store entre builds (evita re-download).
 ENV HUSKY=0
-RUN for i in 1 2 3; do \
-      pnpm install --frozen-lockfile --ignore-scripts && break || \
-      { echo "pnpm install attempt $i failed, retrying..."; sleep 5; }; \
-    done
+RUN --mount=type=cache,target=/root/.local/share/pnpm/store/v3 \
+    for i in 1 2 3 4 5; do \
+      pnpm install --frozen-lockfile && break || \
+      { echo "pnpm install attempt $i failed, retrying in 10s..."; sleep 10; }; \
+    done && \
+    test -x node_modules/.bin/tsc || { echo "FATAL: tsc not found after install"; exit 1; }
 
 # Copia código-fonte
 COPY tsconfig.json ./
@@ -133,7 +139,7 @@ COPY --chown=nodeuser:nodejs package.json pnpm-lock.yaml ./
 # O --prod do stage deps exclui binários CLI; reinstala apenas o prisma
 # Usa npm diretamente (Node built-in) — pnpm exige corepack + rede em runtime
 RUN for i in 1 2 3; do \
-      npm install prisma@5.22.0 --save --ignore-scripts && break || \
+      npm install prisma@5.22.0 --no-save --ignore-scripts && break || \
       { echo "prisma install attempt $i failed, retrying..."; sleep 5; }; \
     done
 

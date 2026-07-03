@@ -21,7 +21,11 @@ const DATE = new Date().toISOString().slice(0, 10);
 const EVIDENCE_DIR = path.join(process.cwd(), `docs/evidence/${DATE}-smoke-login`);
 
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL ?? "admin@ioc.local";
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD ?? "Admin123!";
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD ?? "";
+if (!ADMIN_PASSWORD) {
+  console.error("ERRO: ADMIN_PASSWORD não definida. Defina via variável de ambiente.");
+  process.exit(1);
+}
 
 interface TestResult {
   name: string;
@@ -71,7 +75,9 @@ async function run(): Promise<TestResult[]> {
     await page.fill('input[type="email"], input[name="email"]', ADMIN_EMAIL);
     await page.fill('input[type="password"]', "senha-errada-12345");
     await page.click('button[type="submit"]');
-    await page.waitForTimeout(2000);
+    await page
+      .waitForSelector('[role="alert"], .text-red-500, .text-destructive', { timeout: 5000 })
+      .catch(() => {});
     await page.screenshot({
       path: path.join(EVIDENCE_DIR, "02-wrong-password.png"),
       fullPage: true,
@@ -113,7 +119,7 @@ async function run(): Promise<TestResult[]> {
     await page.fill('input[type="email"], input[name="email"]', ADMIN_EMAIL);
     await page.fill('input[type="password"]', ADMIN_PASSWORD);
     await page.click('button[type="submit"]');
-    await page.waitForTimeout(3000);
+    await page.waitForURL(/\/(dashboard|onboarding)/, { timeout: 10000 }).catch(() => {});
 
     const currentUrl = page.url();
     await page.screenshot({
@@ -138,23 +144,35 @@ async function run(): Promise<TestResult[]> {
     });
   }
 
-  // Test 4: Dashboard loads data (not empty)
+  // Test 4: Dashboard loads data (not empty) — only if login succeeded
   try {
-    const bodyText = (await page.textContent("body")) ?? "";
-    const hasScore = /\d{1,3}\/100/.test(bodyText) || /score/i.test(bodyText);
-    const hasMunicipio =
-      bodyText.includes("Florianópolis") ||
-      bodyText.includes("município") ||
-      bodyText.includes("ODS");
+    const currentUrl = page.url();
+    if (!currentUrl.includes("/dashboard") && !currentUrl.includes("/onboarding")) {
+      results.push({
+        name: "Dashboard carrega dados",
+        pass: false,
+        detail: `Login não completou — ainda em ${currentUrl}`,
+      });
+    } else {
+      await page
+        .waitForSelector("[data-testid], .recharts-wrapper, h1, h2", { timeout: 5000 })
+        .catch(() => {});
+      const bodyText = (await page.textContent("body")) ?? "";
+      const hasScore = /\d{1,3}\/100/.test(bodyText) || /score/i.test(bodyText);
+      const hasMunicipio =
+        bodyText.includes("Florianópolis") ||
+        bodyText.includes("município") ||
+        bodyText.includes("ODS");
 
-    results.push({
-      name: "Dashboard carrega dados",
-      pass: hasScore || hasMunicipio,
-      detail:
-        hasScore || hasMunicipio
-          ? "Dados de município/ODS visíveis"
-          : "Nenhum dado de município ou ODS encontrado na página",
-    });
+      results.push({
+        name: "Dashboard carrega dados",
+        pass: hasScore || hasMunicipio,
+        detail:
+          hasScore || hasMunicipio
+            ? "Dados de município/ODS visíveis"
+            : "Nenhum dado de município ou ODS encontrado na página",
+      });
+    }
   } catch (e) {
     results.push({
       name: "Dashboard carrega dados",

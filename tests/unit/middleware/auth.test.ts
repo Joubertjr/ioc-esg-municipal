@@ -50,9 +50,7 @@ function makeValidToken(overrides: Record<string, unknown> = {}): string {
 
 async function buildAuthApp() {
   // Import após configurar env para evitar cache
-  const { authenticateToken, requireRole } = await import(
-    "../../../backend/middleware/auth.js"
-  );
+  const { authenticateToken, requireRole } = await import("../../../backend/middleware/auth.js");
 
   const app = express();
   app.use(express.json());
@@ -118,17 +116,13 @@ describe("authenticateToken", () => {
   it("retorna 401 quando token não tem prefixo Bearer", async () => {
     const app = await buildAuthApp();
     const token = makeValidToken();
-    const res = await request(app)
-      .get("/protected")
-      .set("Authorization", token);
+    const res = await request(app).get("/protected").set("Authorization", token);
     expect(res.status).toBe(401);
   });
 
   it("retorna 401 com token inválido (string aleatória)", async () => {
     const app = await buildAuthApp();
-    const res = await request(app)
-      .get("/protected")
-      .set("Authorization", "Bearer token-invalido");
+    const res = await request(app).get("/protected").set("Authorization", "Bearer token-invalido");
     expect(res.status).toBe(401);
     expect(res.body.error).toMatch(/inválido/i);
   });
@@ -140,9 +134,7 @@ describe("authenticateToken", () => {
       "outro-secret",
       { expiresIn: "1h" },
     );
-    const res = await request(app)
-      .get("/protected")
-      .set("Authorization", `Bearer ${token}`);
+    const res = await request(app).get("/protected").set("Authorization", `Bearer ${token}`);
     expect(res.status).toBe(401);
   });
 
@@ -153,9 +145,7 @@ describe("authenticateToken", () => {
       TEST_SECRET,
       { expiresIn: -1 }, // já expirado
     );
-    const res = await request(app)
-      .get("/protected")
-      .set("Authorization", `Bearer ${token}`);
+    const res = await request(app).get("/protected").set("Authorization", `Bearer ${token}`);
     expect(res.status).toBe(401);
     expect(res.body.error).toMatch(/expir/i);
   });
@@ -163,9 +153,7 @@ describe("authenticateToken", () => {
   it("retorna 200 com token válido e popula req.user", async () => {
     const app = await buildAuthApp();
     const token = makeValidToken({ sub: "user-abc", role: "prefeito" });
-    const res = await request(app)
-      .get("/protected")
-      .set("Authorization", `Bearer ${token}`);
+    const res = await request(app).get("/protected").set("Authorization", `Bearer ${token}`);
     expect(res.status).toBe(200);
     expect(res.body.user).toMatchObject({
       sub: "user-abc",
@@ -174,26 +162,25 @@ describe("authenticateToken", () => {
     });
   });
 
-  it("retorna 500 em produção quando JWT_SECRET contém 'troque'", async () => {
+  it("bloqueia startup em produção quando JWT_SECRET contém 'troque'", async () => {
     process.env["JWT_SECRET"] = "troque-por-chave-segura-em-producao";
     process.env["NODE_ENV"] = "production";
     vi.resetModules();
 
-    const app = await buildAuthApp();
-    const token = makeValidToken();
-    const res = await request(app)
-      .get("/protected")
-      .set("Authorization", `Bearer ${token}`);
-    // Em produção com secret placeholder: erro interno
-    expect(res.status).toBe(500);
+    const mockExit = vi.spyOn(process, "exit").mockImplementation((_code) => {
+      throw new Error(`process.exit(${_code})`);
+    });
+
+    await expect(buildAuthApp()).rejects.toThrow("process.exit(1)");
+    expect(mockExit).toHaveBeenCalledWith(1);
+
+    mockExit.mockRestore();
   });
 
   it("retorna 200 com token válido enviado via cookie httpOnly", async () => {
     const app = await buildAuthApp();
     const token = makeValidToken({ sub: "user-cookie", role: "prefeito" });
-    const res = await request(app)
-      .get("/protected")
-      .set("Cookie", `token=${token}`);
+    const res = await request(app).get("/protected").set("Cookie", `token=${token}`);
     expect(res.status).toBe(200);
     expect(res.body.user).toMatchObject({ sub: "user-cookie", role: "prefeito" });
   });
@@ -245,9 +232,7 @@ describe("authenticateToken", () => {
     const app = await buildAuthApp();
     const token = makeValidToken();
     // POST sem Origin mas usando header — CSRF não se aplica
-    const res = await request(app)
-      .post("/protected")
-      .set("Authorization", `Bearer ${token}`);
+    const res = await request(app).post("/protected").set("Authorization", `Bearer ${token}`);
     expect(res.status).toBe(200);
   });
 });
@@ -266,18 +251,14 @@ describe("requireRole", () => {
   it("permite acesso quando role do user bate com role exigida", async () => {
     const app = await buildAuthApp();
     const token = makeValidToken({ role: "admin" });
-    const res = await request(app)
-      .get("/admin-only")
-      .set("Authorization", `Bearer ${token}`);
+    const res = await request(app).get("/admin-only").set("Authorization", `Bearer ${token}`);
     expect(res.status).toBe(200);
   });
 
   it("retorna 403 quando role do user não está entre as roles exigidas", async () => {
     const app = await buildAuthApp();
     const token = makeValidToken({ role: "viewer" });
-    const res = await request(app)
-      .get("/admin-only")
-      .set("Authorization", `Bearer ${token}`);
+    const res = await request(app).get("/admin-only").set("Authorization", `Bearer ${token}`);
     expect(res.status).toBe(403);
     expect(res.body.error).toMatch(/acesso negado/i);
   });
@@ -285,18 +266,14 @@ describe("requireRole", () => {
   it("permite acesso quando role está em lista de múltiplas roles", async () => {
     const app = await buildAuthApp();
     const token = makeValidToken({ role: "secretario" });
-    const res = await request(app)
-      .get("/staff")
-      .set("Authorization", `Bearer ${token}`);
+    const res = await request(app).get("/staff").set("Authorization", `Bearer ${token}`);
     expect(res.status).toBe(200);
   });
 
   it("retorna 403 quando viewer tenta acessar rota de staff", async () => {
     const app = await buildAuthApp();
     const token = makeValidToken({ role: "viewer" });
-    const res = await request(app)
-      .get("/staff")
-      .set("Authorization", `Bearer ${token}`);
+    const res = await request(app).get("/staff").set("Authorization", `Bearer ${token}`);
     expect(res.status).toBe(403);
   });
 

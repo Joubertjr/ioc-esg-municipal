@@ -2,6 +2,7 @@ import { type Request, type Response, type NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import { logger } from "../utils/logger.js";
 import { prisma } from "../lib/prisma.js";
+import { env } from "../utils/env-validator.js";
 
 // ─── Tipos ───────────────────────────────────────────────────────────────────
 
@@ -50,9 +51,7 @@ function extractBearerToken(authHeader: string | undefined): string | null {
 }
 
 function getAllowedOrigins(): string[] {
-  const raw = process.env["ALLOWED_ORIGINS"] ?? "http://localhost:5173";
-  return raw
-    .split(",")
+  return env.ALLOWED_ORIGINS.split(",")
     .map((o) => o.trim())
     .filter(Boolean);
 }

@@ -52,8 +52,10 @@ report() {
 
 cleanup_on_fail() {
   echo ""
+  echo "FATAL: comando falhou — abortando pipeline."
   echo "Para ver logs: docker compose -f docker-compose.prod.yml logs --tail=50 api"
   echo "Para derrubar: docker compose -f docker-compose.prod.yml down"
+  exit 1
 }
 trap cleanup_on_fail ERR
 
@@ -71,13 +73,17 @@ if [ "$TEST_ONLY" = false ] && [ "$SKIP_BUILD" = false ]; then
   IMAGE_TAG=$(git rev-parse --short HEAD)
   echo "Building ioc-esg-municipal:${IMAGE_TAG} ..."
 
-  if docker build -t "ioc-esg-municipal:${IMAGE_TAG}" -t ioc-esg-municipal:latest . 2>&1 | tail -5; then
+  BUILD_LOG=$(mktemp)
+  if docker build -t "ioc-esg-municipal:${IMAGE_TAG}" -t ioc-esg-municipal:latest . 2>&1 | tee "$BUILD_LOG" | tail -20; then
     report "Docker build" 0
   else
     report "Docker build" 1
-    echo "FATAL: Docker build falhou. Corrija antes de continuar."
+    echo "FATAL: Docker build falhou. Últimas 50 linhas:"
+    tail -50 "$BUILD_LOG"
+    rm -f "$BUILD_LOG"
     exit 1
   fi
+  rm -f "$BUILD_LOG"
   echo ""
 else
   echo "--- Phase 1: Build (pulado) ---"
@@ -140,8 +146,8 @@ echo ""
 HTTP_CODE=$(curl -sf -o /dev/null -w "%{http_code}" http://localhost/health)
 [ "$HTTP_CODE" = "200" ] && report "GET /health → 200" 0 || report "GET /health → $HTTP_CODE" 1
 
-# Login API returns proper error
-RESP=$(curl -sf -X POST http://localhost/api/auth/login \
+# Login API returns proper error (curl -s without -f to preserve response body on 4xx)
+RESP=$(curl -s -X POST http://localhost/api/auth/login \
   -H "Content-Type: application/json" \
   -d '{"email":"wrong@email.com","password":"wrong"}' 2>&1 || true)
 echo "$RESP" | grep -q "Credenciais inválidas" && \
@@ -149,7 +155,7 @@ echo "$RESP" | grep -q "Credenciais inválidas" && \
   report "POST /api/auth/login (wrong creds) → mensagem incorreta" 1
 
 # Login API returns token
-TOKEN_RESP=$(curl -sf -X POST http://localhost/api/auth/login \
+TOKEN_RESP=$(curl -s -X POST http://localhost/api/auth/login \
   -H "Content-Type: application/json" \
   -d "{\"email\":\"${ADMIN_EMAIL:-admin@ioc.local}\",\"password\":\"${ADMIN_PASSWORD:-Admin123!}\"}" 2>&1 || true)
 echo "$TOKEN_RESP" | grep -q "token" && \
@@ -157,7 +163,7 @@ echo "$TOKEN_RESP" | grep -q "token" && \
   report "POST /api/auth/login (correct creds) → sem token" 1
 
 # CORS headers present
-CORS=$(curl -sf -I http://localhost/api/auth/login \
+CORS=$(curl -s -I http://localhost/api/auth/login \
   -H "Origin: http://localhost" 2>&1 || true)
 echo "$CORS" | grep -qi "access-control" && \
   report "CORS headers presentes" 0 || \

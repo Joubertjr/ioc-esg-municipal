@@ -62,9 +62,11 @@ describe("validateEnv", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     // Captura process.exit para evitar que o processo de teste encerre
-    mockProcessExit = vi.spyOn(process, "exit").mockImplementation((_code?: string | number | null | undefined) => {
-      throw new Error(`process.exit(${_code}) called`);
-    });
+    mockProcessExit = vi
+      .spyOn(process, "exit")
+      .mockImplementation((_code?: string | number | null | undefined) => {
+        throw new Error(`process.exit(${_code}) called`);
+      });
   });
 
   afterEach(() => {
@@ -78,7 +80,9 @@ describe("validateEnv", () => {
 
     expect(result.NODE_ENV).toBe("development");
     expect(result.PORT).toBe(3000);
-    expect(result.DATABASE_URL).toBe("postgresql://postgres:postgres@localhost:5432/ioc_esg_municipal");
+    expect(result.DATABASE_URL).toBe(
+      "postgresql://postgres:postgres@localhost:5432/ioc_esg_municipal",
+    );
     expect(result.REDIS_URL).toBe("redis://localhost:6379");
   });
 
@@ -87,17 +91,19 @@ describe("validateEnv", () => {
     const result = validateEnv({ NODE_ENV: "development" });
 
     expect(result.PORT).toBe(3000);
-    expect(result.DATABASE_URL).toBe("postgresql://postgres:postgres@localhost:5432/ioc_esg_municipal");
+    expect(result.DATABASE_URL).toBe(
+      "postgresql://postgres:postgres@localhost:5432/ioc_esg_municipal",
+    );
     expect(result.REDIS_URL).toBe("redis://localhost:6379");
     expect(result.JWT_EXPIRATION).toBe("1d");
   });
 
-  it("em desenvolvimento emite warning quando ALLOWED_ORIGINS contém localhost", () => {
+  it("em desenvolvimento não emite warning de localhost em ALLOWED_ORIGINS", () => {
     validateEnv({ ...validDevEnv, ALLOWED_ORIGINS: "http://localhost:5173" });
 
-    expect(logger.warn).toHaveBeenCalledWith(
-      expect.stringContaining("localhost"),
-      expect.objectContaining({ ALLOWED_ORIGINS: "http://localhost:5173" }),
+    expect(logger.warn).not.toHaveBeenCalledWith(
+      expect.stringContaining("localhost em produção"),
+      expect.anything(),
     );
   });
 
@@ -129,14 +135,38 @@ describe("validateEnv", () => {
     expect(mockProcessExit).toHaveBeenCalledWith(1);
   });
 
-  it("ALLOWED_ORIGINS com localhost em produção causa process.exit(1)", () => {
+  it("JWT_SECRET com 'dev-secret' em produção causa process.exit(1)", () => {
+    const envComDevSecret = {
+      ...validProdEnv,
+      JWT_SECRET: "dev-secret-change-in-production-min-32-chars",
+    };
+
+    expect(() => validateEnv(envComDevSecret)).toThrow("process.exit(1)");
+    expect(mockProcessExit).toHaveBeenCalledWith(1);
+  });
+
+  it("JWT_SECRET com 'change-in-production' em produção causa process.exit(1)", () => {
+    const envComChangeInProduction = {
+      ...validProdEnv,
+      JWT_SECRET: "my-change-in-production-secret-that-is-long-enough",
+    };
+
+    expect(() => validateEnv(envComChangeInProduction)).toThrow("process.exit(1)");
+    expect(mockProcessExit).toHaveBeenCalledWith(1);
+  });
+
+  it("ALLOWED_ORIGINS com localhost em produção emite warning mas não bloqueia", () => {
     const envComLocalhost = {
       ...validProdEnv,
       ALLOWED_ORIGINS: "http://localhost:5173",
     };
 
-    expect(() => validateEnv(envComLocalhost)).toThrow("process.exit(1)");
-    expect(mockProcessExit).toHaveBeenCalledWith(1);
+    const result = validateEnv(envComLocalhost);
+    expect(result.ALLOWED_ORIGINS).toBe("http://localhost:5173");
+    expect(logger.warn).toHaveBeenCalledWith(
+      expect.stringContaining("localhost"),
+      expect.objectContaining({ ALLOWED_ORIGINS: "http://localhost:5173" }),
+    );
   });
 
   it("REDIS_PASSWORD ausente em produção causa process.exit(1)", () => {

@@ -760,7 +760,7 @@ async function seedAdminUser(tx: TransactionClient): Promise<void> {
       "[seed] ⚠ ADMIN_PASSWORD não definida — criando admin com senha gerada aleatoriamente.",
     );
   }
-  const finalPassword = password ?? crypto.randomUUID().slice(0, 16);
+  const finalPassword = password || crypto.randomUUID().slice(0, 16);
 
   const existing = await tx.user.findUnique({ where: { email } });
   if (existing) {

@@ -17,8 +17,6 @@ set -e
 
 PRISMA_BIN="./node_modules/.bin/prisma"
 
-echo "==> Aguardando banco de dados estar pronto..."
-
 echo "==> Rodando Prisma migrations..."
 $PRISMA_BIN migrate deploy
 

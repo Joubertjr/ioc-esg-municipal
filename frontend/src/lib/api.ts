@@ -88,17 +88,26 @@ async function fetchWithRefresh(path: string, init: RequestInit): Promise<Respon
   return fetch(url, init);
 }
 
+export class ApiError extends Error {
+  constructor(
+    message: string,
+    public readonly status: number,
+  ) {
+    super(message);
+    this.name = "ApiError";
+  }
+}
+
 async function handleResponse<T>(res: Response): Promise<T> {
   if (!res.ok) {
-    let message =
-      res.status === 401 ? "Sessão expirada. Faça login novamente." : `Erro HTTP ${res.status}`;
+    let message = res.status === 401 ? "Não autorizado" : `Erro HTTP ${res.status}`;
     try {
       const body = (await res.json()) as { message?: string; error?: string };
       message = body.message ?? body.error ?? message;
     } catch {
       // body não é JSON; mantém mensagem padrão
     }
-    throw new Error(message);
+    throw new ApiError(message, res.status);
   }
   return res.json() as Promise<T>;
 }

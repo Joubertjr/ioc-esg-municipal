@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { apiGet, apiPost } from "../lib/api";
+import { apiGet, apiPost, ApiError } from "../lib/api";
 import type { PublishedExecutiveReport, PublishRequestResponse } from "../types/api";
 
 export function usePublishedReport(ibgeCode: string) {
@@ -9,7 +9,7 @@ export function usePublishedReport(ibgeCode: string) {
       try {
         return await apiGet<PublishedExecutiveReport>(`/api/agent/reports/${ibgeCode}/published`);
       } catch (e) {
-        if (e instanceof Error && e.message.includes("Nenhum relatório publicado")) {
+        if (e instanceof ApiError && e.status === 404) {
           return null;
         }
         throw e;
