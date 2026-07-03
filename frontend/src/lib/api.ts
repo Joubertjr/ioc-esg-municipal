@@ -62,6 +62,8 @@ function triggerRefresh(): Promise<boolean> {
   return refreshPromise;
 }
 
+const AUTH_PATHS = ["/api/auth/login", "/api/auth/register"];
+
 async function fetchWithRefresh(path: string, init: RequestInit): Promise<Response> {
   const url = `${BASE_URL}${path}`;
   const start = Date.now();
@@ -69,6 +71,9 @@ async function fetchWithRefresh(path: string, init: RequestInit): Promise<Respon
   measureApiCall(path, Date.now() - start, res.status);
 
   if (res.status !== 401) return res;
+
+  // Auth endpoints return 401 for invalid credentials — don't try refresh
+  if (AUTH_PATHS.includes(path)) return res;
 
   // 401 — try to refresh once
   const refreshed = await triggerRefresh();
@@ -85,11 +90,8 @@ async function fetchWithRefresh(path: string, init: RequestInit): Promise<Respon
 
 async function handleResponse<T>(res: Response): Promise<T> {
   if (!res.ok) {
-    if (res.status === 401) {
-      // Reached here only when refresh also failed (redirect already triggered)
-      throw new Error("Sessão expirada. Faça login novamente.");
-    }
-    let message = `Erro HTTP ${res.status}`;
+    let message =
+      res.status === 401 ? "Sessão expirada. Faça login novamente." : `Erro HTTP ${res.status}`;
     try {
       const body = (await res.json()) as { message?: string; error?: string };
       message = body.message ?? body.error ?? message;
