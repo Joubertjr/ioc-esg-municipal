@@ -19,7 +19,7 @@ echo "==> Aguardando banco de dados estar pronto..."
 # O healthcheck do postgres no compose garante que o banco aceita conexões.
 
 echo "==> Rodando Prisma migrations..."
-npx prisma migrate deploy
+pnpm prisma migrate deploy
 
 if [ "${RUN_SEED}" = "true" ]; then
   echo "==> Rodando seed (295 municípios SC)..."

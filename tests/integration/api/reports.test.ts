@@ -6,7 +6,6 @@
  * - generateEsgReport: mockado para isolar a rota do serviço de geração
  *   de relatórios que depende de calculateMunicipalOds e dados externos
  * - @prisma/client: substituído por instância em memória
- * - express-rate-limit: passthrough — sem bloqueio por IP em testes
  * - logger e agentes: stubs vazios
  *
  * Casos cobertos:
@@ -47,16 +46,13 @@ const esgReportFixture: EsgReport = {
 
 // ─── Mocks hoisted ────────────────────────────────────────────────────────────
 
-const { mockGenerateEsgReport } = vi.hoisted(() => ({
+const { mockGenerateEsgReport, mockMunicipalityFindUnique } = vi.hoisted(() => ({
   mockGenerateEsgReport: vi.fn(),
+  mockMunicipalityFindUnique: vi.fn(),
 }));
 
 vi.mock("../../../backend/utils/logger.js", () => ({
   logger: { info: vi.fn(), warn: vi.fn(), error: vi.fn() },
-}));
-
-vi.mock("express-rate-limit", () => ({
-  rateLimit: () => (_req: unknown, _res: unknown, next: () => void) => next(),
 }));
 
 vi.mock("../../../backend/services/reports/report_service.js", () => ({
@@ -73,7 +69,7 @@ vi.mock("@prisma/client", () => {
       },
       municipality: {
         findMany: vi.fn().mockResolvedValue([]),
-        findUnique: vi.fn().mockResolvedValue(null),
+        findUnique: mockMunicipalityFindUnique,
       },
       $transaction: vi.fn().mockResolvedValue([[], 0]),
       $connect: vi.fn(),
@@ -128,7 +124,9 @@ vi.mock("../../../backend/agents/ana/index.js", () => ({
   mapToOdsIndicators: vi.fn().mockReturnValue([]),
 }));
 vi.mock("../../../backend/agents/convenios/index.js", () => ({
-  ConveniosCollector: vi.fn().mockImplementation(() => ({ collect: vi.fn(), collectBatch: vi.fn() })),
+  ConveniosCollector: vi
+    .fn()
+    .mockImplementation(() => ({ collect: vi.fn(), collectBatch: vi.fn() })),
   mapToOdsIndicators: vi.fn().mockReturnValue([]),
 }));
 vi.mock("../../../backend/agents/anatel/index.js", () => ({
@@ -175,6 +173,7 @@ beforeAll(async () => {
 
 beforeEach(() => {
   vi.clearAllMocks();
+  mockMunicipalityFindUnique.mockResolvedValue({ id: VALID_IBGE_CODE });
 });
 
 // ─── GET /api/reports/:ibgeCode — autenticação ────────────────────────────────

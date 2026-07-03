@@ -6,7 +6,6 @@
  * - generateBenchmark e compareAgainstBenchmark: mockados para isolar as
  *   rotas do serviço — controla retorno por cenário sem dependência externa
  * - @prisma/client: substituído por instância em memória
- * - express-rate-limit: passthrough — sem bloqueio por IP em testes
  * - logger e agentes: stubs vazios
  *
  * Casos cobertos:
@@ -82,10 +81,6 @@ vi.mock("../../../backend/utils/logger.js", () => ({
   logger: { info: vi.fn(), warn: vi.fn(), error: vi.fn() },
 }));
 
-vi.mock("express-rate-limit", () => ({
-  rateLimit: () => (_req: unknown, _res: unknown, next: () => void) => next(),
-}));
-
 vi.mock("../../../backend/services/benchmarks/benchmark_service.js", () => ({
   generateBenchmark: mockGenerateBenchmark,
   compareAgainstBenchmark: mockCompareAgainstBenchmark,
@@ -156,7 +151,9 @@ vi.mock("../../../backend/agents/ana/index.js", () => ({
   mapToOdsIndicators: vi.fn().mockReturnValue([]),
 }));
 vi.mock("../../../backend/agents/convenios/index.js", () => ({
-  ConveniosCollector: vi.fn().mockImplementation(() => ({ collect: vi.fn(), collectBatch: vi.fn() })),
+  ConveniosCollector: vi
+    .fn()
+    .mockImplementation(() => ({ collect: vi.fn(), collectBatch: vi.fn() })),
   mapToOdsIndicators: vi.fn().mockReturnValue([]),
 }));
 vi.mock("../../../backend/agents/anatel/index.js", () => ({
@@ -261,11 +258,9 @@ describe("POST /api/benchmarks — validação de input", () => {
     expect(mockGenerateBenchmark).not.toHaveBeenCalled();
   });
 
-  it("deve retornar 400 quando ibgeCodes tem mais de 50 elementos", async () => {
-    // Arrange — 51 códigos de 7 dígitos (limite é 50)
-    const ibgeCodes = Array.from({ length: 51 }, (_, i) =>
-      String(4200000 + i).padStart(7, "0"),
-    );
+  it("deve retornar 400 quando ibgeCodes tem mais de 300 elementos", async () => {
+    // Arrange — 301 códigos de 7 dígitos (limite é 300)
+    const ibgeCodes = Array.from({ length: 301 }, (_, i) => String(4200000 + i).padStart(7, "0"));
 
     // Act
     const res = await request(app)

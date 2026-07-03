@@ -6,7 +6,6 @@
  * - @prisma/client: substituído por instância em memória — health endpoint
  *   não usa banco, mas os routers importados indiretamente precisam que o
  *   construtor PrismaClient seja resolvível
- * - express-rate-limit: passthrough — evita bloqueio por IP em testes
  * - Agentes e serviços ODS: stubs vazios para remover dependências externas
  *
  * O app é construído via createTestApp() que espelha backend/index.ts
@@ -29,10 +28,6 @@ import type { Express } from "express";
 
 vi.mock("../../../backend/utils/logger.js", () => ({
   logger: { info: vi.fn(), warn: vi.fn(), error: vi.fn() },
-}));
-
-vi.mock("express-rate-limit", () => ({
-  rateLimit: () => (_req: unknown, _res: unknown, next: () => void) => next(),
 }));
 
 vi.mock("@prisma/client", () => {
@@ -97,7 +92,9 @@ vi.mock("../../../backend/agents/ana/index.js", () => ({
   mapToOdsIndicators: vi.fn().mockReturnValue([]),
 }));
 vi.mock("../../../backend/agents/convenios/index.js", () => ({
-  ConveniosCollector: vi.fn().mockImplementation(() => ({ collect: vi.fn(), collectBatch: vi.fn() })),
+  ConveniosCollector: vi
+    .fn()
+    .mockImplementation(() => ({ collect: vi.fn(), collectBatch: vi.fn() })),
   mapToOdsIndicators: vi.fn().mockReturnValue([]),
 }));
 vi.mock("../../../backend/agents/anatel/index.js", () => ({

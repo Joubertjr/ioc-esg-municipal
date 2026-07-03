@@ -38,9 +38,8 @@ applies_to: all
 
 ### Rate limiting
 
-- Rotas públicas (login, registro, forgot-password) têm rate limit restritivo: máx 5 req/min por IP
-- Rotas autenticadas: máx 100 req/min por usuário
-- Implementado via `express-rate-limit` com store Redis para funcionar em múltiplas instâncias
+- Rate limiting removido por decisão do operador (2026-07-02) — produto pré-lançamento sem domínio público
+- Será reativado quando a plataforma tiver domínio público e exposição real a brute-force
 
 ### Headers de segurança
 

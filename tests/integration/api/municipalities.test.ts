@@ -7,7 +7,6 @@
  *   por teste — evita conexão real com PostgreSQL
  * - municipalitiesRouter usa prisma.$transaction e municipality.*
  *   que são mockados via PrismaClient mock
- * - express-rate-limit: passthrough — sem bloqueio por IP em testes
  * - logger e agentes: stubs vazios para eliminar efeitos colaterais
  *
  * Casos cobertos:
@@ -48,20 +47,20 @@ const municipalityListFixture = [
 
 // ─── Mocks hoisted ────────────────────────────────────────────────────────────
 
-const { mockMunicipalityFindMany, mockMunicipalityCount, mockMunicipalityFindUnique, mockTransaction } =
-  vi.hoisted(() => ({
-    mockMunicipalityFindMany: vi.fn(),
-    mockMunicipalityCount: vi.fn(),
-    mockMunicipalityFindUnique: vi.fn(),
-    mockTransaction: vi.fn(),
-  }));
+const {
+  mockMunicipalityFindMany,
+  mockMunicipalityCount,
+  mockMunicipalityFindUnique,
+  mockTransaction,
+} = vi.hoisted(() => ({
+  mockMunicipalityFindMany: vi.fn(),
+  mockMunicipalityCount: vi.fn(),
+  mockMunicipalityFindUnique: vi.fn(),
+  mockTransaction: vi.fn(),
+}));
 
 vi.mock("../../../backend/utils/logger.js", () => ({
   logger: { info: vi.fn(), warn: vi.fn(), error: vi.fn() },
-}));
-
-vi.mock("express-rate-limit", () => ({
-  rateLimit: () => (_req: unknown, _res: unknown, next: () => void) => next(),
 }));
 
 vi.mock("@prisma/client", () => {
@@ -130,7 +129,9 @@ vi.mock("../../../backend/agents/ana/index.js", () => ({
   mapToOdsIndicators: vi.fn().mockReturnValue([]),
 }));
 vi.mock("../../../backend/agents/convenios/index.js", () => ({
-  ConveniosCollector: vi.fn().mockImplementation(() => ({ collect: vi.fn(), collectBatch: vi.fn() })),
+  ConveniosCollector: vi
+    .fn()
+    .mockImplementation(() => ({ collect: vi.fn(), collectBatch: vi.fn() })),
   mapToOdsIndicators: vi.fn().mockReturnValue([]),
 }));
 vi.mock("../../../backend/agents/anatel/index.js", () => ({

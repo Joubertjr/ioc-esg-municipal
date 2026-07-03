@@ -9,7 +9,6 @@
  * - bcryptjs: NÃO mockado — usa a implementação real para validar que
  *   hash e compare funcionam corretamente no fluxo completo
  * - logger: silenciado para evitar poluição de saída
- * - express-rate-limit: passthrough — não queremos bloqueio por IP em testes
  * - Agentes coletores: stubs vazios — não são utilizados pelo fluxo de auth,
  *   mas são importados indiretamente pelo app
  *
@@ -84,10 +83,6 @@ const {
 
 vi.mock("../../../backend/utils/logger.js", () => ({
   logger: { info: vi.fn(), warn: vi.fn(), error: vi.fn() },
-}));
-
-vi.mock("express-rate-limit", () => ({
-  rateLimit: () => (_req: unknown, _res: unknown, next: () => void) => next(),
 }));
 
 vi.mock("@prisma/client", () => {

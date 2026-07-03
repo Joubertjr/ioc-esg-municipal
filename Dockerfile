@@ -130,11 +130,17 @@ COPY --from=builder --chown=nodeuser:nodejs /app/prisma ./prisma
 # Copia node_modules de produção (sem devDeps)
 COPY --from=deps --chown=nodeuser:nodejs /app/node_modules ./node_modules
 
-# Copia package.json para `node` resolver o "main"
-COPY --chown=nodeuser:nodejs package.json ./
+# Copia package.json e pnpm-lock.yaml para `node` resolver o "main"
+COPY --chown=nodeuser:nodejs package.json pnpm-lock.yaml ./
+
+# Instala prisma CLI (necessário para migrate deploy no entrypoint)
+# O --prod do stage deps exclui binários CLI; reinstala apenas o prisma
+RUN for i in 1 2 3; do \
+      pnpm add prisma@5.22.0 --save-prod --ignore-scripts && break || \
+      { echo "prisma install attempt $i failed, retrying..."; sleep 5; }; \
+    done
 
 # Gera Prisma Client no contexto de produção e corrige ownership dos artefatos
-# Nota: com pnpm, o client fica em node_modules/.pnpm/ (não em .prisma)
 RUN for i in 1 2 3; do \
       pnpm prisma generate && break || \
       { echo "prisma generate (prod) attempt $i failed, retrying..."; sleep 5; }; \

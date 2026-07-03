@@ -6,7 +6,6 @@
  * - runSimulation: mockado para isolar a rota do serviço de simulação
  *   que depende de calculateMunicipalOds e dados externos
  * - @prisma/client: substituído por instância em memória
- * - express-rate-limit: passthrough — sem bloqueio por IP em testes
  * - logger e agentes: stubs vazios
  *
  * Casos cobertos:
@@ -70,10 +69,6 @@ const { mockRunSimulation } = vi.hoisted(() => ({
 
 vi.mock("../../../backend/utils/logger.js", () => ({
   logger: { info: vi.fn(), warn: vi.fn(), error: vi.fn() },
-}));
-
-vi.mock("express-rate-limit", () => ({
-  rateLimit: () => (_req: unknown, _res: unknown, next: () => void) => next(),
 }));
 
 vi.mock("../../../backend/services/simulator/simulator_service.js", () => ({
@@ -145,7 +140,9 @@ vi.mock("../../../backend/agents/ana/index.js", () => ({
   mapToOdsIndicators: vi.fn().mockReturnValue([]),
 }));
 vi.mock("../../../backend/agents/convenios/index.js", () => ({
-  ConveniosCollector: vi.fn().mockImplementation(() => ({ collect: vi.fn(), collectBatch: vi.fn() })),
+  ConveniosCollector: vi
+    .fn()
+    .mockImplementation(() => ({ collect: vi.fn(), collectBatch: vi.fn() })),
   mapToOdsIndicators: vi.fn().mockReturnValue([]),
 }));
 vi.mock("../../../backend/agents/anatel/index.js", () => ({
@@ -299,7 +296,11 @@ describe("POST /api/simulator/simulate — resposta do serviço", () => {
       currentGlobalScore: 72,
       projectedGlobalScore: 76,
     });
-    expect(mockRunSimulation).toHaveBeenCalledWith(validSimulationBody);
+    expect(mockRunSimulation).toHaveBeenCalledWith(validSimulationBody, {
+      persistScenario: false,
+      requestedByUserId: undefined,
+      municipalityDbId: undefined,
+    });
   });
 });
 
@@ -356,11 +357,13 @@ describe("POST /api/simulator/compare — resposta do serviço", () => {
   it("deve retornar 200 com array de resultados para 2 cenários válidos", async () => {
     // Arrange — dois cenários distintos
     const scenario2 = { ...validSimulationBody, ibgeCode: VALID_IBGE_CODE_2 };
-    const result2 = { ...simulationResultFixture, ibgeCode: VALID_IBGE_CODE_2, municipalityName: "Blumenau" };
+    const result2 = {
+      ...simulationResultFixture,
+      ibgeCode: VALID_IBGE_CODE_2,
+      municipalityName: "Blumenau",
+    };
 
-    mockRunSimulation
-      .mockResolvedValueOnce(simulationResultFixture)
-      .mockResolvedValueOnce(result2);
+    mockRunSimulation.mockResolvedValueOnce(simulationResultFixture).mockResolvedValueOnce(result2);
 
     // Act
     const res = await request(app)

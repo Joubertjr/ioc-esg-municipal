@@ -161,10 +161,6 @@ vi.mock("../../../backend/utils/logger.js", () => ({
 }));
 
 // batchLimiter substituído por middleware passthrough para não bloquear testes
-vi.mock("../../../backend/middleware/rate-limit.js", () => ({
-  batchLimiter: (_req: unknown, _res: unknown, next: () => void) => next(),
-}));
-
 // Auth middleware passthrough — testes unitários de rota não testam auth
 vi.mock("../../../backend/middleware/auth.js", () => ({
   authenticateToken: (_req: unknown, _res: unknown, next: () => void) => next(),

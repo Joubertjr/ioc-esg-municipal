@@ -121,12 +121,6 @@ vi.mock("../../../backend/utils/logger.js", () => ({
 }));
 
 // Rate limiter: passthrough para não bloquear testes
-vi.mock("../../../backend/middleware/rate-limit.js", () => ({
-  authLimiter: (_req: unknown, _res: unknown, next: () => void) => next(),
-  generalLimiter: (_req: unknown, _res: unknown, next: () => void) => next(),
-  batchLimiter: (_req: unknown, _res: unknown, next: () => void) => next(),
-}));
-
 // Auth middleware: por padrão autentica com usuário fixture — testamos o caso
 // não-autenticado injetando um mock que retorna 401 no teste específico
 vi.mock("../../../backend/middleware/auth.js", () => ({

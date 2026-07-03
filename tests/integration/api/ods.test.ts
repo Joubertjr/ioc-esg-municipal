@@ -8,7 +8,6 @@
  *   com precisão o retorno (dados, null, erro) por cenário de teste
  * - @prisma/client: substituído por instância em memória — rota ODS não usa
  *   Prisma diretamente, mas o authRouter (montado no mesmo app) usa
- * - express-rate-limit: passthrough — evita bloqueio por IP em testes
  * - logger e agentes: stubs vazios para eliminar efeitos colaterais
  *
  * Token de autenticação: gerado no beforeAll com JWT_SECRET de teste
@@ -85,15 +84,31 @@ const { mockCalculateMunicipalOds, mockMunicipalityFindUnique, mockMunicipalityF
   }));
 
 vi.mock("../../../backend/utils/logger.js", () => ({
-  logger: { info: vi.fn(), warn: vi.fn(), error: vi.fn() },
+  logger: { info: vi.fn(), warn: vi.fn(), error: vi.fn(), debug: vi.fn() },
 }));
 
-vi.mock("express-rate-limit", () => ({
-  rateLimit: () => (_req: unknown, _res: unknown, next: () => void) => next(),
+vi.mock("../../../backend/utils/cache.js", () => ({
+  withCache: vi
+    .fn()
+    .mockImplementation((_key: string, _ttl: number, fn: () => Promise<unknown>) => fn()),
+  isCached: vi.fn().mockResolvedValue(false),
+}));
+
+vi.mock("../../../backend/utils/metrics.js", () => ({
+  cacheOperations: { inc: vi.fn() },
+  httpRequestDuration: { observe: vi.fn(), startTimer: vi.fn().mockReturnValue(vi.fn()) },
+  httpRequestsTotal: { inc: vi.fn() },
 }));
 
 vi.mock("../../../backend/services/ods/index.js", () => ({
   calculateMunicipalOds: mockCalculateMunicipalOds,
+  getMethodology: vi.fn().mockReturnValue({}),
+}));
+
+vi.mock("../../../backend/services/ods/ods_history_service.js", () => ({
+  calculateAndPersistScores: vi.fn().mockResolvedValue(undefined),
+  getScoreHistory: vi.fn().mockResolvedValue([]),
+  assessComparability: vi.fn().mockReturnValue({ comparable: true }),
 }));
 
 vi.mock("@prisma/client", () => {
@@ -216,7 +231,7 @@ beforeEach(() => {
 
   // Defaults: ambos os municípios existem no banco.
   // Testes que precisam de comportamento diferente (404, etc.) sobrescrevem localmente.
-  mockMunicipalityFindUnique.mockResolvedValue({ name: "Florianópolis" });
+  mockMunicipalityFindUnique.mockResolvedValue({ id: VALID_IBGE_CODE, name: "Florianópolis" });
   mockMunicipalityFindMany.mockResolvedValue([
     { ibgeCode: VALID_IBGE_CODE, name: "Florianópolis" },
     { ibgeCode: VALID_IBGE_CODE_2, name: "Blumenau" },

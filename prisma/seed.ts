@@ -750,15 +750,17 @@ async function seedOdsScores(tx: TransactionClient): Promise<void> {
   }
 }
 
+const SEED_SALT_ROUNDS = 12;
+
 async function seedAdminUser(tx: TransactionClient): Promise<void> {
   const email = process.env["ADMIN_EMAIL"] ?? "admin@ioc.local";
   const password = process.env["ADMIN_PASSWORD"];
   if (!password) {
-    console.log(
-      "[seed] ADMIN_PASSWORD não definida — pulando criação de admin. Defina ADMIN_EMAIL e ADMIN_PASSWORD para criar.",
+    console.warn(
+      "[seed] ⚠ ADMIN_PASSWORD não definida — criando admin com senha gerada aleatoriamente.",
     );
-    return;
   }
+  const finalPassword = password ?? crypto.randomUUID().slice(0, 16);
 
   const existing = await tx.user.findUnique({ where: { email } });
   if (existing) {
@@ -766,16 +768,31 @@ async function seedAdminUser(tx: TransactionClient): Promise<void> {
     return;
   }
 
-  const passwordHash = await bcrypt.hash(password, 12);
+  const floripa = await tx.municipality.findUnique({
+    where: { ibgeCode: "4205407" },
+    select: { id: true },
+  });
+  if (!floripa) {
+    console.warn(
+      "[seed] ⚠ Município 4205407 (Florianópolis) não encontrado — admin sem município.",
+    );
+  }
+
+  const passwordHash = await bcrypt.hash(finalPassword, SEED_SALT_ROUNDS);
   await tx.user.create({
     data: {
       email,
-      name: "Admin",
+      name: "Administrador IOC",
       passwordHash,
       role: "admin",
+      municipalityId: floripa?.id ?? null,
     },
   });
   console.log(`[seed] Admin user ${email} criado com role=admin.`);
+  if (!password) {
+    console.log(`[seed] Senha gerada: ${finalPassword}`);
+    console.log("[seed] Defina ADMIN_PASSWORD no .env para controlar a senha do admin.");
+  }
 }
 
 async function main(): Promise<void> {
