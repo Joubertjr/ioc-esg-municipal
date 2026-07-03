@@ -46,6 +46,8 @@
     "data:update:transferegov": "tsx scripts/update-transferegov-data.ts",
     "data:update:all": "pnpm data:update:snis && pnpm data:update:inep && pnpm data:update:sisvan && pnpm data:update:anatel && pnpm data:update:aneel && pnpm data:update:convenios && pnpm data:update:ieps && pnpm data:update:transferegov",
     "smoke:final": "bash scripts/smoke-final.sh",
+    "quality:check": "bash quality/fitness-functions/typecheck.sh && bash quality/fitness-functions/no-circular-deps.sh && bash quality/fitness-functions/no-secrets.sh",
+    "quality:full": "pnpm quality:check && bash quality/fitness-functions/docker-build.sh && bash quality/fitness-functions/login-smoke.sh",
     "prepare": "husky"
   },
   "dependencies": {
