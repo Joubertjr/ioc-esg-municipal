@@ -61,6 +61,8 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm tsc --noEmit
       - run: pnpm lint
+      - name: Circular dependency check
+        run: pnpm madge:circular
       - run: pnpm test:unit
       - name: MDO agent evals (fast)
         run: pnpm eval:agent:fast
